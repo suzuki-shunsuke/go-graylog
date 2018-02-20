@@ -16,6 +16,10 @@ import (
 	"net/http"
 )
 
+type Error struct {
+	Message string `json:"message"`
+}
+
 type Role struct {
 	Name        string   `json:"name,omitempty"`
 	Description string   `json:"description,omitempty"`
