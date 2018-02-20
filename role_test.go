@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"path"
 	"reflect"
 	"sync"
 	"testing"
@@ -17,6 +18,7 @@ var (
 
 func handlerFuncs() {
 	http.HandleFunc("/api/roles", handleRoles)
+	http.HandleFunc("/api/roles/", handleGetRoleByName)
 }
 
 // /roles
@@ -118,5 +120,60 @@ func TestGetRoles(t *testing.T) {
 	}
 	if !reflect.DeepEqual(roles, exp) {
 		t.Errorf("client.GetRoles() == %v, wanted %v", roles, exp)
+	}
+}
+
+func handleGetRoleByName(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	admin := Role{
+		Name:        "Admin",
+		Description: "Grants all permissions for Graylog administrators (built-in)",
+		Permissions: []string{"*"},
+		ReadOnly:    true,
+	}
+	name := path.Base(r.URL.Path)
+	if name == "Admin" {
+		b, err := json.Marshal(&admin)
+		if err != nil {
+			w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+			return
+		}
+		w.Write(b)
+		return
+	}
+	t := Error{
+		Message: fmt.Sprintf("No role found with name %s", name),
+		Type:    "ApiError"}
+	b, err := json.Marshal(&t)
+	if err != nil {
+		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		return
+	}
+	w.Write(b)
+}
+
+func TestGetRoleByName(t *testing.T) {
+	once.Do(handlerFuncs)
+	server := httptest.NewServer(nil)
+	defer server.Close()
+	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
+	client, err := NewClient(u, "admin", "password")
+	if err != nil {
+		t.Error("Failed to NewClient", err)
+		return
+	}
+	role, err := client.GetRoleByName("Admin")
+	if err != nil {
+		t.Error("Failed to GetRoleByName", err)
+		return
+	}
+	exp := &Role{
+		Name:        "Admin",
+		Description: "Grants all permissions for Graylog administrators (built-in)",
+		Permissions: []string{"*"},
+		ReadOnly:    true,
+	}
+	if !reflect.DeepEqual(role, exp) {
+		t.Errorf("client.GetRoleByName() == %v, wanted %v", role, exp)
 	}
 }

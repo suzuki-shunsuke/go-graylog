@@ -27,6 +27,16 @@ type Role struct {
 	ReadOnly    bool     `json:"read_only,omitempty"`
 }
 
+func callRequest(
+	req *http.Request, client *Client, ctx context.Context,
+) (*http.Response, error) {
+	req.SetBasicAuth(client.GetName(), client.GetPassword())
+	req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/json")
+	hc := &http.Client{}
+	return hc.Do(req)
+}
+
 // CreateRole create a new role
 // POST /roles
 func (client *Client) CreateRole(params *Role) (*Role, error) {
@@ -47,11 +57,7 @@ func (client *Client) CreateRoleContext(
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to http.NewRequest")
 	}
-	req.SetBasicAuth(client.GetName(), client.GetPassword())
-	req.WithContext(ctx)
-	req.Header.Set("Content-Type", "application/json")
-	hc := &http.Client{}
-	resp, err := hc.Do(req)
+	resp, err := callRequest(req, client, ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to call POST /roles API")
 	}
@@ -79,15 +85,15 @@ func (client *Client) CreateRoleContext(
 	return &role, nil
 }
 
+type rolesBody struct {
+	Roles []Role `json:"roles"`
+	Total int    `json:"total"`
+}
+
 // GetRoles List all roles
 // GET /roles
 func (client *Client) GetRoles() ([]Role, error) {
 	return client.GetRolesContext(context.Background())
-}
-
-type rolesBody struct {
-	Roles []Role `json:"roles"`
-	Total int    `json:"total"`
 }
 
 // GetRoles List all roles
@@ -99,11 +105,7 @@ func (client *Client) GetRolesContext(
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to http.NewRequest")
 	}
-	req.SetBasicAuth(client.GetName(), client.GetPassword())
-	req.WithContext(ctx)
-	req.Header.Set("Content-Type", "application/json")
-	hc := &http.Client{}
-	resp, err := hc.Do(req)
+	resp, err := callRequest(req, client, ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to call GET /roles API")
 	}
@@ -129,4 +131,48 @@ func (client *Client) GetRolesContext(
 			err, fmt.Sprintf("Failed to parse response body as Roles: %s", string(b)))
 	}
 	return roles.Roles, nil
+}
+
+// GetRoleByName
+// GET /roles/{rolename} Retrieve permissions for a single role
+func (client *Client) GetRoleByName(name string) (*Role, error) {
+	return client.GetRoleByNameContext(context.Background(), name)
+}
+
+// GetRoles List all roles
+// GET /roles
+func (client *Client) GetRoleByNameContext(
+	ctx context.Context, name string,
+) (*Role, error) {
+	req, err := http.NewRequest(
+		"GET", fmt.Sprintf("%s/%s", client.endpoints.Roles, name), nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+	}
+	resp, err := callRequest(req, client, ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to call GET /roles API")
+	}
+	defer resp.Body.Close()
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to read response body")
+	}
+	if resp.StatusCode >= 400 {
+		e := Error{}
+		err = json.Unmarshal(b, &e)
+		if err != nil {
+			return nil, errors.Wrap(
+				err, fmt.Sprintf(
+					"Failed to parse response body as Error: %s", string(b)))
+		}
+		return nil, errors.New(e.Message)
+	}
+	role := Role{}
+	err = json.Unmarshal(b, &role)
+	if err != nil {
+		return nil, errors.Wrap(
+			err, fmt.Sprintf("Failed to parse response body as Role: %s", string(b)))
+	}
+	return &role, nil
 }
