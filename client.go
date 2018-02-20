@@ -1,23 +1,34 @@
 package graylog
 
 import (
-	"errors"
 	"net/url"
 	"path"
 )
 
+type Endpoints struct {
+	Roles string
+}
+
 type Client struct {
-	name     string
-	password string
-	endpoint *url.URL
+	name      string
+	password  string
+	endpoints *Endpoints
 }
 
 func NewClient(endpoint, name, password string) (*Client, error) {
-	u, err := url.Parse(endpoint)
+	base, err := url.Parse(endpoint)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{name: name, password: password, endpoint: u}, nil
+	endpoints := &Endpoints{}
+
+	u := *base
+	u.Path = path.Join(u.Path, "/roles")
+	endpoints.Roles = u.String()
+
+	return &Client{
+		name: name, password: password, endpoints: endpoints,
+	}, nil
 }
 
 func (client *Client) GetName() string {
@@ -26,13 +37,4 @@ func (client *Client) GetName() string {
 
 func (client *Client) GetPassword() string {
 	return client.password
-}
-
-func (client *Client) getUrl(p string) (string, error) {
-	if client.endpoint == nil {
-		return "", errors.New("Client.endpoint == nil")
-	}
-	u := *client.endpoint
-	u.Path = path.Join(u.Path, p)
-	return u.String(), nil
 }

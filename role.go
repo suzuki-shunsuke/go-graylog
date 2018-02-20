@@ -28,32 +28,29 @@ type Role struct {
 }
 
 // CreateRole create a new role
+// POST /roles
 func (client *Client) CreateRole(params *Role) (*Role, error) {
 	return client.CreateRoleContext(context.Background(), params)
 }
 
 // CreateRoleContext create a new role
+// POST /roles
 func (client *Client) CreateRoleContext(
 	ctx context.Context, params *Role,
 ) (*Role, error) {
-	// POST /roles
-	hc := &http.Client{}
 	b, err := json.Marshal(params)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to json.Marshal(params)")
 	}
-	u, err := client.getUrl("/roles")
-	if err != nil {
-		return nil, errors.Wrap(err, `Failed to client.getUrl("/roles")`)
-	}
 	req, err := http.NewRequest(
-		"POST", u, bytes.NewBuffer(b))
+		"POST", client.endpoints.Roles, bytes.NewBuffer(b))
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to http.NewRequest")
 	}
 	req.SetBasicAuth(client.GetName(), client.GetPassword())
 	req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/json")
+	hc := &http.Client{}
 	resp, err := hc.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to call POST /roles API")
