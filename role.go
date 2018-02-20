@@ -13,12 +13,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
-)
 
-type Error struct {
-	Message string `json:"message"`
-}
+	"github.com/pkg/errors"
+)
 
 type Role struct {
 	Name        string   `json:"name,omitempty"`
@@ -40,24 +40,45 @@ func (client *Client) CreateRoleContext(
 	hc := &http.Client{}
 	b, err := json.Marshal(params)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "Failed to json.Marshal(params)")
 	}
 	u, err := client.getUrl("/roles")
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, `Failed to client.getUrl("/roles")`)
 	}
 	req, err := http.NewRequest(
 		"POST", u, bytes.NewBuffer(b))
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "Failed to http.NewRequest")
 	}
 	req.SetBasicAuth(client.GetName(), client.GetPassword())
 	req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := hc.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "Failed to call POST /roles API")
 	}
 	defer resp.Body.Close()
-	return nil, nil
+	// read status code
+	b, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to read response body")
+	}
+	if resp.StatusCode >= 400 {
+		e := Error{}
+		err = json.Unmarshal(b, &e)
+		if err != nil {
+			return nil, errors.Wrap(
+				err, fmt.Sprintf(
+					"Failed to parse response body as Error: %s", string(b)))
+		}
+		return nil, errors.New(e.Message)
+	}
+	role := Role{}
+	err = json.Unmarshal(b, &role)
+	if err != nil {
+		return nil, errors.Wrap(
+			err, fmt.Sprintf("Failed to parse response body as Role: %s", string(b)))
+	}
+	return &role, nil
 }

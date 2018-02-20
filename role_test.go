@@ -31,7 +31,7 @@ func handleCreateRole(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestCreateRole(t *testing.T) {
-	http.HandleFunc("/roles", handleCreateRole)
+	http.HandleFunc("/api/roles", handleCreateRole)
 	server := httptest.NewServer(nil)
 	defer server.Close()
 	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
@@ -40,9 +40,17 @@ func TestCreateRole(t *testing.T) {
 		t.Error("Failed to NewClient", err)
 		return
 	}
-	role := &Role{Name: "name"}
-	_, err = client.CreateRole(role)
+	params := &Role{Name: "foo"}
+	role, err := client.CreateRole(params)
 	if err != nil {
 		t.Error("Failed to CreateRole", err)
+		return
+	}
+	if role == nil {
+		t.Error("client.CreateRole() == nil")
+		return
+	}
+	if role.Name != "foo" {
+		t.Errorf("role.Name == %s, wanted foo", role.Name)
 	}
 }
