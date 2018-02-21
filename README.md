@@ -8,3 +8,42 @@
 [![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://raw.githubusercontent.com/suzuki-shunsuke/go-graylog/master/LICENSE)
 
 Graylog API client for golang
+
+## Example 1
+
+```golang
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/suzuki-shunsuke/go-graylog"
+)
+
+func main() {
+	client, err := graylog.NewClient("http://localhost:9000/api", "admin", "admin")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Failed to NewClient", err)
+		os.Exit(1)
+	}
+	params := &graylog.Role{
+		Name: "foo", Description: "description",
+		Permissions: []string{"users:list"}}
+	role, err := client.CreateRole(params)
+	fmt.Println(role, err)
+
+	params.Name = "bar"
+	role, err = client.UpdateRole("foo", params)
+	fmt.Println(role, err)
+}
+```
+
+## Graylog REST API's Reference
+
+* http://docs.graylog.org/en/2.4/pages/configuration/rest_api.html
+* http://docs.graylog.org/en/2.4/pages/users_and_roles/permission_system.html
+
+## License
+
+[MIT](LICENSE)

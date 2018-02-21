@@ -38,6 +38,8 @@ func handleRole(w http.ResponseWriter, r *http.Request) {
 		handleGetRole(w, r)
 	case http.MethodPut:
 		handleUpdateRole(w, r)
+	case http.MethodDelete:
+		handleDeleteRole(w, r)
 	}
 }
 
@@ -245,5 +247,24 @@ func TestUpdateRole(t *testing.T) {
 	}
 	if !reflect.DeepEqual(*updatedRole, role) {
 		t.Errorf("client.UpdateRole() == %v, wanted %v", role, updatedRole)
+	}
+}
+
+func handleDeleteRole(w http.ResponseWriter, r *http.Request) {}
+
+func TestDeleteRole(t *testing.T) {
+	once.Do(handlerFuncs)
+	server := httptest.NewServer(nil)
+	defer server.Close()
+	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
+	client, err := NewClient(u, "admin", "password")
+	if err != nil {
+		t.Error("Failed to NewClient", err)
+		return
+	}
+	err = client.DeleteRole("Admin")
+	if err != nil {
+		t.Error("Failed to DeleteRole", err)
+		return
 	}
 }
