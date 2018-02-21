@@ -11,42 +11,65 @@ import (
 	"testing"
 )
 
-// /roles
-func handleRoles(w http.ResponseWriter, r *http.Request) {
+func dummyAdmin() *User {
+	return &User{
+		Id:          "local:admin",
+		Username:    "admin",
+		Email:       "",
+		FullName:    "Administrator",
+		Permissions: []string{"*"},
+		Preferences: &Preferences{
+			UpdateUnfocussed:  false,
+			EnableSmartSearch: true,
+		},
+		Timezone:         "UTC",
+		SessionTimeoutMs: 28800000,
+		External:         false,
+		Startpage:        nil,
+		Roles:            []string{"Admin"},
+		ReadOnly:         true,
+		SessionActive:    true,
+		LastActivity:     "2018-02-21T07:35:45.926+0000",
+		ClientAddress:    "172.18.0.1",
+	}
+}
+
+// /users
+func handleUsers(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		handleGetRoles(w, r)
+		handleGetUsers(w, r)
 	case http.MethodPost:
-		handleCreateRole(w, r)
+		handleCreateUser(w, r)
 	}
 }
 
-// /roles/{rolename}
-func handleRole(w http.ResponseWriter, r *http.Request) {
+// /users/{username}
+func handleUser(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		handleGetRole(w, r)
+		handleGetUser(w, r)
 	case http.MethodPut:
-		handleUpdateRole(w, r)
+		handleUpdateUser(w, r)
 	case http.MethodDelete:
-		handleDeleteRole(w, r)
+		handleDeleteUser(w, r)
 	}
 }
 
-func handleCreateRole(w http.ResponseWriter, r *http.Request) {
+func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
-	role := Role{}
-	err = json.Unmarshal(b, &role)
+	user := User{}
+	err = json.Unmarshal(b, &user)
 	if err != nil {
 		w.Write([]byte(`{"message":"400 Bad Request"}`))
 		return
 	}
-	b, err = json.Marshal(&role)
+	b, err = json.Marshal(&user)
 	if err != nil {
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
@@ -54,7 +77,7 @@ func handleCreateRole(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func TestCreateRole(t *testing.T) {
+func TestCreateUser(t *testing.T) {
 	once.Do(handlerFuncs)
 	server := httptest.NewServer(nil)
 	defer server.Close()
@@ -64,33 +87,27 @@ func TestCreateRole(t *testing.T) {
 		t.Error("Failed to NewClient", err)
 		return
 	}
-	params := &Role{Name: "foo"}
-	role, err := client.CreateRole(params)
+	params := &User{Username: "foo"}
+	user, err := client.CreateUser(params)
 	if err != nil {
-		t.Error("Failed to CreateRole", err)
+		t.Error("Failed to CreateUser", err)
 		return
 	}
-	if role == nil {
-		t.Error("client.CreateRole() == nil")
+	if user == nil {
+		t.Error("client.CreateUser() == nil")
 		return
 	}
-	if role.Name != "foo" {
-		t.Errorf("role.Name == %s, wanted foo", role.Name)
+	if user.Username != "foo" {
+		t.Errorf("user.Username == %s, wanted foo", user.Username)
 	}
 }
 
-func handleGetRoles(w http.ResponseWriter, r *http.Request) {
+func handleGetUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	roles := rolesBody{
-		Roles: []Role{
-			{
-				Name:        "Admin",
-				Description: "Grants all permissions for Graylog administrators (built-in)",
-				Permissions: []string{"*"},
-				ReadOnly:    true},
-		},
-		Total: 1}
-	b, err := json.Marshal(&roles)
+	admin := dummyAdmin()
+	users := usersBody{
+		Users: []User{*admin}}
+	b, err := json.Marshal(&users)
 	if err != nil {
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
@@ -98,7 +115,7 @@ func handleGetRoles(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func TestGetRoles(t *testing.T) {
+func TestGetUsers(t *testing.T) {
 	once.Do(handlerFuncs)
 	server := httptest.NewServer(nil)
 	defer server.Close()
@@ -108,34 +125,24 @@ func TestGetRoles(t *testing.T) {
 		t.Error("Failed to NewClient", err)
 		return
 	}
-	roles, err := client.GetRoles()
+	users, err := client.GetUsers()
 	if err != nil {
-		t.Error("Failed to GetRoles", err)
+		t.Error("Failed to GetUsers", err)
 		return
 	}
-	exp := []Role{
-		{
-			Name:        "Admin",
-			Description: "Grants all permissions for Graylog administrators (built-in)",
-			Permissions: []string{"*"},
-			ReadOnly:    true},
-	}
-	if !reflect.DeepEqual(roles, exp) {
-		t.Errorf("client.GetRoles() == %v, wanted %v", roles, exp)
+	admin := dummyAdmin()
+	exp := []User{*admin}
+	if !reflect.DeepEqual(users, exp) {
+		t.Errorf("client.GetUsers() == %v, wanted %v", users, exp)
 	}
 }
 
-func handleGetRole(w http.ResponseWriter, r *http.Request) {
+func handleGetUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	admin := Role{
-		Name:        "Admin",
-		Description: "Grants all permissions for Graylog administrators (built-in)",
-		Permissions: []string{"*"},
-		ReadOnly:    true,
-	}
+	admin := dummyAdmin()
 	name := path.Base(r.URL.Path)
 	if name == "Admin" {
-		b, err := json.Marshal(&admin)
+		b, err := json.Marshal(admin)
 		if err != nil {
 			w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 			return
@@ -144,7 +151,7 @@ func handleGetRole(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	t := Error{
-		Message: fmt.Sprintf("No role found with name %s", name),
+		Message: fmt.Sprintf("No user found with name %s", name),
 		Type:    "ApiError"}
 	b, err := json.Marshal(&t)
 	if err != nil {
@@ -154,7 +161,7 @@ func handleGetRole(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func TestGetRole(t *testing.T) {
+func TestGetUser(t *testing.T) {
 	once.Do(handlerFuncs)
 	server := httptest.NewServer(nil)
 	defer server.Close()
@@ -164,28 +171,23 @@ func TestGetRole(t *testing.T) {
 		t.Error("Failed to NewClient", err)
 		return
 	}
-	role, err := client.GetRole("Admin")
+	user, err := client.GetUser("Admin")
 	if err != nil {
-		t.Error("Failed to GetRole", err)
+		t.Error("Failed to GetUser", err)
 		return
 	}
-	exp := &Role{
-		Name:        "Admin",
-		Description: "Grants all permissions for Graylog administrators (built-in)",
-		Permissions: []string{"*"},
-		ReadOnly:    true,
-	}
-	if !reflect.DeepEqual(role, exp) {
-		t.Errorf("client.GetRole() == %v, wanted %v", role, exp)
+	exp := dummyAdmin()
+	if !reflect.DeepEqual(*user, *exp) {
+		t.Errorf("client.GetUser() == %v, wanted %v", user, exp)
 	}
 }
 
-func handleUpdateRole(w http.ResponseWriter, r *http.Request) {
+func handleUpdateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	name := path.Base(r.URL.Path)
 	if name != "Admin" {
 		t := Error{
-			Message: fmt.Sprintf("No role found with name %s", name),
+			Message: fmt.Sprintf("No user found with name %s", name),
 			Type:    "ApiError"}
 		b, err := json.Marshal(&t)
 		if err != nil {
@@ -200,13 +202,13 @@ func handleUpdateRole(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
-	role := Role{}
-	err = json.Unmarshal(b, &role)
+	user := User{}
+	err = json.Unmarshal(b, &user)
 	if err != nil {
 		w.Write([]byte(`{"message":"400 Bad Request"}`))
 		return
 	}
-	b, err = json.Marshal(&role)
+	b, err = json.Marshal(&user)
 	if err != nil {
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
@@ -214,7 +216,7 @@ func handleUpdateRole(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func TestUpdateRole(t *testing.T) {
+func TestUpdateUser(t *testing.T) {
 	once.Do(handlerFuncs)
 	server := httptest.NewServer(nil)
 	defer server.Close()
@@ -224,25 +226,20 @@ func TestUpdateRole(t *testing.T) {
 		t.Error("Failed to NewClient", err)
 		return
 	}
-	role := Role{
-		Name:        "foo",
-		Description: "",
-		Permissions: []string{"users:edit"},
-		ReadOnly:    false,
-	}
-	updatedRole, err := client.UpdateRole("Admin", &role)
+	user := dummyAdmin()
+	updatedUser, err := client.UpdateUser("Admin", user)
 	if err != nil {
-		t.Error("Failed to UpdateRole", err)
+		t.Error("Failed to UpdateUser", err)
 		return
 	}
-	if !reflect.DeepEqual(*updatedRole, role) {
-		t.Errorf("client.UpdateRole() == %v, wanted %v", role, updatedRole)
+	if !reflect.DeepEqual(*updatedUser, *user) {
+		t.Errorf("client.UpdateUser() == %v, wanted %v", user, updatedUser)
 	}
 }
 
-func handleDeleteRole(w http.ResponseWriter, r *http.Request) {}
+func handleDeleteUser(w http.ResponseWriter, r *http.Request) {}
 
-func TestDeleteRole(t *testing.T) {
+func TestDeleteUser(t *testing.T) {
 	once.Do(handlerFuncs)
 	server := httptest.NewServer(nil)
 	defer server.Close()
@@ -252,9 +249,9 @@ func TestDeleteRole(t *testing.T) {
 		t.Error("Failed to NewClient", err)
 		return
 	}
-	err = client.DeleteRole("Admin")
+	err = client.DeleteUser("Admin")
 	if err != nil {
-		t.Error("Failed to DeleteRole", err)
+		t.Error("Failed to DeleteUser", err)
 		return
 	}
 }
