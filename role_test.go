@@ -55,10 +55,8 @@ func handleCreateRole(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestCreateRole(t *testing.T) {
-	once.Do(handlerFuncs)
-	server := httptest.NewServer(nil)
+	server, u, err := GetMockServer()
 	defer server.Close()
-	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
 	client, err := NewClient(u, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)

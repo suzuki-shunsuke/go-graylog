@@ -1,22 +1,8 @@
 package graylog
 
 import (
-	"net/http"
-	"sync"
 	"testing"
 )
-
-var (
-	once sync.Once
-)
-
-func handlerFuncs() {
-	http.HandleFunc("/api/roles", handleRoles)
-	http.HandleFunc("/api/roles/", handleRole)
-
-	http.HandleFunc("/api/users", handleUsers)
-	http.HandleFunc("/api/users/", handleUser)
-}
 
 func TestNewClient(t *testing.T) {
 	client, err := NewClient("http://localhost:9000/api", "admin", "password")
