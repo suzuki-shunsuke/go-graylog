@@ -41,7 +41,7 @@ func GetMockServer() (*MockServer, error) {
 	}
 
 	m.Handle("/api/roles", http.HandlerFunc(ms.handleRoles))
-	m.Handle("/api/roles/", http.HandlerFunc(handleRole))
+	m.Handle("/api/roles/", http.HandlerFunc(ms.handleRole))
 	m.Handle("/api/users", http.HandlerFunc(handleUsers))
 	m.Handle("/api/users/", http.HandlerFunc(handleUser))
 
