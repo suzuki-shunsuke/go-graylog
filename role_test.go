@@ -10,16 +10,6 @@ import (
 	"testing"
 )
 
-// /roles
-func handleRoles(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		handleGetRoles(w, r)
-	case http.MethodPost:
-		handleCreateRole(w, r)
-	}
-}
-
 // /roles/{rolename}
 func handleRole(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
