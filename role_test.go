@@ -55,7 +55,7 @@ func TestCreateRole(t *testing.T) {
 		t.Error("Failed to NewClient", err)
 		return
 	}
-	params := &Role{Name: "foo"}
+	params := &Role{Name: "foo", Permissions: []string{"*"}}
 	role, err := client.CreateRole(params)
 	if err != nil {
 		t.Error("Failed to CreateRole", err)
