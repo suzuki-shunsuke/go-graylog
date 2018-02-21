@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/http/httptest"
 	"path"
 	"reflect"
 	"testing"
@@ -97,10 +96,8 @@ func handleGetRoles(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestGetRoles(t *testing.T) {
-	once.Do(handlerFuncs)
-	server := httptest.NewServer(nil)
+	server, u, err := GetMockServer()
 	defer server.Close()
-	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
 	client, err := NewClient(u, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
@@ -153,10 +150,8 @@ func handleGetRole(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestGetRole(t *testing.T) {
-	once.Do(handlerFuncs)
-	server := httptest.NewServer(nil)
+	server, u, err := GetMockServer()
 	defer server.Close()
-	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
 	client, err := NewClient(u, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
@@ -213,10 +208,8 @@ func handleUpdateRole(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestUpdateRole(t *testing.T) {
-	once.Do(handlerFuncs)
-	server := httptest.NewServer(nil)
+	server, u, err := GetMockServer()
 	defer server.Close()
-	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
 	client, err := NewClient(u, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
@@ -241,10 +234,8 @@ func TestUpdateRole(t *testing.T) {
 func handleDeleteRole(w http.ResponseWriter, r *http.Request) {}
 
 func TestDeleteRole(t *testing.T) {
-	once.Do(handlerFuncs)
-	server := httptest.NewServer(nil)
+	server, u, err := GetMockServer()
 	defer server.Close()
-	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
 	client, err := NewClient(u, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/http/httptest"
 	"path"
 	"reflect"
 	"testing"
@@ -78,10 +77,8 @@ func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestCreateUser(t *testing.T) {
-	once.Do(handlerFuncs)
-	server := httptest.NewServer(nil)
+	server, u, err := GetMockServer()
 	defer server.Close()
-	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
 	client, err := NewClient(u, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
@@ -116,10 +113,8 @@ func handleGetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestGetUsers(t *testing.T) {
-	once.Do(handlerFuncs)
-	server := httptest.NewServer(nil)
+	server, u, err := GetMockServer()
 	defer server.Close()
-	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
 	client, err := NewClient(u, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
@@ -162,10 +157,8 @@ func handleGetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestGetUser(t *testing.T) {
-	once.Do(handlerFuncs)
-	server := httptest.NewServer(nil)
+	server, u, err := GetMockServer()
 	defer server.Close()
-	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
 	client, err := NewClient(u, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
@@ -217,10 +210,8 @@ func handleUpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestUpdateUser(t *testing.T) {
-	once.Do(handlerFuncs)
-	server := httptest.NewServer(nil)
+	server, u, err := GetMockServer()
 	defer server.Close()
-	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
 	client, err := NewClient(u, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
@@ -240,10 +231,8 @@ func TestUpdateUser(t *testing.T) {
 func handleDeleteUser(w http.ResponseWriter, r *http.Request) {}
 
 func TestDeleteUser(t *testing.T) {
-	once.Do(handlerFuncs)
-	server := httptest.NewServer(nil)
+	server, u, err := GetMockServer()
 	defer server.Close()
-	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
 	client, err := NewClient(u, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
