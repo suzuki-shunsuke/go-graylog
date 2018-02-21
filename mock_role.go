@@ -32,26 +32,14 @@ func (ms *MockServer) handleRole(w http.ResponseWriter, r *http.Request) {
 
 func (ms *MockServer) handleGetRole(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	admin := Role{
-		Name:        "Admin",
-		Description: "Grants all permissions for Graylog administrators (built-in)",
-		Permissions: []string{"*"},
-		ReadOnly:    true,
-	}
 	name := path.Base(r.URL.Path)
-	if name == "Admin" {
-		b, err := json.Marshal(&admin)
-		if err != nil {
-			w.Write([]byte(`{"message":"500 Internal Server Error"}`))
-			return
-		}
-		w.Write(b)
+	role, ok := ms.Roles[name]
+	if !ok {
+		w.WriteHeader(404)
+		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
 		return
 	}
-	t := Error{
-		Message: fmt.Sprintf("No role found with name %s", name),
-		Type:    "ApiError"}
-	b, err := json.Marshal(&t)
+	b, err := json.Marshal(&role)
 	if err != nil {
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
