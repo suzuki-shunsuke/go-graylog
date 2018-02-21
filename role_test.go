@@ -22,27 +22,6 @@ func handleRole(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleCreateRole(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
-		return
-	}
-	role := Role{}
-	err = json.Unmarshal(b, &role)
-	if err != nil {
-		w.Write([]byte(`{"message":"400 Bad Request"}`))
-		return
-	}
-	b, err = json.Marshal(&role)
-	if err != nil {
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
-		return
-	}
-	w.Write(b)
-}
-
 func TestCreateRole(t *testing.T) {
 	server, err := GetMockServer()
 	if err != nil {
@@ -68,25 +47,6 @@ func TestCreateRole(t *testing.T) {
 	if role.Name != "foo" {
 		t.Errorf("role.Name == %s, wanted foo", role.Name)
 	}
-}
-
-func handleGetRoles(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	roles := rolesBody{
-		Roles: []Role{
-			{
-				Name:        "Admin",
-				Description: "Grants all permissions for Graylog administrators (built-in)",
-				Permissions: []string{"*"},
-				ReadOnly:    true},
-		},
-		Total: 1}
-	b, err := json.Marshal(&roles)
-	if err != nil {
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
-		return
-	}
-	w.Write(b)
 }
 
 func TestGetRoles(t *testing.T) {
