@@ -77,9 +77,13 @@ func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestCreateUser(t *testing.T) {
-	server, u, err := GetMockServer()
-	defer server.Close()
-	client, err := NewClient(u, "admin", "password")
+	server, err := GetMockServer()
+	if err != nil {
+		t.Error("Failed to Get Mock Server", err)
+		return
+	}
+	defer server.Server.Close()
+	client, err := NewClient(server.Endpoint, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
 		return
@@ -113,9 +117,13 @@ func handleGetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestGetUsers(t *testing.T) {
-	server, u, err := GetMockServer()
-	defer server.Close()
-	client, err := NewClient(u, "admin", "password")
+	server, err := GetMockServer()
+	if err != nil {
+		t.Error("Failed to Get Mock Server", err)
+		return
+	}
+	defer server.Server.Close()
+	client, err := NewClient(server.Endpoint, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
 		return
@@ -157,9 +165,13 @@ func handleGetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestGetUser(t *testing.T) {
-	server, u, err := GetMockServer()
-	defer server.Close()
-	client, err := NewClient(u, "admin", "password")
+	server, err := GetMockServer()
+	if err != nil {
+		t.Error("Failed to Get Mock Server", err)
+		return
+	}
+	defer server.Server.Close()
+	client, err := NewClient(server.Endpoint, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
 		return
@@ -210,9 +222,13 @@ func handleUpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestUpdateUser(t *testing.T) {
-	server, u, err := GetMockServer()
-	defer server.Close()
-	client, err := NewClient(u, "admin", "password")
+	server, err := GetMockServer()
+	if err != nil {
+		t.Error("Failed to Get Mock Server", err)
+		return
+	}
+	defer server.Server.Close()
+	client, err := NewClient(server.Endpoint, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
 		return
@@ -231,9 +247,13 @@ func TestUpdateUser(t *testing.T) {
 func handleDeleteUser(w http.ResponseWriter, r *http.Request) {}
 
 func TestDeleteUser(t *testing.T) {
-	server, u, err := GetMockServer()
-	defer server.Close()
-	client, err := NewClient(u, "admin", "password")
+	server, err := GetMockServer()
+	if err != nil {
+		t.Error("Failed to Get Mock Server", err)
+		return
+	}
+	defer server.Server.Close()
+	client, err := NewClient(server.Endpoint, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
 		return

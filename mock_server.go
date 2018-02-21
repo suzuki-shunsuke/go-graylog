@@ -19,9 +19,29 @@ func handlerFuncs() {
 	http.HandleFunc("/api/users/", handleUser)
 }
 
-func GetMockServer() (*httptest.Server, string, error) {
-	once.Do(handlerFuncs)
-	server := httptest.NewServer(nil)
+type MockServer struct {
+	Server   *httptest.Server
+	Endpoint string
+
+	Users []User
+	Roles []Role
+}
+
+func GetMockServer() (*MockServer, error) {
+	m := http.NewServeMux()
+
+	m.Handle("/api/roles", http.HandlerFunc(handleRoles))
+	m.Handle("/api/roles/", http.HandlerFunc(handleRole))
+	m.Handle("/api/users", http.HandlerFunc(handleUsers))
+	m.Handle("/api/users/", http.HandlerFunc(handleUser))
+
+	server := httptest.NewServer(m)
 	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
-	return server, u, nil
+	ms := &MockServer{
+		Server:   server,
+		Endpoint: u,
+		Users:    []User{},
+		Roles:    []Role{},
+	}
+	return ms, nil
 }

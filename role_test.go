@@ -54,9 +54,13 @@ func handleCreateRole(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestCreateRole(t *testing.T) {
-	server, u, err := GetMockServer()
-	defer server.Close()
-	client, err := NewClient(u, "admin", "password")
+	server, err := GetMockServer()
+	if err != nil {
+		t.Error("Failed to Get Mock Server", err)
+		return
+	}
+	defer server.Server.Close()
+	client, err := NewClient(server.Endpoint, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
 		return
@@ -96,9 +100,13 @@ func handleGetRoles(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestGetRoles(t *testing.T) {
-	server, u, err := GetMockServer()
-	defer server.Close()
-	client, err := NewClient(u, "admin", "password")
+	server, err := GetMockServer()
+	if err != nil {
+		t.Error("Failed to Get Mock Server", err)
+		return
+	}
+	defer server.Server.Close()
+	client, err := NewClient(server.Endpoint, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
 		return
@@ -150,9 +158,13 @@ func handleGetRole(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestGetRole(t *testing.T) {
-	server, u, err := GetMockServer()
-	defer server.Close()
-	client, err := NewClient(u, "admin", "password")
+	server, err := GetMockServer()
+	if err != nil {
+		t.Error("Failed to Get Mock Server", err)
+		return
+	}
+	defer server.Server.Close()
+	client, err := NewClient(server.Endpoint, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
 		return
@@ -208,9 +220,13 @@ func handleUpdateRole(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestUpdateRole(t *testing.T) {
-	server, u, err := GetMockServer()
-	defer server.Close()
-	client, err := NewClient(u, "admin", "password")
+	server, err := GetMockServer()
+	if err != nil {
+		t.Error("Failed to Get Mock Server", err)
+		return
+	}
+	defer server.Server.Close()
+	client, err := NewClient(server.Endpoint, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
 		return
@@ -234,9 +250,13 @@ func TestUpdateRole(t *testing.T) {
 func handleDeleteRole(w http.ResponseWriter, r *http.Request) {}
 
 func TestDeleteRole(t *testing.T) {
-	server, u, err := GetMockServer()
-	defer server.Close()
-	client, err := NewClient(u, "admin", "password")
+	server, err := GetMockServer()
+	if err != nil {
+		t.Error("Failed to Get Mock Server", err)
+		return
+	}
+	defer server.Server.Close()
+	client, err := NewClient(server.Endpoint, "admin", "password")
 	if err != nil {
 		t.Error("Failed to NewClient", err)
 		return
