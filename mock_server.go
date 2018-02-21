@@ -19,6 +19,20 @@ type MockServer struct {
 	Roles map[string]Role
 }
 
+func (ms *MockServer) RoleList() []Role {
+	if ms.Roles == nil {
+		return []Role{}
+	}
+	size := len(ms.Roles)
+	arr := make([]Role, size)
+	i := 0
+	for _, role := range ms.Roles {
+		arr[i] = role
+		i++
+	}
+	return arr
+}
+
 func GetMockServer() (*MockServer, error) {
 	m := http.NewServeMux()
 	ms := &MockServer{

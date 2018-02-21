@@ -58,16 +58,8 @@ func (ms *MockServer) handleCreateRole(w http.ResponseWriter, r *http.Request) {
 
 func (ms *MockServer) handleGetRoles(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	size := len(ms.Roles)
-	arr := make([]Role, size)
-	i := 0
-	for _, role := range ms.Roles {
-		arr[i] = role
-		i++
-	}
-	roles := rolesBody{
-		Roles: arr,
-		Total: size}
+	arr := ms.RoleList()
+	roles := rolesBody{Roles: arr, Total: len(arr)}
 	b, err := json.Marshal(&roles)
 	if err != nil {
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
