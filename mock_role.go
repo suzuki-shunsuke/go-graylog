@@ -85,7 +85,17 @@ func (ms *MockServer) handleUpdateRole(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func (ms *MockServer) handleDeleteRole(w http.ResponseWriter, r *http.Request) {}
+func (ms *MockServer) handleDeleteRole(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	name := path.Base(r.URL.Path)
+	_, ok := ms.Roles[name]
+	if !ok {
+		w.WriteHeader(404)
+		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
+		return
+	}
+	delete(ms.Roles, name)
+}
 
 func validateRole(role *Role) (int, []byte) {
 	if role.Name == "" {
