@@ -9,28 +9,28 @@ import (
 )
 
 // /users
-func handleUsers(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleUsers(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		handleGetUsers(w, r)
+		ms.handleGetUsers(w, r)
 	case http.MethodPost:
-		handleCreateUser(w, r)
+		ms.handleCreateUser(w, r)
 	}
 }
 
 // /users/{username}
-func handleUser(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleUser(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		handleGetUser(w, r)
+		ms.handleGetUser(w, r)
 	case http.MethodPut:
-		handleUpdateUser(w, r)
+		ms.handleUpdateUser(w, r)
 	case http.MethodDelete:
-		handleDeleteUser(w, r)
+		ms.handleDeleteUser(w, r)
 	}
 }
 
-func handleCreateUser(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -51,7 +51,7 @@ func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func handleGetUsers(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleGetUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	admin := dummyAdmin()
 	users := usersBody{
@@ -64,7 +64,7 @@ func handleGetUsers(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func handleGetUser(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleGetUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	admin := dummyAdmin()
 	name := path.Base(r.URL.Path)
@@ -88,7 +88,7 @@ func handleGetUser(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func handleUpdateUser(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleUpdateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	name := path.Base(r.URL.Path)
 	if name != "Admin" {
@@ -122,4 +122,4 @@ func handleUpdateUser(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func handleDeleteUser(w http.ResponseWriter, r *http.Request) {}
+func (ms *MockServer) handleDeleteUser(w http.ResponseWriter, r *http.Request) {}

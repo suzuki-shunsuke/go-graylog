@@ -42,8 +42,8 @@ func GetMockServer() (*MockServer, error) {
 
 	m.Handle("/api/roles", http.HandlerFunc(ms.handleRoles))
 	m.Handle("/api/roles/", http.HandlerFunc(ms.handleRole))
-	m.Handle("/api/users", http.HandlerFunc(handleUsers))
-	m.Handle("/api/users/", http.HandlerFunc(handleUser))
+	m.Handle("/api/users", http.HandlerFunc(ms.handleUsers))
+	m.Handle("/api/users/", http.HandlerFunc(ms.handleUser))
 
 	server := httptest.NewServer(m)
 	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
