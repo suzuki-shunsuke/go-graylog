@@ -9,7 +9,7 @@
 
 Graylog API client and simple mock server for golang
 
-## Example 1
+## Example 1 - Role
 
 ```golang
 package main
@@ -37,6 +37,24 @@ func main() {
 	role, err = client.UpdateRole("foo", params)
 	fmt.Println(role, err)
 }
+```
+
+## Example 2 - Mock Server
+
+```golang
+server, err := GetMockServer()
+if err != nil {
+	t.Error("Failed to Get Mock Server", err)
+	return
+}
+defer server.Server.Close()
+client, err := NewClient(server.Endpoint, "admin", "password")
+if err != nil {
+	t.Error("Failed to NewClient", err)
+	return
+}
+params := &Role{Name: "foo", Permissions: []string{"*"}}
+role, err := client.CreateRole(params)
 ```
 
 ## Graylog REST API's Reference
