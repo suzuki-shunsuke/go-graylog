@@ -40,8 +40,8 @@ func TestCreateUser(t *testing.T) {
 		t.Error("Failed to NewClient", err)
 		return
 	}
-	params := &User{Username: "foo"}
-	user, err := client.CreateUser(params)
+	admin := dummyAdmin()
+	user, err := client.CreateUser(admin)
 	if err != nil {
 		t.Error("Failed to CreateUser", err)
 		return
@@ -50,8 +50,8 @@ func TestCreateUser(t *testing.T) {
 		t.Error("client.CreateUser() == nil")
 		return
 	}
-	if user.Username != "foo" {
-		t.Errorf("user.Username == %s, wanted foo", user.Username)
+	if !reflect.DeepEqual(*user, *admin) {
+		t.Errorf("%v != %v", admin, user)
 	}
 }
 
@@ -67,12 +67,13 @@ func TestGetUsers(t *testing.T) {
 		t.Error("Failed to NewClient", err)
 		return
 	}
+	admin := dummyAdmin()
+	server.Users[admin.Username] = *admin
 	users, err := client.GetUsers()
 	if err != nil {
 		t.Error("Failed to GetUsers", err)
 		return
 	}
-	admin := dummyAdmin()
 	exp := []User{*admin}
 	if !reflect.DeepEqual(users, exp) {
 		t.Errorf("client.GetUsers() == %v, wanted %v", users, exp)
@@ -91,12 +92,13 @@ func TestGetUser(t *testing.T) {
 		t.Error("Failed to NewClient", err)
 		return
 	}
-	user, err := client.GetUser("Admin")
+	exp := dummyAdmin()
+	server.Users[exp.Username] = *exp
+	user, err := client.GetUser(exp.Username)
 	if err != nil {
 		t.Error("Failed to GetUser", err)
 		return
 	}
-	exp := dummyAdmin()
 	if !reflect.DeepEqual(*user, *exp) {
 		t.Errorf("client.GetUser() == %v, wanted %v", user, exp)
 	}
@@ -115,7 +117,9 @@ func TestUpdateUser(t *testing.T) {
 		return
 	}
 	user := dummyAdmin()
-	updatedUser, err := client.UpdateUser("Admin", user)
+	server.Users[user.Username] = *user
+	user.FullName = "changed!"
+	updatedUser, err := client.UpdateUser(user.Username, user)
 	if err != nil {
 		t.Error("Failed to UpdateUser", err)
 		return
@@ -137,7 +141,9 @@ func TestDeleteUser(t *testing.T) {
 		t.Error("Failed to NewClient", err)
 		return
 	}
-	err = client.DeleteUser("Admin")
+	user := dummyAdmin()
+	server.Users[user.Username] = *user
+	err = client.DeleteUser(user.Username)
 	if err != nil {
 		t.Error("Failed to DeleteUser", err)
 		return

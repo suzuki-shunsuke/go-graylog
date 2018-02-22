@@ -130,7 +130,8 @@ func (ms *MockServer) handleCreateRole(w http.ResponseWriter, r *http.Request) {
 	}
 	if _, ok := ms.Roles[role.Name]; ok {
 		w.WriteHeader(400)
-		w.Write([]byte(`{"type": "ApiError", "message": "Role Admin already exists."}`))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "Role %s already exists."}`, role.Name)))
 		return
 	}
 	ms.Roles[role.Name] = role
