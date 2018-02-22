@@ -63,14 +63,5 @@ func GetMockServer() (*MockServer, error) {
 	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
 	ms.Server = server
 	ms.Endpoint = u
-
-	ms.Roles = map[string]Role{
-		"Admin": {
-			Name:        "Admin",
-			Description: "Grants all permissions for Graylog administrators (built-in)",
-			Permissions: []string{"*"},
-			ReadOnly:    true},
-	}
-
 	return ms, nil
 }

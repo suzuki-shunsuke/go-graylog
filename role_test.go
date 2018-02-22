@@ -5,6 +5,14 @@ import (
 	"testing"
 )
 
+func dummyRole() *Role {
+	return &Role{
+		Name:        "Admin",
+		Description: "Grants all permissions for Graylog administrators (built-in)",
+		Permissions: []string{"*"},
+		ReadOnly:    true}
+}
+
 func TestCreateRole(t *testing.T) {
 	server, err := GetMockServer()
 	if err != nil {
@@ -44,17 +52,13 @@ func TestGetRoles(t *testing.T) {
 		t.Error("Failed to NewClient", err)
 		return
 	}
+	admin := dummyRole()
+	exp := []Role{*admin}
+	server.Roles[admin.Name] = *admin
 	roles, err := client.GetRoles()
 	if err != nil {
 		t.Error("Failed to GetRoles", err)
 		return
-	}
-	exp := []Role{
-		{
-			Name:        "Admin",
-			Description: "Grants all permissions for Graylog administrators (built-in)",
-			Permissions: []string{"*"},
-			ReadOnly:    true},
 	}
 	if !reflect.DeepEqual(roles, exp) {
 		t.Errorf("client.GetRoles() == %v, wanted %v", roles, exp)
@@ -73,19 +77,15 @@ func TestGetRole(t *testing.T) {
 		t.Error("Failed to NewClient", err)
 		return
 	}
-	role, err := client.GetRole("Admin")
+	admin := dummyRole()
+	server.Roles[admin.Name] = *admin
+	role, err := client.GetRole(admin.Name)
 	if err != nil {
 		t.Error("Failed to GetRole", err)
 		return
 	}
-	exp := &Role{
-		Name:        "Admin",
-		Description: "Grants all permissions for Graylog administrators (built-in)",
-		Permissions: []string{"*"},
-		ReadOnly:    true,
-	}
-	if !reflect.DeepEqual(role, exp) {
-		t.Errorf("client.GetRole() == %v, wanted %v", role, exp)
+	if !reflect.DeepEqual(*role, *admin) {
+		t.Errorf("client.GetRole() == %v, wanted %v", role, admin)
 	}
 }
 
@@ -101,19 +101,16 @@ func TestUpdateRole(t *testing.T) {
 		t.Error("Failed to NewClient", err)
 		return
 	}
-	role := Role{
-		Name:        "foo",
-		Description: "",
-		Permissions: []string{"users:edit"},
-		ReadOnly:    false,
-	}
-	updatedRole, err := client.UpdateRole("Admin", &role)
+	admin := dummyRole()
+	server.Roles[admin.Name] = *admin
+	admin.Description = "changed!"
+	updatedRole, err := client.UpdateRole(admin.Name, admin)
 	if err != nil {
 		t.Error("Failed to UpdateRole", err)
 		return
 	}
-	if !reflect.DeepEqual(*updatedRole, role) {
-		t.Errorf("client.UpdateRole() == %v, wanted %v", role, updatedRole)
+	if !reflect.DeepEqual(*updatedRole, *admin) {
+		t.Errorf("client.UpdateRole() == %v, wanted %v", updatedRole, admin)
 	}
 }
 
@@ -129,7 +126,9 @@ func TestDeleteRole(t *testing.T) {
 		t.Error("Failed to NewClient", err)
 		return
 	}
-	err = client.DeleteRole("Admin")
+	admin := dummyRole()
+	server.Roles[admin.Name] = *admin
+	err = client.DeleteRole(admin.Name)
 	if err != nil {
 		t.Error("Failed to DeleteRole", err)
 		return
