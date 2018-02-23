@@ -7,8 +7,9 @@ import (
 )
 
 type Endpoints struct {
-	Roles string
-	Users string
+	Roles  string
+	Users  string
+	Inputs string
 }
 
 type Client struct {
@@ -32,6 +33,10 @@ func NewClient(endpoint, name, password string) (*Client, error) {
 	u = *base
 	u.Path = path.Join(u.Path, "/users")
 	endpoints.Users = u.String()
+
+	u = *base
+	u.Path = path.Join(u.Path, "/system/inputs")
+	endpoints.Inputs = u.String()
 
 	return &Client{
 		name: name, password: password, endpoints: endpoints,
