@@ -70,6 +70,7 @@ func (ms *MockServer) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+// GET /users List all users
 func (ms *MockServer) handleGetUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	arr := ms.UserList()
@@ -82,6 +83,7 @@ func (ms *MockServer) handleGetUsers(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+// GET /users/{username} Get user details
 func (ms *MockServer) handleGetUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	name := path.Base(r.URL.Path)
@@ -99,6 +101,7 @@ func (ms *MockServer) handleGetUser(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+// PUT /users/{username} Modify user details.
 func (ms *MockServer) handleUpdateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
@@ -136,6 +139,7 @@ func (ms *MockServer) handleUpdateUser(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+// DELETE /users/{username} Removes a user account
 func (ms *MockServer) handleDeleteUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	name := path.Base(r.URL.Path)

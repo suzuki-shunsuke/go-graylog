@@ -30,6 +30,7 @@ func (ms *MockServer) handleRole(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GET /roles/{rolename} Retrieve permissions for a single role
 func (ms *MockServer) handleGetRole(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	name := path.Base(r.URL.Path)
@@ -47,6 +48,7 @@ func (ms *MockServer) handleGetRole(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+// PUT /roles/{rolename} Update an existing role
 func (ms *MockServer) handleUpdateRole(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
@@ -85,6 +87,7 @@ func (ms *MockServer) handleUpdateRole(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+// DELETE /roles/{rolename} Remove the named role and dissociate any users from it
 func (ms *MockServer) handleDeleteRole(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	name := path.Base(r.URL.Path)
@@ -107,6 +110,7 @@ func validateRole(role *Role) (int, []byte) {
 	return 200, []byte("")
 }
 
+// POST /roles Create a new role
 func (ms *MockServer) handleCreateRole(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
@@ -144,6 +148,7 @@ func (ms *MockServer) handleCreateRole(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+// GET /roles List all roles
 func (ms *MockServer) handleGetRoles(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	arr := ms.RoleList()

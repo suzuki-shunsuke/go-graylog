@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"fmt"
 	"net/url"
 	"path"
 )
@@ -13,6 +14,7 @@ type Endpoints struct {
 type Client struct {
 	name      string
 	password  string
+	endpoint  *url.URL
 	endpoints *Endpoints
 }
 
@@ -42,4 +44,16 @@ func (client *Client) GetName() string {
 
 func (client *Client) GetPassword() string {
 	return client.password
+}
+
+func (client *Client) RoleMembersEndpoint(name string) string {
+	u := *(client.endpoint)
+	u.Path = path.Join(u.Path, fmt.Sprintf("/roles/%s/members", name))
+	return u.String()
+}
+
+func (client *Client) RoleMemberEndpoint(userName, roleName string) string {
+	u := *(client.endpoint)
+	u.Path = path.Join(u.Path, fmt.Sprintf("/roles/%s/members/%s", roleName, userName))
+	return u.String()
 }

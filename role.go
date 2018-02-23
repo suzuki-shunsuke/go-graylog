@@ -34,14 +34,14 @@ func callRequest(
 	return hc.Do(req)
 }
 
-// CreateRole create a new role
-// POST /roles
+// CreateRole
+// POST /roles Create a new role
 func (client *Client) CreateRole(params *Role) (*Role, error) {
 	return client.CreateRoleContext(context.Background(), params)
 }
 
-// CreateRoleContext create a new role
-// POST /roles
+// CreateRoleContext
+// POST /roles Create a new role
 func (client *Client) CreateRoleContext(
 	ctx context.Context, params *Role,
 ) (*Role, error) {
@@ -87,14 +87,14 @@ type rolesBody struct {
 	Total int    `json:"total"`
 }
 
-// GetRoles List all roles
-// GET /roles
+// GetRoles
+// GET /roles List all roles
 func (client *Client) GetRoles() ([]Role, error) {
 	return client.GetRolesContext(context.Background())
 }
 
-// GetRolesContext List all roles
-// GET /roles
+// GetRolesContext
+// GET /roles List all roles
 func (client *Client) GetRolesContext(
 	ctx context.Context,
 ) ([]Role, error) {
