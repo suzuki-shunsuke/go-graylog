@@ -2,9 +2,10 @@ package graylog
 
 import (
 	"fmt"
-	"net/http"
 	"net/http/httptest"
 	"sync"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 var (
@@ -48,18 +49,30 @@ func (ms *MockServer) RoleList() []Role {
 }
 
 func GetMockServer() (*MockServer, error) {
-	m := http.NewServeMux()
 	ms := &MockServer{
 		Users: map[string]User{},
 		Roles: map[string]Role{},
 	}
 
-	m.Handle("/api/roles", http.HandlerFunc(ms.handleRoles))
-	m.Handle("/api/roles/", http.HandlerFunc(ms.handleRole))
-	m.Handle("/api/users", http.HandlerFunc(ms.handleUsers))
-	m.Handle("/api/users/", http.HandlerFunc(ms.handleUser))
+	router := httprouter.New()
 
-	server := httptest.NewServer(m)
+	router.GET("/api/roles/:rolename", ms.handleGetRole)
+	router.PUT("/api/roles/:rolename", ms.handleUpdateRole)
+	router.DELETE("/api/roles/:rolename", ms.handleDeleteRole)
+	router.GET("/api/roles", ms.handleGetRoles)
+	router.POST("/api/roles", ms.handleCreateRole)
+
+	router.GET("/api/users/:username", ms.handleGetUser)
+	router.PUT("/api/users/:username", ms.handleUpdateUser)
+	router.DELETE("/api/users/:username", ms.handleDeleteUser)
+	router.GET("/api/users", ms.handleGetUsers)
+	router.POST("/api/users", ms.handleCreateUser)
+
+	router.GET("/api/roles/:rolename/members", ms.handleRoleMembers)
+	router.PUT("/api/roles/:rolename/members/:username", ms.handleAddUserToRole)
+	router.DELETE("/api/roles/:rolename/members/:username", ms.handleRemoveUserFromRole)
+
+	server := httptest.NewServer(router)
 	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
 	ms.Server = server
 	ms.Endpoint = u

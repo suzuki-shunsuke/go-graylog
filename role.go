@@ -24,16 +24,6 @@ type Role struct {
 	ReadOnly    bool     `json:"read_only,omitempty"`
 }
 
-func callRequest(
-	req *http.Request, client *Client, ctx context.Context,
-) (*http.Response, error) {
-	req.SetBasicAuth(client.GetName(), client.GetPassword())
-	req.WithContext(ctx)
-	req.Header.Set("Content-Type", "application/json")
-	hc := &http.Client{}
-	return hc.Do(req)
-}
-
 // CreateRole
 // POST /roles Create a new role
 func (client *Client) CreateRole(params *Role) (*Role, error) {

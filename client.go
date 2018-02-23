@@ -40,6 +40,7 @@ func NewClient(endpoint, name, password string) (*Client, error) {
 
 	return &Client{
 		name: name, password: password, endpoints: endpoints,
+		endpoint: base,
 	}, nil
 }
 

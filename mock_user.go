@@ -5,30 +5,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"path"
+
+	"github.com/julienschmidt/httprouter"
 )
-
-// /users
-func (ms *MockServer) handleUsers(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		ms.handleGetUsers(w, r)
-	case http.MethodPost:
-		ms.handleCreateUser(w, r)
-	}
-}
-
-// /users/{username}
-func (ms *MockServer) handleUser(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		ms.handleGetUser(w, r)
-	case http.MethodPut:
-		ms.handleUpdateUser(w, r)
-	case http.MethodDelete:
-		ms.handleDeleteUser(w, r)
-	}
-}
 
 func validateUser(user *User) (int, []byte) {
 	if user.Username == "" {
@@ -37,7 +16,8 @@ func validateUser(user *User) (int, []byte) {
 	return 200, []byte("")
 }
 
-func (ms *MockServer) handleCreateUser(w http.ResponseWriter, r *http.Request) {
+// POST /users Create a new user account.
+func (ms *MockServer) handleCreateUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -71,7 +51,7 @@ func (ms *MockServer) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // GET /users List all users
-func (ms *MockServer) handleGetUsers(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleGetUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	arr := ms.UserList()
 	users := usersBody{Users: arr}
@@ -84,9 +64,9 @@ func (ms *MockServer) handleGetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 // GET /users/{username} Get user details
-func (ms *MockServer) handleGetUser(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleGetUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	name := path.Base(r.URL.Path)
+	name := ps.ByName("username")
 	user, ok := ms.Users[name]
 	if !ok {
 		w.WriteHeader(404)
@@ -102,14 +82,14 @@ func (ms *MockServer) handleGetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // PUT /users/{username} Modify user details.
-func (ms *MockServer) handleUpdateUser(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleUpdateUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
-	name := path.Base(r.URL.Path)
+	name := ps.ByName("username")
 	if _, ok := ms.Users[name]; !ok {
 		w.WriteHeader(404)
 		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No user found with name %s"}`, name)))
@@ -140,9 +120,9 @@ func (ms *MockServer) handleUpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // DELETE /users/{username} Removes a user account
-func (ms *MockServer) handleDeleteUser(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleDeleteUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	name := path.Base(r.URL.Path)
+	name := ps.ByName("username")
 	_, ok := ms.Users[name]
 	if !ok {
 		w.WriteHeader(404)

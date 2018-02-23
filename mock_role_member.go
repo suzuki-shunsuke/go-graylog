@@ -4,18 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"path"
-	"strings"
-)
 
-func (ms *MockServer) handleRoleMember(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodPut:
-		ms.handleAddUserToRole(w, r)
-	case http.MethodDelete:
-		ms.handleRemoveUserFromRole(w, r)
-	}
-}
+	"github.com/julienschmidt/httprouter"
+)
 
 type membersBody struct {
 	Role  string `json:"role"`
@@ -39,10 +30,9 @@ func (ms *MockServer) RoleMembers(name string) []User {
 }
 
 // GET /roles/{rolename}/members Retrieve the role's members
-func (ms *MockServer) handleRoleMembers(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleRoleMembers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	p := r.URL.Path
-	name := path.Base(p[:len(p)-len("/members")])
+	name := ps.ByName("rolename")
 	arr := ms.RoleMembers(name)
 	users := membersBody{Users: arr, Role: name}
 	b, err := json.Marshal(&users)
@@ -54,12 +44,10 @@ func (ms *MockServer) handleRoleMembers(w http.ResponseWriter, r *http.Request) 
 }
 
 // PUT /roles/{rolename}/members/{username} Add a user to a role
-func (ms *MockServer) handleAddUserToRole(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleAddUserToRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	ps := strings.Split(r.URL.Path, "/")
-	s := len(ps)
-	roleName := ps[s-3]
-	userName := ps[s-1]
+	roleName := ps.ByName("rolename")
+	userName := ps.ByName("username")
 	if _, ok := ms.Roles[roleName]; !ok {
 		w.WriteHeader(404)
 		w.Write([]byte(fmt.Sprintf(
@@ -75,21 +63,15 @@ func (ms *MockServer) handleAddUserToRole(w http.ResponseWriter, r *http.Request
 			userName)))
 		return
 	}
-	for _, rn := range user.Roles {
-		if rn == roleName {
-			return
-		}
-	}
-	user.Roles = append(user.Roles, roleName)
+	user.Roles = addToStringArray(user.Roles, roleName)
+	ms.Users[userName] = user
 }
 
 // DELETE /roles/{rolename}/members/{username} Remove a user from a role
-func (ms *MockServer) handleRemoveUserFromRole(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleRemoveUserFromRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	ps := strings.Split(r.URL.Path, "/")
-	s := len(ps)
-	roleName := ps[s-3]
-	userName := ps[s-1]
+	roleName := ps.ByName("rolename")
+	userName := ps.ByName("username")
 	if _, ok := ms.Roles[roleName]; !ok {
 		w.WriteHeader(404)
 		w.Write([]byte(fmt.Sprintf(
@@ -105,12 +87,6 @@ func (ms *MockServer) handleRemoveUserFromRole(w http.ResponseWriter, r *http.Re
 			userName)))
 		return
 	}
-	roles := []string{}
-	for _, rn := range user.Roles {
-		if rn != roleName {
-			roles = append(roles, rn)
-		}
-	}
-	user.Roles = roles
+	user.Roles = removeFromStringArray(user.Roles, roleName)
 	ms.Users[userName] = user
 }

@@ -5,35 +5,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"path"
+
+	"github.com/julienschmidt/httprouter"
 )
 
-// /roles
-func (ms *MockServer) handleRoles(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		ms.handleGetRoles(w, r)
-	case http.MethodPost:
-		ms.handleCreateRole(w, r)
-	}
-}
-
-// /roles/{rolename}
-func (ms *MockServer) handleRole(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		ms.handleGetRole(w, r)
-	case http.MethodPut:
-		ms.handleUpdateRole(w, r)
-	case http.MethodDelete:
-		ms.handleDeleteRole(w, r)
-	}
-}
-
 // GET /roles/{rolename} Retrieve permissions for a single role
-func (ms *MockServer) handleGetRole(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleGetRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	name := path.Base(r.URL.Path)
+	name := ps.ByName("rolename")
 	role, ok := ms.Roles[name]
 	if !ok {
 		w.WriteHeader(404)
@@ -49,7 +28,7 @@ func (ms *MockServer) handleGetRole(w http.ResponseWriter, r *http.Request) {
 }
 
 // PUT /roles/{rolename} Update an existing role
-func (ms *MockServer) handleUpdateRole(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleUpdateRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -57,7 +36,7 @@ func (ms *MockServer) handleUpdateRole(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
-	name := path.Base(r.URL.Path)
+	name := ps.ByName("rolename")
 	if _, ok := ms.Roles[name]; !ok {
 		w.WriteHeader(404)
 		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
@@ -88,9 +67,9 @@ func (ms *MockServer) handleUpdateRole(w http.ResponseWriter, r *http.Request) {
 }
 
 // DELETE /roles/{rolename} Remove the named role and dissociate any users from it
-func (ms *MockServer) handleDeleteRole(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleDeleteRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	name := path.Base(r.URL.Path)
+	name := ps.ByName("rolename")
 	_, ok := ms.Roles[name]
 	if !ok {
 		w.WriteHeader(404)
@@ -111,7 +90,7 @@ func validateRole(role *Role) (int, []byte) {
 }
 
 // POST /roles Create a new role
-func (ms *MockServer) handleCreateRole(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleCreateRole(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -149,7 +128,7 @@ func (ms *MockServer) handleCreateRole(w http.ResponseWriter, r *http.Request) {
 }
 
 // GET /roles List all roles
-func (ms *MockServer) handleGetRoles(w http.ResponseWriter, r *http.Request) {
+func (ms *MockServer) handleGetRoles(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	arr := ms.RoleList()
 	roles := rolesBody{Roles: arr, Total: len(arr)}
