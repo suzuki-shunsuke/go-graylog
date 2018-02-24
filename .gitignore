@@ -1,3 +1,5 @@
 vendor
 example
 coverage.txt
+node_modules
+*.log

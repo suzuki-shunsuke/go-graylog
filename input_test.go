@@ -15,17 +15,12 @@ func dummyInput() *Input {
 }
 
 func TestCreateInput(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	params := dummyInput()
 	params.Id = ""
 	input, err := client.CreateInput(params)
@@ -43,17 +38,12 @@ func TestCreateInput(t *testing.T) {
 }
 
 func TestGetInputs(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	input := dummyInput()
 	exp := []Input{*input}
 	server.Inputs[input.Id] = *input
@@ -68,17 +58,12 @@ func TestGetInputs(t *testing.T) {
 }
 
 func TestGetInput(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	exp := dummyInput()
 	server.Inputs[exp.Id] = *exp
 	act, err := client.GetInput(exp.Id)
@@ -92,17 +77,12 @@ func TestGetInput(t *testing.T) {
 }
 
 func TestUpdateInput(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	exp := dummyInput()
 	server.Inputs[exp.Id] = *exp
 	exp.Global = true
@@ -117,17 +97,12 @@ func TestUpdateInput(t *testing.T) {
 }
 
 func TestDeleteInput(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	input := dummyInput()
 	server.Inputs[input.Id] = *input
 	err = client.DeleteInput(input.Id)

@@ -5,7 +5,23 @@ import (
 	"math/rand"
 	"net/http"
 	"time"
+
+	"github.com/pkg/errors"
 )
+
+func getServerAndClient() (*MockServer, *Client, error) {
+	server, err := GetMockServer()
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "Failed to Get Mock Server")
+	}
+	client, err := NewClient(server.Endpoint, "admin", "password")
+	if err != nil {
+		server.Server.Close()
+		return nil, nil, errors.Wrap(err, "Failed to NewClient")
+	}
+	return server, client, nil
+
+}
 
 func callRequest(
 	req *http.Request, client *Client, ctx context.Context,

@@ -6,17 +6,12 @@ import (
 )
 
 func TestGetRoleMembers(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
 	role := dummyRole()
@@ -33,17 +28,12 @@ func TestGetRoleMembers(t *testing.T) {
 }
 
 func TestAddUserToRole(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
 	role := dummyRole()
@@ -56,17 +46,12 @@ func TestAddUserToRole(t *testing.T) {
 }
 
 func TestRemoveUserFromRole(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
 	role := dummyRole()

@@ -9,6 +9,10 @@
 
 Graylog API client and simple mock server for golang
 
+## Status
+
+This is still in beta.
+
 ## Example 1 - Role
 
 ```golang
@@ -61,6 +65,14 @@ role, err := client.CreateRole(params)
 
 * http://docs.graylog.org/en/2.4/pages/configuration/rest_api.html
 * http://docs.graylog.org/en/2.4/pages/users_and_roles/permission_system.html
+
+## Contribution
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) .
+
+## See also
+
+* [terraform-provider-graylog](https://github.com/suzuki-shunsuke/terraform-provider-graylog)
 
 ## License
 

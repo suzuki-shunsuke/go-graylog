@@ -16,16 +16,18 @@ type MockServer struct {
 	Server   *httptest.Server
 	Endpoint string
 
-	Users  map[string]User
-	Roles  map[string]Role
-	Inputs map[string]Input
+	Users     map[string]User
+	Roles     map[string]Role
+	Inputs    map[string]Input
+	IndexSets map[string]IndexSet
 }
 
 func GetMockServer() (*MockServer, error) {
 	ms := &MockServer{
-		Users:  map[string]User{},
-		Roles:  map[string]Role{},
-		Inputs: map[string]Input{},
+		Users:     map[string]User{},
+		Roles:     map[string]Role{},
+		Inputs:    map[string]Input{},
+		IndexSets: map[string]IndexSet{},
 	}
 
 	router := httprouter.New()
@@ -51,6 +53,12 @@ func GetMockServer() (*MockServer, error) {
 	router.POST("/api/system/inputs", ms.handleCreateInput)
 	router.PUT("/api/system/inputs/:inputId", ms.handleUpdateInput)
 	router.DELETE("/api/system/inputs/:inputId", ms.handleDeleteInput)
+
+	router.GET("/api/system/indices/index_sets", ms.handleGetIndexSets)
+	router.GET("/api/system/indices/index_sets/:indexSetId", ms.handleGetIndexSet)
+	router.POST("/api/system/indices/index_sets", ms.handleCreateIndexSet)
+	router.PUT("/api/system/indices/index_sets/:indexSetId", ms.handleUpdateIndexSet)
+	router.DELETE("/api/system/indices/index_sets/:indexSetId", ms.handleDeleteIndexSet)
 
 	server := httptest.NewServer(router)
 	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())

@@ -14,17 +14,12 @@ func dummyRole() *Role {
 }
 
 func TestCreateRole(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	params := &Role{Name: "foo", Permissions: []string{"*"}}
 	role, err := client.CreateRole(params)
 	if err != nil {
@@ -41,17 +36,12 @@ func TestCreateRole(t *testing.T) {
 }
 
 func TestGetRoles(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	admin := dummyRole()
 	exp := []Role{*admin}
 	server.Roles[admin.Name] = *admin
@@ -66,17 +56,12 @@ func TestGetRoles(t *testing.T) {
 }
 
 func TestGetRole(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	admin := dummyRole()
 	server.Roles[admin.Name] = *admin
 	role, err := client.GetRole(admin.Name)
@@ -90,17 +75,12 @@ func TestGetRole(t *testing.T) {
 }
 
 func TestUpdateRole(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	admin := dummyRole()
 	server.Roles[admin.Name] = *admin
 	admin.Description = "changed!"
@@ -115,17 +95,12 @@ func TestUpdateRole(t *testing.T) {
 }
 
 func TestDeleteRole(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	admin := dummyRole()
 	server.Roles[admin.Name] = *admin
 	err = client.DeleteRole(admin.Name)

@@ -24,7 +24,9 @@ func (ms *MockServer) RoleList() []Role {
 }
 
 // GET /roles/{rolename} Retrieve permissions for a single role
-func (ms *MockServer) handleGetRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (ms *MockServer) handleGetRole(
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) {
 	w.Header().Set("Content-Type", "application/json")
 	name := ps.ByName("rolename")
 	role, ok := ms.Roles[name]
@@ -42,7 +44,9 @@ func (ms *MockServer) handleGetRole(w http.ResponseWriter, r *http.Request, ps h
 }
 
 // PUT /roles/{rolename} Update an existing role
-func (ms *MockServer) handleUpdateRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (ms *MockServer) handleUpdateRole(
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) {
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -81,7 +85,9 @@ func (ms *MockServer) handleUpdateRole(w http.ResponseWriter, r *http.Request, p
 }
 
 // DELETE /roles/{rolename} Remove the named role and dissociate any users from it
-func (ms *MockServer) handleDeleteRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (ms *MockServer) handleDeleteRole(
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) {
 	w.Header().Set("Content-Type", "application/json")
 	name := ps.ByName("rolename")
 	_, ok := ms.Roles[name]
@@ -104,7 +110,9 @@ func validateRole(role *Role) (int, []byte) {
 }
 
 // POST /roles Create a new role
-func (ms *MockServer) handleCreateRole(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (ms *MockServer) handleCreateRole(
+	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+) {
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -142,7 +150,9 @@ func (ms *MockServer) handleCreateRole(w http.ResponseWriter, r *http.Request, _
 }
 
 // GET /roles List all roles
-func (ms *MockServer) handleGetRoles(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (ms *MockServer) handleGetRoles(
+	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+) {
 	w.Header().Set("Content-Type", "application/json")
 	arr := ms.RoleList()
 	roles := rolesBody{Roles: arr, Total: len(arr)}

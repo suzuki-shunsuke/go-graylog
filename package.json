@@ -1,0 +1,12 @@
+{
+  "version": "0.1.0",
+  "scripts": {
+    "release": "standard-version",
+    "commitmsg": "validate-commit-msg"
+  },
+  "devDependencies": {
+    "husky": "^0.14.3",
+    "standard-version": "^4.3.0",
+    "validate-commit-msg": "^2.14.0"
+  }
+}

@@ -7,9 +7,10 @@ import (
 )
 
 type Endpoints struct {
-	Roles  string
-	Users  string
-	Inputs string
+	Roles     string
+	Users     string
+	Inputs    string
+	IndexSets string
 }
 
 type Client struct {
@@ -19,6 +20,11 @@ type Client struct {
 	endpoints *Endpoints
 }
 
+func getEndpoint(u url.URL, p string) string {
+	u.Path = path.Join(u.Path, p)
+	return u.String()
+}
+
 func NewClient(endpoint, name, password string) (*Client, error) {
 	base, err := url.Parse(endpoint)
 	if err != nil {
@@ -26,17 +32,10 @@ func NewClient(endpoint, name, password string) (*Client, error) {
 	}
 	endpoints := &Endpoints{}
 
-	u := *base
-	u.Path = path.Join(u.Path, "/roles")
-	endpoints.Roles = u.String()
-
-	u = *base
-	u.Path = path.Join(u.Path, "/users")
-	endpoints.Users = u.String()
-
-	u = *base
-	u.Path = path.Join(u.Path, "/system/inputs")
-	endpoints.Inputs = u.String()
+	endpoints.Roles = getEndpoint(*base, "/roles")
+	endpoints.Users = getEndpoint(*base, "/users")
+	endpoints.Inputs = getEndpoint(*base, "/system/inputs")
+	endpoints.IndexSets = getEndpoint(*base, "/system/indices/index_sets")
 
 	return &Client{
 		name: name, password: password, endpoints: endpoints,

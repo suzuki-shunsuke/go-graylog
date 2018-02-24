@@ -29,17 +29,12 @@ func dummyAdmin() *User {
 }
 
 func TestCreateUser(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	admin := dummyAdmin()
 	user, err := client.CreateUser(admin)
 	if err != nil {
@@ -56,17 +51,12 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestGetUsers(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	admin := dummyAdmin()
 	server.Users[admin.Username] = *admin
 	users, err := client.GetUsers()
@@ -81,17 +71,12 @@ func TestGetUsers(t *testing.T) {
 }
 
 func TestGetUser(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	exp := dummyAdmin()
 	server.Users[exp.Username] = *exp
 	user, err := client.GetUser(exp.Username)
@@ -105,17 +90,12 @@ func TestGetUser(t *testing.T) {
 }
 
 func TestUpdateUser(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
 	user.FullName = "changed!"
@@ -130,17 +110,12 @@ func TestUpdateUser(t *testing.T) {
 }
 
 func TestDeleteUser(t *testing.T) {
-	server, err := GetMockServer()
+	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error("Failed to Get Mock Server", err)
+		t.Error(err)
 		return
 	}
 	defer server.Server.Close()
-	client, err := NewClient(server.Endpoint, "admin", "password")
-	if err != nil {
-		t.Error("Failed to NewClient", err)
-		return
-	}
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
 	err = client.DeleteUser(user.Username)
