@@ -118,13 +118,6 @@ func (ms *MockServer) handleUpdateUser(w http.ResponseWriter, r *http.Request, p
 	}
 	delete(ms.Users, name)
 	ms.Users[user.Username] = user
-	b, err = json.Marshal(&user)
-	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
-		return
-	}
-	w.Write(b)
 }
 
 // DELETE /users/{username} Removes a user account

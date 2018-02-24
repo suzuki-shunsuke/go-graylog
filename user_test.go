@@ -91,13 +91,9 @@ func TestUpdateUser(t *testing.T) {
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
 	user.FullName = "changed!"
-	updatedUser, err := client.UpdateUser(user.Username, user)
-	if err != nil {
+	if err := client.UpdateUser(user.Username, user); err != nil {
 		t.Error("Failed to UpdateUser", err)
 		return
-	}
-	if !reflect.DeepEqual(*updatedUser, *user) {
-		t.Errorf("client.UpdateUser() == %v, wanted %v", user, updatedUser)
 	}
 }
 

@@ -176,7 +176,7 @@ func (client *Client) GetUserContext(
 
 // UpdateUser
 // PUT /users/{username} Modify user details.
-func (client *Client) UpdateUser(name string, user *User) (*User, error) {
+func (client *Client) UpdateUser(name string, user *User) error {
 	return client.UpdateUserContext(context.Background(), name, user)
 }
 
@@ -184,43 +184,37 @@ func (client *Client) UpdateUser(name string, user *User) (*User, error) {
 // PUT /users/{username} Modify user details.
 func (client *Client) UpdateUserContext(
 	ctx context.Context, name string, user *User,
-) (*User, error) {
+) error {
 	b, err := json.Marshal(user)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(user)")
+		return errors.Wrap(err, "Failed to json.Marshal(user)")
 	}
 	req, err := http.NewRequest(
 		http.MethodPut, fmt.Sprintf("%s/%s", client.endpoints.Users, name),
 		bytes.NewBuffer(b))
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+		return errors.Wrap(err, "Failed to http.NewRequest")
 	}
 	resp, err := callRequest(req, client, ctx)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to call PUT /users/{username} API")
+		return errors.Wrap(err, "Failed to call PUT /users/{username} API")
 	}
 	defer resp.Body.Close()
-	b, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to read response body")
-	}
 	if resp.StatusCode >= 400 {
+		b, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return errors.Wrap(err, "Failed to read response body")
+		}
 		e := Error{}
 		err = json.Unmarshal(b, &e)
 		if err != nil {
-			return nil, errors.Wrap(
+			return errors.Wrap(
 				err, fmt.Sprintf(
 					"Failed to parse response body as Error: %s", string(b)))
 		}
-		return nil, errors.New(e.Message)
+		return errors.New(e.Message)
 	}
-	u := User{}
-	err = json.Unmarshal(b, &u)
-	if err != nil {
-		return nil, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as User: %s", string(b)))
-	}
-	return &u, nil
+	return nil
 }
 
 // DeleteUser
