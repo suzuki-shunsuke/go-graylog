@@ -43,7 +43,7 @@ type Startpage struct {
 
 // CreateUser
 // POST /users Create a new user account.
-func (client *Client) CreateUser(user *User) (*User, error) {
+func (client *Client) CreateUser(user *User) error {
 	return client.CreateUserContext(context.Background(), user)
 }
 
@@ -51,42 +51,36 @@ func (client *Client) CreateUser(user *User) (*User, error) {
 // POST /users Create a new user account.
 func (client *Client) CreateUserContext(
 	ctx context.Context, user *User,
-) (*User, error) {
+) error {
 	b, err := json.Marshal(user)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(params)")
+		return errors.Wrap(err, "Failed to json.Marshal(params)")
 	}
 	req, err := http.NewRequest(
 		http.MethodPost, client.endpoints.Users, bytes.NewBuffer(b))
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+		return errors.Wrap(err, "Failed to http.NewRequest")
 	}
 	resp, err := callRequest(req, client, ctx)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to call POST /users API")
+		return errors.Wrap(err, "Failed to call POST /users API")
 	}
 	defer resp.Body.Close()
-	b, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to read response body")
-	}
 	if resp.StatusCode >= 400 {
+		b, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return errors.Wrap(err, "Failed to read response body")
+		}
 		e := Error{}
 		err = json.Unmarshal(b, &e)
 		if err != nil {
-			return nil, errors.Wrap(
+			return errors.Wrap(
 				err, fmt.Sprintf(
 					"Failed to parse response body as Error: %s", string(b)))
 		}
-		return nil, errors.New(e.Message)
+		return errors.New(e.Message)
 	}
-	u := User{}
-	err = json.Unmarshal(b, &u)
-	if err != nil {
-		return nil, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as User: %s", string(b)))
-	}
-	return &u, nil
+	return nil
 }
 
 type usersBody struct {

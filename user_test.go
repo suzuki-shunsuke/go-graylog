@@ -36,17 +36,9 @@ func TestCreateUser(t *testing.T) {
 	}
 	defer server.Server.Close()
 	admin := dummyAdmin()
-	user, err := client.CreateUser(admin)
-	if err != nil {
+	if err := client.CreateUser(admin); err != nil {
 		t.Error("Failed to CreateUser", err)
 		return
-	}
-	if user == nil {
-		t.Error("client.CreateUser() == nil")
-		return
-	}
-	if !reflect.DeepEqual(*user, *admin) {
-		t.Errorf("%v != %v", admin, user)
 	}
 }
 

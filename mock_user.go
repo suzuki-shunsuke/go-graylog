@@ -56,12 +56,6 @@ func (ms *MockServer) handleCreateUser(w http.ResponseWriter, r *http.Request, _
 		return
 	}
 	ms.Users[user.Username] = user
-	b, err = json.Marshal(&user)
-	if err != nil {
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
-		return
-	}
-	w.Write(b)
 }
 
 // GET /users List all users
