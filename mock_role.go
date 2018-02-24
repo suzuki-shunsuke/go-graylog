@@ -9,6 +9,20 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+func (ms *MockServer) RoleList() []Role {
+	if ms.Roles == nil {
+		return []Role{}
+	}
+	size := len(ms.Roles)
+	arr := make([]Role, size)
+	i := 0
+	for _, role := range ms.Roles {
+		arr[i] = role
+		i++
+	}
+	return arr
+}
+
 // GET /roles/{rolename} Retrieve permissions for a single role
 func (ms *MockServer) handleGetRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")

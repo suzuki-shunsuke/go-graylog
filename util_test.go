@@ -32,3 +32,16 @@ func TestRemoveFromStringArray(t *testing.T) {
 		t.Errorf(`removeFromStringArray([]string{"foo", "bar"}, "foo") == %v, wanted %v`, act, exp)
 	}
 }
+
+func TestRandStringBytesMaskImprSrc(t *testing.T) {
+	a1 := randStringBytesMaskImprSrc(24)
+	a2 := randStringBytesMaskImprSrc(24)
+	if len(a1) != 24 {
+		t.Errorf("len(a1) == %d, wanted 24", len(a1))
+		return
+	}
+	if a1 == a2 {
+		t.Errorf("a1 == a2 == %s", a1)
+		return
+	}
+}

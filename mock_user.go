@@ -9,6 +9,20 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+func (ms *MockServer) UserList() []User {
+	if ms.Users == nil {
+		return []User{}
+	}
+	size := len(ms.Users)
+	arr := make([]User, size)
+	i := 0
+	for _, user := range ms.Users {
+		arr[i] = user
+		i++
+	}
+	return arr
+}
+
 func validateUser(user *User) (int, []byte) {
 	if user.Username == "" {
 		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.models.users.responses.UserResponse, problem: Null name\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@472db3c8; line: 1, column: 31]"}`)

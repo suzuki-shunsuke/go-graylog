@@ -20,16 +20,16 @@ type Attributes struct {
 }
 
 type Input struct {
-	Id            string `json:"id,omitempty"`
-	Title         string `json:"title,omitempty"`
-	Type          string `json:"type,omitempty"`
-	Global        bool   `json:"global,omitempty"`
-	Node          string `json:"node,omitempty"`
-	CreatedAt     string `json:"created_at,omitempty"`
-	CreatorUserId string `json:"creator_user_id,omitempty"`
-	Attributes    string `json:"attributes,omitempty"`
+	Id            string      `json:"id,omitempty"`
+	Title         string      `json:"title,omitempty"`
+	Type          string      `json:"type,omitempty"`
+	Global        bool        `json:"global,omitempty"`
+	Node          string      `json:"node,omitempty"`
+	CreatedAt     string      `json:"created_at,omitempty"`
+	CreatorUserId string      `json:"creator_user_id,omitempty"`
+	Attributes    string      `json:"attributes,omitempty"`
+	Configuration interface{} `json:"configuration,omitempty"`
 	// ContextPack `json:"context_pack,omitempty"`
-	// Configuration `json:"configuration,omitempty"`
 	// StaticFields `json:"static_fields,omitempty"`
 }
 
