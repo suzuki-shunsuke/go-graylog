@@ -11,7 +11,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-type Attributes struct {
+type InputAttributes struct {
 	// OverrideSource string `json:"override_source,omitempty"`
 	RecvBufferSize      int    `json:"recv_buffer_size,omitempty"`
 	BindAddress         string `json:"bind_address,omitempty"`
@@ -19,16 +19,18 @@ type Attributes struct {
 	DecompressSizeLimit int    `json:"decompress_size_limit,omitempty"`
 }
 
+type InputConfiguration struct{}
+
 type Input struct {
-	Id            string      `json:"id,omitempty"`
-	Title         string      `json:"title,omitempty"`
-	Type          string      `json:"type,omitempty"`
-	Global        bool        `json:"global,omitempty"`
-	Node          string      `json:"node,omitempty"`
-	CreatedAt     string      `json:"created_at,omitempty"`
-	CreatorUserId string      `json:"creator_user_id,omitempty"`
-	Attributes    string      `json:"attributes,omitempty"`
-	Configuration interface{} `json:"configuration,omitempty"`
+	Id            string              `json:"id,omitempty"`
+	Title         string              `json:"title,omitempty"`
+	Type          string              `json:"type,omitempty"`
+	Global        bool                `json:"global,omitempty"`
+	Node          string              `json:"node,omitempty"`
+	CreatedAt     string              `json:"created_at,omitempty"`
+	CreatorUserId string              `json:"creator_user_id,omitempty"`
+	Attributes    *InputAttributes    `json:"attributes,omitempty"`
+	Configuration *InputConfiguration `json:"configuration,omitempty"`
 	// ContextPack `json:"context_pack,omitempty"`
 	// StaticFields `json:"static_fields,omitempty"`
 }
