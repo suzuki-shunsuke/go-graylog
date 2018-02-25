@@ -61,6 +61,28 @@ params := &Role{Name: "foo", Permissions: []string{"*"}}
 role, err := client.CreateRole(params)
 ```
 
+```golang
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/suzuki-shunsuke/go-graylog"
+)
+
+func main() {
+	server, err := graylog.GetMockServer()
+	if err != nil {
+		log.Fatal("Failed to Get Mock Server", err)
+	}
+	defer server.Server.Close()
+	c := make(chan interface{})
+	fmt.Printf("Start mock server: %s\nCtrl + C to stop server", server.Endpoint)
+	<-c
+}
+```
+
 ## Graylog REST API's Reference
 
 * http://docs.graylog.org/en/2.4/pages/configuration/rest_api.html
