@@ -23,17 +23,14 @@ func TestCreateInput(t *testing.T) {
 	defer server.Server.Close()
 	params := dummyInput()
 	params.Id = ""
-	input, err := client.CreateInput(params)
+	id, err := client.CreateInput(params)
 	if err != nil {
 		t.Error("Failed to CreateInput", err)
 		return
 	}
-	if input == nil {
-		t.Error("client.CreateInput() == nil")
+	if id == "" {
+		t.Error(`client.CreateInput() == ""`)
 		return
-	}
-	if input.Type != params.Type {
-		t.Errorf("input.Type == %s, wanted %s", input.Type, params.Type)
 	}
 }
 

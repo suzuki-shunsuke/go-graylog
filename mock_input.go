@@ -119,14 +119,15 @@ func (ms *MockServer) handleCreateInput(w http.ResponseWriter, r *http.Request, 
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
-	// generate id 24 ex: 5a90cee5c006c60001efbbf5
-	input := Input{Id: randStringBytesMaskImprSrc(24)}
+	input := Input{}
 	err = json.Unmarshal(b, &input)
 	if err != nil {
 		w.WriteHeader(400)
 		w.Write([]byte(`{"message":"400 Bad Request"}`))
 		return
 	}
+	// generate id 24 ex: 5a90cee5c006c60001efbbf5
+	input.Id = randStringBytesMaskImprSrc(24)
 	sc, msg := validateInput(&input)
 	if sc != 200 {
 		w.WriteHeader(sc)
@@ -134,7 +135,8 @@ func (ms *MockServer) handleCreateInput(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 	ms.Inputs[input.Id] = input
-	b, err = json.Marshal(&input)
+	d := map[string]string{"id": input.Id}
+	b, err = json.Marshal(&d)
 	if err != nil {
 		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))

@@ -19,7 +19,11 @@ type InputAttributes struct {
 	DecompressSizeLimit int    `json:"decompress_size_limit,omitempty"`
 }
 
-type InputConfiguration struct{}
+type InputConfiguration struct {
+	BindAddress    string `json:"bind_address,omitempty"`
+	Port           int    `json:"port,omitempty"`
+	RecvBufferSize int    `json:"recv_buffer_size,omitempty"`
+}
 
 type Input struct {
 	Id            string              `json:"id,omitempty"`
@@ -37,7 +41,7 @@ type Input struct {
 
 // CreateInput
 // POST /system/inputs Launch input on this node
-func (client *Client) CreateInput(params *Input) (*Input, error) {
+func (client *Client) CreateInput(params *Input) (id string, err error) {
 	return client.CreateInputContext(context.Background(), params)
 }
 
@@ -45,42 +49,42 @@ func (client *Client) CreateInput(params *Input) (*Input, error) {
 // POST /system/inputs Launch input on this node
 func (client *Client) CreateInputContext(
 	ctx context.Context, params *Input,
-) (*Input, error) {
+) (id string, err error) {
 	b, err := json.Marshal(params)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(params)")
+		return "", errors.Wrap(err, "Failed to json.Marshal(params)")
 	}
 	req, err := http.NewRequest(
 		http.MethodPost, client.endpoints.Inputs, bytes.NewBuffer(b))
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+		return "", errors.Wrap(err, "Failed to http.NewRequest")
 	}
 	resp, err := callRequest(req, client, ctx)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to call POST /inputs API")
+		return "", errors.Wrap(err, "Failed to call POST /inputs API")
 	}
 	defer resp.Body.Close()
 	b, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to read response body")
+		return "", errors.Wrap(err, "Failed to read response body")
 	}
 	if resp.StatusCode >= 400 {
 		e := Error{}
 		err = json.Unmarshal(b, &e)
 		if err != nil {
-			return nil, errors.Wrap(
+			return "", errors.Wrap(
 				err, fmt.Sprintf(
 					"Failed to parse response body as Error: %s", string(b)))
 		}
-		return nil, errors.New(e.Message)
+		return "", errors.New(e.Message)
 	}
 	input := Input{}
 	err = json.Unmarshal(b, &input)
 	if err != nil {
-		return nil, errors.Wrap(
+		return "", errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Input: %s", string(b)))
 	}
-	return &input, nil
+	return input.Id, nil
 }
 
 type inputsBody struct {
