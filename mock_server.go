@@ -2,6 +2,7 @@ package graylog
 
 import (
 	"fmt"
+	"net"
 	"net/http/httptest"
 	"sync"
 
@@ -22,7 +23,9 @@ type MockServer struct {
 	IndexSets map[string]IndexSet
 }
 
-func GetMockServer() (*MockServer, error) {
+// NewMockServer returns new MockServer but doesn't start it.
+// If addr is an empty string, the free port is assigned automatially.
+func NewMockServer(addr string) (*MockServer, error) {
 	ms := &MockServer{
 		Users:     map[string]User{},
 		Roles:     map[string]Role{},
@@ -60,9 +63,26 @@ func GetMockServer() (*MockServer, error) {
 	router.PUT("/api/system/indices/index_sets/:indexSetId", ms.handleUpdateIndexSet)
 	router.DELETE("/api/system/indices/index_sets/:indexSetId", ms.handleDeleteIndexSet)
 
-	server := httptest.NewServer(router)
+	server := httptest.NewUnstartedServer(router)
+	if addr != "" {
+		ln, err := net.Listen("tcp", addr)
+		if err != nil {
+			return nil, err
+		}
+		server.Listener = ln
+	}
 	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
-	ms.Server = server
 	ms.Endpoint = u
+	ms.Server = server
 	return ms, nil
+}
+
+// Start starts a server from NewUnstartedServer.
+func (ms *MockServer) Start() {
+	ms.Server.Start()
+}
+
+// Close shuts down the server and blocks until all outstanding requests on this server have completed.
+func (ms *MockServer) Close() {
+	ms.Server.Close()
 }

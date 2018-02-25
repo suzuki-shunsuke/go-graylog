@@ -35,7 +35,7 @@ func TestGetIndexSets(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	indexSet := dummyIndexSet()
 	exp := []IndexSet{*indexSet}
 	server.IndexSets[indexSet.Id] = *indexSet
@@ -55,7 +55,7 @@ func TestGetIndexSet(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	exp := dummyIndexSet()
 	server.IndexSets[exp.Id] = *exp
 	act, err := client.GetIndexSet(exp.Id)
@@ -74,7 +74,7 @@ func TestCreateIndexSet(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	exp := dummyIndexSet()
 	act, err := client.CreateIndexSet(exp)
 	if err != nil {
@@ -96,7 +96,7 @@ func TestUpdateIndexSet(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	indexSet := dummyIndexSet()
 	server.IndexSets[indexSet.Id] = *indexSet
 	indexSet.Description = "changed!"
@@ -116,7 +116,7 @@ func TestDeleteIndexSet(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	indexSet := dummyIndexSet()
 	server.IndexSets[indexSet.Id] = *indexSet
 	err = client.DeleteIndexSet(indexSet.Id)

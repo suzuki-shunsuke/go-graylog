@@ -46,12 +46,13 @@ func main() {
 ## Example 2 - Mock Server
 
 ```golang
-server, err := GetMockServer()
+server, err := NewMockServer("")
 if err != nil {
 	t.Error("Failed to Get Mock Server", err)
 	return
 }
-defer server.Server.Close()
+server.Start()
+defer server.Close()
 client, err := NewClient(server.Endpoint, "admin", "password")
 if err != nil {
 	t.Error("Failed to NewClient", err)
@@ -72,11 +73,12 @@ import (
 )
 
 func main() {
-	server, err := graylog.GetMockServer()
+	server, err := graylog.NewMockServer(":8000")
 	if err != nil {
 		log.Fatal("Failed to Get Mock Server", err)
 	}
-	defer server.Server.Close()
+  server.Start()
+	defer server.Close()
 	c := make(chan interface{})
 	fmt.Printf("Start mock server: %s\nCtrl + C to stop server", server.Endpoint)
 	<-c
@@ -87,6 +89,12 @@ func main() {
 
 * http://docs.graylog.org/en/2.4/pages/configuration/rest_api.html
 * http://docs.graylog.org/en/2.4/pages/users_and_roles/permission_system.html
+
+## Supported Graylog version
+
+We use [the graylog's official Docker Image](https://hub.docker.com/r/graylog/graylog/) .
+
+The version is `2.4.0-1` .
 
 ## Contribution
 

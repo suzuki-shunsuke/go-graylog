@@ -10,7 +10,7 @@ import (
 )
 
 func getServerAndClient() (*MockServer, *Client, error) {
-	server, err := GetMockServer()
+	server, err := NewMockServer("")
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "Failed to Get Mock Server")
 	}
@@ -19,8 +19,8 @@ func getServerAndClient() (*MockServer, *Client, error) {
 		server.Server.Close()
 		return nil, nil, errors.Wrap(err, "Failed to NewClient")
 	}
+	server.Start()
 	return server, client, nil
-
 }
 
 func callRequest(

@@ -34,7 +34,7 @@ func TestCreateUser(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	admin := dummyAdmin()
 	if err := client.CreateUser(admin); err != nil {
 		t.Error("Failed to CreateUser", err)
@@ -48,7 +48,7 @@ func TestGetUsers(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	admin := dummyAdmin()
 	server.Users[admin.Username] = *admin
 	users, err := client.GetUsers()
@@ -68,7 +68,7 @@ func TestGetUser(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	exp := dummyAdmin()
 	server.Users[exp.Username] = *exp
 	user, err := client.GetUser(exp.Username)
@@ -87,7 +87,7 @@ func TestUpdateUser(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
 	user.FullName = "changed!"
@@ -103,7 +103,7 @@ func TestDeleteUser(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
 	err = client.DeleteUser(user.Username)

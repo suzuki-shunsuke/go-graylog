@@ -11,7 +11,7 @@ func TestGetRoleMembers(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
 	role := dummyRole()
@@ -33,7 +33,7 @@ func TestAddUserToRole(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
 	role := dummyRole()
@@ -51,7 +51,7 @@ func TestRemoveUserFromRole(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
 	role := dummyRole()

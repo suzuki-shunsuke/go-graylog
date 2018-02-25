@@ -19,7 +19,7 @@ func TestCreateRole(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	params := &Role{Name: "foo", Permissions: []string{"*"}}
 	role, err := client.CreateRole(params)
 	if err != nil {
@@ -41,7 +41,7 @@ func TestGetRoles(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	admin := dummyRole()
 	exp := []Role{*admin}
 	server.Roles[admin.Name] = *admin
@@ -61,7 +61,7 @@ func TestGetRole(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	admin := dummyRole()
 	server.Roles[admin.Name] = *admin
 	role, err := client.GetRole(admin.Name)
@@ -80,7 +80,7 @@ func TestUpdateRole(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	admin := dummyRole()
 	server.Roles[admin.Name] = *admin
 	admin.Description = "changed!"
@@ -100,7 +100,7 @@ func TestDeleteRole(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer server.Server.Close()
+	defer server.Close()
 	admin := dummyRole()
 	server.Roles[admin.Name] = *admin
 	err = client.DeleteRole(admin.Name)
