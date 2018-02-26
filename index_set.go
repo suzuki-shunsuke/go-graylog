@@ -11,7 +11,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-// PUT /system/indices/index_sets/{id}/default Set default index set
 // GET /system/indices/index_sets/{id}/stats Get index set statistics
 
 type IndexSet struct {
@@ -87,8 +86,8 @@ func (client *Client) GetIndexSetsContext(
 		}
 		return nil, nil, errors.New(e.Message)
 	}
-	indexSets := indexSetsBody{}
-	err = json.Unmarshal(b, &indexSets)
+	indexSets := &indexSetsBody{}
+	err = json.Unmarshal(b, indexSets)
 	if err != nil {
 		return nil, nil, errors.Wrap(
 			err, fmt.Sprintf(
@@ -133,13 +132,13 @@ func (client *Client) GetIndexSetContext(
 		}
 		return nil, errors.New(e.Message)
 	}
-	indexSet := IndexSet{}
-	err = json.Unmarshal(b, &indexSet)
+	indexSet := &IndexSet{}
+	err = json.Unmarshal(b, indexSet)
 	if err != nil {
 		return nil, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as IndexSet: %s", string(b)))
 	}
-	return &indexSet, nil
+	return indexSet, nil
 }
 
 // POST /system/indices/index_sets Create index set
@@ -179,13 +178,14 @@ func (client *Client) CreateIndexSetContext(
 		}
 		return nil, errors.New(e.Message)
 	}
-	is := IndexSet{}
-	err = json.Unmarshal(b, &is)
+	is := &IndexSet{}
+	err = json.Unmarshal(b, is)
 	if err != nil {
 		return nil, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as IndexSet: %s", string(b)))
+			err, fmt.Sprintf(
+				"Failed to parse response body as IndexSet: %s", string(b)))
 	}
-	return &is, nil
+	return is, nil
 }
 
 // PUT /system/indices/index_sets/{id} Update index set
@@ -229,13 +229,13 @@ func (client *Client) UpdateIndexSetContext(
 		}
 		return nil, errors.New(e.Message)
 	}
-	is := IndexSet{}
-	err = json.Unmarshal(b, &is)
+	is := &IndexSet{}
+	err = json.Unmarshal(b, is)
 	if err != nil {
 		return nil, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as IndexSet: %s", string(b)))
 	}
-	return &is, nil
+	return is, nil
 }
 
 // DELETE /system/indices/index_sets/{id} Delete index set
@@ -275,4 +275,53 @@ func (client *Client) DeleteIndexSetContext(
 		return errors.New(e.Message)
 	}
 	return nil
+}
+
+// PUT /system/indices/index_sets/{id}/default Set default index set
+func (client *Client) SetDefaultIndexSet(id string) (*IndexSet, error) {
+	return client.SetDefaultIndexSetContext(context.Background(), id)
+}
+
+// PUT /system/indices/index_sets/{id}/default Set default index set
+func (client *Client) SetDefaultIndexSetContext(
+	ctx context.Context, id string,
+) (*IndexSet, error) {
+	// {"type": "ApiError", "message": "Default index set must be writable."}
+	if id == "" {
+		return nil, errors.New("id is empty")
+	}
+	req, err := http.NewRequest(
+		http.MethodPut, fmt.Sprintf(
+			"%s/%s/default", client.endpoints.IndexSets, id), nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+	}
+	resp, err := callRequest(req, client, ctx)
+	if err != nil {
+		return nil, errors.Wrap(
+			err, "Failed to call PUT /system/indices/index_sets/{indexSetid} API")
+	}
+	defer resp.Body.Close()
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to read response body")
+	}
+	if resp.StatusCode >= 400 {
+		e := Error{}
+		err = json.Unmarshal(b, &e)
+		if err != nil {
+			return nil, errors.Wrap(
+				err, fmt.Sprintf(
+					"Failed to parse response body as Error: %s", string(b)))
+		}
+		return nil, errors.New(e.Message)
+	}
+	is := &IndexSet{}
+	err = json.Unmarshal(b, is)
+	if err != nil {
+		return nil, errors.Wrap(
+			err, fmt.Sprintf(
+				"Failed to parse response body as IndexSet: %s", string(b)))
+	}
+	return is, nil
 }

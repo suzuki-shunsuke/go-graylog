@@ -125,3 +125,28 @@ func TestDeleteIndexSet(t *testing.T) {
 		return
 	}
 }
+
+func TestSetDefaultIndexSet(t *testing.T) {
+	server, client, err := getServerAndClient()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	defer server.Close()
+	indexSet := dummyIndexSet()
+	indexSet.Default = false
+	indexSet.Writable = true
+	server.IndexSets[indexSet.Id] = *indexSet
+	updatedIndexSet, err := client.SetDefaultIndexSet(indexSet.Id)
+	if err != nil {
+		t.Error("Failed to UpdateIndexSet", err)
+		return
+	}
+	if !updatedIndexSet.Default {
+		t.Error("updatedIndexSet.Default == false")
+	}
+	indexSet.Default = true
+	if !reflect.DeepEqual(*updatedIndexSet, *indexSet) {
+		t.Errorf("client.SetDefaultIndexSet() == %v, wanted %v", updatedIndexSet, indexSet)
+	}
+}

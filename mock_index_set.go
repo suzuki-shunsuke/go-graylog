@@ -173,3 +173,36 @@ func (ms *MockServer) handleDeleteIndexSet(
 	}
 	ms.DeleteIndexSet(id)
 }
+
+// PUT /system/indices/index_sets/{id}/default Set default index set
+func (ms *MockServer) handleSetDefaultIndexSet(
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
+	w.Header().Set("Content-Type", "application/json")
+	id := ps.ByName("indexSetId")
+	indexSet, ok := ms.IndexSets[id]
+	if !ok {
+		w.WriteHeader(404)
+		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
+		return
+	}
+	for k, v := range ms.IndexSets {
+		if v.Default {
+			v.Default = false
+			ms.IndexSets[k] = v
+			break
+		}
+	}
+	indexSet.Default = true
+	ms.AddIndexSet(&indexSet)
+	b, err := json.Marshal(&indexSet)
+	if err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		return
+	}
+	w.Write(b)
+}

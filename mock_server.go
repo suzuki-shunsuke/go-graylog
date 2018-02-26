@@ -71,6 +71,7 @@ func NewMockServer(addr string) (*MockServer, error) {
 	router.POST("/api/system/indices/index_sets", ms.handleCreateIndexSet)
 	router.PUT("/api/system/indices/index_sets/:indexSetId", ms.handleUpdateIndexSet)
 	router.DELETE("/api/system/indices/index_sets/:indexSetId", ms.handleDeleteIndexSet)
+	router.PUT("/api/system/indices/index_sets/:indexSetId/default", ms.handleSetDefaultIndexSet)
 
 	router.NotFound = ms.handleNotFound
 
