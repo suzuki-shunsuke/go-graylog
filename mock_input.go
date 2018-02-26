@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	log "github.com/sirupsen/logrus"
 )
 
 func (ms *MockServer) InputList() []Input {
@@ -25,6 +26,9 @@ func (ms *MockServer) InputList() []Input {
 
 // GET /system/inputs/{inputId} Get information of a single input on this node
 func (ms *MockServer) handleGetInput(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("inputId")
 	input, ok := ms.Inputs[id]
@@ -43,6 +47,9 @@ func (ms *MockServer) handleGetInput(w http.ResponseWriter, r *http.Request, ps 
 
 // PUT /system/inputs/{inputId} Update input on this node
 func (ms *MockServer) handleUpdateInput(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -56,22 +63,22 @@ func (ms *MockServer) handleUpdateInput(w http.ResponseWriter, r *http.Request, 
 		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No input found with id %s"}`, id)))
 		return
 	}
-	input := Input{}
-	err = json.Unmarshal(b, &input)
+	input := &Input{}
+	err = json.Unmarshal(b, input)
 	if err != nil {
 		w.WriteHeader(400)
 		w.Write([]byte(`{"message":"400 Bad Request"}`))
 		return
 	}
-	sc, msg := validateInput(&input)
+	// {"type": "ApiError", "message": "Unable to map property id.\nKnown properties include: title, type, global, configuration, node"}
+	sc, msg := validateInput(input)
 	if sc != 200 {
 		w.WriteHeader(sc)
 		w.Write(msg)
 		return
 	}
-	delete(ms.Inputs, id)
-	ms.Inputs[input.Id] = input
-	b, err = json.Marshal(&input)
+	ms.AddInput(input)
+	b, err = json.Marshal(input)
 	if err != nil {
 		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
@@ -82,6 +89,9 @@ func (ms *MockServer) handleUpdateInput(w http.ResponseWriter, r *http.Request, 
 
 // DELETE /system/inputs/{inputId} Terminate input on this node
 func (ms *MockServer) handleDeleteInput(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("inputId")
 	_, ok := ms.Inputs[id]
@@ -90,7 +100,7 @@ func (ms *MockServer) handleDeleteInput(w http.ResponseWriter, r *http.Request, 
 		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No input found with id %s"}`, id)))
 		return
 	}
-	delete(ms.Inputs, id)
+	ms.DeleteInput(id)
 }
 
 func validateInput(input *Input) (int, []byte) {
@@ -112,6 +122,9 @@ func validateInput(input *Input) (int, []byte) {
 
 // POST /system/inputs Launch input on this node
 func (ms *MockServer) handleCreateInput(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -119,22 +132,20 @@ func (ms *MockServer) handleCreateInput(w http.ResponseWriter, r *http.Request, 
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
-	input := Input{}
-	err = json.Unmarshal(b, &input)
+	input := &Input{}
+	err = json.Unmarshal(b, input)
 	if err != nil {
 		w.WriteHeader(400)
 		w.Write([]byte(`{"message":"400 Bad Request"}`))
 		return
 	}
-	// generate id 24 ex: 5a90cee5c006c60001efbbf5
-	input.Id = randStringBytesMaskImprSrc(24)
-	sc, msg := validateInput(&input)
+	sc, msg := validateInput(input)
 	if sc != 200 {
 		w.WriteHeader(sc)
 		w.Write(msg)
 		return
 	}
-	ms.Inputs[input.Id] = input
+	ms.AddInput(input)
 	d := map[string]string{"id": input.Id}
 	b, err = json.Marshal(&d)
 	if err != nil {
@@ -147,6 +158,9 @@ func (ms *MockServer) handleCreateInput(w http.ResponseWriter, r *http.Request, 
 
 // GET /system/inputs Get all inputs
 func (ms *MockServer) handleGetInputs(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	arr := ms.InputList()
 	inputs := inputsBody{Inputs: arr, Total: len(arr)}

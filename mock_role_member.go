@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	log "github.com/sirupsen/logrus"
 )
 
 type membersBody struct {
@@ -31,6 +32,9 @@ func (ms *MockServer) RoleMembers(name string) []User {
 
 // GET /roles/{rolename}/members Retrieve the role's members
 func (ms *MockServer) handleRoleMembers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	name := ps.ByName("rolename")
 	arr := ms.RoleMembers(name)
@@ -45,6 +49,9 @@ func (ms *MockServer) handleRoleMembers(w http.ResponseWriter, r *http.Request, 
 
 // PUT /roles/{rolename}/members/{username} Add a user to a role
 func (ms *MockServer) handleAddUserToRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	roleName := ps.ByName("rolename")
 	userName := ps.ByName("username")
@@ -64,11 +71,14 @@ func (ms *MockServer) handleAddUserToRole(w http.ResponseWriter, r *http.Request
 		return
 	}
 	user.Roles = addToStringArray(user.Roles, roleName)
-	ms.Users[userName] = user
+	ms.AddUser(&user)
 }
 
 // DELETE /roles/{rolename}/members/{username} Remove a user from a role
 func (ms *MockServer) handleRemoveUserFromRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	roleName := ps.ByName("rolename")
 	userName := ps.ByName("username")
@@ -88,5 +98,5 @@ func (ms *MockServer) handleRemoveUserFromRole(w http.ResponseWriter, r *http.Re
 		return
 	}
 	user.Roles = removeFromStringArray(user.Roles, roleName)
-	ms.Users[userName] = user
+	ms.AddUser(&user)
 }

@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	log "github.com/sirupsen/logrus"
 )
 
 func (ms *MockServer) RoleList() []Role {
@@ -27,8 +28,13 @@ func (ms *MockServer) RoleList() []Role {
 func (ms *MockServer) handleGetRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	name := ps.ByName("rolename")
+	ms.Logger.WithFields(log.Fields{
+		"handler": "handleGetRole", "rolename": name}).Info("request start")
 	role, ok := ms.Roles[name]
 	if !ok {
 		w.WriteHeader(404)
@@ -47,6 +53,9 @@ func (ms *MockServer) handleGetRole(
 func (ms *MockServer) handleUpdateRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -60,22 +69,21 @@ func (ms *MockServer) handleUpdateRole(
 		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
 		return
 	}
-	role := Role{}
-	err = json.Unmarshal(b, &role)
+	role := &Role{}
+	err = json.Unmarshal(b, role)
 	if err != nil {
 		w.WriteHeader(400)
 		w.Write([]byte(`{"message":"400 Bad Request"}`))
 		return
 	}
-	sc, msg := validateRole(&role)
+	sc, msg := validateRole(role)
 	if sc != 200 {
 		w.WriteHeader(sc)
 		w.Write(msg)
 		return
 	}
-	delete(ms.Roles, name)
-	ms.Roles[role.Name] = role
-	b, err = json.Marshal(&role)
+	ms.UpdateRole(name, role)
+	b, err = json.Marshal(role)
 	if err != nil {
 		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
@@ -88,6 +96,9 @@ func (ms *MockServer) handleUpdateRole(
 func (ms *MockServer) handleDeleteRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	name := ps.ByName("rolename")
 	_, ok := ms.Roles[name]
@@ -96,7 +107,7 @@ func (ms *MockServer) handleDeleteRole(
 		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
 		return
 	}
-	delete(ms.Roles, name)
+	ms.DeleteRole(name)
 }
 
 func validateRole(role *Role) (int, []byte) {
@@ -113,6 +124,9 @@ func validateRole(role *Role) (int, []byte) {
 func (ms *MockServer) handleCreateRole(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -120,14 +134,14 @@ func (ms *MockServer) handleCreateRole(
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
-	role := Role{}
-	err = json.Unmarshal(b, &role)
+	role := &Role{}
+	err = json.Unmarshal(b, role)
 	if err != nil {
 		w.WriteHeader(400)
 		w.Write([]byte(`{"message":"400 Bad Request"}`))
 		return
 	}
-	sc, msg := validateRole(&role)
+	sc, msg := validateRole(role)
 	if sc != 200 {
 		w.WriteHeader(sc)
 		w.Write(msg)
@@ -139,8 +153,8 @@ func (ms *MockServer) handleCreateRole(
 			`{"type": "ApiError", "message": "Role %s already exists."}`, role.Name)))
 		return
 	}
-	ms.Roles[role.Name] = role
-	b, err = json.Marshal(&role)
+	ms.AddRole(role)
+	b, err = json.Marshal(role)
 	if err != nil {
 		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
@@ -153,6 +167,9 @@ func (ms *MockServer) handleCreateRole(
 func (ms *MockServer) handleGetRoles(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	arr := ms.RoleList()
 	roles := rolesBody{Roles: arr, Total: len(arr)}
