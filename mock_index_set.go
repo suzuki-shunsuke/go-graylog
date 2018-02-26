@@ -189,6 +189,11 @@ func (ms *MockServer) handleSetDefaultIndexSet(
 		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
 		return
 	}
+	if !indexSet.Writable {
+		w.WriteHeader(409)
+		w.Write([]byte(`{"type": "ApiError", "message": "Default index set must be writable."}`))
+		return
+	}
 	for k, v := range ms.IndexSets {
 		if v.Default {
 			v.Default = false

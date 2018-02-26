@@ -286,7 +286,6 @@ func (client *Client) SetDefaultIndexSet(id string) (*IndexSet, error) {
 func (client *Client) SetDefaultIndexSetContext(
 	ctx context.Context, id string,
 ) (*IndexSet, error) {
-	// {"type": "ApiError", "message": "Default index set must be writable."}
 	if id == "" {
 		return nil, errors.New("id is empty")
 	}
