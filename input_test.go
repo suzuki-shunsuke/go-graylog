@@ -7,11 +7,15 @@ import (
 
 func dummyInput() *Input {
 	return &Input{
-		Id:            "5a90cee5c006c60001efbbf5",
-		Title:         "test",
-		Type:          "org.graylog2.inputs.gelf.tcp.GELFTCPInput",
-		Node:          "2ad6b340-3e5f-4a96-ae81-040cfb8b6024",
-		Configuration: &InputConfiguration{}}
+		Id:    "5a90cee5c006c60001efbbf5",
+		Title: "test",
+		Type:  "org.graylog2.inputs.gelf.tcp.GELFTCPInput",
+		Node:  "2ad6b340-3e5f-4a96-ae81-040cfb8b6024",
+		Configuration: &InputConfiguration{
+			BindAddress:    "0.0.0.0",
+			Port:           514,
+			RecvBufferSize: 262144,
+		}}
 }
 
 func TestCreateInput(t *testing.T) {
