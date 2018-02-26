@@ -50,11 +50,15 @@ func (ms *MockServer) handleGetIndexSets(
 func (ms *MockServer) handleGetIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
+	id := ps.ByName("indexSetId")
+	if id == "stats" {
+		ms.handleGetAllIndexSetsStats(w, r, ps)
+		return
+	}
 	ms.Logger.WithFields(log.Fields{
 		"path": r.URL.Path, "method": r.Method,
 	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
-	id := ps.ByName("indexSetId")
 	indexSet, ok := ms.IndexSets[id]
 	if !ok {
 		w.WriteHeader(404)
@@ -228,6 +232,22 @@ func (ms *MockServer) handleGetIndexSetStats(
 		return
 	}
 	b, err := json.Marshal(&indexSetStats)
+	if err != nil {
+		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		return
+	}
+	w.Write(b)
+}
+
+// GET /system/indices/index_sets/stats Get stats of all index sets
+func (ms *MockServer) handleGetAllIndexSetsStats(
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
+	w.Header().Set("Content-Type", "application/json")
+	b, err := json.Marshal(ms.AllIndexSetsStats())
 	if err != nil {
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return

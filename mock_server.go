@@ -207,3 +207,16 @@ func (ms *MockServer) handleNotFound(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprintf(
 		`{"message":"Page Not Found %s %s"}`, r.Method, r.URL.Path)))
 }
+
+func (ms *MockServer) AllIndexSetsStats() *IndexSetStats {
+	indexSetStats := &IndexSetStats{}
+	if ms.IndexSetStats == nil {
+		return indexSetStats
+	}
+	for _, stats := range ms.IndexSetStats {
+		indexSetStats.Indices += stats.Indices
+		indexSetStats.Documents += stats.Documents
+		indexSetStats.Size += stats.Size
+	}
+	return indexSetStats
+}

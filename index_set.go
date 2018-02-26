@@ -381,3 +381,48 @@ func (client *Client) GetIndexSetStatsContext(
 	}
 	return indexSetStats, nil
 }
+
+// GET /system/indices/index_sets/stats Get stats of all index sets
+func (client *Client) GetAllIndexSetsStats() (*IndexSetStats, error) {
+	return client.GetAllIndexSetsStatsContext(context.Background())
+}
+
+// GET /system/indices/index_sets/stats Get stats of all index sets
+func (client *Client) GetAllIndexSetsStatsContext(
+	ctx context.Context,
+) (*IndexSetStats, error) {
+	req, err := http.NewRequest(
+		http.MethodGet, fmt.Sprintf(
+			"%s/stats", client.endpoints.IndexSets), nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+	}
+	resp, err := callRequest(req, client, ctx)
+	if err != nil {
+		return nil, errors.Wrap(
+			err, "Failed to call GET /system/indices/index_sets/stats API")
+	}
+	defer resp.Body.Close()
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to read response body")
+	}
+	if resp.StatusCode >= 400 {
+		e := Error{}
+		err = json.Unmarshal(b, &e)
+		if err != nil {
+			return nil, errors.Wrap(
+				err, fmt.Sprintf(
+					"Failed to parse response body as Error: %s", string(b)))
+		}
+		return nil, errors.New(e.Message)
+	}
+	indexSetStats := &IndexSetStats{}
+	err = json.Unmarshal(b, indexSetStats)
+	if err != nil {
+		return nil, errors.Wrap(
+			err, fmt.Sprintf(
+				"Failed to parse response body as IndexSetStats: %s", string(b)))
+	}
+	return indexSetStats, nil
+}

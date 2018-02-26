@@ -181,3 +181,25 @@ func TestGetIndexSetStats(t *testing.T) {
 			"client.GetIndexSetStats() == %v, wanted %v", isStats, indexSetStats)
 	}
 }
+
+func TestGetAllIndexSetsStats(t *testing.T) {
+	server, client, err := getServerAndClient()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	defer server.Close()
+	indexSet := dummyIndexSet()
+	indexSetStats := dummyIndexSetStats()
+	server.IndexSets[indexSet.Id] = *indexSet
+	server.IndexSetStats[indexSet.Id] = *indexSetStats
+	isStats, err := client.GetAllIndexSetsStats()
+	if err != nil {
+		t.Error("Failed to UpdateIndexSet", err)
+		return
+	}
+	if !reflect.DeepEqual(*indexSetStats, *isStats) {
+		t.Errorf(
+			"client.GetAllIndexSetsStats() == %v, wanted %v", isStats, indexSetStats)
+	}
+}
