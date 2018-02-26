@@ -104,17 +104,28 @@ func (ms *MockServer) handleDeleteInput(w http.ResponseWriter, r *http.Request, 
 }
 
 func validateInput(input *Input) (int, []byte) {
+	// Required
+	// type, title configuration.bind_address, configuration.port
+	// configuration.recv_buffer_size
 	if input.Type == "" {
 		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.models.system.inputs.requests.InputCreateRequest, problem: Null type\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@107566a4; line: 1, column: 17]"}`)
+	}
+	if input.Title == "" {
+		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.models.system.inputs.requests.InputCreateRequest, problem: Null title\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@320397d1; line: 8, column: 1]"}`)
 	}
 	if input.Configuration == nil {
 		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.models.system.inputs.requests.InputCreateRequest, problem: Null configuration\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@3d687f1; line: 1, column: 30]"}`)
 	}
-	if input.Node == "" {
-		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.models.system.inputs.requests.InputCreateRequest, problem: Null node\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@3d687f1; line: 1, column: 30]"}`)
+	if input.Configuration.BindAddress == "" {
+		return 400, []byte(`{"type": "ApiError", "message": "Missing or invalid input configuration."}`)
 	}
-	// skip configuration validation
-	// 400 {"type": "ApiError", "message": "Missing or invalid input configuration."}
+	if input.Configuration.Port == 0 {
+		return 400, []byte(`{"type": "ApiError", "message": "Missing or invalid input configuration."}`)
+	}
+	if input.Configuration.RecvBufferSize == 0 {
+		return 400, []byte(`{"type": "ApiError", "message": "Missing or invalid input configuration."}`)
+	}
+	// node optional
 	// skip type validation
 	// 404 {"type": "ApiError", "message": "There is no such input type registered."}
 	return 200, []byte("")
