@@ -29,6 +29,14 @@ func dummyIndexSet() *IndexSet {
 		Default:                         true}
 }
 
+func dummyIndexSetStats() *IndexSetStats {
+	return &IndexSetStats{
+		Indices:   2,
+		Documents: 0,
+		Size:      1412,
+	}
+}
+
 func TestGetIndexSets(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
@@ -106,7 +114,8 @@ func TestUpdateIndexSet(t *testing.T) {
 		return
 	}
 	if !reflect.DeepEqual(*updatedIndexSet, *indexSet) {
-		t.Errorf("client.UpdateIndexSet() == %v, wanted %v", updatedIndexSet, indexSet)
+		t.Errorf(
+			"client.UpdateIndexSet() == %v, wanted %v", updatedIndexSet, indexSet)
 	}
 }
 
@@ -148,5 +157,27 @@ func TestSetDefaultIndexSet(t *testing.T) {
 	indexSet.Default = true
 	if !reflect.DeepEqual(*updatedIndexSet, *indexSet) {
 		t.Errorf("client.SetDefaultIndexSet() == %v, wanted %v", updatedIndexSet, indexSet)
+	}
+}
+
+func TestGetIndexSetStats(t *testing.T) {
+	server, client, err := getServerAndClient()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	defer server.Close()
+	indexSet := dummyIndexSet()
+	indexSetStats := dummyIndexSetStats()
+	server.IndexSets[indexSet.Id] = *indexSet
+	server.IndexSetStats[indexSet.Id] = *indexSetStats
+	isStats, err := client.GetIndexSetStats(indexSet.Id)
+	if err != nil {
+		t.Error("Failed to UpdateIndexSet", err)
+		return
+	}
+	if !reflect.DeepEqual(*indexSetStats, *isStats) {
+		t.Errorf(
+			"client.GetIndexSetStats() == %v, wanted %v", isStats, indexSetStats)
 	}
 }

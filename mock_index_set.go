@@ -211,3 +211,26 @@ func (ms *MockServer) handleSetDefaultIndexSet(
 	}
 	w.Write(b)
 }
+
+// GET /system/indices/index_sets/{id}/stats Get index set statistics
+func (ms *MockServer) handleGetIndexSetStats(
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
+	w.Header().Set("Content-Type", "application/json")
+	id := ps.ByName("indexSetId")
+	indexSetStats, ok := ms.IndexSetStats[id]
+	if !ok {
+		w.WriteHeader(404)
+		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
+		return
+	}
+	b, err := json.Marshal(&indexSetStats)
+	if err != nil {
+		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		return
+	}
+	w.Write(b)
+}

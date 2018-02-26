@@ -22,23 +22,26 @@ type MockServer struct {
 	Server   *httptest.Server `json:"-"`
 	Endpoint string           `json:"-"`
 
-	Users     map[string]User     `json:"users"`
-	Roles     map[string]Role     `json:"roles"`
-	Inputs    map[string]Input    `json:"inputs"`
-	IndexSets map[string]IndexSet `json:"index_sets"`
-	Logger    *log.Logger         `json:"-"`
-	DataPath  string              `json:"-"`
+	Users         map[string]User          `json:"users"`
+	Roles         map[string]Role          `json:"roles"`
+	Inputs        map[string]Input         `json:"inputs"`
+	IndexSets     map[string]IndexSet      `json:"index_sets"`
+	IndexSetStats map[string]IndexSetStats `json:"index_set_stats"`
+
+	Logger   *log.Logger `json:"-"`
+	DataPath string      `json:"-"`
 }
 
 // NewMockServer returns new MockServer but doesn't start it.
 // If addr is an empty string, the free port is assigned automatially.
 func NewMockServer(addr string) (*MockServer, error) {
 	ms := &MockServer{
-		Users:     map[string]User{},
-		Roles:     map[string]Role{},
-		Inputs:    map[string]Input{},
-		IndexSets: map[string]IndexSet{},
-		Logger:    log.New(),
+		Users:         map[string]User{},
+		Roles:         map[string]Role{},
+		Inputs:        map[string]Input{},
+		IndexSets:     map[string]IndexSet{},
+		IndexSetStats: map[string]IndexSetStats{},
+		Logger:        log.New(),
 	}
 	ms.Logger.SetLevel(log.PanicLevel)
 
@@ -71,6 +74,7 @@ func NewMockServer(addr string) (*MockServer, error) {
 	router.POST("/api/system/indices/index_sets", ms.handleCreateIndexSet)
 	router.PUT("/api/system/indices/index_sets/:indexSetId", ms.handleUpdateIndexSet)
 	router.DELETE("/api/system/indices/index_sets/:indexSetId", ms.handleDeleteIndexSet)
+	router.GET("/api/system/indices/index_sets/:indexSetId/stats", ms.handleGetIndexSetStats)
 	router.PUT("/api/system/indices/index_sets/:indexSetId/default", ms.handleSetDefaultIndexSet)
 
 	router.NotFound = ms.handleNotFound
@@ -176,6 +180,7 @@ func (ms *MockServer) AddIndexSet(indexSet *IndexSet) {
 
 func (ms *MockServer) DeleteIndexSet(id string) {
 	delete(ms.IndexSets, id)
+	// delete(ms.IndexSetStats, id)
 	ms.safeSave()
 }
 
