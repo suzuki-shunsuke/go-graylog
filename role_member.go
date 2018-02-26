@@ -21,6 +21,9 @@ func (client *Client) GetRoleMembers(name string) ([]User, error) {
 func (client *Client) GetRoleMembersContext(
 	ctx context.Context, name string,
 ) ([]User, error) {
+	if name == "" {
+		return nil, errors.New("name is empty")
+	}
 	req, err := http.NewRequest(
 		http.MethodGet, client.RoleMembersEndpoint(name), nil)
 	if err != nil {
@@ -66,6 +69,12 @@ func (client *Client) AddUserToRole(userName, roleName string) error {
 func (client *Client) AddUserToRoleContext(
 	ctx context.Context, userName, roleName string,
 ) error {
+	if userName == "" {
+		return errors.New("userName is empty")
+	}
+	if roleName == "" {
+		return errors.New("roleName is empty")
+	}
 	req, err := http.NewRequest(
 		http.MethodPut, client.RoleMemberEndpoint(userName, roleName), nil)
 	if err != nil {
@@ -105,6 +114,12 @@ func (client *Client) RemoveUserFromRole(userName, roleName string) error {
 func (client *Client) RemoveUserFromRoleContext(
 	ctx context.Context, userName, roleName string,
 ) error {
+	if userName == "" {
+		return errors.New("userName is empty")
+	}
+	if roleName == "" {
+		return errors.New("roleName is empty")
+	}
 	req, err := http.NewRequest(
 		http.MethodDelete, client.RoleMemberEndpoint(userName, roleName), nil)
 	if err != nil {

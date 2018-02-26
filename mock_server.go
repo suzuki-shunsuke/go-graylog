@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net"
+	"net/http"
 	"net/http/httptest"
 	"os"
 	"sync"
@@ -70,6 +71,8 @@ func NewMockServer(addr string) (*MockServer, error) {
 	router.POST("/api/system/indices/index_sets", ms.handleCreateIndexSet)
 	router.PUT("/api/system/indices/index_sets/:indexSetId", ms.handleUpdateIndexSet)
 	router.DELETE("/api/system/indices/index_sets/:indexSetId", ms.handleDeleteIndexSet)
+
+	router.NotFound = ms.handleNotFound
 
 	server := httptest.NewUnstartedServer(router)
 	if addr != "" {
@@ -186,4 +189,15 @@ func (ms *MockServer) AddInput(input *Input) {
 func (ms *MockServer) DeleteInput(id string) {
 	delete(ms.Inputs, id)
 	ms.safeSave()
+}
+
+func (ms *MockServer) handleNotFound(w http.ResponseWriter, r *http.Request) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+		"message": "404 Page Not Found",
+	}).Info("request start")
+	w.WriteHeader(404)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(fmt.Sprintf(
+		`{"message":"Page Not Found %s %s"}`, r.Method, r.URL.Path)))
 }

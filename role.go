@@ -26,18 +26,18 @@ type Role struct {
 
 // CreateRole
 // POST /roles Create a new role
-func (client *Client) CreateRole(params *Role) (*Role, error) {
-	return client.CreateRoleContext(context.Background(), params)
+func (client *Client) CreateRole(role *Role) (*Role, error) {
+	return client.CreateRoleContext(context.Background(), role)
 }
 
 // CreateRoleContext
 // POST /roles Create a new role
 func (client *Client) CreateRoleContext(
-	ctx context.Context, params *Role,
+	ctx context.Context, role *Role,
 ) (*Role, error) {
-	b, err := json.Marshal(params)
+	b, err := json.Marshal(role)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(params)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(role)")
 	}
 	req, err := http.NewRequest(
 		http.MethodPost, client.endpoints.Roles, bytes.NewBuffer(b))
@@ -63,13 +63,13 @@ func (client *Client) CreateRoleContext(
 		}
 		return nil, errors.New(e.Message)
 	}
-	role := Role{}
-	err = json.Unmarshal(b, &role)
+	ret := &Role{}
+	err = json.Unmarshal(b, ret)
 	if err != nil {
 		return nil, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Role: %s", string(b)))
 	}
-	return &role, nil
+	return ret, nil
 }
 
 type rolesBody struct {
@@ -131,6 +131,9 @@ func (client *Client) GetRole(name string) (*Role, error) {
 func (client *Client) GetRoleContext(
 	ctx context.Context, name string,
 ) (*Role, error) {
+	if name == "" {
+		return nil, errors.New("name is empty")
+	}
 	req, err := http.NewRequest(
 		http.MethodGet, fmt.Sprintf("%s/%s", client.endpoints.Roles, name), nil)
 	if err != nil {
@@ -166,18 +169,21 @@ func (client *Client) GetRoleContext(
 
 // UpdateRole
 // PUT /roles/{rolename} Update an existing role
-func (client *Client) UpdateRole(name string, params *Role) (*Role, error) {
-	return client.UpdateRoleContext(context.Background(), name, params)
+func (client *Client) UpdateRole(name string, role *Role) (*Role, error) {
+	return client.UpdateRoleContext(context.Background(), name, role)
 }
 
 // UpdateRoleContext
 // PUT /roles/{rolename} Update an existing role
 func (client *Client) UpdateRoleContext(
-	ctx context.Context, name string, params *Role,
+	ctx context.Context, name string, role *Role,
 ) (*Role, error) {
-	b, err := json.Marshal(params)
+	if name == "" {
+		return nil, errors.New("name is empty")
+	}
+	b, err := json.Marshal(role)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(params)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(role)")
 	}
 	req, err := http.NewRequest(
 		http.MethodPut, fmt.Sprintf("%s/%s", client.endpoints.Roles, name),
@@ -204,13 +210,13 @@ func (client *Client) UpdateRoleContext(
 		}
 		return nil, errors.New(e.Message)
 	}
-	role := Role{}
-	err = json.Unmarshal(b, &role)
+	ret := &Role{}
+	err = json.Unmarshal(b, ret)
 	if err != nil {
 		return nil, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Role: %s", string(b)))
 	}
-	return &role, nil
+	return ret, nil
 }
 
 // DeleteRole
@@ -224,6 +230,9 @@ func (client *Client) DeleteRole(name string) error {
 func (client *Client) DeleteRoleContext(
 	ctx context.Context, name string,
 ) error {
+	if name == "" {
+		return errors.New("name is empty")
+	}
 	req, err := http.NewRequest(
 		http.MethodDelete, fmt.Sprintf("%s/%s", client.endpoints.Roles, name), nil)
 	if err != nil {

@@ -106,6 +106,9 @@ func (client *Client) GetIndexSet(id string) (*IndexSet, error) {
 func (client *Client) GetIndexSetContext(
 	ctx context.Context, id string,
 ) (*IndexSet, error) {
+	if id == "" {
+		return nil, errors.New("id is empty")
+	}
 	req, err := http.NewRequest(
 		http.MethodGet, fmt.Sprintf("%s/%s", client.endpoints.IndexSets, id), nil)
 	if err != nil {
@@ -150,7 +153,7 @@ func (client *Client) CreateIndexSetContext(
 ) (*IndexSet, error) {
 	b, err := json.Marshal(indexSet)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(params)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(indexSet)")
 	}
 	req, err := http.NewRequest(
 		http.MethodPost, client.endpoints.IndexSets, bytes.NewBuffer(b))
@@ -194,9 +197,12 @@ func (client *Client) UpdateIndexSet(id string, indexSet *IndexSet) (*IndexSet, 
 func (client *Client) UpdateIndexSetContext(
 	ctx context.Context, id string, indexSet *IndexSet,
 ) (*IndexSet, error) {
+	if id == "" {
+		return nil, errors.New("id is empty")
+	}
 	b, err := json.Marshal(indexSet)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(params)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(indexSet)")
 	}
 	req, err := http.NewRequest(
 		http.MethodPut, fmt.Sprintf("%s/%s", client.endpoints.IndexSets, id),
@@ -241,6 +247,9 @@ func (client *Client) DeleteIndexSet(id string) error {
 func (client *Client) DeleteIndexSetContext(
 	ctx context.Context, id string,
 ) error {
+	if id == "" {
+		return errors.New("id is empty")
+	}
 	req, err := http.NewRequest(
 		http.MethodDelete, fmt.Sprintf("%s/%s", client.endpoints.IndexSets, id), nil)
 	if err != nil {

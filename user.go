@@ -54,7 +54,7 @@ func (client *Client) CreateUserContext(
 ) error {
 	b, err := json.Marshal(user)
 	if err != nil {
-		return errors.Wrap(err, "Failed to json.Marshal(params)")
+		return errors.Wrap(err, "Failed to json.Marshal(user)")
 	}
 	req, err := http.NewRequest(
 		http.MethodPost, client.endpoints.Users, bytes.NewBuffer(b))
@@ -141,6 +141,9 @@ func (client *Client) GetUser(name string) (*User, error) {
 func (client *Client) GetUserContext(
 	ctx context.Context, name string,
 ) (*User, error) {
+	if name == "" {
+		return nil, errors.New("name is empty")
+	}
 	req, err := http.NewRequest(
 		http.MethodGet, fmt.Sprintf("%s/%s", client.endpoints.Users, name), nil)
 	if err != nil {
@@ -185,6 +188,9 @@ func (client *Client) UpdateUser(name string, user *User) error {
 func (client *Client) UpdateUserContext(
 	ctx context.Context, name string, user *User,
 ) error {
+	if name == "" {
+		return errors.New("name is empty")
+	}
 	b, err := json.Marshal(user)
 	if err != nil {
 		return errors.Wrap(err, "Failed to json.Marshal(user)")
@@ -228,6 +234,9 @@ func (client *Client) DeleteUser(name string) error {
 func (client *Client) DeleteUserContext(
 	ctx context.Context, name string,
 ) error {
+	if name == "" {
+		return errors.New("name is empty")
+	}
 	req, err := http.NewRequest(
 		http.MethodDelete, fmt.Sprintf("%s/%s", client.endpoints.Users, name), nil)
 	if err != nil {

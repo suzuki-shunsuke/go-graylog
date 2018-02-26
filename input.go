@@ -41,18 +41,18 @@ type Input struct {
 
 // CreateInput
 // POST /system/inputs Launch input on this node
-func (client *Client) CreateInput(params *Input) (id string, err error) {
-	return client.CreateInputContext(context.Background(), params)
+func (client *Client) CreateInput(input *Input) (id string, err error) {
+	return client.CreateInputContext(context.Background(), input)
 }
 
 // CreateInputContext
 // POST /system/inputs Launch input on this node
 func (client *Client) CreateInputContext(
-	ctx context.Context, params *Input,
+	ctx context.Context, input *Input,
 ) (id string, err error) {
-	b, err := json.Marshal(params)
+	b, err := json.Marshal(input)
 	if err != nil {
-		return "", errors.Wrap(err, "Failed to json.Marshal(params)")
+		return "", errors.Wrap(err, "Failed to json.Marshal(input)")
 	}
 	req, err := http.NewRequest(
 		http.MethodPost, client.endpoints.Inputs, bytes.NewBuffer(b))
@@ -78,13 +78,13 @@ func (client *Client) CreateInputContext(
 		}
 		return "", errors.New(e.Message)
 	}
-	input := Input{}
-	err = json.Unmarshal(b, &input)
+	ret := &Input{}
+	err = json.Unmarshal(b, ret)
 	if err != nil {
 		return "", errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Input: %s", string(b)))
 	}
-	return input.Id, nil
+	return ret.Id, nil
 }
 
 type inputsBody struct {
@@ -146,6 +146,9 @@ func (client *Client) GetInput(id string) (*Input, error) {
 func (client *Client) GetInputContext(
 	ctx context.Context, id string,
 ) (*Input, error) {
+	if id == "" {
+		return nil, errors.New("id is empty")
+	}
 	req, err := http.NewRequest(
 		http.MethodGet, fmt.Sprintf("%s/%s", client.endpoints.Inputs, id), nil)
 	if err != nil {
@@ -181,18 +184,21 @@ func (client *Client) GetInputContext(
 
 // UpdateInput
 // PUT /system/inputs/{inputId} Update input on this node
-func (client *Client) UpdateInput(id string, params *Input) (*Input, error) {
-	return client.UpdateInputContext(context.Background(), id, params)
+func (client *Client) UpdateInput(id string, input *Input) (*Input, error) {
+	return client.UpdateInputContext(context.Background(), id, input)
 }
 
 // UpdateInputContext
 // PUT /system/inputs/{inputId} Update input on this node
 func (client *Client) UpdateInputContext(
-	ctx context.Context, id string, params *Input,
+	ctx context.Context, id string, input *Input,
 ) (*Input, error) {
-	b, err := json.Marshal(params)
+	if id == "" {
+		return nil, errors.New("id is empty")
+	}
+	b, err := json.Marshal(input)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(params)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(input)")
 	}
 	req, err := http.NewRequest(
 		http.MethodPut, fmt.Sprintf("%s/%s", client.endpoints.Inputs, id),
@@ -219,13 +225,13 @@ func (client *Client) UpdateInputContext(
 		}
 		return nil, errors.New(e.Message)
 	}
-	input := Input{}
-	err = json.Unmarshal(b, &input)
+	ret := &Input{}
+	err = json.Unmarshal(b, ret)
 	if err != nil {
 		return nil, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Input: %s", string(b)))
 	}
-	return &input, nil
+	return ret, nil
 }
 
 // DeleteInput
@@ -239,6 +245,9 @@ func (client *Client) DeleteInput(id string) error {
 func (client *Client) DeleteInputContext(
 	ctx context.Context, id string,
 ) error {
+	if id == "" {
+		return errors.New("id is empty")
+	}
 	req, err := http.NewRequest(
 		http.MethodDelete, fmt.Sprintf("%s/%s", client.endpoints.Inputs, id), nil)
 	if err != nil {
