@@ -53,6 +53,7 @@ func (ms *MockServer) EnabledStreamList() []Stream {
 // CreateStream
 // {"type": "ApiError", "message": "Unable to map property id.\nKnown properties include: index_set_id, rules, title, description, content_pack, matching_type, remove_matches_from_default_stream"}
 // not allowed id, creator_user_id, outputs, created_at, disabled, alert_conditions, alert_receivers, is_default
+// Assigned index set must be writable!
 func validateCreateStream(stream *Stream) (int, []byte) {
 	key := ""
 	switch {
@@ -76,6 +77,14 @@ func validateCreateStream(stream *Stream) (int, []byte) {
 	if key != "" {
 		return 400, []byte(fmt.Sprintf(`{"type": "ApiError", "message": "Unable to map property %s.\nKnown properties include: index_set_id, rules, title, description, content_pack, matching_type, remove_matches_from_default_stream"}`, key))
 	}
+	if stream.Title == "" {
+		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.resources.streams.requests.CreateStreamRequest, problem: Null title\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@53a6a093; line: 1, column: 2]" }`)
+	}
+	if stream.IndexSetId == "" {
+		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.resources.streams.requests.CreateStreamRequest, problem: Null indexSetId\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@3b7194f4; line: 1, column: 17]"}`)
+	}
+	// 500, {"type": "ApiError", "message": "invalid hexadecimal representation of an ObjectId: [%s]"}
+
 	return 200, []byte("")
 }
 
