@@ -10,6 +10,21 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func (ms *MockServer) AddUser(user *User) {
+	ms.Users[user.Username] = *user
+	ms.safeSave()
+}
+
+func (ms *MockServer) UpdateUser(name string, user *User) {
+	delete(ms.Users, name)
+	ms.AddUser(user)
+}
+
+func (ms *MockServer) DeleteUser(name string) {
+	delete(ms.Users, name)
+	ms.safeSave()
+}
+
 func (ms *MockServer) UserList() []User {
 	if ms.Users == nil {
 		return []User{}

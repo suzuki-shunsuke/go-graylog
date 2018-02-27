@@ -10,6 +10,21 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func (ms *MockServer) AddRole(role *Role) {
+	ms.Roles[role.Name] = *role
+	ms.safeSave()
+}
+
+func (ms *MockServer) UpdateRole(name string, role *Role) {
+	delete(ms.Roles, name)
+	ms.AddRole(role)
+}
+
+func (ms *MockServer) DeleteRole(name string) {
+	delete(ms.Roles, name)
+	ms.safeSave()
+}
+
 func (ms *MockServer) RoleList() []Role {
 	if ms.Roles == nil {
 		return []Role{}

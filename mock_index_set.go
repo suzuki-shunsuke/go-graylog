@@ -10,6 +10,20 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func (ms *MockServer) AddIndexSet(indexSet *IndexSet) {
+	if indexSet.Id == "" {
+		indexSet.Id = randStringBytesMaskImprSrc(24)
+	}
+	ms.IndexSets[indexSet.Id] = *indexSet
+	ms.safeSave()
+}
+
+func (ms *MockServer) DeleteIndexSet(id string) {
+	delete(ms.IndexSets, id)
+	// delete(ms.IndexSetStats, id)
+	ms.safeSave()
+}
+
 func (ms *MockServer) IndexSetList() []IndexSet {
 	if ms.IndexSets == nil {
 		return []IndexSet{}

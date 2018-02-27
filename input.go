@@ -126,8 +126,8 @@ func (client *Client) GetInputsContext(
 		}
 		return nil, errors.New(e.Message)
 	}
-	inputs := inputsBody{}
-	err = json.Unmarshal(b, &inputs)
+	inputs := &inputsBody{}
+	err = json.Unmarshal(b, inputs)
 	if err != nil {
 		return nil, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Inputs: %s", string(b)))
@@ -173,13 +173,13 @@ func (client *Client) GetInputContext(
 		}
 		return nil, errors.New(e.Message)
 	}
-	input := Input{}
-	err = json.Unmarshal(b, &input)
+	input := &Input{}
+	err = json.Unmarshal(b, input)
 	if err != nil {
 		return nil, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Input: %s", string(b)))
 	}
-	return &input, nil
+	return input, nil
 }
 
 // UpdateInput
@@ -263,8 +263,8 @@ func (client *Client) DeleteInputContext(
 		if err != nil {
 			return errors.Wrap(err, "Failed to read response body")
 		}
-		e := Error{}
-		err = json.Unmarshal(b, &e)
+		e := &Error{}
+		err = json.Unmarshal(b, e)
 		if err != nil {
 			return errors.Wrap(
 				err, fmt.Sprintf(

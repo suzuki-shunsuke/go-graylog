@@ -10,6 +10,19 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func (ms *MockServer) AddInput(input *Input) {
+	if input.Id == "" {
+		input.Id = randStringBytesMaskImprSrc(24)
+	}
+	ms.Inputs[input.Id] = *input
+	ms.safeSave()
+}
+
+func (ms *MockServer) DeleteInput(id string) {
+	delete(ms.Inputs, id)
+	ms.safeSave()
+}
+
 func (ms *MockServer) InputList() []Input {
 	if ms.Inputs == nil {
 		return []Input{}

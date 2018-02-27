@@ -27,6 +27,7 @@ type MockServer struct {
 	Inputs        map[string]Input         `json:"inputs"`
 	IndexSets     map[string]IndexSet      `json:"index_sets"`
 	IndexSetStats map[string]IndexSetStats `json:"index_set_stats"`
+	Streams       map[string]Stream        `json:"streams"`
 
 	Logger   *log.Logger `json:"-"`
 	DataPath string      `json:"-"`
@@ -41,6 +42,7 @@ func NewMockServer(addr string) (*MockServer, error) {
 		Inputs:        map[string]Input{},
 		IndexSets:     map[string]IndexSet{},
 		IndexSetStats: map[string]IndexSetStats{},
+		Streams:       map[string]Stream{},
 		Logger:        log.New(),
 	}
 	ms.Logger.SetLevel(log.PanicLevel)
@@ -61,7 +63,8 @@ func NewMockServer(addr string) (*MockServer, error) {
 
 	router.GET("/api/roles/:rolename/members", ms.handleRoleMembers)
 	router.PUT("/api/roles/:rolename/members/:username", ms.handleAddUserToRole)
-	router.DELETE("/api/roles/:rolename/members/:username", ms.handleRemoveUserFromRole)
+	router.DELETE(
+		"/api/roles/:rolename/members/:username", ms.handleRemoveUserFromRole)
 
 	router.GET("/api/system/inputs", ms.handleGetInputs)
 	router.GET("/api/system/inputs/:inputId", ms.handleGetInput)
@@ -70,12 +73,27 @@ func NewMockServer(addr string) (*MockServer, error) {
 	router.DELETE("/api/system/inputs/:inputId", ms.handleDeleteInput)
 
 	router.GET("/api/system/indices/index_sets", ms.handleGetIndexSets)
-	router.GET("/api/system/indices/index_sets/:indexSetId", ms.handleGetIndexSet)
+	router.GET(
+		"/api/system/indices/index_sets/:indexSetId", ms.handleGetIndexSet)
 	router.POST("/api/system/indices/index_sets", ms.handleCreateIndexSet)
-	router.PUT("/api/system/indices/index_sets/:indexSetId", ms.handleUpdateIndexSet)
-	router.DELETE("/api/system/indices/index_sets/:indexSetId", ms.handleDeleteIndexSet)
-	router.GET("/api/system/indices/index_sets/:indexSetId/stats", ms.handleGetIndexSetStats)
-	router.PUT("/api/system/indices/index_sets/:indexSetId/default", ms.handleSetDefaultIndexSet)
+	router.PUT(
+		"/api/system/indices/index_sets/:indexSetId", ms.handleUpdateIndexSet)
+	router.DELETE(
+		"/api/system/indices/index_sets/:indexSetId", ms.handleDeleteIndexSet)
+	router.GET(
+		"/api/system/indices/index_sets/:indexSetId/stats",
+		ms.handleGetIndexSetStats)
+	router.PUT(
+		"/api/system/indices/index_sets/:indexSetId/default",
+		ms.handleSetDefaultIndexSet)
+
+	router.GET("/api/streams", ms.handleGetStreams)
+	router.POST("/api/streams", ms.handleCreateStream)
+	router.GET("/api/streams/:streamId", ms.handleGetStream)
+	router.PUT("/api/streams/:streamId", ms.handleUpdateStream)
+	router.DELETE("/api/streams/:streamId", ms.handleDeleteStream)
+	router.POST("/api/streams/:streamId/pause", ms.handlePauseStream)
+	router.POST("/api/streams/:streamId/resume", ms.handleResumeStream)
 
 	router.NotFound = ms.handleNotFound
 
@@ -138,63 +156,6 @@ func (ms *MockServer) safeSave() {
 			"error": err, "data_path": ms.DataPath,
 		}).Error("Failed to save data")
 	}
-}
-
-func (ms *MockServer) AddUser(user *User) {
-	ms.Users[user.Username] = *user
-	ms.safeSave()
-}
-
-func (ms *MockServer) UpdateUser(name string, user *User) {
-	delete(ms.Users, name)
-	ms.AddUser(user)
-}
-
-func (ms *MockServer) DeleteUser(name string) {
-	delete(ms.Users, name)
-	ms.safeSave()
-}
-
-func (ms *MockServer) AddRole(role *Role) {
-	ms.Roles[role.Name] = *role
-	ms.safeSave()
-}
-
-func (ms *MockServer) UpdateRole(name string, role *Role) {
-	delete(ms.Roles, name)
-	ms.AddRole(role)
-}
-
-func (ms *MockServer) DeleteRole(name string) {
-	delete(ms.Roles, name)
-	ms.safeSave()
-}
-
-func (ms *MockServer) AddIndexSet(indexSet *IndexSet) {
-	if indexSet.Id == "" {
-		indexSet.Id = randStringBytesMaskImprSrc(24)
-	}
-	ms.IndexSets[indexSet.Id] = *indexSet
-	ms.safeSave()
-}
-
-func (ms *MockServer) DeleteIndexSet(id string) {
-	delete(ms.IndexSets, id)
-	// delete(ms.IndexSetStats, id)
-	ms.safeSave()
-}
-
-func (ms *MockServer) AddInput(input *Input) {
-	if input.Id == "" {
-		input.Id = randStringBytesMaskImprSrc(24)
-	}
-	ms.Inputs[input.Id] = *input
-	ms.safeSave()
-}
-
-func (ms *MockServer) DeleteInput(id string) {
-	delete(ms.Inputs, id)
-	ms.safeSave()
 }
 
 func (ms *MockServer) handleNotFound(w http.ResponseWriter, r *http.Request) {

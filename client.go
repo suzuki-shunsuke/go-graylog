@@ -11,6 +11,7 @@ type Endpoints struct {
 	Users     string
 	Inputs    string
 	IndexSets string
+	Streams   string
 }
 
 type Client struct {
@@ -36,6 +37,7 @@ func NewClient(endpoint, name, password string) (*Client, error) {
 	endpoints.Users = getEndpoint(*base, "/users")
 	endpoints.Inputs = getEndpoint(*base, "/system/inputs")
 	endpoints.IndexSets = getEndpoint(*base, "/system/indices/index_sets")
+	endpoints.Streams = getEndpoint(*base, "/streams")
 
 	return &Client{
 		name: name, password: password, endpoints: endpoints,

@@ -12,22 +12,22 @@ import (
 )
 
 type IndexSet struct {
-	Id                              string             `json:"id"`
-	Title                           string             `json:"title"`
-	Description                     string             `json:"description"`
-	IndexPrefix                     string             `json:"index_prefix"`
-	Shards                          int                `json:"shards"`
-	Replicas                        int                `json:"replicas"`
-	RotationStrategyClass           string             `json:"rotation_strategy_class"`
-	RotationStrategy                *RotationStrategy  `json:"rotation_strategy"`
-	RetentionStrategyClass          string             `json:"retention_strategy_class"`
-	RetentionStrategy               *RetentionStrategy `json:"retention_strategy"`
-	CreationDate                    string             `json:"creation_date"`
-	IndexAnalyzer                   string             `json:"index_analyzer"`
-	IndexOptimizationMaxNumSegments int                `json:"index_optimization_max_num_segments"`
-	IndexOptimizationDisabled       bool               `json:"index_optimization_disabled"`
-	Writable                        bool               `json:"writable"`
-	Default                         bool               `json:"default"`
+	Id                              string             `json:"id,omitempty"`
+	Title                           string             `json:"title,omitempty"`
+	Description                     string             `json:"description,omitempty"`
+	IndexPrefix                     string             `json:"index_prefix,omitempty"`
+	Shards                          int                `json:"shards,omitempty"`
+	Replicas                        int                `json:"replicas,omitempty"`
+	RotationStrategyClass           string             `json:"rotation_strategy_class,omitempty"`
+	RotationStrategy                *RotationStrategy  `json:"rotation_strategy,omitempty"`
+	RetentionStrategyClass          string             `json:"retention_strategy_class,omitempty"`
+	RetentionStrategy               *RetentionStrategy `json:"retention_strategy,omitempty"`
+	CreationDate                    string             `json:"creation_date,omitempty"`
+	IndexAnalyzer                   string             `json:"index_analyzer,omitempty"`
+	IndexOptimizationMaxNumSegments int                `json:"index_optimization_max_num_segments,omitempty"`
+	IndexOptimizationDisabled       bool               `json:"index_optimization_disabled,omitempty"`
+	Writable                        bool               `json:"writable,omitempty"`
+	Default                         bool               `json:"default,omitempty"`
 }
 
 type IndexSetStats struct {
