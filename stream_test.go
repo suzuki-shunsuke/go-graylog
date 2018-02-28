@@ -27,8 +27,7 @@ func dummyStream() *Stream {
 func TestGetStreams(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	stream := dummyStream()
@@ -36,29 +35,26 @@ func TestGetStreams(t *testing.T) {
 	server.Streams[stream.Id] = *stream
 	streams, total, err := client.GetStreams()
 	if err != nil {
-		t.Error("Failed to GetStreams", err)
-		return
+		t.Fatal("Failed to GetStreams", err)
 	}
 	if total != 1 {
-		t.Errorf("total == %d, wanted %d", total, 1)
+		t.Fatalf("total == %d, wanted %d", total, 1)
 	}
 	if streams[0].Id != exp[0].Id {
-		t.Errorf("streams[0].Id == %s, wanted %s", streams[0].Id, exp[0].Id)
+		t.Fatalf("streams[0].Id == %s, wanted %s", streams[0].Id, exp[0].Id)
 	}
 }
 
 func TestCreateStream(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	stream := dummyStream()
 	_, err = client.CreateStream(stream)
 	if err == nil {
-		t.Error("CreateStream() must be failed")
-		return
+		t.Fatal("CreateStream() must be failed")
 	}
 	stream = &Stream{
 		MatchingType: "AND",
@@ -69,20 +65,17 @@ func TestCreateStream(t *testing.T) {
 	}
 	id, err := client.CreateStream(stream)
 	if err != nil {
-		t.Error("Failed to CreateStream", err)
-		return
+		t.Fatal("Failed to CreateStream", err)
 	}
 	if id == "" {
-		t.Error(`client.CreateStream() == ""`)
-		return
+		t.Fatal(`client.CreateStream() == ""`)
 	}
 }
 
 func TestGetEnabledStreams(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	stream := dummyStream()
@@ -90,52 +83,47 @@ func TestGetEnabledStreams(t *testing.T) {
 	server.Streams[stream.Id] = *stream
 	streams, total, err := client.GetEnabledStreams()
 	if err != nil {
-		t.Error("Failed to GetStreams", err)
-		return
+		t.Fatal("Failed to GetStreams", err)
 	}
 	if total != 1 {
-		t.Errorf("total == %d, wanted %d", total, 1)
+		t.Fatalf("total == %d, wanted %d", total, 1)
 	}
 	if streams[0].Id != exp[0].Id {
-		t.Errorf("streams[0].Id == %s, wanted %s", streams[0].Id, exp[0].Id)
+		t.Fatalf("streams[0].Id == %s, wanted %s", streams[0].Id, exp[0].Id)
 	}
 
 	stream.Disabled = true
 	server.Streams[stream.Id] = *stream
 	streams, total, err = client.GetEnabledStreams()
 	if err != nil {
-		t.Error("Failed to GetStreams", err)
-		return
+		t.Fatal("Failed to GetStreams", err)
 	}
 	if total != 0 {
-		t.Errorf("total == %d, wanted %d", total, 0)
+		t.Fatalf("total == %d, wanted %d", total, 0)
 	}
 }
 
 func TestGetStream(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	exp := dummyStream()
 	server.Streams[exp.Id] = *exp
 	act, err := client.GetStream(exp.Id)
 	if err != nil {
-		t.Error("Failed to GetStream", err)
-		return
+		t.Fatal("Failed to GetStream", err)
 	}
 	if act.Title != exp.Title {
-		t.Errorf("act.Title == %s, wanted %s", act.Title, exp.Title)
+		t.Fatalf("act.Title == %s, wanted %s", act.Title, exp.Title)
 	}
 }
 
 func TestUpdateStream(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	stream := dummyStream()
@@ -143,11 +131,10 @@ func TestUpdateStream(t *testing.T) {
 	stream.Description = "changed!"
 	updatedStream, err := client.UpdateStream(stream.Id, stream)
 	if err != nil {
-		t.Error("Failed to UpdateStream", err)
-		return
+		t.Fatal("Failed to UpdateStream", err)
 	}
 	if updatedStream.Title != stream.Title {
-		t.Errorf(
+		t.Fatalf(
 			"updatedStream.Title == %s, wanted %s",
 			updatedStream.Title, stream.Title)
 	}
@@ -156,42 +143,36 @@ func TestUpdateStream(t *testing.T) {
 func TestDeleteStream(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	stream := dummyStream()
 	server.Streams[stream.Id] = *stream
 	err = client.DeleteStream(stream.Id)
 	if err != nil {
-		t.Error("Failed to DeleteStream", err)
-		return
+		t.Fatal("Failed to DeleteStream", err)
 	}
 	s := len(server.Streams)
 	if s != 0 {
-		t.Errorf("len(server.Streams) == %d, wanted 0", s)
-		return
+		t.Fatalf("len(server.Streams) == %d, wanted 0", s)
 	}
 }
 
 func TestPauseStream(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	stream := dummyStream()
 	server.Streams[stream.Id] = *stream
 	err = client.PauseStream(stream.Id)
 	if err != nil {
-		t.Error("Failed to PauseStream", err)
-		return
+		t.Fatal("Failed to PauseStream", err)
 	}
 	s := len(server.Streams)
 	if s != 1 {
-		t.Errorf("len(server.Streams) == %d, wanted 1", s)
-		return
+		t.Fatalf("len(server.Streams) == %d, wanted 1", s)
 	}
 	// TODO test pause
 }
@@ -199,21 +180,18 @@ func TestPauseStream(t *testing.T) {
 func TestResumeStream(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	stream := dummyStream()
 	server.Streams[stream.Id] = *stream
 	err = client.ResumeStream(stream.Id)
 	if err != nil {
-		t.Error("Failed to ResumeStream", err)
-		return
+		t.Fatal("Failed to ResumeStream", err)
 	}
 	s := len(server.Streams)
 	if s != 1 {
-		t.Errorf("len(server.Streams) == %d, wanted 1", s)
-		return
+		t.Fatalf("len(server.Streams) == %d, wanted 1", s)
 	}
 	// TODO test resume
 }

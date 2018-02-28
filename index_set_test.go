@@ -40,8 +40,7 @@ func dummyIndexSetStats() *IndexSetStats {
 func TestGetIndexSets(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	indexSet := dummyIndexSet()
@@ -49,60 +48,53 @@ func TestGetIndexSets(t *testing.T) {
 	server.IndexSets[indexSet.Id] = *indexSet
 	indexSets, _, err := client.GetIndexSets(0, 0)
 	if err != nil {
-		t.Error("Failed to GetIndexSets", err)
-		return
+		t.Fatal("Failed to GetIndexSets", err)
 	}
 	if !reflect.DeepEqual(indexSets, exp) {
-		t.Errorf("client.GetIndexSets() == %v, wanted %v", indexSets, exp)
+		t.Fatalf("client.GetIndexSets() == %v, wanted %v", indexSets, exp)
 	}
 }
 
 func TestGetIndexSet(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	exp := dummyIndexSet()
 	server.IndexSets[exp.Id] = *exp
 	act, err := client.GetIndexSet(exp.Id)
 	if err != nil {
-		t.Error("Failed to GetIndexSet", err)
-		return
+		t.Fatal("Failed to GetIndexSet", err)
 	}
 	if !reflect.DeepEqual(*act, *exp) {
-		t.Errorf("client.GetIndexSet() == %v, wanted %v", act, exp)
+		t.Fatalf("client.GetIndexSet() == %v, wanted %v", act, exp)
 	}
 }
 
 func TestCreateIndexSet(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	exp := dummyIndexSet()
 	act, err := client.CreateIndexSet(exp)
 	if err != nil {
-		t.Error("Failed to CreateIndexSet", err)
-		return
+		t.Fatal("Failed to CreateIndexSet", err)
 	}
 	if act == nil {
-		t.Error("client.CreateIndexSet() == nil")
-		return
+		t.Fatal("client.CreateIndexSet() == nil")
 	}
 	if act.Title != exp.Title {
-		t.Errorf("indexSet.Title == %s, wanted %s", act.Title, exp.Title)
+		t.Fatalf("indexSet.Title == %s, wanted %s", act.Title, exp.Title)
 	}
 }
 
 func TestUpdateIndexSet(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	indexSet := dummyIndexSet()
@@ -110,11 +102,10 @@ func TestUpdateIndexSet(t *testing.T) {
 	indexSet.Description = "changed!"
 	updatedIndexSet, err := client.UpdateIndexSet(indexSet.Id, indexSet)
 	if err != nil {
-		t.Error("Failed to UpdateIndexSet", err)
-		return
+		t.Fatal("Failed to UpdateIndexSet", err)
 	}
 	if !reflect.DeepEqual(*updatedIndexSet, *indexSet) {
-		t.Errorf(
+		t.Fatalf(
 			"client.UpdateIndexSet() == %v, wanted %v", updatedIndexSet, indexSet)
 	}
 }
@@ -122,24 +113,21 @@ func TestUpdateIndexSet(t *testing.T) {
 func TestDeleteIndexSet(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	indexSet := dummyIndexSet()
 	server.IndexSets[indexSet.Id] = *indexSet
 	err = client.DeleteIndexSet(indexSet.Id)
 	if err != nil {
-		t.Error("Failed to DeleteIndexSet", err)
-		return
+		t.Fatal("Failed to DeleteIndexSet", err)
 	}
 }
 
 func TestSetDefaultIndexSet(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	indexSet := dummyIndexSet()
@@ -148,15 +136,14 @@ func TestSetDefaultIndexSet(t *testing.T) {
 	server.IndexSets[indexSet.Id] = *indexSet
 	updatedIndexSet, err := client.SetDefaultIndexSet(indexSet.Id)
 	if err != nil {
-		t.Error("Failed to UpdateIndexSet", err)
-		return
+		t.Fatal("Failed to UpdateIndexSet", err)
 	}
 	if !updatedIndexSet.Default {
-		t.Error("updatedIndexSet.Default == false")
+		t.Fatal("updatedIndexSet.Default == false")
 	}
 	indexSet.Default = true
 	if !reflect.DeepEqual(*updatedIndexSet, *indexSet) {
-		t.Errorf(
+		t.Fatalf(
 			"client.SetDefaultIndexSet() == %v, wanted %v",
 			updatedIndexSet, indexSet)
 	}
@@ -165,8 +152,7 @@ func TestSetDefaultIndexSet(t *testing.T) {
 func TestGetIndexSetStats(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	indexSet := dummyIndexSet()
@@ -175,11 +161,10 @@ func TestGetIndexSetStats(t *testing.T) {
 	server.IndexSetStats[indexSet.Id] = *indexSetStats
 	isStats, err := client.GetIndexSetStats(indexSet.Id)
 	if err != nil {
-		t.Error("Failed to UpdateIndexSet", err)
-		return
+		t.Fatal("Failed to UpdateIndexSet", err)
 	}
 	if !reflect.DeepEqual(*indexSetStats, *isStats) {
-		t.Errorf(
+		t.Fatalf(
 			"client.GetIndexSetStats() == %v, wanted %v", isStats, indexSetStats)
 	}
 }
@@ -187,8 +172,7 @@ func TestGetIndexSetStats(t *testing.T) {
 func TestGetAllIndexSetsStats(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	indexSet := dummyIndexSet()
@@ -197,11 +181,10 @@ func TestGetAllIndexSetsStats(t *testing.T) {
 	server.IndexSetStats[indexSet.Id] = *indexSetStats
 	isStats, err := client.GetAllIndexSetsStats()
 	if err != nil {
-		t.Error("Failed to UpdateIndexSet", err)
-		return
+		t.Fatal("Failed to UpdateIndexSet", err)
 	}
 	if !reflect.DeepEqual(*indexSetStats, *isStats) {
-		t.Errorf(
+		t.Fatalf(
 			"client.GetAllIndexSetsStats() == %v, wanted %v", isStats, indexSetStats)
 	}
 }

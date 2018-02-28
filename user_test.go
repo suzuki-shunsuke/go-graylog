@@ -31,84 +31,80 @@ func dummyAdmin() *User {
 func TestCreateUser(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	admin := dummyAdmin()
 	if err := client.CreateUser(admin); err != nil {
-		t.Error("Failed to CreateUser", err)
-		return
+		t.Fatal("Failed to CreateUser", err)
+	}
+	if err := client.CreateUser(admin); err == nil {
+		t.Fatal("the user name must be unique ")
 	}
 }
 
 func TestGetUsers(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	admin := dummyAdmin()
 	server.Users[admin.Username] = *admin
 	users, err := client.GetUsers()
 	if err != nil {
-		t.Error("Failed to GetUsers", err)
-		return
+		t.Fatal("Failed to GetUsers", err)
 	}
 	exp := []User{*admin}
 	if !reflect.DeepEqual(users, exp) {
-		t.Errorf("client.GetUsers() == %v, wanted %v", users, exp)
+		t.Fatalf("client.GetUsers() == %v, wanted %v", users, exp)
 	}
 }
 
 func TestGetUser(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	exp := dummyAdmin()
 	server.Users[exp.Username] = *exp
 	user, err := client.GetUser(exp.Username)
 	if err != nil {
-		t.Error("Failed to GetUser", err)
-		return
+		t.Fatal("Failed to GetUser", err)
 	}
 	if !reflect.DeepEqual(*user, *exp) {
-		t.Errorf("client.GetUser() == %v, wanted %v", user, exp)
+		t.Fatalf("client.GetUser() == %v, wanted %v", user, exp)
+	}
+	if _, err := client.GetUser(""); err == nil {
+		t.Fatal("username should be required.")
 	}
 }
 
 func TestUpdateUser(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
 	user.FullName = "changed!"
 	if err := client.UpdateUser(user.Username, user); err != nil {
-		t.Error("Failed to UpdateUser", err)
-		return
+		t.Fatal("Failed to UpdateUser", err)
 	}
 }
 
 func TestDeleteUser(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	defer server.Close()
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
 	err = client.DeleteUser(user.Username)
 	if err != nil {
-		t.Error("Failed to DeleteUser", err)
-		return
+		t.Fatal("Failed to DeleteUser", err)
 	}
 }
