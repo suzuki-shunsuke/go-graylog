@@ -30,6 +30,9 @@ func TestCreateRole(t *testing.T) {
 	if role.Name != "foo" {
 		t.Fatalf("role.Name == %s, wanted foo", role.Name)
 	}
+	if _, err := client.CreateRole(params); err == nil {
+		t.Fatal("user name must be unique")
+	}
 }
 
 func TestGetRoles(t *testing.T) {
@@ -65,6 +68,12 @@ func TestGetRole(t *testing.T) {
 	if !reflect.DeepEqual(*role, *admin) {
 		t.Fatalf("client.GetRole() == %v, wanted %v", role, admin)
 	}
+	if _, err := client.GetRole(""); err == nil {
+		t.Fatal("role name is required")
+	}
+	if _, err := client.GetRole("h"); err == nil {
+		t.Fatal(`no role whose name is "h"`)
+	}
 }
 
 func TestUpdateRole(t *testing.T) {
@@ -83,6 +92,12 @@ func TestUpdateRole(t *testing.T) {
 	if !reflect.DeepEqual(*updatedRole, *admin) {
 		t.Fatalf("client.UpdateRole() == %v, wanted %v", updatedRole, admin)
 	}
+	if _, err := client.UpdateRole("", admin); err == nil {
+		t.Fatal("role name is required")
+	}
+	if _, err := client.UpdateRole("h", admin); err == nil {
+		t.Fatal(`no role whose name is "h"`)
+	}
 }
 
 func TestDeleteRole(t *testing.T) {
@@ -93,8 +108,13 @@ func TestDeleteRole(t *testing.T) {
 	defer server.Close()
 	admin := dummyRole()
 	server.Roles[admin.Name] = *admin
-	err = client.DeleteRole(admin.Name)
-	if err != nil {
+	if err = client.DeleteRole(admin.Name); err != nil {
 		t.Fatal("Failed to DeleteRole", err)
+	}
+	if err = client.DeleteRole(""); err == nil {
+		t.Fatal("role name is required")
+	}
+	if err = client.DeleteRole("h"); err == nil {
+		t.Fatal(`no role whose name is "h"`)
 	}
 }

@@ -40,6 +40,11 @@ func (ms *MockServer) handleRoleMembers(
 	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	name := ps.ByName("rolename")
+	if _, ok := ms.Roles[name]; !ok {
+		w.WriteHeader(404)
+		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
+		return
+	}
 	arr := ms.RoleMembers(name)
 	users := membersBody{Users: arr, Role: name}
 	b, err := json.Marshal(&users)

@@ -79,6 +79,9 @@ func TestGetUser(t *testing.T) {
 	if _, err := client.GetUser(""); err == nil {
 		t.Fatal("username should be required.")
 	}
+	if _, err := client.GetUser("h"); err == nil {
+		t.Fatal(`no user whoname name is "h"`)
+	}
 }
 
 func TestUpdateUser(t *testing.T) {
@@ -93,6 +96,12 @@ func TestUpdateUser(t *testing.T) {
 	if err := client.UpdateUser(user.Username, user); err != nil {
 		t.Fatal("Failed to UpdateUser", err)
 	}
+	if err := client.UpdateUser("", user); err == nil {
+		t.Fatal("username should be required.")
+	}
+	if err := client.UpdateUser("h", user); err == nil {
+		t.Fatal(`no user whoname name is "h"`)
+	}
 }
 
 func TestDeleteUser(t *testing.T) {
@@ -103,8 +112,13 @@ func TestDeleteUser(t *testing.T) {
 	defer server.Close()
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
-	err = client.DeleteUser(user.Username)
-	if err != nil {
+	if err := client.DeleteUser(user.Username); err != nil {
 		t.Fatal("Failed to DeleteUser", err)
+	}
+	if err := client.DeleteUser(""); err == nil {
+		t.Fatal("username should be required.")
+	}
+	if err := client.DeleteUser("h"); err == nil {
+		t.Fatal(`no user whoname name is "h"`)
 	}
 }

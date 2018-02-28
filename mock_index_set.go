@@ -41,6 +41,18 @@ func (ms *MockServer) IndexSetList() []IndexSet {
 }
 
 func validateIndexSet(indexSet *IndexSet) (int, []byte) {
+	if indexSet.Title == "" {
+		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.resources.system.indexer.responses.IndexSetSummary, problem: Null title\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@43956bc7; line: 1, column: 2]"}`)
+	}
+	if indexSet.IndexPrefix == "" {
+		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.resources.system.indexer.responses.IndexSetSummary, problem: Null indexPrefix\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@637e3792; line: 1, column: 17]"}`)
+	}
+	if indexSet.RotationStrategyClass == "" {
+		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.resources.system.indexer.responses.IndexSetSummary, problem: Null rotationStrategyClass\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@5e366094; line: 1, column: 41]"}`)
+	}
+	if indexSet.RotationStrategy == nil {
+		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.resources.system.indexer.responses.IndexSetSummary, problem: Null rotationStrategy\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@12f1391d; line: 1, column: 141]"}`)
+	}
 	return 200, []byte("")
 }
 

@@ -70,6 +70,12 @@ func TestGetIndexSet(t *testing.T) {
 	if !reflect.DeepEqual(*act, *exp) {
 		t.Fatalf("client.GetIndexSet() == %v, wanted %v", act, exp)
 	}
+	if _, err := client.GetIndexSet(""); err == nil {
+		t.Fatal("index set id is required")
+	}
+	if _, err := client.GetIndexSet("h"); err == nil {
+		t.Fatal(`no index set whose id is "h"`)
+	}
 }
 
 func TestCreateIndexSet(t *testing.T) {
@@ -88,6 +94,25 @@ func TestCreateIndexSet(t *testing.T) {
 	}
 	if act.Title != exp.Title {
 		t.Fatalf("indexSet.Title == %s, wanted %s", act.Title, exp.Title)
+	}
+	exp.Title = ""
+	if _, err := client.CreateIndexSet(exp); err == nil {
+		t.Fatal("title is required")
+	}
+	exp.Title = act.Title
+	exp.IndexPrefix = ""
+	if _, err := client.CreateIndexSet(exp); err == nil {
+		t.Fatal("indexPrefix is required")
+	}
+	exp.IndexPrefix = act.IndexPrefix
+	exp.RotationStrategyClass = ""
+	if _, err := client.CreateIndexSet(exp); err == nil {
+		t.Fatal("rotationStrategyClass is required")
+	}
+	exp.RotationStrategyClass = act.RotationStrategyClass
+	exp.RotationStrategy = nil
+	if _, err := client.CreateIndexSet(exp); err == nil {
+		t.Fatal("rotationStrategy is required")
 	}
 }
 
@@ -108,6 +133,12 @@ func TestUpdateIndexSet(t *testing.T) {
 		t.Fatalf(
 			"client.UpdateIndexSet() == %v, wanted %v", updatedIndexSet, indexSet)
 	}
+	if _, err := client.UpdateIndexSet("", indexSet); err == nil {
+		t.Fatal("index set id is required")
+	}
+	if _, err := client.UpdateIndexSet("h", indexSet); err == nil {
+		t.Fatal(`no index set whose id is "h"`)
+	}
 }
 
 func TestDeleteIndexSet(t *testing.T) {
@@ -118,9 +149,14 @@ func TestDeleteIndexSet(t *testing.T) {
 	defer server.Close()
 	indexSet := dummyIndexSet()
 	server.IndexSets[indexSet.Id] = *indexSet
-	err = client.DeleteIndexSet(indexSet.Id)
-	if err != nil {
+	if err = client.DeleteIndexSet(indexSet.Id); err != nil {
 		t.Fatal("Failed to DeleteIndexSet", err)
+	}
+	if err = client.DeleteIndexSet(""); err == nil {
+		t.Fatal("index set id is required")
+	}
+	if err = client.DeleteIndexSet("h"); err == nil {
+		t.Fatal(`no index set whose id is "h"`)
 	}
 }
 
@@ -147,6 +183,12 @@ func TestSetDefaultIndexSet(t *testing.T) {
 			"client.SetDefaultIndexSet() == %v, wanted %v",
 			updatedIndexSet, indexSet)
 	}
+	if _, err := client.SetDefaultIndexSet(""); err == nil {
+		t.Fatal("index set id is required")
+	}
+	if _, err := client.SetDefaultIndexSet("h"); err == nil {
+		t.Fatal(`no index set whose id is "h"`)
+	}
 }
 
 func TestGetIndexSetStats(t *testing.T) {
@@ -166,6 +208,12 @@ func TestGetIndexSetStats(t *testing.T) {
 	if !reflect.DeepEqual(*indexSetStats, *isStats) {
 		t.Fatalf(
 			"client.GetIndexSetStats() == %v, wanted %v", isStats, indexSetStats)
+	}
+	if _, err := client.GetIndexSetStats(""); err == nil {
+		t.Fatal("index set id is required")
+	}
+	if _, err := client.GetIndexSetStats("h"); err == nil {
+		t.Fatal(`no index set whose id is "h"`)
 	}
 }
 
