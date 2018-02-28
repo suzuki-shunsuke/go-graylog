@@ -16,6 +16,7 @@ import (
 // TestMatchStream
 // POST /streams/{streamId}/testMatch Test matching of a stream against a supplied message
 
+// Stream represents a steram.
 type Stream struct {
 	// \d{24}
 	Id string `json:"id,omitempty"`
@@ -37,14 +38,19 @@ type Stream struct {
 	// ContentPack `json:"content_pack,omitempty"`
 }
 
+// Output represents an output.
 type Output struct{}
 
+// StreamRule represents a stream rule.
 type StreamRule struct{}
+
+// AlertReceivers represents alert receivers.
 type AlertReceivers struct {
 	Emails []string `json:"emails,omitempty"`
 	Users  []string `json:"users,omitempty"`
 }
 
+// AlertCondition represents an alert condition.
 type AlertCondition struct{}
 
 type streamsBody struct {
@@ -52,12 +58,12 @@ type streamsBody struct {
 	Streams []Stream `json:"streams,omitempty"`
 }
 
-// GET /streams Get a list of all streams
+// GetStreams returns all streams.
 func (client *Client) GetStreams() (streams []Stream, total int, err error) {
 	return client.GetStreamsContext(context.Background())
 }
 
-// GET /streams Get a list of all streams
+// GetStreamsContext returns all streams with a context.
 func (client *Client) GetStreamsContext(
 	ctx context.Context,
 ) (streams []Stream, total int, err error) {
@@ -94,12 +100,12 @@ func (client *Client) GetStreamsContext(
 	return streamsBody.Streams, streamsBody.Total, nil
 }
 
-// POST /streams Create a stream
+// CreateStream creates a stream.
 func (client *Client) CreateStream(stream *Stream) (string, error) {
 	return client.CreateStreamContext(context.Background(), stream)
 }
 
-// POST /streams Create a stream
+// CreateStreamContext creates a stream with a context.
 func (client *Client) CreateStreamContext(
 	ctx context.Context, stream *Stream,
 ) (string, error) {
@@ -144,14 +150,14 @@ func (client *Client) CreateStreamContext(
 	return "", errors.New(`response doesn't have the field "stream_id"`)
 }
 
-// GET /streams/enabled Get a list of all enabled streams
+// GetEnabledStreams returns all enabled streams.
 func (client *Client) GetEnabledStreams() (
 	streams []Stream, total int, err error,
 ) {
 	return client.GetEnabledStreamsContext(context.Background())
 }
 
-// GET /streams/enabled Get a list of all enabled streams
+// GetEnabledStreamsContext returns all enabled streams with a context.
 func (client *Client) GetEnabledStreamsContext(
 	ctx context.Context,
 ) (streams []Stream, total int, err error) {
@@ -189,12 +195,12 @@ func (client *Client) GetEnabledStreamsContext(
 	return streamsBody.Streams, streamsBody.Total, nil
 }
 
-// GET /streams/{streamId} Get a single stream
+// GetStream returns a given stream.
 func (client *Client) GetStream(id string) (*Stream, error) {
 	return client.GetStreamContext(context.Background(), id)
 }
 
-// GET /streams/{streamId} Get a single stream
+// GetStream returns a given stream with a context.
 func (client *Client) GetStreamContext(
 	ctx context.Context, id string,
 ) (*Stream, error) {
@@ -235,13 +241,12 @@ func (client *Client) GetStreamContext(
 	return stream, nil
 }
 
-// PUT /streams/{streamId} Update a stream
+// UpdateStream updates a stream.
 func (client *Client) UpdateStream(id string, stream *Stream) (*Stream, error) {
 	return client.UpdateStreamContext(context.Background(), id, stream)
 }
 
-// UpdateStreamContext
-// PUT /streams/{streamId} Update a stream
+// UpdateStreamContext updates a stream with a context.
 func (client *Client) UpdateStreamContext(
 	ctx context.Context, id string, stream *Stream,
 ) (*Stream, error) {
@@ -286,14 +291,12 @@ func (client *Client) UpdateStreamContext(
 	return ret, nil
 }
 
-// DeleteStream
-// DELETE /streams/{streamId} Delete a stream
+// DeleteStream deletes a stream.
 func (client *Client) DeleteStream(id string) error {
 	return client.DeleteStreamContext(context.Background(), id)
 }
 
-// DeleteStream
-// DELETE /streams/{streamId} Delete a stream
+// DeleteStreamContext deletes a stream with a context.
 func (client *Client) DeleteStreamContext(
 	ctx context.Context, id string,
 ) error {
@@ -327,14 +330,12 @@ func (client *Client) DeleteStreamContext(
 	return nil
 }
 
-// PauseStream
-// POST /streams/{streamId}/pause Pause a stream
+// PauseStream pauses a stream.
 func (client *Client) PauseStream(id string) error {
 	return client.PauseStreamContext(context.Background(), id)
 }
 
-// PauseStreamContext
-// POST /streams/{streamId}/pause Pause a stream
+// PauseStreamContext pauses a stream with a context.
 func (client *Client) PauseStreamContext(
 	ctx context.Context, id string,
 ) error {
@@ -368,14 +369,12 @@ func (client *Client) PauseStreamContext(
 	return nil
 }
 
-// ResumeStream
-// POST /streams/{streamId}/resume Resume a stream
+// ResumeStream resumes a stream.
 func (client *Client) ResumeStream(id string) error {
 	return client.ResumeStreamContext(context.Background(), id)
 }
 
-// ResumeStream
-// POST /streams/{streamId}/resume Resume a stream
+// ResumeStreamContext resumes a stream with a context.
 func (client *Client) ResumeStreamContext(
 	ctx context.Context, id string,
 ) error {
@@ -383,13 +382,15 @@ func (client *Client) ResumeStreamContext(
 		return errors.New("id is empty")
 	}
 	req, err := http.NewRequest(
-		http.MethodPost, fmt.Sprintf("%s/%s/resume", client.endpoints.Streams, id), nil)
+		http.MethodPost, fmt.Sprintf(
+			"%s/%s/resume", client.endpoints.Streams, id), nil)
 	if err != nil {
 		return errors.Wrap(err, "Failed to http.NewRequest")
 	}
 	resp, err := callRequest(req, client, ctx)
 	if err != nil {
-		return errors.Wrap(err, "Failed to call POST /streams/{streamId}/resume API")
+		return errors.Wrap(
+			err, "Failed to call POST /streams/{streamId}/resume API")
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode >= 400 {

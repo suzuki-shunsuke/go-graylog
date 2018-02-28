@@ -10,14 +10,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-// GetRoleMembers
-// GET /roles/{rolename}/members Retrieve the role's members
+// GetRoleMembers returns a given role's members.
 func (client *Client) GetRoleMembers(name string) ([]User, error) {
 	return client.GetRoleMembersContext(context.Background(), name)
 }
 
-// GetRoleMembersContext
-// GET /roles/{rolename}/members Retrieve the role's members
+// GetRoleMembersContext returns a given role's members with a context.
 func (client *Client) GetRoleMembersContext(
 	ctx context.Context, name string,
 ) ([]User, error) {
@@ -53,19 +51,18 @@ func (client *Client) GetRoleMembersContext(
 	err = json.Unmarshal(b, &users)
 	if err != nil {
 		return nil, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as Users: %s", string(b)))
+			err, fmt.Sprintf(
+				"Failed to parse response body as Users: %s", string(b)))
 	}
 	return users.Users, nil
 }
 
-// AddUserToRole
-// PUT /roles/{rolename}/members/{username} Add a user to a role
+// AddUserToRole adds a user to a role.
 func (client *Client) AddUserToRole(userName, roleName string) error {
 	return client.AddUserToRoleContext(context.Background(), userName, roleName)
 }
 
-// AddUserToRoleContext
-// PUT /roles/{rolename}/members/{username} Add a user to a role
+// AddUserToRoleContext adds a user to a role with a context.
 func (client *Client) AddUserToRoleContext(
 	ctx context.Context, userName, roleName string,
 ) error {
@@ -103,14 +100,13 @@ func (client *Client) AddUserToRoleContext(
 	return nil
 }
 
-// RemoveUserFromRole
-// DELETE /roles/{rolename}/members/{username} Remove a user from a role
+// RemoveUserFromRole removes a user from a role.
 func (client *Client) RemoveUserFromRole(userName, roleName string) error {
-	return client.RemoveUserFromRoleContext(context.Background(), userName, roleName)
+	return client.RemoveUserFromRoleContext(
+		context.Background(), userName, roleName)
 }
 
-// RemoveUserFromRoleContext
-// DELETE /roles/{rolename}/members/{username} Remove a user from a role
+// RemoveUserFromRoleContext removes a user from a role with a context.
 func (client *Client) RemoveUserFromRoleContext(
 	ctx context.Context, userName, roleName string,
 ) error {

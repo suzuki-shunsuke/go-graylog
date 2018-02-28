@@ -17,6 +17,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Role represents a role.
 type Role struct {
 	Name        string   `json:"name,omitempty"`
 	Description string   `json:"description,omitempty"`
@@ -24,14 +25,12 @@ type Role struct {
 	ReadOnly    bool     `json:"read_only,omitempty"`
 }
 
-// CreateRole
-// POST /roles Create a new role
+// CreateRole creates a new role.
 func (client *Client) CreateRole(role *Role) (*Role, error) {
 	return client.CreateRoleContext(context.Background(), role)
 }
 
-// CreateRoleContext
-// POST /roles Create a new role
+// CreateRoleContext creates a new role with a context.
 func (client *Client) CreateRoleContext(
 	ctx context.Context, role *Role,
 ) (*Role, error) {
@@ -77,17 +76,13 @@ type rolesBody struct {
 	Total int    `json:"total"`
 }
 
-// GetRoles
-// GET /roles List all roles
+// GetRoles returns all roles.
 func (client *Client) GetRoles() ([]Role, error) {
 	return client.GetRolesContext(context.Background())
 }
 
-// GetRolesContext
-// GET /roles List all roles
-func (client *Client) GetRolesContext(
-	ctx context.Context,
-) ([]Role, error) {
+// GetRolesContext returns all roles with a context.
+func (client *Client) GetRolesContext(ctx context.Context) ([]Role, error) {
 	req, err := http.NewRequest(http.MethodGet, client.endpoints.Roles, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to http.NewRequest")
@@ -120,14 +115,12 @@ func (client *Client) GetRolesContext(
 	return roles.Roles, nil
 }
 
-// GetRole
-// GET /roles/{rolename} Retrieve permissions for a single role
+// GetRole returns a given role.
 func (client *Client) GetRole(name string) (*Role, error) {
 	return client.GetRoleContext(context.Background(), name)
 }
 
-// GetRoleContext
-// GET /roles/{rolename} Retrieve permissions for a single role
+// GetRoleContext returns a given role with a context.
 func (client *Client) GetRoleContext(
 	ctx context.Context, name string,
 ) (*Role, error) {
@@ -167,14 +160,12 @@ func (client *Client) GetRoleContext(
 	return &role, nil
 }
 
-// UpdateRole
-// PUT /roles/{rolename} Update an existing role
+// UpdateRole updates a given role.
 func (client *Client) UpdateRole(name string, role *Role) (*Role, error) {
 	return client.UpdateRoleContext(context.Background(), name, role)
 }
 
-// UpdateRoleContext
-// PUT /roles/{rolename} Update an existing role
+// UpdateRoleContext updates a given role with a context.
 func (client *Client) UpdateRoleContext(
 	ctx context.Context, name string, role *Role,
 ) (*Role, error) {
@@ -219,14 +210,12 @@ func (client *Client) UpdateRoleContext(
 	return ret, nil
 }
 
-// DeleteRole
-// DELETE /roles/{rolename} Remove the named role and dissociate any users from it
+// DeleteRole deletes a given role.
 func (client *Client) DeleteRole(name string) error {
 	return client.DeleteRoleContext(context.Background(), name)
 }
 
-// DeleteRoleContext
-// DELETE /roles/{rolename} Remove the named role and dissociate any users from it
+// DeleteRoleContext deletes a given role with a context.
 func (client *Client) DeleteRoleContext(
 	ctx context.Context, name string,
 ) error {

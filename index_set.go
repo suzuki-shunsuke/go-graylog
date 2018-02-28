@@ -11,6 +11,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// IndexSet represents a Graylog's Index Set.
 type IndexSet struct {
 	Id                              string             `json:"id,omitempty"`
 	Title                           string             `json:"title,omitempty"`
@@ -30,17 +31,20 @@ type IndexSet struct {
 	Default                         bool               `json:"default,omitempty"`
 }
 
+// IndexSetStats represents a Graylog's Index Set Stats.
 type IndexSetStats struct {
 	Indices   int `json:"indices"`
 	Documents int `json:"documents"`
 	Size      int `json:"size"`
 }
 
+// RotationStrategy represents a Graylog's Index Set Rotation Strategy.
 type RotationStrategy struct {
 	Type            string `json:"type,omitempty"`
 	MaxDocsPerIndex int    `json:"max_docs_per_index,omitempty"`
 }
 
+// RetentionStrategy represents a Graylog's Index Set Retention Strategy.
 type RetentionStrategy struct {
 	Type               string `json:"type,omitempty"`
 	MaxNumberOfIndices int    `json:"max_number_of_indices,omitempty"`
@@ -52,14 +56,14 @@ type indexSetsBody struct {
 	Total     int            `json:"total"`
 }
 
-// GET /system/indices/index_sets Get a list of all index sets
+// GetIndexSets returns a list of all index sets.
 func (client *Client) GetIndexSets(
 	skip, limit int,
 ) ([]IndexSet, *IndexSetStats, error) {
 	return client.GetIndexSetsContext(context.Background(), skip, limit)
 }
 
-// GET /system/indices/index_sets Get a list of all index sets
+// GetIndexSetStatsContext returns a list of all index sets with a context.
 func (client *Client) GetIndexSetsContext(
 	ctx context.Context, skip, limit int,
 ) ([]IndexSet, *IndexSetStats, error) {
@@ -97,12 +101,12 @@ func (client *Client) GetIndexSetsContext(
 	return indexSets.IndexSets, indexSets.Stats, nil
 }
 
-// GET /system/indices/index_sets/{id} Get index set
+// GetIndexSet returns a given index set.
 func (client *Client) GetIndexSet(id string) (*IndexSet, error) {
 	return client.GetIndexSetContext(context.Background(), id)
 }
 
-// GET /system/indices/index_sets/{id} Get index set
+// GetIndexSetContext returns a given index set with a context.
 func (client *Client) GetIndexSetContext(
 	ctx context.Context, id string,
 ) (*IndexSet, error) {
@@ -144,12 +148,12 @@ func (client *Client) GetIndexSetContext(
 	return indexSet, nil
 }
 
-// POST /system/indices/index_sets Create index set
+// CreateIndexSet creates a Index Set.
 func (client *Client) CreateIndexSet(indexSet *IndexSet) (*IndexSet, error) {
 	return client.CreateIndexSetContext(context.Background(), indexSet)
 }
 
-// POST /system/indices/index_sets Create index set
+// CreateIndexSetContext creates a Index Set with a context.
 func (client *Client) CreateIndexSetContext(
 	ctx context.Context, indexSet *IndexSet,
 ) (*IndexSet, error) {
@@ -192,14 +196,14 @@ func (client *Client) CreateIndexSetContext(
 	return is, nil
 }
 
-// PUT /system/indices/index_sets/{id} Update index set
+// UpdateIndexSet updates a given Index Set.
 func (client *Client) UpdateIndexSet(
 	id string, indexSet *IndexSet,
 ) (*IndexSet, error) {
 	return client.UpdateIndexSetContext(context.Background(), id, indexSet)
 }
 
-// PUT /system/indices/index_sets/{id} Update index set
+// UpdateIndexSetContext updates a given Index Set with a context.
 func (client *Client) UpdateIndexSetContext(
 	ctx context.Context, id string, indexSet *IndexSet,
 ) (*IndexSet, error) {
@@ -246,12 +250,12 @@ func (client *Client) UpdateIndexSetContext(
 	return is, nil
 }
 
-// DELETE /system/indices/index_sets/{id} Delete index set
+// DeleteIndexSet deletes a given Index Set.
 func (client *Client) DeleteIndexSet(id string) error {
 	return client.DeleteIndexSetContext(context.Background(), id)
 }
 
-// DELETE /system/indices/index_sets/{id} Delete index set
+// DeleteIndexSet deletes a given Index Set with a context.
 func (client *Client) DeleteIndexSetContext(
 	ctx context.Context, id string,
 ) error {
@@ -286,12 +290,12 @@ func (client *Client) DeleteIndexSetContext(
 	return nil
 }
 
-// PUT /system/indices/index_sets/{id}/default Set default index set
+// SetDefaultIndexSet sets default Index Set.
 func (client *Client) SetDefaultIndexSet(id string) (*IndexSet, error) {
 	return client.SetDefaultIndexSetContext(context.Background(), id)
 }
 
-// PUT /system/indices/index_sets/{id}/default Set default index set
+// SetDefaultIndexSet sets default Index Set with a context.
 func (client *Client) SetDefaultIndexSetContext(
 	ctx context.Context, id string,
 ) (*IndexSet, error) {
@@ -334,12 +338,12 @@ func (client *Client) SetDefaultIndexSetContext(
 	return is, nil
 }
 
-// GET /system/indices/index_sets/{id}/stats Get index set statistics
+// GetIndexSetStats returns a given Index Set statistics.
 func (client *Client) GetIndexSetStats(id string) (*IndexSetStats, error) {
 	return client.GetIndexSetStatsContext(context.Background(), id)
 }
 
-// GET /system/indices/index_sets/{id}/stats Get index set statistics
+// GetIndexSetStatsContext returns a given Index Set statistics with a context.
 func (client *Client) GetIndexSetStatsContext(
 	ctx context.Context, id string,
 ) (*IndexSetStats, error) {
@@ -382,12 +386,12 @@ func (client *Client) GetIndexSetStatsContext(
 	return indexSetStats, nil
 }
 
-// GET /system/indices/index_sets/stats Get stats of all index sets
+// GetAllIndexSetsStats returns stats of all Index Sets.
 func (client *Client) GetAllIndexSetsStats() (*IndexSetStats, error) {
 	return client.GetAllIndexSetsStatsContext(context.Background())
 }
 
-// GET /system/indices/index_sets/stats Get stats of all index sets
+// GetAllIndexSetsStats returns stats of all Index Sets with a context.
 func (client *Client) GetAllIndexSetsStatsContext(
 	ctx context.Context,
 ) (*IndexSetStats, error) {

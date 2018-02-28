@@ -11,6 +11,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// InputAttributes represents Input's attributes.
 type InputAttributes struct {
 	// OverrideSource string `json:"override_source,omitempty"`
 	RecvBufferSize      int    `json:"recv_buffer_size,omitempty"`
@@ -19,12 +20,14 @@ type InputAttributes struct {
 	DecompressSizeLimit int    `json:"decompress_size_limit,omitempty"`
 }
 
+// InputConfiguration represents Input's configuration.
 type InputConfiguration struct {
 	BindAddress    string `json:"bind_address,omitempty"`
 	Port           int    `json:"port,omitempty"`
 	RecvBufferSize int    `json:"recv_buffer_size,omitempty"`
 }
 
+// Input represents Graylog Input.
 type Input struct {
 	Id            string              `json:"id,omitempty"`
 	Title         string              `json:"title,omitempty"`
@@ -39,14 +42,12 @@ type Input struct {
 	// StaticFields `json:"static_fields,omitempty"`
 }
 
-// CreateInput
-// POST /system/inputs Launch input on this node
+// CreateInput creates an input.
 func (client *Client) CreateInput(input *Input) (id string, err error) {
 	return client.CreateInputContext(context.Background(), input)
 }
 
-// CreateInputContext
-// POST /system/inputs Launch input on this node
+// CreateInputContext creates an input with a context.
 func (client *Client) CreateInputContext(
 	ctx context.Context, input *Input,
 ) (id string, err error) {
@@ -92,17 +93,13 @@ type inputsBody struct {
 	Total  int     `json:"total"`
 }
 
-// GetInputs
-// GET /system/inputs Get all inputs
+// GetInputs returns all inputs.
 func (client *Client) GetInputs() ([]Input, error) {
 	return client.GetInputsContext(context.Background())
 }
 
-// GetInputsContext
-// GET /system/inputs Get all inputs
-func (client *Client) GetInputsContext(
-	ctx context.Context,
-) ([]Input, error) {
+// GetInputsContext returns all inputs with a context.
+func (client *Client) GetInputsContext(ctx context.Context) ([]Input, error) {
 	req, err := http.NewRequest(http.MethodGet, client.endpoints.Inputs, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to http.NewRequest")
@@ -130,19 +127,18 @@ func (client *Client) GetInputsContext(
 	err = json.Unmarshal(b, inputs)
 	if err != nil {
 		return nil, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as Inputs: %s", string(b)))
+			err, fmt.Sprintf(
+				"Failed to parse response body as Inputs: %s", string(b)))
 	}
 	return inputs.Inputs, nil
 }
 
-// GetInput
-// GET /system/inputs/{inputId} Get information of a single input on this node
+// GetInput returns a given input.
 func (client *Client) GetInput(id string) (*Input, error) {
 	return client.GetInputContext(context.Background(), id)
 }
 
-// GetInputContext
-// GET /system/inputs/{inputId} Get information of a single input on this node
+// GetInputContext returns a given input with a context.
 func (client *Client) GetInputContext(
 	ctx context.Context, id string,
 ) (*Input, error) {
@@ -156,7 +152,8 @@ func (client *Client) GetInputContext(
 	}
 	resp, err := callRequest(req, client, ctx)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to call GET /system/inputs/{inputId} API")
+		return nil, errors.Wrap(
+			err, "Failed to call GET /system/inputs/{inputId} API")
 	}
 	defer resp.Body.Close()
 	b, err := ioutil.ReadAll(resp.Body)
@@ -177,19 +174,18 @@ func (client *Client) GetInputContext(
 	err = json.Unmarshal(b, input)
 	if err != nil {
 		return nil, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as Input: %s", string(b)))
+			err, fmt.Sprintf(
+				"Failed to parse response body as Input: %s", string(b)))
 	}
 	return input, nil
 }
 
-// UpdateInput
-// PUT /system/inputs/{inputId} Update input on this node
+// UpdateInput updates an given input.
 func (client *Client) UpdateInput(id string, input *Input) (*Input, error) {
 	return client.UpdateInputContext(context.Background(), id, input)
 }
 
-// UpdateInputContext
-// PUT /system/inputs/{inputId} Update input on this node
+// UpdateInputContext updates an given input with a context.
 func (client *Client) UpdateInputContext(
 	ctx context.Context, id string, input *Input,
 ) (*Input, error) {
@@ -208,7 +204,8 @@ func (client *Client) UpdateInputContext(
 	}
 	resp, err := callRequest(req, client, ctx)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to call PUT /system/inputs/{inputId} API")
+		return nil, errors.Wrap(
+			err, "Failed to call PUT /system/inputs/{inputId} API")
 	}
 	defer resp.Body.Close()
 	b, err = ioutil.ReadAll(resp.Body)
@@ -229,19 +226,18 @@ func (client *Client) UpdateInputContext(
 	err = json.Unmarshal(b, ret)
 	if err != nil {
 		return nil, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as Input: %s", string(b)))
+			err, fmt.Sprintf(
+				"Failed to parse response body as Input: %s", string(b)))
 	}
 	return ret, nil
 }
 
-// DeleteInput
-// DELETE /system/inputs/{inputId} Terminate input on this node
+// DeleteInput deletes an given input.
 func (client *Client) DeleteInput(id string) error {
 	return client.DeleteInputContext(context.Background(), id)
 }
 
-// DeleteInputContext
-// DELETE /system/inputs/{inputId} Terminate input on this node
+// DeleteInputContext deletes an given input with a context.
 func (client *Client) DeleteInputContext(
 	ctx context.Context, id string,
 ) error {
@@ -255,7 +251,8 @@ func (client *Client) DeleteInputContext(
 	}
 	resp, err := callRequest(req, client, ctx)
 	if err != nil {
-		return errors.Wrap(err, "Failed to call DELETE /system/inputs/{inputId} API")
+		return errors.Wrap(
+			err, "Failed to call DELETE /system/inputs/{inputId} API")
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode >= 400 {

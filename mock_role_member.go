@@ -14,6 +14,7 @@ type membersBody struct {
 	Users []User `json:"users"`
 }
 
+// RoleMembers returns members of a given role.
 func (ms *MockServer) RoleMembers(name string) []User {
 	users := []User{}
 	for _, user := range ms.Users {
@@ -31,7 +32,9 @@ func (ms *MockServer) RoleMembers(name string) []User {
 }
 
 // GET /roles/{rolename}/members Retrieve the role's members
-func (ms *MockServer) handleRoleMembers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (ms *MockServer) handleRoleMembers(
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) {
 	ms.Logger.WithFields(log.Fields{
 		"path": r.URL.Path, "method": r.Method,
 	}).Info("request start")
@@ -48,7 +51,9 @@ func (ms *MockServer) handleRoleMembers(w http.ResponseWriter, r *http.Request, 
 }
 
 // PUT /roles/{rolename}/members/{username} Add a user to a role
-func (ms *MockServer) handleAddUserToRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (ms *MockServer) handleAddUserToRole(
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) {
 	ms.Logger.WithFields(log.Fields{
 		"path": r.URL.Path, "method": r.Method,
 	}).Info("request start")
@@ -75,7 +80,9 @@ func (ms *MockServer) handleAddUserToRole(w http.ResponseWriter, r *http.Request
 }
 
 // DELETE /roles/{rolename}/members/{username} Remove a user from a role
-func (ms *MockServer) handleRemoveUserFromRole(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (ms *MockServer) handleRemoveUserFromRole(
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) {
 	ms.Logger.WithFields(log.Fields{
 		"path": r.URL.Path, "method": r.Method,
 	}).Info("request start")

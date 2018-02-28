@@ -11,6 +11,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// User represents a user.
 type User struct {
 	Id               string       `json:"id,omitempty"`
 	Username         string       `json:"username,omitempty"`
@@ -31,24 +32,24 @@ type User struct {
 	Password string `json:"password,omitempty"`
 }
 
+// Preferences represents user's preferences.
 type Preferences struct {
 	UpdateUnfocussed  bool `json:"updateUnfocussed,omitempty"`
 	EnableSmartSearch bool `json:"enableSmartSearch,omitempty"`
 }
 
+// Startpage represents a user's startpage.
 type Startpage struct {
 	Type string `json:"type,omitempty"`
 	Id   string `json:"id,omitempty"`
 }
 
-// CreateUser
-// POST /users Create a new user account.
+// CreateUser creates a new user account.
 func (client *Client) CreateUser(user *User) error {
 	return client.CreateUserContext(context.Background(), user)
 }
 
-// CreateUserContext
-// POST /users Create a new user account.
+// CreateUserContext creates a new user account with a context.
 func (client *Client) CreateUserContext(
 	ctx context.Context, user *User,
 ) error {
@@ -87,17 +88,13 @@ type usersBody struct {
 	Users []User `json:"users"`
 }
 
-// GetUsers
-// GET /users List all users
+// GetUsers returns all users.
 func (client *Client) GetUsers() ([]User, error) {
 	return client.GetUsersContext(context.Background())
 }
 
-// GetUsersContext
-// GET /users List all users
-func (client *Client) GetUsersContext(
-	ctx context.Context,
-) ([]User, error) {
+// GetUsersContext returns all users with a context.
+func (client *Client) GetUsersContext(ctx context.Context) ([]User, error) {
 	req, err := http.NewRequest(http.MethodGet, client.endpoints.Users, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to http.NewRequest")
@@ -130,14 +127,12 @@ func (client *Client) GetUsersContext(
 	return users.Users, nil
 }
 
-// GetUser
-// GET /users/{username} Get user details
+// GetUser returns a given user.
 func (client *Client) GetUser(name string) (*User, error) {
 	return client.GetUserContext(context.Background(), name)
 }
 
-// GetUserContext
-// GET /users/{username} Get user details
+// GetUserContext returns a given user with a context.
 func (client *Client) GetUserContext(
 	ctx context.Context, name string,
 ) (*User, error) {
@@ -177,14 +172,12 @@ func (client *Client) GetUserContext(
 	return &user, nil
 }
 
-// UpdateUser
-// PUT /users/{username} Modify user details.
+// UpdateUser updates a given user.
 func (client *Client) UpdateUser(name string, user *User) error {
 	return client.UpdateUserContext(context.Background(), name, user)
 }
 
-// UpdateUserContext
-// PUT /users/{username} Modify user details.
+// UpdateUserContext updates a given user with a context.
 func (client *Client) UpdateUserContext(
 	ctx context.Context, name string, user *User,
 ) error {
@@ -223,14 +216,12 @@ func (client *Client) UpdateUserContext(
 	return nil
 }
 
-// DeleteUser
-// DELETE /users/{username} Removes a user account
+// DeleteUser deletes a given user.
 func (client *Client) DeleteUser(name string) error {
 	return client.DeleteUserContext(context.Background(), name)
 }
 
-// DeleteUserContext
-// DELETE /users/{username} Removes a user account
+// DeleteUserContext deletes a given user with a context.
 func (client *Client) DeleteUserContext(
 	ctx context.Context, name string,
 ) error {

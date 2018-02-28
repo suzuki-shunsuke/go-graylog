@@ -10,6 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// AddIndexSet adds a index set to the Mock Server.
 func (ms *MockServer) AddIndexSet(indexSet *IndexSet) {
 	if indexSet.Id == "" {
 		indexSet.Id = randStringBytesMaskImprSrc(24)
@@ -18,12 +19,14 @@ func (ms *MockServer) AddIndexSet(indexSet *IndexSet) {
 	ms.safeSave()
 }
 
+// DeleteIndexSet removes a index set from the Mock Server.
 func (ms *MockServer) DeleteIndexSet(id string) {
 	delete(ms.IndexSets, id)
 	// delete(ms.IndexSetStats, id)
 	ms.safeSave()
 }
 
+// IndexSetList returns a list of all index sets.
 func (ms *MockServer) IndexSetList() []IndexSet {
 	if ms.IndexSets == nil {
 		return []IndexSet{}
@@ -76,7 +79,8 @@ func (ms *MockServer) handleGetIndexSet(
 	indexSet, ok := ms.IndexSets[id]
 	if !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
 		return
 	}
 	b, err := json.Marshal(&indexSet)
@@ -147,7 +151,8 @@ func (ms *MockServer) handleUpdateIndexSet(
 	id := ps.ByName("indexSetId")
 	if _, ok := ms.IndexSets[id]; !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
 		return
 	}
 	indexSet := &IndexSet{}
@@ -186,7 +191,8 @@ func (ms *MockServer) handleDeleteIndexSet(
 	_, ok := ms.IndexSets[id]
 	if !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
 		return
 	}
 	ms.DeleteIndexSet(id)
@@ -204,12 +210,14 @@ func (ms *MockServer) handleSetDefaultIndexSet(
 	indexSet, ok := ms.IndexSets[id]
 	if !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
 		return
 	}
 	if !indexSet.Writable {
 		w.WriteHeader(409)
-		w.Write([]byte(`{"type": "ApiError", "message": "Default index set must be writable."}`))
+		w.Write([]byte(
+			`{"type": "ApiError", "message": "Default index set must be writable."}`))
 		return
 	}
 	for k, v := range ms.IndexSets {
@@ -242,7 +250,8 @@ func (ms *MockServer) handleGetIndexSetStats(
 	indexSetStats, ok := ms.IndexSetStats[id]
 	if !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
 		return
 	}
 	b, err := json.Marshal(&indexSetStats)

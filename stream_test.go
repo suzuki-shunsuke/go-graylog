@@ -1,7 +1,6 @@
 package graylog
 
 import (
-	// "reflect"
 	"testing"
 )
 
@@ -46,9 +45,6 @@ func TestGetStreams(t *testing.T) {
 	if streams[0].Id != exp[0].Id {
 		t.Errorf("streams[0].Id == %s, wanted %s", streams[0].Id, exp[0].Id)
 	}
-	// if !reflect.DeepEqual(streams, exp) {
-	// 	t.Errorf("client.GetStreams() %v != %v", streams, exp)
-	// }
 }
 
 func TestCreateStream(t *testing.T) {

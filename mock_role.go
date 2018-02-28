@@ -53,7 +53,8 @@ func (ms *MockServer) handleGetRole(
 	role, ok := ms.Roles[name]
 	if !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
 		return
 	}
 	b, err := json.Marshal(&role)
@@ -81,7 +82,8 @@ func (ms *MockServer) handleUpdateRole(
 	name := ps.ByName("rolename")
 	if _, ok := ms.Roles[name]; !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
 		return
 	}
 	role := &Role{}
@@ -119,7 +121,8 @@ func (ms *MockServer) handleDeleteRole(
 	_, ok := ms.Roles[name]
 	if !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
 		return
 	}
 	ms.DeleteRole(name)
@@ -165,7 +168,8 @@ func (ms *MockServer) handleCreateRole(
 	if _, ok := ms.Roles[role.Name]; ok {
 		w.WriteHeader(400)
 		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "Role %s already exists."}`, role.Name)))
+			`{"type": "ApiError", "message": "Role %s already exists."}`,
+			role.Name)))
 		return
 	}
 	ms.AddRole(role)

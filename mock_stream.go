@@ -10,6 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// AddStream adds a stream to the MockServer.
 func (ms *MockServer) AddStream(stream *Stream) {
 	if stream.Id == "" {
 		stream.Id = randStringBytesMaskImprSrc(24)
@@ -18,11 +19,13 @@ func (ms *MockServer) AddStream(stream *Stream) {
 	ms.safeSave()
 }
 
+// DeleteStream removes a stream from the MockServer.
 func (ms *MockServer) DeleteStream(id string) {
 	delete(ms.Streams, id)
 	ms.safeSave()
 }
 
+// StreamList returns a list of all streams.
 func (ms *MockServer) StreamList() []Stream {
 	if ms.Streams == nil {
 		return []Stream{}
@@ -36,6 +39,7 @@ func (ms *MockServer) StreamList() []Stream {
 	return arr
 }
 
+// EnabledStreamList returns all enabled streams.
 func (ms *MockServer) EnabledStreamList() []Stream {
 	if ms.Streams == nil {
 		return []Stream{}
@@ -184,7 +188,8 @@ func (ms *MockServer) handleGetStream(
 	stream, ok := ms.Streams[id]
 	if !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
 		return
 	}
 	b, err := json.Marshal(&stream)
@@ -213,7 +218,8 @@ func (ms *MockServer) handleUpdateStream(
 	stream, ok := ms.Streams[id]
 	if !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
 		return
 	}
 	data := map[string]interface{}{}
@@ -264,7 +270,8 @@ func (ms *MockServer) handleUpdateStream(
 		m, ok := removeMathcesFromDefaultStream.(bool)
 		if !ok {
 			w.WriteHeader(400)
-			w.Write([]byte(`{"message":"remove_matches_from_default_stream must be bool"}`))
+			w.Write([]byte(
+				`{"message":"remove_matches_from_default_stream must be bool"}`))
 			return
 		}
 		stream.RemoveMatchesFromDefaultStream = m
@@ -301,7 +308,8 @@ func (ms *MockServer) handleDeleteStream(
 	_, ok := ms.Streams[id]
 	if !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
 		return
 	}
 	ms.DeleteStream(id)
@@ -319,7 +327,8 @@ func (ms *MockServer) handlePauseStream(
 	_, ok := ms.Streams[id]
 	if !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
 		return
 	}
 	// TODO pause
@@ -336,7 +345,8 @@ func (ms *MockServer) handleResumeStream(
 	_, ok := ms.Streams[id]
 	if !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
 		return
 	}
 	// TODO resume

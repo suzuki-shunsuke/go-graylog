@@ -38,7 +38,9 @@ func (ms *MockServer) InputList() []Input {
 }
 
 // GET /system/inputs/{inputId} Get information of a single input on this node
-func (ms *MockServer) handleGetInput(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (ms *MockServer) handleGetInput(
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) {
 	ms.Logger.WithFields(log.Fields{
 		"path": r.URL.Path, "method": r.Method,
 	}).Info("request start")
@@ -47,7 +49,8 @@ func (ms *MockServer) handleGetInput(w http.ResponseWriter, r *http.Request, ps 
 	input, ok := ms.Inputs[id]
 	if !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No input found with name %s"}`, id)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No input found with name %s"}`, id)))
 		return
 	}
 	b, err := json.Marshal(&input)
@@ -59,7 +62,9 @@ func (ms *MockServer) handleGetInput(w http.ResponseWriter, r *http.Request, ps 
 }
 
 // PUT /system/inputs/{inputId} Update input on this node
-func (ms *MockServer) handleUpdateInput(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (ms *MockServer) handleUpdateInput(
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) {
 	ms.Logger.WithFields(log.Fields{
 		"path": r.URL.Path, "method": r.Method,
 	}).Info("request start")
@@ -73,7 +78,8 @@ func (ms *MockServer) handleUpdateInput(w http.ResponseWriter, r *http.Request, 
 	id := ps.ByName("inputId")
 	if _, ok := ms.Inputs[id]; !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No input found with id %s"}`, id)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No input found with id %s"}`, id)))
 		return
 	}
 	input := &Input{}
@@ -101,7 +107,9 @@ func (ms *MockServer) handleUpdateInput(w http.ResponseWriter, r *http.Request, 
 }
 
 // DELETE /system/inputs/{inputId} Terminate input on this node
-func (ms *MockServer) handleDeleteInput(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (ms *MockServer) handleDeleteInput(
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) {
 	ms.Logger.WithFields(log.Fields{
 		"path": r.URL.Path, "method": r.Method,
 	}).Info("request start")
@@ -110,7 +118,8 @@ func (ms *MockServer) handleDeleteInput(w http.ResponseWriter, r *http.Request, 
 	_, ok := ms.Inputs[id]
 	if !ok {
 		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No input found with id %s"}`, id)))
+		w.Write([]byte(fmt.Sprintf(
+			`{"type": "ApiError", "message": "No input found with id %s"}`, id)))
 		return
 	}
 	ms.DeleteInput(id)
@@ -130,13 +139,16 @@ func validateInput(input *Input) (int, []byte) {
 		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.models.system.inputs.requests.InputCreateRequest, problem: Null configuration\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@3d687f1; line: 1, column: 30]"}`)
 	}
 	if input.Configuration.BindAddress == "" {
-		return 400, []byte(`{"type": "ApiError", "message": "Missing or invalid input configuration."}`)
+		return 400, []byte(
+			`{"type": "ApiError", "message": "Missing or invalid input configuration."}`)
 	}
 	if input.Configuration.Port == 0 {
-		return 400, []byte(`{"type": "ApiError", "message": "Missing or invalid input configuration."}`)
+		return 400, []byte(
+			`{"type": "ApiError", "message": "Missing or invalid input configuration."}`)
 	}
 	if input.Configuration.RecvBufferSize == 0 {
-		return 400, []byte(`{"type": "ApiError", "message": "Missing or invalid input configuration."}`)
+		return 400, []byte(
+			`{"type": "ApiError", "message": "Missing or invalid input configuration."}`)
 	}
 	// node optional
 	// skip type validation
@@ -145,7 +157,9 @@ func validateInput(input *Input) (int, []byte) {
 }
 
 // POST /system/inputs Launch input on this node
-func (ms *MockServer) handleCreateInput(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (ms *MockServer) handleCreateInput(
+	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+) {
 	ms.Logger.WithFields(log.Fields{
 		"path": r.URL.Path, "method": r.Method,
 	}).Info("request start")
@@ -181,7 +195,9 @@ func (ms *MockServer) handleCreateInput(w http.ResponseWriter, r *http.Request, 
 }
 
 // GET /system/inputs Get all inputs
-func (ms *MockServer) handleGetInputs(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (ms *MockServer) handleGetInputs(
+	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+) {
 	ms.Logger.WithFields(log.Fields{
 		"path": r.URL.Path, "method": r.Method,
 	}).Info("request start")

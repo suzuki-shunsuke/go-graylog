@@ -18,6 +18,7 @@ var (
 	once sync.Once
 )
 
+// MockServer represents a mock of the Graylog API.
 type MockServer struct {
 	Server   *httptest.Server `json:"-"`
 	Endpoint string           `json:"-"`
@@ -116,12 +117,13 @@ func (ms *MockServer) Start() {
 	ms.Server.Start()
 }
 
-// Close shuts down the server and blocks until all outstanding requests on this server have completed.
+// Close shuts down the server and blocks until all outstanding requests
+// on this server have completed.
 func (ms *MockServer) Close() {
 	ms.Server.Close()
 }
 
-// Save
+// Save writes Mock Server's data in a file for persistence.
 func (ms *MockServer) Save() error {
 	if ms.DataPath == "" {
 		return nil
@@ -133,6 +135,7 @@ func (ms *MockServer) Save() error {
 	return ioutil.WriteFile(ms.DataPath, b, 0600)
 }
 
+// Load reads Mock Server's data from a file.
 func (ms *MockServer) Load() error {
 	if ms.DataPath == "" {
 		return nil
@@ -169,6 +172,7 @@ func (ms *MockServer) handleNotFound(w http.ResponseWriter, r *http.Request) {
 		`{"message":"Page Not Found %s %s"}`, r.Method, r.URL.Path)))
 }
 
+// AllIndexSetsStats returns all index set's statistics.
 func (ms *MockServer) AllIndexSetsStats() *IndexSetStats {
 	indexSetStats := &IndexSetStats{}
 	if ms.IndexSetStats == nil {

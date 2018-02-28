@@ -156,7 +156,9 @@ func TestSetDefaultIndexSet(t *testing.T) {
 	}
 	indexSet.Default = true
 	if !reflect.DeepEqual(*updatedIndexSet, *indexSet) {
-		t.Errorf("client.SetDefaultIndexSet() == %v, wanted %v", updatedIndexSet, indexSet)
+		t.Errorf(
+			"client.SetDefaultIndexSet() == %v, wanted %v",
+			updatedIndexSet, indexSet)
 	}
 }
 
