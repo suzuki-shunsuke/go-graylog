@@ -45,10 +45,16 @@ func TestAddUserToRole(t *testing.T) {
 		t.Fatal("Failed to AddUserToRole", err)
 	}
 	if err = client.AddUserToRole("", role.Name); err == nil {
-		t.Fatal("user name is required", err)
+		t.Fatal("user name is required")
 	}
 	if err = client.AddUserToRole(user.Username, ""); err == nil {
-		t.Fatal("role name is required", err)
+		t.Fatal("role name is required")
+	}
+	if err = client.AddUserToRole("h", role.Name); err == nil {
+		t.Fatal(`no user whose name is "h"`)
+	}
+	if err = client.AddUserToRole(user.Username, "h"); err == nil {
+		t.Fatal(`no role whose name is "h"`)
 	}
 }
 
@@ -62,8 +68,19 @@ func TestRemoveUserFromRole(t *testing.T) {
 	server.Users[user.Username] = *user
 	role := dummyRole()
 	server.Roles[role.Name] = *role
-	err = client.RemoveUserFromRole(user.Username, role.Name)
-	if err != nil {
+	if err = client.RemoveUserFromRole(user.Username, role.Name); err != nil {
 		t.Fatal("Failed to RemoveUserFromRole", err)
+	}
+	if err = client.RemoveUserFromRole("", role.Name); err == nil {
+		t.Fatal("user name is required")
+	}
+	if err = client.RemoveUserFromRole(user.Username, ""); err == nil {
+		t.Fatal("role name is required")
+	}
+	if err = client.RemoveUserFromRole("h", role.Name); err == nil {
+		t.Fatal(`no user whose name is "h"`)
+	}
+	if err = client.RemoveUserFromRole(user.Username, "h"); err == nil {
+		t.Fatal(`no role whose name is "h"`)
 	}
 }

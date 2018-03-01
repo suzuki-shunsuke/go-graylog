@@ -70,6 +70,30 @@ func TestCreateStream(t *testing.T) {
 	if id == "" {
 		t.Fatal(`client.CreateStream() == ""`)
 	}
+	stream.Id = "h"
+	if _, err := client.CreateStream(stream); err == nil {
+		t.Fatal("id must be empty")
+	}
+	stream.Id = ""
+	stream.CreatorUserId = "h"
+	if _, err := client.CreateStream(stream); err == nil {
+		t.Fatal("creator_user_id must be empty")
+	}
+	stream.CreatorUserId = ""
+	stream.CreatedAt = "h"
+	if _, err := client.CreateStream(stream); err == nil {
+		t.Fatal("created_at must be empty")
+	}
+	stream.CreatedAt = ""
+	stream.Disabled = true
+	if _, err := client.CreateStream(stream); err == nil {
+		t.Fatal("disabled must be false")
+	}
+	stream.Disabled = false
+	stream.IsDefault = true
+	if _, err := client.CreateStream(stream); err == nil {
+		t.Fatal("is_default must be false")
+	}
 }
 
 func TestGetEnabledStreams(t *testing.T) {
