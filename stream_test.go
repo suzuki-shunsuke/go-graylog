@@ -142,6 +142,12 @@ func TestGetStream(t *testing.T) {
 	if act.Title != exp.Title {
 		t.Fatalf("act.Title == %s, wanted %s", act.Title, exp.Title)
 	}
+	if _, err := client.GetStream(""); err == nil {
+		t.Fatal("id is required")
+	}
+	if _, err := client.GetStream("h"); err == nil {
+		t.Fatal(`no stream whose id is "h"`)
+	}
 }
 
 func TestUpdateStream(t *testing.T) {
@@ -157,10 +163,19 @@ func TestUpdateStream(t *testing.T) {
 	if err != nil {
 		t.Fatal("Failed to UpdateStream", err)
 	}
+	if updatedStream == nil {
+		t.Fatal("UpdateStream() == nil, nil")
+	}
 	if updatedStream.Title != stream.Title {
 		t.Fatalf(
 			"updatedStream.Title == %s, wanted %s",
 			updatedStream.Title, stream.Title)
+	}
+	if _, err := client.UpdateStream("", stream); err == nil {
+		t.Fatal("id is required")
+	}
+	if _, err := client.UpdateStream("h", stream); err == nil {
+		t.Fatal(`no stream whose id is "h"`)
 	}
 }
 
@@ -172,8 +187,13 @@ func TestDeleteStream(t *testing.T) {
 	defer server.Close()
 	stream := dummyStream()
 	server.Streams[stream.Id] = *stream
-	err = client.DeleteStream(stream.Id)
-	if err != nil {
+	if err = client.DeleteStream(""); err == nil {
+		t.Fatal("id is required")
+	}
+	if err := client.DeleteStream("h"); err == nil {
+		t.Fatal(`no stream whose id is "h"`)
+	}
+	if err := client.DeleteStream(stream.Id); err != nil {
 		t.Fatal("Failed to DeleteStream", err)
 	}
 	s := len(server.Streams)
@@ -190,13 +210,19 @@ func TestPauseStream(t *testing.T) {
 	defer server.Close()
 	stream := dummyStream()
 	server.Streams[stream.Id] = *stream
-	err = client.PauseStream(stream.Id)
-	if err != nil {
+
+	if err = client.PauseStream(stream.Id); err != nil {
 		t.Fatal("Failed to PauseStream", err)
 	}
 	s := len(server.Streams)
 	if s != 1 {
 		t.Fatalf("len(server.Streams) == %d, wanted 1", s)
+	}
+	if err := client.PauseStream(""); err == nil {
+		t.Fatal("id is required")
+	}
+	if err := client.PauseStream("h"); err == nil {
+		t.Fatal(`no stream whose id is "h"`)
 	}
 	// TODO test pause
 }
@@ -216,6 +242,14 @@ func TestResumeStream(t *testing.T) {
 	s := len(server.Streams)
 	if s != 1 {
 		t.Fatalf("len(server.Streams) == %d, wanted 1", s)
+	}
+	err = client.ResumeStream("")
+	if err == nil {
+		t.Fatal("id is required")
+	}
+	err = client.ResumeStream("h")
+	if err == nil {
+		t.Fatal(`no stream whose id is "h"`)
 	}
 	// TODO test resume
 }
