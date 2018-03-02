@@ -16,23 +16,25 @@ import (
 
 // Stream represents a steram.
 type Stream struct {
-	// \d{24}
+	// ex. "5a94abdac006c60001f04fc1"
 	Id string `json:"id,omitempty"`
-	// "2018-02-20T11:37:19.371Z"
+	// ex. "2018-02-20T11:37:19.371Z"
 	CreatedAt string `json:"created_at,omitempty"`
 	Title     string `json:"title,omitempty"`
-	// local:admin
-	CreatorUserId                  string           `json:"creator_user_id,omitempty"`
-	Description                    string           `json:"description,omitempty"`
-	Outputs                        []Output         `json:"outputs,omitempty"`
+	// ex. local:admin
+	CreatorUserId string   `json:"creator_user_id,omitempty"`
+	Description   string   `json:"description,omitempty"`
+	Outputs       []Output `json:"outputs,omitempty"`
+	// ex. "AND"
 	MatchingType                   string           `json:"matching_type,omitempty"`
 	Disabled                       bool             `json:"disabled,omitempty"`
 	Rules                          []StreamRule     `json:"rules,omitempty"`
 	AlertConditions                []AlertCondition `json:"alert_conditions,omitempty"`
 	AlertReceivers                 *AlertReceivers  `json:"alert_receivers,omitempty"`
 	RemoveMatchesFromDefaultStream bool             `json:"remove_matches_from_default_stream,omitempty"`
-	IndexSetId                     string           `json:"index_set_id,omitempty"`
-	IsDefault                      bool             `json:"is_default,omitempty"`
+	// ex. "5a8c086fc006c600013ca6f5"
+	IndexSetId string `json:"index_set_id,omitempty"`
+	IsDefault  bool   `json:"is_default,omitempty"`
 	// ContentPack `json:"content_pack,omitempty"`
 }
 

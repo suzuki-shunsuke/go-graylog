@@ -11,22 +11,26 @@ import (
 
 // IndexSet represents a Graylog's Index Set.
 type IndexSet struct {
-	Id                              string             `json:"id,omitempty"`
-	Title                           string             `json:"title,omitempty"`
-	Description                     string             `json:"description,omitempty"`
-	IndexPrefix                     string             `json:"index_prefix,omitempty"`
-	Shards                          int                `json:"shards,omitempty"`
-	Replicas                        int                `json:"replicas,omitempty"`
-	RotationStrategyClass           string             `json:"rotation_strategy_class,omitempty"`
-	RotationStrategy                *RotationStrategy  `json:"rotation_strategy,omitempty"`
-	RetentionStrategyClass          string             `json:"retention_strategy_class,omitempty"`
-	RetentionStrategy               *RetentionStrategy `json:"retention_strategy,omitempty"`
-	CreationDate                    string             `json:"creation_date,omitempty"`
-	IndexAnalyzer                   string             `json:"index_analyzer,omitempty"`
-	IndexOptimizationMaxNumSegments int                `json:"index_optimization_max_num_segments,omitempty"`
-	IndexOptimizationDisabled       bool               `json:"index_optimization_disabled,omitempty"`
-	Writable                        bool               `json:"writable,omitempty"`
-	Default                         bool               `json:"default,omitempty"`
+	// ex. 5a8c086fc006c600013ca6f5
+	Id          string `json:"id,omitempty"`
+	Title       string `json:"title,omitempty"`
+	Description string `json:"description,omitempty"`
+	IndexPrefix string `json:"index_prefix,omitempty"`
+	Shards      int    `json:"shards,omitempty"`
+	Replicas    int    `json:"replicas,omitempty"`
+	// ex. "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy"
+	RotationStrategyClass string            `json:"rotation_strategy_class,omitempty"`
+	RotationStrategy      *RotationStrategy `json:"rotation_strategy,omitempty"`
+	// ex. "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy"
+	RetentionStrategyClass string             `json:"retention_strategy_class,omitempty"`
+	RetentionStrategy      *RetentionStrategy `json:"retention_strategy,omitempty"`
+	// ex. "2018-02-20T11:37:19.305Z"
+	CreationDate                    string `json:"creation_date,omitempty"`
+	IndexAnalyzer                   string `json:"index_analyzer,omitempty"`
+	IndexOptimizationMaxNumSegments int    `json:"index_optimization_max_num_segments,omitempty"`
+	IndexOptimizationDisabled       bool   `json:"index_optimization_disabled,omitempty"`
+	Writable                        bool   `json:"writable,omitempty"`
+	Default                         bool   `json:"default,omitempty"`
 }
 
 // IndexSetStats represents a Graylog's Index Set Stats.
@@ -38,14 +42,18 @@ type IndexSetStats struct {
 
 // RotationStrategy represents a Graylog's Index Set Rotation Strategy.
 type RotationStrategy struct {
-	Type            string `json:"type,omitempty"`
-	MaxDocsPerIndex int    `json:"max_docs_per_index,omitempty"`
+	// ex. "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig"
+	Type string `json:"type,omitempty"`
+	// ex. 20000000
+	MaxDocsPerIndex int `json:"max_docs_per_index,omitempty"`
 }
 
 // RetentionStrategy represents a Graylog's Index Set Retention Strategy.
 type RetentionStrategy struct {
-	Type               string `json:"type,omitempty"`
-	MaxNumberOfIndices int    `json:"max_number_of_indices,omitempty"`
+	// ex. "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig"
+	Type string `json:"type,omitempty"`
+	// ex. 20
+	MaxNumberOfIndices int `json:"max_number_of_indices,omitempty"`
 }
 
 type indexSetsBody struct {

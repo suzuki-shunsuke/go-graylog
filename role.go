@@ -17,8 +17,9 @@ import (
 
 // Role represents a role.
 type Role struct {
-	Name        string   `json:"name,omitempty"`
-	Description string   `json:"description,omitempty"`
+	Name        string `json:"name,omitempty"`
+	Description string `json:"description,omitempty"`
+	// ex. ["clusterconfigentry:read", "users:edit"]
 	Permissions []string `json:"permissions,omitempty"`
 	ReadOnly    bool     `json:"read_only,omitempty"`
 }
