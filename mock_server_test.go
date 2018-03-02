@@ -2,7 +2,9 @@ package graylog
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -12,6 +14,30 @@ func TestMockServerLoad(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
+	if err := server.Load(); err != nil {
+		t.Fatal(err)
+	}
+	server.DataPath = "hoge"
+	if err := server.Load(); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestMockServerSave(t *testing.T) {
+	server, _, err := getServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	tmpfile, err := ioutil.TempFile("", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove(tmpfile.Name())
+	server.DataPath = tmpfile.Name()
+	if err := server.Save(); err != nil {
+		t.Fatal(err)
+	}
 	if err := server.Load(); err != nil {
 		t.Fatal(err)
 	}
