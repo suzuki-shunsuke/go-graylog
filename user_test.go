@@ -39,7 +39,12 @@ func TestCreateUser(t *testing.T) {
 		t.Fatal("Failed to CreateUser", err)
 	}
 	if _, err := client.CreateUser(admin); err == nil {
-		t.Fatal("the user name must be unique ")
+		t.Fatal("User name must be unique.")
+	}
+
+	admin.Username = ""
+	if _, err := client.CreateUser(admin); err == nil {
+		t.Fatal("Username is required.")
 	}
 }
 

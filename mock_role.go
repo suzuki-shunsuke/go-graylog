@@ -59,6 +59,7 @@ func (ms *MockServer) handleGetRole(
 	}
 	b, err := json.Marshal(&role)
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
@@ -194,6 +195,7 @@ func (ms *MockServer) handleGetRoles(
 	roles := rolesBody{Roles: arr, Total: len(arr)}
 	b, err := json.Marshal(&roles)
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}

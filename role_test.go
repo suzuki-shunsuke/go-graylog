@@ -37,6 +37,11 @@ func TestCreateRole(t *testing.T) {
 	if ei.Response.StatusCode != 400 {
 		t.Fatal("status code must be 400")
 	}
+
+	params.Name = ""
+	if _, _, err := client.CreateRole(params); err == nil {
+		t.Fatal("user name is required")
+	}
 }
 
 func TestGetRoles(t *testing.T) {

@@ -69,6 +69,7 @@ func (ms *MockServer) handleGetIndexSets(
 		IndexSets: arr, Total: len(arr), Stats: &IndexSetStats{}}
 	b, err := json.Marshal(&indexSets)
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
@@ -97,6 +98,7 @@ func (ms *MockServer) handleGetIndexSet(
 	}
 	b, err := json.Marshal(&indexSet)
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
@@ -268,6 +270,7 @@ func (ms *MockServer) handleGetIndexSetStats(
 	}
 	b, err := json.Marshal(&indexSetStats)
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
@@ -284,6 +287,7 @@ func (ms *MockServer) handleGetAllIndexSetsStats(
 	w.Header().Set("Content-Type", "application/json")
 	b, err := json.Marshal(ms.AllIndexSetsStats())
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}

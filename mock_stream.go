@@ -104,6 +104,7 @@ func (ms *MockServer) handleGetStreams(
 	streams := &streamsBody{Streams: arr, Total: len(arr)}
 	b, err := json.Marshal(streams)
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
@@ -166,6 +167,7 @@ func (ms *MockServer) handleGetEnabledStreams(
 	streams := &streamsBody{Streams: arr, Total: len(arr)}
 	b, err := json.Marshal(streams)
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
@@ -194,6 +196,7 @@ func (ms *MockServer) handleGetStream(
 	}
 	b, err := json.Marshal(&stream)
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}

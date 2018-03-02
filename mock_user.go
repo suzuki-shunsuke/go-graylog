@@ -63,12 +63,14 @@ func (ms *MockServer) handleCreateUser(
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
 	user := &User{}
 	err = json.Unmarshal(b, user)
 	if err != nil {
+		w.WriteHeader(400)
 		w.Write([]byte(`{"message":"400 Bad Request"}`))
 		return
 	}
@@ -100,6 +102,7 @@ func (ms *MockServer) handleGetUsers(
 	users := usersBody{Users: arr}
 	b, err := json.Marshal(&users)
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
@@ -124,6 +127,7 @@ func (ms *MockServer) handleGetUser(
 	}
 	b, err := json.Marshal(&user)
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
@@ -140,6 +144,7 @@ func (ms *MockServer) handleUpdateUser(
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}

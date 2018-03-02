@@ -55,6 +55,7 @@ func (ms *MockServer) handleGetInput(
 	}
 	b, err := json.Marshal(&input)
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
@@ -206,6 +207,7 @@ func (ms *MockServer) handleGetInputs(
 	inputs := inputsBody{Inputs: arr, Total: len(arr)}
 	b, err := json.Marshal(&inputs)
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 		return
 	}
