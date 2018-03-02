@@ -26,7 +26,7 @@ func TestCreateInput(t *testing.T) {
 	defer server.Close()
 	params := dummyInput()
 	params.Id = ""
-	id, err := client.CreateInput(params)
+	id, _, err := client.CreateInput(params)
 	if err != nil {
 		t.Fatal("Failed to CreateInput", err)
 	}
@@ -44,7 +44,7 @@ func TestGetInputs(t *testing.T) {
 	input := dummyInput()
 	exp := []Input{*input}
 	server.Inputs[input.Id] = *input
-	act, err := client.GetInputs()
+	act, _, err := client.GetInputs()
 	if err != nil {
 		t.Fatal("Failed to GetInputs", err)
 	}
@@ -61,7 +61,7 @@ func TestGetInput(t *testing.T) {
 	defer server.Close()
 	exp := dummyInput()
 	server.Inputs[exp.Id] = *exp
-	act, err := client.GetInput(exp.Id)
+	act, _, err := client.GetInput(exp.Id)
 	if err != nil {
 		t.Fatal("Failed to GetInput", err)
 	}
@@ -79,7 +79,7 @@ func TestUpdateInput(t *testing.T) {
 	exp := dummyInput()
 	server.Inputs[exp.Id] = *exp
 	exp.Global = true
-	act, err := client.UpdateInput(exp.Id, exp)
+	act, _, err := client.UpdateInput(exp.Id, exp)
 	if err != nil {
 		t.Fatal("Failed to UpdateInput", err)
 	}
@@ -96,7 +96,7 @@ func TestDeleteInput(t *testing.T) {
 	defer server.Close()
 	input := dummyInput()
 	server.Inputs[input.Id] = *input
-	err = client.DeleteInput(input.Id)
+	_, err = client.DeleteInput(input.Id)
 	if err != nil {
 		t.Fatal("Failed to DeleteInput", err)
 	}

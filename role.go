@@ -7,11 +7,9 @@ package graylog
 // -u {session}:session
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -26,49 +24,33 @@ type Role struct {
 }
 
 // CreateRole creates a new role.
-func (client *Client) CreateRole(role *Role) (*Role, error) {
+func (client *Client) CreateRole(role *Role) (*Role, *ErrorInfo, error) {
 	return client.CreateRoleContext(context.Background(), role)
 }
 
 // CreateRoleContext creates a new role with a context.
 func (client *Client) CreateRoleContext(
 	ctx context.Context, role *Role,
-) (*Role, error) {
+) (*Role, *ErrorInfo, error) {
 	b, err := json.Marshal(role)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(role)")
+		return nil, nil, errors.Wrap(err, "Failed to json.Marshal(role)")
 	}
-	req, err := http.NewRequest(
-		http.MethodPost, client.endpoints.Roles, bytes.NewBuffer(b))
+
+	ei, err := client.callReq(
+		ctx, http.MethodPost, client.endpoints.Roles, b, true)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+		return nil, ei, err
 	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to call POST /roles API")
-	}
-	defer resp.Body.Close()
-	b, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to read response body")
-	}
-	if resp.StatusCode >= 400 {
-		e := Error{}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return nil, errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return nil, errors.New(e.Message)
-	}
+
 	ret := &Role{}
-	err = json.Unmarshal(b, ret)
+	err = json.Unmarshal(ei.ResponseBody, ret)
 	if err != nil {
-		return nil, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as Role: %s", string(b)))
+		return nil, ei, errors.Wrap(
+			err, fmt.Sprintf("Failed to parse response body as Role: %s",
+				string(ei.ResponseBody)))
 	}
-	return ret, nil
+	return ret, ei, nil
 }
 
 type rolesBody struct {
@@ -77,174 +59,113 @@ type rolesBody struct {
 }
 
 // GetRoles returns all roles.
-func (client *Client) GetRoles() ([]Role, error) {
+func (client *Client) GetRoles() ([]Role, *ErrorInfo, error) {
 	return client.GetRolesContext(context.Background())
 }
 
 // GetRolesContext returns all roles with a context.
-func (client *Client) GetRolesContext(ctx context.Context) ([]Role, error) {
-	req, err := http.NewRequest(http.MethodGet, client.endpoints.Roles, nil)
+func (client *Client) GetRolesContext(ctx context.Context) (
+	[]Role, *ErrorInfo, error,
+) {
+	ei, err := client.callReq(
+		ctx, http.MethodGet, client.endpoints.Roles, nil, true)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+		return nil, ei, err
 	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to call GET /roles API")
-	}
-	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to read response body")
-	}
-	if resp.StatusCode >= 400 {
-		e := Error{}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return nil, errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return nil, errors.New(e.Message)
-	}
+
 	roles := rolesBody{}
-	err = json.Unmarshal(b, &roles)
+	err = json.Unmarshal(ei.ResponseBody, &roles)
 	if err != nil {
-		return nil, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as Roles: %s", string(b)))
+		return nil, ei, errors.Wrap(
+			err, fmt.Sprintf("Failed to parse response body as Roles: %s",
+				string(ei.ResponseBody)))
 	}
-	return roles.Roles, nil
+	return roles.Roles, ei, nil
 }
 
 // GetRole returns a given role.
-func (client *Client) GetRole(name string) (*Role, error) {
+func (client *Client) GetRole(name string) (*Role, *ErrorInfo, error) {
 	return client.GetRoleContext(context.Background(), name)
 }
 
 // GetRoleContext returns a given role with a context.
 func (client *Client) GetRoleContext(
 	ctx context.Context, name string,
-) (*Role, error) {
+) (*Role, *ErrorInfo, error) {
 	if name == "" {
-		return nil, errors.New("name is empty")
+		return nil, nil, errors.New("name is empty")
 	}
-	req, err := http.NewRequest(
-		http.MethodGet, fmt.Sprintf("%s/%s", client.endpoints.Roles, name), nil)
+
+	ei, err := client.callReq(
+		ctx, http.MethodGet,
+		fmt.Sprintf("%s/%s", client.endpoints.Roles, name),
+		nil, true)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+		return nil, ei, err
 	}
-	resp, err := callRequest(req, client, ctx)
+
+	role := &Role{}
+	err = json.Unmarshal(ei.ResponseBody, role)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to call GET /roles API")
+		return nil, ei, errors.Wrap(
+			err, fmt.Sprintf("Failed to parse response body as Role: %s",
+				string(ei.ResponseBody)))
 	}
-	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to read response body")
-	}
-	if resp.StatusCode >= 400 {
-		e := Error{}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return nil, errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return nil, errors.New(e.Message)
-	}
-	role := Role{}
-	err = json.Unmarshal(b, &role)
-	if err != nil {
-		return nil, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as Role: %s", string(b)))
-	}
-	return &role, nil
+	return role, ei, nil
 }
 
 // UpdateRole updates a given role.
-func (client *Client) UpdateRole(name string, role *Role) (*Role, error) {
+func (client *Client) UpdateRole(name string, role *Role) (
+	*Role, *ErrorInfo, error,
+) {
 	return client.UpdateRoleContext(context.Background(), name, role)
 }
 
 // UpdateRoleContext updates a given role with a context.
 func (client *Client) UpdateRoleContext(
 	ctx context.Context, name string, role *Role,
-) (*Role, error) {
+) (*Role, *ErrorInfo, error) {
 	if name == "" {
-		return nil, errors.New("name is empty")
+		return nil, nil, errors.New("name is empty")
 	}
 	b, err := json.Marshal(role)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(role)")
+		return nil, nil, errors.Wrap(err, "Failed to json.Marshal(role)")
 	}
-	req, err := http.NewRequest(
-		http.MethodPut, fmt.Sprintf("%s/%s", client.endpoints.Roles, name),
-		bytes.NewBuffer(b))
+
+	ei, err := client.callReq(
+		ctx, http.MethodPut,
+		fmt.Sprintf("%s/%s", client.endpoints.Roles, name),
+		b, true)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+		return nil, ei, err
 	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to call PUT /roles/{rolename} API")
-	}
-	defer resp.Body.Close()
-	b, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to read response body")
-	}
-	if resp.StatusCode >= 400 {
-		e := Error{}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return nil, errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return nil, errors.New(e.Message)
-	}
+
 	ret := &Role{}
-	err = json.Unmarshal(b, ret)
+	err = json.Unmarshal(ei.ResponseBody, ret)
 	if err != nil {
-		return nil, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as Role: %s", string(b)))
+		return nil, ei, errors.Wrap(
+			err, fmt.Sprintf("Failed to parse response body as Role: %s",
+				string(ei.ResponseBody)))
 	}
-	return ret, nil
+	return ret, ei, nil
 }
 
 // DeleteRole deletes a given role.
-func (client *Client) DeleteRole(name string) error {
+func (client *Client) DeleteRole(name string) (*ErrorInfo, error) {
 	return client.DeleteRoleContext(context.Background(), name)
 }
 
 // DeleteRoleContext deletes a given role with a context.
 func (client *Client) DeleteRoleContext(
 	ctx context.Context, name string,
-) error {
+) (*ErrorInfo, error) {
 	if name == "" {
-		return errors.New("name is empty")
+		return nil, errors.New("name is empty")
 	}
-	req, err := http.NewRequest(
-		http.MethodDelete, fmt.Sprintf("%s/%s", client.endpoints.Roles, name), nil)
-	if err != nil {
-		return errors.Wrap(err, "Failed to http.NewRequest")
-	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return errors.Wrap(err, "Failed to call DELETE /roles API")
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode >= 400 {
-		b, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return errors.Wrap(err, "Failed to read response body")
-		}
-		e := Error{}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return errors.New(e.Message)
-	}
-	return nil
+
+	return client.callReq(
+		ctx, http.MethodDelete,
+		fmt.Sprintf("%s/%s", client.endpoints.Roles, name),
+		nil, false)
 }

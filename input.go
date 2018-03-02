@@ -1,11 +1,9 @@
 package graylog
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -43,49 +41,35 @@ type Input struct {
 }
 
 // CreateInput creates an input.
-func (client *Client) CreateInput(input *Input) (id string, err error) {
+func (client *Client) CreateInput(input *Input) (
+	id string, ei *ErrorInfo, err error,
+) {
 	return client.CreateInputContext(context.Background(), input)
 }
 
 // CreateInputContext creates an input with a context.
 func (client *Client) CreateInputContext(
 	ctx context.Context, input *Input,
-) (id string, err error) {
+) (id string, ei *ErrorInfo, err error) {
 	b, err := json.Marshal(input)
 	if err != nil {
-		return "", errors.Wrap(err, "Failed to json.Marshal(input)")
+		return "", nil, errors.Wrap(err, "Failed to json.Marshal(input)")
 	}
-	req, err := http.NewRequest(
-		http.MethodPost, client.endpoints.Inputs, bytes.NewBuffer(b))
+
+	ei, err = client.callReq(
+		ctx, http.MethodPost, client.endpoints.Inputs, b, true)
 	if err != nil {
-		return "", errors.Wrap(err, "Failed to http.NewRequest")
+		return "", ei, err
 	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return "", errors.Wrap(err, "Failed to call POST /inputs API")
-	}
-	defer resp.Body.Close()
-	b, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", errors.Wrap(err, "Failed to read response body")
-	}
-	if resp.StatusCode >= 400 {
-		e := Error{}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return "", errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return "", errors.New(e.Message)
-	}
+
 	ret := &Input{}
-	err = json.Unmarshal(b, ret)
-	if err != nil {
-		return "", errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as Input: %s", string(b)))
+
+	if err := json.Unmarshal(ei.ResponseBody, ret); err != nil {
+		return "", ei, errors.Wrap(
+			err, fmt.Sprintf("Failed to parse response body as Input: %s",
+				string(ei.ResponseBody)))
 	}
-	return ret.Id, nil
+	return ret.Id, ei, nil
 }
 
 type inputsBody struct {
@@ -94,180 +78,110 @@ type inputsBody struct {
 }
 
 // GetInputs returns all inputs.
-func (client *Client) GetInputs() ([]Input, error) {
+func (client *Client) GetInputs() ([]Input, *ErrorInfo, error) {
 	return client.GetInputsContext(context.Background())
 }
 
 // GetInputsContext returns all inputs with a context.
-func (client *Client) GetInputsContext(ctx context.Context) ([]Input, error) {
-	req, err := http.NewRequest(http.MethodGet, client.endpoints.Inputs, nil)
+func (client *Client) GetInputsContext(ctx context.Context) (
+	[]Input, *ErrorInfo, error,
+) {
+	ei, err := client.callReq(
+		ctx, http.MethodGet, client.endpoints.Inputs, nil, true)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+		return nil, ei, err
 	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to call GET /inputs API")
-	}
-	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to read response body")
-	}
-	if resp.StatusCode >= 400 {
-		e := Error{}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return nil, errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return nil, errors.New(e.Message)
-	}
+
 	inputs := &inputsBody{}
-	err = json.Unmarshal(b, inputs)
+	err = json.Unmarshal(ei.ResponseBody, inputs)
 	if err != nil {
-		return nil, errors.Wrap(
+		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf(
-				"Failed to parse response body as Inputs: %s", string(b)))
+				"Failed to parse response body as Inputs: %s",
+				string(ei.ResponseBody)))
 	}
-	return inputs.Inputs, nil
+	return inputs.Inputs, ei, nil
 }
 
 // GetInput returns a given input.
-func (client *Client) GetInput(id string) (*Input, error) {
+func (client *Client) GetInput(id string) (*Input, *ErrorInfo, error) {
 	return client.GetInputContext(context.Background(), id)
 }
 
 // GetInputContext returns a given input with a context.
 func (client *Client) GetInputContext(
 	ctx context.Context, id string,
-) (*Input, error) {
+) (*Input, *ErrorInfo, error) {
 	if id == "" {
-		return nil, errors.New("id is empty")
+		return nil, nil, errors.New("id is empty")
 	}
-	req, err := http.NewRequest(
-		http.MethodGet, fmt.Sprintf("%s/%s", client.endpoints.Inputs, id), nil)
+
+	ei, err := client.callReq(
+		ctx, http.MethodGet, fmt.Sprintf("%s/%s", client.endpoints.Inputs, id),
+		nil, true)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+		return nil, ei, err
 	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return nil, errors.Wrap(
-			err, "Failed to call GET /system/inputs/{inputId} API")
-	}
-	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to read response body")
-	}
-	if resp.StatusCode >= 400 {
-		e := Error{}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return nil, errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return nil, errors.New(e.Message)
-	}
+
 	input := &Input{}
-	err = json.Unmarshal(b, input)
+	err = json.Unmarshal(ei.ResponseBody, input)
 	if err != nil {
-		return nil, errors.Wrap(
+		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf(
-				"Failed to parse response body as Input: %s", string(b)))
+				"Failed to parse response body as Input: %s", string(ei.ResponseBody)))
 	}
-	return input, nil
+	return input, ei, nil
 }
 
 // UpdateInput updates an given input.
-func (client *Client) UpdateInput(id string, input *Input) (*Input, error) {
+func (client *Client) UpdateInput(id string, input *Input) (
+	*Input, *ErrorInfo, error,
+) {
 	return client.UpdateInputContext(context.Background(), id, input)
 }
 
 // UpdateInputContext updates an given input with a context.
 func (client *Client) UpdateInputContext(
 	ctx context.Context, id string, input *Input,
-) (*Input, error) {
+) (*Input, *ErrorInfo, error) {
 	if id == "" {
-		return nil, errors.New("id is empty")
+		return nil, nil, errors.New("id is empty")
 	}
 	b, err := json.Marshal(input)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(input)")
+		return nil, nil, errors.Wrap(err, "Failed to json.Marshal(input)")
 	}
-	req, err := http.NewRequest(
-		http.MethodPut, fmt.Sprintf("%s/%s", client.endpoints.Inputs, id),
-		bytes.NewBuffer(b))
+
+	ei, err := client.callReq(
+		ctx, http.MethodPut, fmt.Sprintf("%s/%s", client.endpoints.Inputs, id),
+		b, true)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+		return nil, ei, err
 	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return nil, errors.Wrap(
-			err, "Failed to call PUT /system/inputs/{inputId} API")
-	}
-	defer resp.Body.Close()
-	b, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to read response body")
-	}
-	if resp.StatusCode >= 400 {
-		e := Error{}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return nil, errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return nil, errors.New(e.Message)
-	}
+
 	ret := &Input{}
-	err = json.Unmarshal(b, ret)
-	if err != nil {
-		return nil, errors.Wrap(
+	if err := json.Unmarshal(ei.ResponseBody, ret); err != nil {
+		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf(
-				"Failed to parse response body as Input: %s", string(b)))
+				"Failed to parse response body as Input: %s", string(ei.ResponseBody)))
 	}
-	return ret, nil
+	return ret, ei, nil
 }
 
 // DeleteInput deletes an given input.
-func (client *Client) DeleteInput(id string) error {
+func (client *Client) DeleteInput(id string) (*ErrorInfo, error) {
 	return client.DeleteInputContext(context.Background(), id)
 }
 
 // DeleteInputContext deletes an given input with a context.
 func (client *Client) DeleteInputContext(
 	ctx context.Context, id string,
-) error {
+) (*ErrorInfo, error) {
 	if id == "" {
-		return errors.New("id is empty")
+		return nil, errors.New("id is empty")
 	}
-	req, err := http.NewRequest(
-		http.MethodDelete, fmt.Sprintf("%s/%s", client.endpoints.Inputs, id), nil)
-	if err != nil {
-		return errors.Wrap(err, "Failed to http.NewRequest")
-	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return errors.Wrap(
-			err, "Failed to call DELETE /system/inputs/{inputId} API")
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode >= 400 {
-		b, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return errors.Wrap(err, "Failed to read response body")
-		}
-		e := &Error{}
-		err = json.Unmarshal(b, e)
-		if err != nil {
-			return errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return errors.New(e.Message)
-	}
-	return nil
+
+	return client.callReq(
+		ctx, http.MethodDelete, fmt.Sprintf("%s/%s", client.endpoints.Inputs, id),
+		nil, false)
 }

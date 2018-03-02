@@ -1,11 +1,9 @@
 package graylog
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -45,43 +43,21 @@ type Startpage struct {
 }
 
 // CreateUser creates a new user account.
-func (client *Client) CreateUser(user *User) error {
+func (client *Client) CreateUser(user *User) (*ErrorInfo, error) {
 	return client.CreateUserContext(context.Background(), user)
 }
 
 // CreateUserContext creates a new user account with a context.
 func (client *Client) CreateUserContext(
 	ctx context.Context, user *User,
-) error {
+) (*ErrorInfo, error) {
 	b, err := json.Marshal(user)
 	if err != nil {
-		return errors.Wrap(err, "Failed to json.Marshal(user)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(user)")
 	}
-	req, err := http.NewRequest(
-		http.MethodPost, client.endpoints.Users, bytes.NewBuffer(b))
-	if err != nil {
-		return errors.Wrap(err, "Failed to http.NewRequest")
-	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return errors.Wrap(err, "Failed to call POST /users API")
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode >= 400 {
-		b, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return errors.Wrap(err, "Failed to read response body")
-		}
-		e := Error{}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return errors.New(e.Message)
-	}
-	return nil
+
+	return client.callReq(
+		ctx, http.MethodPost, client.endpoints.Users, b, false)
 }
 
 type usersBody struct {
@@ -89,168 +65,93 @@ type usersBody struct {
 }
 
 // GetUsers returns all users.
-func (client *Client) GetUsers() ([]User, error) {
+func (client *Client) GetUsers() ([]User, *ErrorInfo, error) {
 	return client.GetUsersContext(context.Background())
 }
 
 // GetUsersContext returns all users with a context.
-func (client *Client) GetUsersContext(ctx context.Context) ([]User, error) {
-	req, err := http.NewRequest(http.MethodGet, client.endpoints.Users, nil)
+func (client *Client) GetUsersContext(ctx context.Context) ([]User, *ErrorInfo, error) {
+	ei, err := client.callReq(
+		ctx, http.MethodGet, client.endpoints.Users, nil, true)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+		return nil, ei, err
 	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to call GET /users API")
-	}
-	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to read response body")
-	}
-	if resp.StatusCode >= 400 {
-		e := Error{}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return nil, errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return nil, errors.New(e.Message)
-	}
+
 	users := usersBody{}
-	err = json.Unmarshal(b, &users)
+	err = json.Unmarshal(ei.ResponseBody, &users)
 	if err != nil {
-		return nil, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as Users: %s", string(b)))
+		return nil, ei, errors.Wrap(
+			err, fmt.Sprintf("Failed to parse response body as Users: %s",
+				string(ei.ResponseBody)))
 	}
-	return users.Users, nil
+	return users.Users, ei, nil
 }
 
 // GetUser returns a given user.
-func (client *Client) GetUser(name string) (*User, error) {
+func (client *Client) GetUser(name string) (*User, *ErrorInfo, error) {
 	return client.GetUserContext(context.Background(), name)
 }
 
 // GetUserContext returns a given user with a context.
 func (client *Client) GetUserContext(
 	ctx context.Context, name string,
-) (*User, error) {
+) (*User, *ErrorInfo, error) {
 	if name == "" {
-		return nil, errors.New("name is empty")
+		return nil, nil, errors.New("name is empty")
 	}
-	req, err := http.NewRequest(
-		http.MethodGet, fmt.Sprintf("%s/%s", client.endpoints.Users, name), nil)
+
+	ei, err := client.callReq(
+		ctx, http.MethodGet,
+		fmt.Sprintf("%s/%s", client.endpoints.Users, name), nil, true)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+		return nil, ei, err
 	}
-	resp, err := callRequest(req, client, ctx)
+	user := &User{}
+	err = json.Unmarshal(ei.ResponseBody, user)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to call GET /users API")
+		return nil, ei, errors.Wrap(
+			err, fmt.Sprintf("Failed to parse response body as User: %s",
+				string(ei.ResponseBody)))
 	}
-	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to read response body")
-	}
-	if resp.StatusCode >= 400 {
-		e := Error{}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return nil, errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return nil, errors.New(e.Message)
-	}
-	user := User{}
-	err = json.Unmarshal(b, &user)
-	if err != nil {
-		return nil, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as User: %s", string(b)))
-	}
-	return &user, nil
+	return user, ei, nil
 }
 
 // UpdateUser updates a given user.
-func (client *Client) UpdateUser(name string, user *User) error {
+func (client *Client) UpdateUser(name string, user *User) (*ErrorInfo, error) {
 	return client.UpdateUserContext(context.Background(), name, user)
 }
 
 // UpdateUserContext updates a given user with a context.
 func (client *Client) UpdateUserContext(
 	ctx context.Context, name string, user *User,
-) error {
+) (*ErrorInfo, error) {
 	if name == "" {
-		return errors.New("name is empty")
+		return nil, errors.New("name is empty")
 	}
 	b, err := json.Marshal(user)
 	if err != nil {
-		return errors.Wrap(err, "Failed to json.Marshal(user)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(user)")
 	}
-	req, err := http.NewRequest(
-		http.MethodPut, fmt.Sprintf("%s/%s", client.endpoints.Users, name),
-		bytes.NewBuffer(b))
-	if err != nil {
-		return errors.Wrap(err, "Failed to http.NewRequest")
-	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return errors.Wrap(err, "Failed to call PUT /users/{username} API")
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode >= 400 {
-		b, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return errors.Wrap(err, "Failed to read response body")
-		}
-		e := Error{}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return errors.New(e.Message)
-	}
-	return nil
+
+	return client.callReq(
+		ctx, http.MethodPut,
+		fmt.Sprintf("%s/%s", client.endpoints.Users, name), b, false)
 }
 
 // DeleteUser deletes a given user.
-func (client *Client) DeleteUser(name string) error {
+func (client *Client) DeleteUser(name string) (*ErrorInfo, error) {
 	return client.DeleteUserContext(context.Background(), name)
 }
 
 // DeleteUserContext deletes a given user with a context.
 func (client *Client) DeleteUserContext(
 	ctx context.Context, name string,
-) error {
+) (*ErrorInfo, error) {
 	if name == "" {
-		return errors.New("name is empty")
+		return nil, errors.New("name is empty")
 	}
-	req, err := http.NewRequest(
-		http.MethodDelete, fmt.Sprintf("%s/%s", client.endpoints.Users, name), nil)
-	if err != nil {
-		return errors.Wrap(err, "Failed to http.NewRequest")
-	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return errors.Wrap(err, "Failed to call DELETE /users API")
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode >= 400 {
-		b, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return errors.Wrap(err, "Failed to read response body")
-		}
-		e := Error{}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return errors.New(e.Message)
-	}
-	return nil
+
+	return client.callReq(
+		ctx, http.MethodDelete,
+		fmt.Sprintf("%s/%s", client.endpoints.Users, name), nil, false)
 }

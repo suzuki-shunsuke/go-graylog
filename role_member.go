@@ -4,104 +4,67 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/pkg/errors"
 )
 
 // GetRoleMembers returns a given role's members.
-func (client *Client) GetRoleMembers(name string) ([]User, error) {
+func (client *Client) GetRoleMembers(name string) ([]User, *ErrorInfo, error) {
 	return client.GetRoleMembersContext(context.Background(), name)
 }
 
 // GetRoleMembersContext returns a given role's members with a context.
 func (client *Client) GetRoleMembersContext(
 	ctx context.Context, name string,
-) ([]User, error) {
+) ([]User, *ErrorInfo, error) {
 	if name == "" {
-		return nil, errors.New("name is empty")
+		return nil, nil, errors.New("name is empty")
 	}
-	req, err := http.NewRequest(
-		http.MethodGet, client.RoleMembersEndpoint(name), nil)
+
+	ei, err := client.callReq(
+		ctx, http.MethodGet, client.RoleMembersEndpoint(name), nil, true)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to http.NewRequest")
-	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return nil, errors.Wrap(
-			err, "Failed to call GET /roles/{rolename}/members API")
-	}
-	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to read response body")
-	}
-	if resp.StatusCode >= 400 {
-		e := Error{}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return nil, errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return nil, errors.New(e.Message)
+		return nil, ei, err
 	}
 	users := usersBody{}
-	err = json.Unmarshal(b, &users)
+	err = json.Unmarshal(ei.ResponseBody, &users)
 	if err != nil {
-		return nil, errors.Wrap(
+		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf(
-				"Failed to parse response body as Users: %s", string(b)))
+				"Failed to parse response body as Users: %s",
+				string(ei.ResponseBody)))
 	}
-	return users.Users, nil
+	return users.Users, ei, nil
 }
 
 // AddUserToRole adds a user to a role.
-func (client *Client) AddUserToRole(userName, roleName string) error {
+func (client *Client) AddUserToRole(userName, roleName string) (
+	*ErrorInfo, error,
+) {
 	return client.AddUserToRoleContext(context.Background(), userName, roleName)
 }
 
 // AddUserToRoleContext adds a user to a role with a context.
 func (client *Client) AddUserToRoleContext(
 	ctx context.Context, userName, roleName string,
-) error {
+) (*ErrorInfo, error) {
 	if userName == "" {
-		return errors.New("userName is empty")
+		return nil, errors.New("userName is empty")
 	}
 	if roleName == "" {
-		return errors.New("roleName is empty")
+		return nil, errors.New("roleName is empty")
 	}
-	req, err := http.NewRequest(
-		http.MethodPut, client.RoleMemberEndpoint(userName, roleName), nil)
-	if err != nil {
-		return errors.Wrap(err, "Failed to http.NewRequest")
-	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return errors.Wrap(
-			err, "Failed to call PUT /roles/{rolename}/members/{username} API")
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode >= 400 {
-		e := Error{}
-		b, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return errors.Wrap(err, "Failed to read response body")
-		}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return errors.New(e.Message)
-	}
-	return nil
+
+	return client.callReq(
+		ctx, http.MethodPut,
+		client.RoleMemberEndpoint(userName, roleName), nil, false)
 }
 
 // RemoveUserFromRole removes a user from a role.
-func (client *Client) RemoveUserFromRole(userName, roleName string) error {
+func (client *Client) RemoveUserFromRole(
+	userName, roleName string,
+) (*ErrorInfo, error) {
 	return client.RemoveUserFromRoleContext(
 		context.Background(), userName, roleName)
 }
@@ -109,37 +72,15 @@ func (client *Client) RemoveUserFromRole(userName, roleName string) error {
 // RemoveUserFromRoleContext removes a user from a role with a context.
 func (client *Client) RemoveUserFromRoleContext(
 	ctx context.Context, userName, roleName string,
-) error {
+) (*ErrorInfo, error) {
 	if userName == "" {
-		return errors.New("userName is empty")
+		return nil, errors.New("userName is empty")
 	}
 	if roleName == "" {
-		return errors.New("roleName is empty")
+		return nil, errors.New("roleName is empty")
 	}
-	req, err := http.NewRequest(
-		http.MethodDelete, client.RoleMemberEndpoint(userName, roleName), nil)
-	if err != nil {
-		return errors.Wrap(err, "Failed to http.NewRequest")
-	}
-	resp, err := callRequest(req, client, ctx)
-	if err != nil {
-		return errors.Wrap(
-			err, "Failed to call DELETE /roles/{rolename}/members/{username} API")
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode >= 400 {
-		e := Error{}
-		b, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return errors.Wrap(err, "Failed to read response body")
-		}
-		err = json.Unmarshal(b, &e)
-		if err != nil {
-			return errors.Wrap(
-				err, fmt.Sprintf(
-					"Failed to parse response body as Error: %s", string(b)))
-		}
-		return errors.New(e.Message)
-	}
-	return nil
+
+	return client.callReq(
+		ctx, http.MethodDelete,
+		client.RoleMemberEndpoint(userName, roleName), nil, false)
 }

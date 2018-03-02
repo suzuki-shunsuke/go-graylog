@@ -35,10 +35,10 @@ func TestCreateUser(t *testing.T) {
 	}
 	defer server.Close()
 	admin := dummyAdmin()
-	if err := client.CreateUser(admin); err != nil {
+	if _, err := client.CreateUser(admin); err != nil {
 		t.Fatal("Failed to CreateUser", err)
 	}
-	if err := client.CreateUser(admin); err == nil {
+	if _, err := client.CreateUser(admin); err == nil {
 		t.Fatal("the user name must be unique ")
 	}
 }
@@ -51,7 +51,7 @@ func TestGetUsers(t *testing.T) {
 	defer server.Close()
 	admin := dummyAdmin()
 	server.Users[admin.Username] = *admin
-	users, err := client.GetUsers()
+	users, _, err := client.GetUsers()
 	if err != nil {
 		t.Fatal("Failed to GetUsers", err)
 	}
@@ -69,17 +69,17 @@ func TestGetUser(t *testing.T) {
 	defer server.Close()
 	exp := dummyAdmin()
 	server.Users[exp.Username] = *exp
-	user, err := client.GetUser(exp.Username)
+	user, _, err := client.GetUser(exp.Username)
 	if err != nil {
 		t.Fatal("Failed to GetUser", err)
 	}
 	if !reflect.DeepEqual(*user, *exp) {
 		t.Fatalf("client.GetUser() == %v, wanted %v", user, exp)
 	}
-	if _, err := client.GetUser(""); err == nil {
+	if _, _, err := client.GetUser(""); err == nil {
 		t.Fatal("username should be required.")
 	}
-	if _, err := client.GetUser("h"); err == nil {
+	if _, _, err := client.GetUser("h"); err == nil {
 		t.Fatal(`no user whoname name is "h"`)
 	}
 }
@@ -93,13 +93,13 @@ func TestUpdateUser(t *testing.T) {
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
 	user.FullName = "changed!"
-	if err := client.UpdateUser(user.Username, user); err != nil {
+	if _, err := client.UpdateUser(user.Username, user); err != nil {
 		t.Fatal("Failed to UpdateUser", err)
 	}
-	if err := client.UpdateUser("", user); err == nil {
+	if _, err := client.UpdateUser("", user); err == nil {
 		t.Fatal("username should be required.")
 	}
-	if err := client.UpdateUser("h", user); err == nil {
+	if _, err := client.UpdateUser("h", user); err == nil {
 		t.Fatal(`no user whoname name is "h"`)
 	}
 }
@@ -112,13 +112,13 @@ func TestDeleteUser(t *testing.T) {
 	defer server.Close()
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
-	if err := client.DeleteUser(user.Username); err != nil {
+	if _, err := client.DeleteUser(user.Username); err != nil {
 		t.Fatal("Failed to DeleteUser", err)
 	}
-	if err := client.DeleteUser(""); err == nil {
+	if _, err := client.DeleteUser(""); err == nil {
 		t.Fatal("username should be required.")
 	}
-	if err := client.DeleteUser("h"); err == nil {
+	if _, err := client.DeleteUser("h"); err == nil {
 		t.Fatal(`no user whoname name is "h"`)
 	}
 }

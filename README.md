@@ -34,12 +34,12 @@ func main() {
 	params := &graylog.Role{
 		Name: "foo", Description: "description",
 		Permissions: []string{"users:list"}}
-	role, err := client.CreateRole(params)
-	fmt.Println(role, err)
+	role, ei, err := client.CreateRole(params)
+	fmt.Println(role, ei, err)
 
 	params.Name = "bar"
-	role, err = client.UpdateRole("foo", params)
-	fmt.Println(role, err)
+	role, ei, err = client.UpdateRole("foo", params)
+	fmt.Println(role, ei, err)
 }
 ```
 
@@ -59,7 +59,7 @@ if err != nil {
 	return
 }
 params := &Role{Name: "foo", Permissions: []string{"*"}}
-role, err := client.CreateRole(params)
+role, ei, err := client.CreateRole(params)
 ```
 
 ```golang
