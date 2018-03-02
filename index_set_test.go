@@ -139,6 +139,10 @@ func TestUpdateIndexSet(t *testing.T) {
 	if _, _, err := client.UpdateIndexSet("h", indexSet); err == nil {
 		t.Fatal(`no index set whose id is "h"`)
 	}
+	indexSet.Title = ""
+	if _, _, err := client.UpdateIndexSet(indexSet.Id, indexSet); err == nil {
+		t.Fatal("title is required")
+	}
 }
 
 func TestDeleteIndexSet(t *testing.T) {
@@ -188,6 +192,13 @@ func TestSetDefaultIndexSet(t *testing.T) {
 	}
 	if _, _, err := client.SetDefaultIndexSet("h"); err == nil {
 		t.Fatal(`no index set whose id is "h"`)
+	}
+
+	indexSet.Default = false
+	indexSet.Writable = false
+	server.IndexSets[indexSet.Id] = *indexSet
+	if _, _, err := client.SetDefaultIndexSet(indexSet.Id); err == nil {
+		t.Fatal("Default index set must be writable.")
 	}
 }
 
