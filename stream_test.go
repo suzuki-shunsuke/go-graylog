@@ -93,6 +93,23 @@ func TestCreateStream(t *testing.T) {
 	if _, _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("is_default must be false")
 	}
+
+	copiedStream := *stream
+	stream.IsDefault = false
+	stream.Title = ""
+	if _, _, err := client.CreateStream(stream); err == nil {
+		t.Fatal("title is required")
+	}
+	stream.Title = copiedStream.Title
+	stream.IndexSetId = ""
+	if _, _, err := client.CreateStream(stream); err == nil {
+		t.Fatal("index_set_id is required")
+	}
+	stream.IndexSetId = copiedStream.IndexSetId
+	stream.AlertReceivers = &AlertReceivers{}
+	if _, _, err := client.CreateStream(stream); err == nil {
+		t.Fatal("alert_receiver is required")
+	}
 }
 
 func TestGetEnabledStreams(t *testing.T) {

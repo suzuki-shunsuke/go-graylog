@@ -107,8 +107,7 @@ func (client *Client) GetUserContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodGet,
-		fmt.Sprintf("%s/%s", client.endpoints.Users, name), nil, true)
+		ctx, http.MethodGet, client.endpoints.User(name), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -140,8 +139,7 @@ func (client *Client) UpdateUserContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodPut,
-		fmt.Sprintf("%s/%s", client.endpoints.Users, name), b, false)
+		ctx, http.MethodPut, client.endpoints.User(name), b, false)
 }
 
 // DeleteUser deletes a given user.
@@ -158,6 +156,5 @@ func (client *Client) DeleteUserContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodDelete,
-		fmt.Sprintf("%s/%s", client.endpoints.Users, name), nil, false)
+		ctx, http.MethodDelete, client.endpoints.User(name), nil, false)
 }

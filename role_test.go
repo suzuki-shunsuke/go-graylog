@@ -45,10 +45,20 @@ func TestGetRoles(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
+	roles, _, err := client.GetRoles()
+	if err != nil {
+		t.Fatal("Failed to GetRoles", err)
+	}
+	if roles == nil {
+		t.Fatal("client.GetRoles() is nil")
+	}
+	if len(roles) != 0 {
+		t.Fatalf("len(roles) == %d, wanted 0", len(roles))
+	}
 	admin := dummyRole()
 	exp := []Role{*admin}
 	server.Roles[admin.Name] = *admin
-	roles, _, err := client.GetRoles()
+	roles, _, err = client.GetRoles()
 	if err != nil {
 		t.Fatal("Failed to GetRoles", err)
 	}
@@ -101,6 +111,17 @@ func TestUpdateRole(t *testing.T) {
 	}
 	if _, _, err := client.UpdateRole("h", admin); err == nil {
 		t.Fatal(`no role whose name is "h"`)
+	}
+
+	copiedAdmin := *admin
+	admin.Name = ""
+	if _, _, err := client.UpdateRole(copiedAdmin.Name, admin); err == nil {
+		t.Fatal("role name is required")
+	}
+	admin.Name = copiedAdmin.Name
+	admin.Permissions = nil
+	if _, _, err := client.UpdateRole(copiedAdmin.Name, admin); err == nil {
+		t.Fatal("role permissions is required")
 	}
 }
 

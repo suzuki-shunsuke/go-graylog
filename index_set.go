@@ -102,8 +102,7 @@ func (client *Client) GetIndexSetContext(
 		return nil, nil, errors.New("id is empty")
 	}
 	ei, err := client.callReq(
-		ctx, http.MethodGet,
-		fmt.Sprintf("%s/%s", client.endpoints.IndexSets, id), nil, true)
+		ctx, http.MethodGet, client.endpoints.IndexSet(id), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -170,8 +169,7 @@ func (client *Client) UpdateIndexSetContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPut,
-		fmt.Sprintf("%s/%s", client.endpoints.IndexSets, id), b, true)
+		ctx, http.MethodPut, client.endpoints.IndexSet(id), b, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -201,8 +199,7 @@ func (client *Client) DeleteIndexSetContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodDelete,
-		fmt.Sprintf("%s/%s", client.endpoints.IndexSets, id), nil, false)
+		ctx, http.MethodDelete, client.endpoints.IndexSet(id), nil, false)
 }
 
 // SetDefaultIndexSet sets default Index Set.
@@ -221,9 +218,7 @@ func (client *Client) SetDefaultIndexSetContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPut,
-		fmt.Sprintf("%s/%s/default", client.endpoints.IndexSets, id),
-		nil, true)
+		ctx, http.MethodPut, client.endpoints.SetDefaultIndexSet(id), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -254,9 +249,7 @@ func (client *Client) GetIndexSetStatsContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodGet,
-		fmt.Sprintf("%s/%s/stats", client.endpoints.IndexSets, id),
-		nil, true)
+		ctx, http.MethodGet, client.endpoints.IndexSetStats(id), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -285,9 +278,7 @@ func (client *Client) GetAllIndexSetsStatsContext(
 ) (*IndexSetStats, *ErrorInfo, error) {
 
 	ei, err := client.callReq(
-		ctx, http.MethodGet,
-		fmt.Sprintf("%s/stats", client.endpoints.IndexSets),
-		nil, true)
+		ctx, http.MethodGet, client.endpoints.IndexSetsStats(), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -300,4 +291,18 @@ func (client *Client) GetAllIndexSetsStatsContext(
 				string(ei.ResponseBody)))
 	}
 	return indexSetStats, ei, nil
+}
+
+// AllIndexSetsStats returns all index set's statistics.
+func (ms *MockServer) AllIndexSetsStats() *IndexSetStats {
+	indexSetStats := &IndexSetStats{}
+	if ms.IndexSetStats == nil {
+		return indexSetStats
+	}
+	for _, stats := range ms.IndexSetStats {
+		indexSetStats.Indices += stats.Indices
+		indexSetStats.Documents += stats.Documents
+		indexSetStats.Size += stats.Size
+	}
+	return indexSetStats
 }

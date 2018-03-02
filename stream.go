@@ -134,8 +134,7 @@ func (client *Client) GetEnabledStreamsContext(
 	ctx context.Context,
 ) (streams []Stream, total int, ei *ErrorInfo, err error) {
 	ei, err = client.callReq(
-		ctx, http.MethodGet,
-		fmt.Sprintf("%s/enabled", client.endpoints.Streams), nil, true)
+		ctx, http.MethodGet, client.endpoints.EnabledStreams, nil, true)
 	if err != nil {
 		return nil, 0, ei, err
 	}
@@ -164,8 +163,7 @@ func (client *Client) GetStreamContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodGet,
-		fmt.Sprintf("%s/%s", client.endpoints.Streams, id), nil, true)
+		ctx, http.MethodGet, client.endpoints.Stream(id), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -201,8 +199,7 @@ func (client *Client) UpdateStreamContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPut,
-		fmt.Sprintf("%s/%s", client.endpoints.Streams, id), b, true)
+		ctx, http.MethodPut, client.endpoints.Stream(id), b, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -230,8 +227,7 @@ func (client *Client) DeleteStreamContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodDelete,
-		fmt.Sprintf("%s/%s", client.endpoints.Streams, id), nil, false)
+		ctx, http.MethodDelete, client.endpoints.Stream(id), nil, false)
 }
 
 // PauseStream pauses a stream.
@@ -248,8 +244,7 @@ func (client *Client) PauseStreamContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodPost,
-		fmt.Sprintf("%s/%s/pause", client.endpoints.Streams, id), nil, false)
+		ctx, http.MethodPost, client.endpoints.PauseStream(id), nil, false)
 }
 
 // ResumeStream resumes a stream.
@@ -266,6 +261,5 @@ func (client *Client) ResumeStreamContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodPost,
-		fmt.Sprintf("%s/%s/resume", client.endpoints.Streams, id), nil, false)
+		ctx, http.MethodPost, client.endpoints.ResumeStream(id), nil, false)
 }

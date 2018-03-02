@@ -98,9 +98,7 @@ func (client *Client) GetRoleContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodGet,
-		fmt.Sprintf("%s/%s", client.endpoints.Roles, name),
-		nil, true)
+		ctx, http.MethodGet, client.endpoints.Role(name), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -135,9 +133,7 @@ func (client *Client) UpdateRoleContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPut,
-		fmt.Sprintf("%s/%s", client.endpoints.Roles, name),
-		b, true)
+		ctx, http.MethodPut, client.endpoints.Role(name), b, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -166,7 +162,5 @@ func (client *Client) DeleteRoleContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodDelete,
-		fmt.Sprintf("%s/%s", client.endpoints.Roles, name),
-		nil, false)
+		ctx, http.MethodDelete, client.endpoints.Role(name), nil, false)
 }

@@ -33,6 +33,11 @@ func TestCreateInput(t *testing.T) {
 	if id == "" {
 		t.Fatal(`client.CreateInput() == ""`)
 	}
+
+	params.Type = ""
+	if _, _, err := client.CreateInput(params); err == nil {
+		t.Fatal("input type is required")
+	}
 }
 
 func TestGetInputs(t *testing.T) {
@@ -68,6 +73,14 @@ func TestGetInput(t *testing.T) {
 	if !reflect.DeepEqual(*exp, *act) {
 		t.Fatalf("client.GetInput() == %v, wanted %v", act, exp)
 	}
+
+	if _, _, err := client.GetInput(""); err == nil {
+		t.Fatal("input id is required")
+	}
+
+	if _, _, err := client.GetInput("h"); err == nil {
+		t.Fatal(`no input whose id is "h"`)
+	}
 }
 
 func TestUpdateInput(t *testing.T) {
@@ -86,6 +99,45 @@ func TestUpdateInput(t *testing.T) {
 	if !reflect.DeepEqual(*act, *exp) {
 		t.Fatalf("client.UpdateInput() == %v, wanted %v", act, exp)
 	}
+
+	if _, _, err := client.UpdateInput("", exp); err == nil {
+		t.Fatal("input id is required")
+	}
+
+	if _, _, err := client.UpdateInput("h", exp); err == nil {
+		t.Fatal(`no input whose id is "h"`)
+	}
+
+	exp.Type = ""
+	if _, _, err := client.UpdateInput(exp.Id, exp); err == nil {
+		t.Fatal("input type is required")
+	}
+	exp.Type = act.Type
+	exp.Configuration = nil
+	if _, _, err := client.UpdateInput(exp.Id, exp); err == nil {
+		t.Fatal("input configuration is required")
+	}
+	exp.Configuration = act.Configuration
+	exp.Title = ""
+	if _, _, err := client.UpdateInput(exp.Id, exp); err == nil {
+		t.Fatal("input title is required")
+	}
+
+	exp.Title = act.Title
+	exp.Configuration.BindAddress = ""
+	if _, _, err := client.UpdateInput(exp.Id, exp); err == nil {
+		t.Fatal("input bind_address is required")
+	}
+	exp.Configuration.BindAddress = "0.0.0.0"
+	exp.Configuration.Port = 0
+	if _, _, err := client.UpdateInput(exp.Id, exp); err == nil {
+		t.Fatal("input port is required")
+	}
+	exp.Configuration.Port = 514
+	exp.Configuration.RecvBufferSize = 0
+	if _, _, err := client.UpdateInput(exp.Id, exp); err == nil {
+		t.Fatal("input recv_buffer_size is required")
+	}
 }
 
 func TestDeleteInput(t *testing.T) {
@@ -99,5 +151,13 @@ func TestDeleteInput(t *testing.T) {
 	_, err = client.DeleteInput(input.Id)
 	if err != nil {
 		t.Fatal("Failed to DeleteInput", err)
+	}
+
+	if _, err := client.DeleteInput(""); err == nil {
+		t.Fatal("input id is required")
+	}
+
+	if _, err := client.DeleteInput("h"); err == nil {
+		t.Fatal(`no input whose id is "h"`)
 	}
 }

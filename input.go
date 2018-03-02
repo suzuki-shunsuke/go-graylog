@@ -124,8 +124,7 @@ func (client *Client) GetInputContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodGet, fmt.Sprintf("%s/%s", client.endpoints.Inputs, id),
-		nil, true)
+		ctx, http.MethodGet, client.endpoints.Input(id), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -160,8 +159,7 @@ func (client *Client) UpdateInputContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPut, fmt.Sprintf("%s/%s", client.endpoints.Inputs, id),
-		b, true)
+		ctx, http.MethodPut, client.endpoints.Input(id), b, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -189,6 +187,5 @@ func (client *Client) DeleteInputContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodDelete, fmt.Sprintf("%s/%s", client.endpoints.Inputs, id),
-		nil, false)
+		ctx, http.MethodDelete, client.endpoints.Input(id), nil, false)
 }
