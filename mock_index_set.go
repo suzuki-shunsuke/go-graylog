@@ -65,14 +65,9 @@ func (ms *MockServer) handleGetIndexSets(
 	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	arr := ms.IndexSetList()
-	indexSets := indexSetsBody{
+	indexSets := &indexSetsBody{
 		IndexSets: arr, Total: len(arr), Stats: &IndexSetStats{}}
-	b, err := json.Marshal(&indexSets)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, indexSets)
 }
 
 // GET /system/indices/index_sets/{id} Get index set
@@ -95,12 +90,7 @@ func (ms *MockServer) handleGetIndexSet(
 			`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
 		return
 	}
-	b, err := json.Marshal(&indexSet)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, &indexSet)
 }
 
 // POST /system/indices/index_sets Create index set
@@ -136,12 +126,7 @@ func (ms *MockServer) handleCreateIndexSet(
 		return
 	}
 	ms.AddIndexSet(indexSet)
-	b, err = json.Marshal(indexSet)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, indexSet)
 }
 
 // PUT /system/indices/index_sets/{id} Update index set
@@ -179,12 +164,7 @@ func (ms *MockServer) handleUpdateIndexSet(
 		return
 	}
 	ms.AddIndexSet(indexSet)
-	b, err = json.Marshal(indexSet)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, indexSet)
 }
 
 // DELETE /system/indices/index_sets/{id} Delete index set
@@ -237,12 +217,7 @@ func (ms *MockServer) handleSetDefaultIndexSet(
 	}
 	indexSet.Default = true
 	ms.AddIndexSet(&indexSet)
-	b, err := json.Marshal(&indexSet)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, &indexSet)
 }
 
 // GET /system/indices/index_sets/{id}/stats Get index set statistics
@@ -261,12 +236,7 @@ func (ms *MockServer) handleGetIndexSetStats(
 			`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
 		return
 	}
-	b, err := json.Marshal(&indexSetStats)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, &indexSetStats)
 }
 
 // GET /system/indices/index_sets/stats Get stats of all index sets
@@ -277,10 +247,5 @@ func (ms *MockServer) handleGetAllIndexSetsStats(
 		"path": r.URL.Path, "method": r.Method,
 	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
-	b, err := json.Marshal(ms.AllIndexSetsStats())
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, ms.AllIndexSetsStats())
 }

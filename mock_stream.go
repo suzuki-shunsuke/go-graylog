@@ -102,12 +102,7 @@ func (ms *MockServer) handleGetStreams(
 	w.Header().Set("Content-Type", "application/json")
 	arr := ms.StreamList()
 	streams := &streamsBody{Streams: arr, Total: len(arr)}
-	b, err := json.Marshal(streams)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, streams)
 }
 
 // POST /streams Create index set
@@ -144,12 +139,7 @@ func (ms *MockServer) handleCreateStream(
 	}
 	ms.AddStream(stream)
 	ret := map[string]string{"stream_id": stream.Id}
-	b, err = json.Marshal(ret)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, ret)
 }
 
 // GET /streams/enabled Get a list of all enabled streams
@@ -162,12 +152,7 @@ func (ms *MockServer) handleGetEnabledStreams(
 	w.Header().Set("Content-Type", "application/json")
 	arr := ms.EnabledStreamList()
 	streams := &streamsBody{Streams: arr, Total: len(arr)}
-	b, err := json.Marshal(streams)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, streams)
 }
 
 // GET /streams/{streamId} Get a single stream
@@ -190,12 +175,7 @@ func (ms *MockServer) handleGetStream(
 			`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
 		return
 	}
-	b, err := json.Marshal(&stream)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, &stream)
 }
 
 // PUT /streams/{streamId} Update a stream
@@ -284,12 +264,7 @@ func (ms *MockServer) handleUpdateStream(
 	}
 	stream.Id = id
 	ms.AddStream(&stream)
-	b, err = json.Marshal(&stream)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, &stream)
 }
 
 // DELETE /streams/{streamId} Delete a stream

@@ -57,12 +57,7 @@ func (ms *MockServer) handleGetRole(
 			`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
 		return
 	}
-	b, err := json.Marshal(&role)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, &role)
 }
 
 // PUT /roles/{rolename} Update an existing role
@@ -99,12 +94,7 @@ func (ms *MockServer) handleUpdateRole(
 		return
 	}
 	ms.UpdateRole(name, role)
-	b, err = json.Marshal(role)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, role)
 }
 
 // DELETE /roles/{rolename} Remove the named role and dissociate any users from it
@@ -170,12 +160,7 @@ func (ms *MockServer) handleCreateRole(
 		return
 	}
 	ms.AddRole(role)
-	b, err = json.Marshal(role)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, role)
 }
 
 // GET /roles List all roles
@@ -187,11 +172,6 @@ func (ms *MockServer) handleGetRoles(
 	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	arr := ms.RoleList()
-	roles := rolesBody{Roles: arr, Total: len(arr)}
-	b, err := json.Marshal(&roles)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	roles := &rolesBody{Roles: arr, Total: len(arr)}
+	writeOr500Error(w, roles)
 }

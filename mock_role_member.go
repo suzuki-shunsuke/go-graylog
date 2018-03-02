@@ -1,7 +1,6 @@
 package graylog
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -46,13 +45,8 @@ func (ms *MockServer) handleRoleMembers(
 		return
 	}
 	arr := ms.RoleMembers(name)
-	users := membersBody{Users: arr, Role: name}
-	b, err := json.Marshal(&users)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	users := &membersBody{Users: arr, Role: name}
+	writeOr500Error(w, users)
 }
 
 // PUT /roles/{rolename}/members/{username} Add a user to a role

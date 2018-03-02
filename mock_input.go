@@ -53,12 +53,7 @@ func (ms *MockServer) handleGetInput(
 			`{"type": "ApiError", "message": "No input found with name %s"}`, id)))
 		return
 	}
-	b, err := json.Marshal(&input)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, &input)
 }
 
 // PUT /system/inputs/{inputId} Update input on this node
@@ -96,12 +91,7 @@ func (ms *MockServer) handleUpdateInput(
 		return
 	}
 	ms.AddInput(input)
-	b, err = json.Marshal(input)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, input)
 }
 
 // DELETE /system/inputs/{inputId} Terminate input on this node
@@ -182,12 +172,7 @@ func (ms *MockServer) handleCreateInput(
 	}
 	ms.AddInput(input)
 	d := map[string]string{"id": input.Id}
-	b, err = json.Marshal(&d)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, &d)
 }
 
 // GET /system/inputs Get all inputs
@@ -199,11 +184,6 @@ func (ms *MockServer) handleGetInputs(
 	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	arr := ms.InputList()
-	inputs := inputsBody{Inputs: arr, Total: len(arr)}
-	b, err := json.Marshal(&inputs)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	inputs := &inputsBody{Inputs: arr, Total: len(arr)}
+	writeOr500Error(w, inputs)
 }

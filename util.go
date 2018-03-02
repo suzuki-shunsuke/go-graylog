@@ -14,6 +14,15 @@ import (
 	"github.com/pkg/errors"
 )
 
+func writeOr500Error(w http.ResponseWriter, v interface{}) {
+	b, err := json.Marshal(v)
+	if err != nil {
+		write500Error(w)
+	} else {
+		w.Write(b)
+	}
+}
+
 func write500Error(w http.ResponseWriter) {
 	w.WriteHeader(500)
 	w.Write([]byte(`{"message":"500 Internal Server Error"}`))

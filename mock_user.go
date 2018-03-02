@@ -98,13 +98,8 @@ func (ms *MockServer) handleGetUsers(
 	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")
 	arr := ms.UserList()
-	users := usersBody{Users: arr}
-	b, err := json.Marshal(&users)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	users := &usersBody{Users: arr}
+	writeOr500Error(w, users)
 }
 
 // GET /users/{username} Get user details
@@ -123,12 +118,7 @@ func (ms *MockServer) handleGetUser(
 			`{"type": "ApiError", "message": "No user found with name %s"}`, name)))
 		return
 	}
-	b, err := json.Marshal(&user)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
+	writeOr500Error(w, &user)
 }
 
 // PUT /users/{username} Modify user details.
