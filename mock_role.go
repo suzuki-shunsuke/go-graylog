@@ -60,9 +60,9 @@ func (ms *MockServer) handleGetRole(
 	b, err := json.Marshal(&role)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // PUT /roles/{rolename} Update an existing role
@@ -102,9 +102,9 @@ func (ms *MockServer) handleUpdateRole(
 	b, err = json.Marshal(role)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // DELETE /roles/{rolename} Remove the named role and dissociate any users from it
@@ -173,9 +173,9 @@ func (ms *MockServer) handleCreateRole(
 	b, err = json.Marshal(role)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // GET /roles List all roles
@@ -191,7 +191,7 @@ func (ms *MockServer) handleGetRoles(
 	b, err := json.Marshal(&roles)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }

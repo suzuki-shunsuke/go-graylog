@@ -56,9 +56,9 @@ func (ms *MockServer) handleGetInput(
 	b, err := json.Marshal(&input)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // PUT /system/inputs/{inputId} Update input on this node
@@ -99,9 +99,9 @@ func (ms *MockServer) handleUpdateInput(
 	b, err = json.Marshal(input)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // DELETE /system/inputs/{inputId} Terminate input on this node
@@ -185,9 +185,9 @@ func (ms *MockServer) handleCreateInput(
 	b, err = json.Marshal(&d)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // GET /system/inputs Get all inputs
@@ -203,7 +203,7 @@ func (ms *MockServer) handleGetInputs(
 	b, err := json.Marshal(&inputs)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }

@@ -102,9 +102,9 @@ func (ms *MockServer) handleGetUsers(
 	b, err := json.Marshal(&users)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // GET /users/{username} Get user details
@@ -126,9 +126,9 @@ func (ms *MockServer) handleGetUser(
 	b, err := json.Marshal(&user)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // PUT /users/{username} Modify user details.

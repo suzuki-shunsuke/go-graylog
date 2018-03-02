@@ -105,9 +105,9 @@ func (ms *MockServer) handleGetStreams(
 	b, err := json.Marshal(streams)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // POST /streams Create index set
@@ -147,9 +147,9 @@ func (ms *MockServer) handleCreateStream(
 	b, err = json.Marshal(ret)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // GET /streams/enabled Get a list of all enabled streams
@@ -165,9 +165,9 @@ func (ms *MockServer) handleGetEnabledStreams(
 	b, err := json.Marshal(streams)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // GET /streams/{streamId} Get a single stream
@@ -193,9 +193,9 @@ func (ms *MockServer) handleGetStream(
 	b, err := json.Marshal(&stream)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // PUT /streams/{streamId} Update a stream
@@ -287,9 +287,9 @@ func (ms *MockServer) handleUpdateStream(
 	b, err = json.Marshal(&stream)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // DELETE /streams/{streamId} Delete a stream

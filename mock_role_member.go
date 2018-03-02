@@ -50,9 +50,9 @@ func (ms *MockServer) handleRoleMembers(
 	b, err := json.Marshal(&users)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // PUT /roles/{rolename}/members/{username} Add a user to a role

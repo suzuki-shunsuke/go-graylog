@@ -70,9 +70,9 @@ func (ms *MockServer) handleGetIndexSets(
 	b, err := json.Marshal(&indexSets)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // GET /system/indices/index_sets/{id} Get index set
@@ -98,9 +98,9 @@ func (ms *MockServer) handleGetIndexSet(
 	b, err := json.Marshal(&indexSet)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // POST /system/indices/index_sets Create index set
@@ -139,9 +139,9 @@ func (ms *MockServer) handleCreateIndexSet(
 	b, err = json.Marshal(indexSet)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // PUT /system/indices/index_sets/{id} Update index set
@@ -182,9 +182,9 @@ func (ms *MockServer) handleUpdateIndexSet(
 	b, err = json.Marshal(indexSet)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // DELETE /system/indices/index_sets/{id} Delete index set
@@ -240,9 +240,9 @@ func (ms *MockServer) handleSetDefaultIndexSet(
 	b, err := json.Marshal(&indexSet)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // GET /system/indices/index_sets/{id}/stats Get index set statistics
@@ -264,9 +264,9 @@ func (ms *MockServer) handleGetIndexSetStats(
 	b, err := json.Marshal(&indexSetStats)
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
 
 // GET /system/indices/index_sets/stats Get stats of all index sets
@@ -280,7 +280,7 @@ func (ms *MockServer) handleGetAllIndexSetsStats(
 	b, err := json.Marshal(ms.AllIndexSetsStats())
 	if err != nil {
 		write500Error(w)
-		return
+	} else {
+		w.Write(b)
 	}
-	w.Write(b)
 }
