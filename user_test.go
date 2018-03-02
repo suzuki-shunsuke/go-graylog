@@ -107,6 +107,11 @@ func TestUpdateUser(t *testing.T) {
 	if _, err := client.UpdateUser("h", user); err == nil {
 		t.Fatal(`no user whoname name is "h"`)
 	}
+	key := user.Username
+	user.Username = ""
+	if _, err := client.UpdateUser(key, user); err == nil {
+		t.Fatal("Username is required.")
+	}
 }
 
 func TestDeleteUser(t *testing.T) {

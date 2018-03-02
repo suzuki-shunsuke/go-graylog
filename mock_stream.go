@@ -104,8 +104,7 @@ func (ms *MockServer) handleGetStreams(
 	streams := &streamsBody{Streams: arr, Total: len(arr)}
 	b, err := json.Marshal(streams)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	w.Write(b)
@@ -121,8 +120,7 @@ func (ms *MockServer) handleCreateStream(
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	stream := &Stream{}
@@ -148,8 +146,7 @@ func (ms *MockServer) handleCreateStream(
 	ret := map[string]string{"stream_id": stream.Id}
 	b, err = json.Marshal(ret)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	w.Write(b)
@@ -167,8 +164,7 @@ func (ms *MockServer) handleGetEnabledStreams(
 	streams := &streamsBody{Streams: arr, Total: len(arr)}
 	b, err := json.Marshal(streams)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	w.Write(b)
@@ -196,8 +192,7 @@ func (ms *MockServer) handleGetStream(
 	}
 	b, err := json.Marshal(&stream)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	w.Write(b)
@@ -213,8 +208,7 @@ func (ms *MockServer) handleUpdateStream(
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	id := ps.ByName("streamId")
@@ -292,8 +286,7 @@ func (ms *MockServer) handleUpdateStream(
 	ms.AddStream(&stream)
 	b, err = json.Marshal(&stream)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	w.Write(b)

@@ -59,8 +59,7 @@ func (ms *MockServer) handleGetRole(
 	}
 	b, err := json.Marshal(&role)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	w.Write(b)
@@ -76,8 +75,7 @@ func (ms *MockServer) handleUpdateRole(
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	name := ps.ByName("rolename")
@@ -103,8 +101,7 @@ func (ms *MockServer) handleUpdateRole(
 	ms.UpdateRole(name, role)
 	b, err = json.Marshal(role)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	w.Write(b)
@@ -149,8 +146,7 @@ func (ms *MockServer) handleCreateRole(
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	role := &Role{}
@@ -176,8 +172,7 @@ func (ms *MockServer) handleCreateRole(
 	ms.AddRole(role)
 	b, err = json.Marshal(role)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	w.Write(b)
@@ -195,8 +190,7 @@ func (ms *MockServer) handleGetRoles(
 	roles := rolesBody{Roles: arr, Total: len(arr)}
 	b, err := json.Marshal(&roles)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	w.Write(b)

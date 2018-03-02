@@ -49,8 +49,7 @@ func (ms *MockServer) handleRoleMembers(
 	users := membersBody{Users: arr, Role: name}
 	b, err := json.Marshal(&users)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	w.Write(b)

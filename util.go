@@ -14,6 +14,11 @@ import (
 	"github.com/pkg/errors"
 )
 
+func write500Error(w http.ResponseWriter) {
+	w.WriteHeader(500)
+	w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+}
+
 func getServerAndClient() (*MockServer, *Client, error) {
 	server, err := NewMockServer("")
 	if err != nil {

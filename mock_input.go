@@ -55,8 +55,7 @@ func (ms *MockServer) handleGetInput(
 	}
 	b, err := json.Marshal(&input)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	w.Write(b)
@@ -72,8 +71,7 @@ func (ms *MockServer) handleUpdateInput(
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	id := ps.ByName("inputId")
@@ -100,8 +98,7 @@ func (ms *MockServer) handleUpdateInput(
 	ms.AddInput(input)
 	b, err = json.Marshal(input)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	w.Write(b)
@@ -167,8 +164,7 @@ func (ms *MockServer) handleCreateInput(
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	input := &Input{}
@@ -188,8 +184,7 @@ func (ms *MockServer) handleCreateInput(
 	d := map[string]string{"id": input.Id}
 	b, err = json.Marshal(&d)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	w.Write(b)
@@ -207,8 +202,7 @@ func (ms *MockServer) handleGetInputs(
 	inputs := inputsBody{Inputs: arr, Total: len(arr)}
 	b, err := json.Marshal(&inputs)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
 		return
 	}
 	w.Write(b)

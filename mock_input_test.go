@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestMockServerHandleCreateUser(t *testing.T) {
+func TestMockServerHandleCreateInput(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -14,7 +14,7 @@ func TestMockServerHandleCreateUser(t *testing.T) {
 	defer server.Close()
 	body := bytes.NewBuffer([]byte("hoge"))
 	req, err := http.NewRequest(
-		http.MethodPost, client.endpoints.Users, body)
+		http.MethodPost, client.endpoints.Inputs, body)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -28,17 +28,17 @@ func TestMockServerHandleCreateUser(t *testing.T) {
 	}
 }
 
-func TestMockServerHandleUpdateUser(t *testing.T) {
+func TestMockServerHandleUpdateInput(t *testing.T) {
 	server, client, err := getServerAndClient()
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	user := dummyAdmin()
-	server.Users[user.Username] = *user
+	input := dummyInput()
+	server.Inputs[input.Id] = *input
 	body := bytes.NewBuffer([]byte("hoge"))
 	req, err := http.NewRequest(
-		http.MethodPut, client.endpoints.User(user.Username), body)
+		http.MethodPut, client.endpoints.Input(input.Id), body)
 	if err != nil {
 		t.Fatal(err)
 	}
