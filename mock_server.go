@@ -120,6 +120,7 @@ func (ms *MockServer) Start() {
 // Close shuts down the server and blocks until all outstanding requests
 // on this server have completed.
 func (ms *MockServer) Close() {
+	ms.Logger.Info("Close Server")
 	ms.Server.Close()
 }
 
