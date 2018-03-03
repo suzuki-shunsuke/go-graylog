@@ -4,43 +4,64 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/urfave/cli"
 )
 
-func action(c *cli.Context) error {
+const VERSION = "0.1.0"
+
+var HELP string
+
+func init() {
+	HELP = fmt.Sprintf(`
+graylog-mock-server - Run Graylog mock server.
+
+USAGE:
+   graylog-mock-server [options]
+
+VERSION:
+   %s
+
+OPTIONS:
+   --port value       port number. If you don't set this option, a free port is assigned and the assigned port number is outputed to the console when the mock server runs.
+   --log-level value  the log level of logrus which the mock server uses internally. (default: "info")
+   --data value       data file path. When the server runs data of the file is loaded and when data of the server is changed data is saved at the file. If this option is not set, no data is loaded and saved.
+   --help, -h         show help
+   --version, -v      print the version
+`, VERSION)
+}
+
+func action(dataPath, logLevel string, port int) error {
 	var (
 		server *graylog.MockServer
 		err    error
 	)
-	port := c.Int("port")
 	if port == 0 {
 		server, err = graylog.NewMockServer("")
 	} else {
-		server, err = graylog.NewMockServer(fmt.Sprintf(":%d", c.Int("port")))
+		server, err = graylog.NewMockServer(fmt.Sprintf(":%d", port))
 	}
 	if err != nil {
-		return cli.NewExitError(
-			fmt.Sprintf("Failed to Get Mock Server: %s", err), 1)
+		return errors.Wrap(err, "Failed to create a mock server.")
 	}
-	ll := c.String("log-level")
-	lvl, err := log.ParseLevel(ll)
+	lvl, err := log.ParseLevel(logLevel)
 	if err != nil {
-		return cli.NewExitError(fmt.Sprintf(
-			`Invalid log-level %s. log-level must be any of debug|info|warn|error|fatal|panic`, ll), 1)
+		return fmt.Errorf(
+			`Invalid log-level %s.
+log-level must be any of debug|info|warn|error|fatal|panic .`, logLevel)
 	}
 
 	server.Logger.SetLevel(lvl)
-	server.DataPath = c.String("data")
+	server.DataPath = dataPath
 	if err := server.Load(); err != nil {
-		return cli.NewExitError(
-			fmt.Sprintf("Failed to load data: %s", err), 1)
+		return errors.Wrap(err, fmt.Sprintf("Failed to load data at %s", dataPath))
 	}
 	server.Start()
 	defer server.Close()
@@ -66,31 +87,29 @@ func action(c *cli.Context) error {
 }
 
 func main() {
-	app := cli.NewApp()
-	app.Name = "graylog-mock-server"
-	app.Usage = "Run Graylog mock server."
-	app.Action = action
-	app.Flags = []cli.Flag{
-		cli.IntFlag{
-			Name:  "port",
-			Usage: "port number. If you don't set this option, a free port is assigned and the assigned port number is outputed to the console when the mock server runs.",
-		},
-		cli.StringFlag{
-			Name:  "log-level",
-			Value: "info",
-			Usage: "the log level of logrus which the mock server uses internally.",
-		},
-		cli.StringFlag{
-			Name:  "data",
-			Usage: "data file path. When the server runs data of the file is loaded and when data of the server is changed data is saved at the file. If this option is not set, no data is loaded and saved.",
-		},
-		// cli.StringFlag{
-		// 	Name: "log-format",
-		// },
+	var portFlag = flag.Int(
+		"port", 0,
+		"port number. If you don't set this option, a free port is assigned and the assigned port number is outputed to the console when the mock server runs.")
+	var dataFlag = flag.String(
+		"data", "",
+		"data file path. When the server runs data of the file is loaded and when data of the server is changed data is saved at the file. If this option is not set, no data is loaded and saved.")
+	var logLevelFlag = flag.String(
+		"log-level", "info",
+		`the log level of logrus which the mock server uses internally. (default: "info")`)
+	var helpFlag = flag.Bool("help", false, "Show help.")
+	var versionFlag = flag.Bool("version", false, "Print the version.")
+	flag.Parse()
+
+	if *helpFlag {
+		fmt.Println(HELP)
+		return
+	}
+	if *versionFlag {
+		fmt.Println(VERSION)
+		return
 	}
 
-	err := app.Run(os.Args)
-	if err != nil {
+	if err := action(*dataFlag, *logLevelFlag, *portFlag); err != nil {
 		log.Fatal(err)
 	}
 }
