@@ -76,13 +76,24 @@ func (ms *MockServer) handleUpdateInput(
 			`{"type": "ApiError", "message": "No input found with id %s"}`, id)))
 		return
 	}
+
 	input := &Input{}
 	err = json.Unmarshal(b, input)
 	if err != nil {
+		ms.Logger.WithFields(log.Fields{
+			"body": string(b), "id": id, "error": err,
+		}).Debug("Bad Request")
 		w.WriteHeader(400)
 		w.Write([]byte(`{"message":"400 Bad Request"}`))
 		return
 	}
+
+	ms.Logger.WithFields(log.Fields{
+		"body": string(b), "input": input, "id": id,
+	}).Debug("request body")
+
+	input.Id = id
+
 	// {"type": "ApiError", "message": "Unable to map property id.\nKnown properties include: title, type, global, configuration, node"}
 	sc, msg := validateInput(input)
 	if sc != 200 {

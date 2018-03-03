@@ -90,14 +90,24 @@ func TestUpdateInput(t *testing.T) {
 	}
 	defer server.Close()
 	exp := dummyInput()
-	server.Inputs[exp.Id] = *exp
-	exp.Global = true
-	act, _, err := client.UpdateInput(exp.Id, exp)
+	id := exp.Id
+	server.Inputs[id] = *exp
+	exp.Id = ""
+	exp.Title += " updated"
+	act, _, err := client.UpdateInput(id, exp)
 	if err != nil {
 		t.Fatal("Failed to UpdateInput", err)
 	}
+	exp.Id = id
 	if !reflect.DeepEqual(*act, *exp) {
 		t.Fatalf("client.UpdateInput() == %v, wanted %v", act, exp)
+	}
+	act2, ok := server.Inputs[id]
+	if !ok {
+		t.Fatal("input is not found")
+	}
+	if !reflect.DeepEqual(act2, *exp) {
+		t.Fatalf("client.UpdateInput() == %v, wanted %v", act2, exp)
 	}
 
 	if _, _, err := client.UpdateInput("", exp); err == nil {

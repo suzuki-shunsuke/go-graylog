@@ -46,6 +46,7 @@ func NewMockServer(addr string) (*MockServer, error) {
 		Streams:       map[string]Stream{},
 		Logger:        log.New(),
 	}
+	// disable log
 	ms.Logger.SetLevel(log.PanicLevel)
 
 	router := httprouter.New()
