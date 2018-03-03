@@ -1,5 +1,15 @@
 # Contributing
 
+## Summary
+
+* [AngularJS Commit Message Format](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#commit-message-format)
+* Format with `go fmt`
+* Limit all lines to a maximum of 79 characters as much as possible
+* Write tests and comments
+* Pay attention to the test covarage
+
+## Steps
+
 1. Fork (https://github.com/suzuki-shunsuke/go-graylog/fork)
 2. Clone the forked repository
 3. Install npm dependencies
@@ -28,6 +38,12 @@ $ npm
 
 ```
 $ make test
+```
+
+Confirm coverage at the web browser.
+
+```
+$ make cover
 ```
 
 ## Commit Message Format

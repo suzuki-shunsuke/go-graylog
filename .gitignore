@@ -4,3 +4,4 @@ coverage.txt
 node_modules
 *.log
 graylog-mock-server
+dist

@@ -1,4 +1,3 @@
-// Package graylog provides Graylog API client and mock server.
 package graylog
 
 import (

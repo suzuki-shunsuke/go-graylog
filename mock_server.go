@@ -46,8 +46,9 @@ func NewMockServer(addr string) (*MockServer, error) {
 		Streams:       map[string]Stream{},
 		Logger:        log.New(),
 	}
-	// disable log
-	ms.Logger.SetLevel(log.PanicLevel)
+	// By Default logLevel is error
+	// because debug and info logs are often noisy at unit tests.
+	ms.Logger.SetLevel(log.ErrorLevel)
 
 	router := httprouter.New()
 
