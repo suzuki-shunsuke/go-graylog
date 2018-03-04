@@ -41,9 +41,6 @@ type Stream struct {
 // Output represents an output.
 type Output struct{}
 
-// StreamRule represents a stream rule.
-type StreamRule struct{}
-
 // AlertReceivers represents alert receivers.
 type AlertReceivers struct {
 	Emails []string `json:"emails,omitempty"`

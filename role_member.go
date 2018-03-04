@@ -23,7 +23,7 @@ func (client *Client) GetRoleMembersContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodGet, client.RoleMembersEndpoint(name), nil, true)
+		ctx, http.MethodGet, client.endpoints.RoleMembers(name), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -58,7 +58,7 @@ func (client *Client) AddUserToRoleContext(
 
 	return client.callReq(
 		ctx, http.MethodPut,
-		client.RoleMemberEndpoint(userName, roleName), nil, false)
+		client.endpoints.RoleMember(userName, roleName), nil, false)
 }
 
 // RemoveUserFromRole removes a user from a role.
@@ -82,5 +82,5 @@ func (client *Client) RemoveUserFromRoleContext(
 
 	return client.callReq(
 		ctx, http.MethodDelete,
-		client.RoleMemberEndpoint(userName, roleName), nil, false)
+		client.endpoints.RoleMember(userName, roleName), nil, false)
 }

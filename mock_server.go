@@ -23,12 +23,13 @@ type MockServer struct {
 	Server   *httptest.Server `json:"-"`
 	Endpoint string           `json:"-"`
 
-	Users         map[string]User          `json:"users"`
-	Roles         map[string]Role          `json:"roles"`
-	Inputs        map[string]Input         `json:"inputs"`
-	IndexSets     map[string]IndexSet      `json:"index_sets"`
-	IndexSetStats map[string]IndexSetStats `json:"index_set_stats"`
-	Streams       map[string]Stream        `json:"streams"`
+	Users         map[string]User                  `json:"users"`
+	Roles         map[string]Role                  `json:"roles"`
+	Inputs        map[string]Input                 `json:"inputs"`
+	IndexSets     map[string]IndexSet              `json:"index_sets"`
+	IndexSetStats map[string]IndexSetStats         `json:"index_set_stats"`
+	Streams       map[string]Stream                `json:"streams"`
+	StreamRules   map[string]map[string]StreamRule `json:"stream_rules"`
 
 	Logger   *log.Logger `json:"-"`
 	DataPath string      `json:"-"`
@@ -44,6 +45,7 @@ func NewMockServer(addr string) (*MockServer, error) {
 		IndexSets:     map[string]IndexSet{},
 		IndexSetStats: map[string]IndexSetStats{},
 		Streams:       map[string]Stream{},
+		StreamRules:   map[string]map[string]StreamRule{},
 		Logger:        log.New(),
 	}
 	// By Default logLevel is error
@@ -97,6 +99,9 @@ func NewMockServer(addr string) (*MockServer, error) {
 	router.DELETE("/api/streams/:streamId", ms.handleDeleteStream)
 	router.POST("/api/streams/:streamId/pause", ms.handlePauseStream)
 	router.POST("/api/streams/:streamId/resume", ms.handleResumeStream)
+
+	router.GET("/api/streams/:streamId/rules", ms.handleGetStreamRules)
+	router.POST("/api/streams/:streamId/rules", ms.handleCreateStreamRule)
 
 	router.NotFound = ms.handleNotFound
 
@@ -173,4 +178,17 @@ func (ms *MockServer) handleNotFound(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(fmt.Sprintf(
 		`{"message":"Page Not Found %s %s"}`, r.Method, r.URL.Path)))
+}
+
+func (ms *MockServer) handleInit(
+	w http.ResponseWriter, r *http.Request, isReadBody bool,
+) ([]byte, error) {
+	ms.Logger.WithFields(log.Fields{
+		"path": r.URL.Path, "method": r.Method,
+	}).Info("request start")
+	w.Header().Set("Content-Type", "application/json")
+	if isReadBody {
+		return ioutil.ReadAll(r.Body)
+	}
+	return nil, nil
 }
