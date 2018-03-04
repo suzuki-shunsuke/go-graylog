@@ -21,14 +21,14 @@ import (
 // StreamRule represents a stream rule.
 type StreamRule struct {
 	// ex. "5a9b53c7c006c6000127f965"
-	Id    string `json:"id"`
-	Field string `json:"tag"`
+	Id    string `json:"id,omitempty"`
+	Field string `json:"field,omitempty"`
 	// ex. "5a94abdac006c60001f04fc1"
-	StreamId    string `json:"stream_id"`
-	Description string `json:"description"`
-	Type        int    `json:"type"`
-	Inverted    bool   `json:"inverted"`
-	Value       string `json:"value"`
+	StreamId    string `json:"stream_id,omitempty"`
+	Description string `json:"description,omitempty"`
+	Type        int    `json:"type,omitempty"`
+	Inverted    bool   `json:"inverted,omitempty"`
+	Value       string `json:"value,omitempty"`
 }
 
 // GetStreamRules returns a list of all stream rules

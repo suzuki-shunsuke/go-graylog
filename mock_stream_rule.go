@@ -7,8 +7,10 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -89,6 +91,48 @@ func (mc *MockServer) validateCreateStreamRule(rule *StreamRule) (int, []byte) {
 	return 200, nil
 }
 
+func makeHash(arr []string) map[string]interface{} {
+	h := map[string]interface{}{}
+	for _, k := range arr {
+		h[k] = nil
+	}
+	return h
+}
+
+func validateCreateStreamRuleBody(b []byte) (
+	int, string, map[string]interface{},
+) {
+	requiredFields := []string{"value", "field"}
+	allowedFields := []string{
+		"value", "type", "description", "inverted", "field"}
+	rf := makeHash(requiredFields)
+	af := makeHash(allowedFields)
+	var a interface{}
+	if err := json.Unmarshal(b, &a); err != nil {
+		return 400, fmt.Sprintf(
+			"Failed to parse the request body as JSON: %s (%s)", string(b), err), nil
+	}
+	body, ok := a.(map[string]interface{})
+	if !ok {
+		return 400, fmt.Sprintf(
+			"Failed to parse the request body as a JSON object : %s", string(b)), nil
+	}
+	for k, _ := range body {
+		if _, ok := af[k]; !ok {
+			return 400, fmt.Sprintf(
+				"In the request body an invalid field is found: %s\nThe allowed fields: %s, request body: %s",
+				k, strings.Join(allowedFields, ", "), string(b)), body
+		}
+	}
+	for k, _ := range rf {
+		if _, ok := body[k]; !ok {
+			return 400, fmt.Sprintf(
+				"In the request body the field %s is required", k), body
+		}
+	}
+	return 200, "", body
+}
+
 // POST /streams/{streamid}/rules Create a stream rule
 func (ms *MockServer) handleCreateStreamRule(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -107,8 +151,15 @@ func (ms *MockServer) handleCreateStreamRule(
 		return
 	}
 
+	sc, msg, body := validateCreateStreamRuleBody(b)
+	if sc != 200 {
+		w.WriteHeader(sc)
+		w.Write([]byte(msg))
+		return
+	}
+
 	rule := &StreamRule{}
-	if err := json.Unmarshal(b, rule); err != nil {
+	if err := mapstructure.Decode(body, rule); err != nil {
 		ms.Logger.WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as StreamRule")
