@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/pkg/errors"
@@ -26,6 +27,12 @@ func writeOr500Error(w http.ResponseWriter, v interface{}) {
 func write500Error(w http.ResponseWriter) {
 	w.WriteHeader(500)
 	w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+}
+
+func writeApiError(w http.ResponseWriter, code int, msg string, args ...interface{}) {
+	w.WriteHeader(code)
+	w.Write([]byte(fmt.Sprintf(
+		`{"type": "ApiError", "message": "%s"}`, fmt.Sprintf(msg, args...))))
 }
 
 func getServerAndClient() (*MockServer, *Client, error) {
@@ -137,4 +144,35 @@ func randStringBytesMaskImprSrc(n int) string {
 	}
 
 	return string(b)
+}
+
+func validateRequestBody(b []byte, requiredFields, allowedFields []string) (
+	int, string, map[string]interface{},
+) {
+	rf := makeHash(requiredFields)
+	af := makeHash(allowedFields)
+	var a interface{}
+	if err := json.Unmarshal(b, &a); err != nil {
+		return 400, fmt.Sprintf(
+			"Failed to parse the request body as JSON: %s (%s)", string(b), err), nil
+	}
+	body, ok := a.(map[string]interface{})
+	if !ok {
+		return 400, fmt.Sprintf(
+			"Failed to parse the request body as a JSON object : %s", string(b)), nil
+	}
+	for k, _ := range body {
+		if _, ok := af[k]; !ok {
+			return 400, fmt.Sprintf(
+				"In the request body an invalid field is found: %s\nThe allowed fields: %s, request body: %s",
+				k, strings.Join(allowedFields, ", "), string(b)), body
+		}
+	}
+	for k, _ := range rf {
+		if _, ok := body[k]; !ok {
+			return 400, fmt.Sprintf(
+				"In the request body the field %s is required", k), body
+		}
+	}
+	return 200, "", body
 }

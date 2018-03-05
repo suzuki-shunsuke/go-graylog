@@ -3,11 +3,9 @@ package graylog
 // GET /streams/{streamid}/rules Get a list of all stream rules
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/mitchellh/mapstructure"
@@ -71,22 +69,8 @@ func (ms *MockServer) handleGetStreamRules(
 }
 
 func (mc *MockServer) validateCreateStreamRule(rule *StreamRule) (int, []byte) {
-	key := ""
-	// value, type, description, inverted, field
-	switch {
-	case rule.Id != "":
-		key = "id"
-	case rule.StreamId != "":
-		key = "stream_id"
-	}
-	if key != "" {
-		return 400, []byte(fmt.Sprintf(`{"type": "ApiError", "message": "Unable to map property %s.\nKnown properties include: value, type, description, inverted, field"}`, key))
-	}
-	if rule.Field == "" {
-		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.resources.streams.rules.requests.CreateStreamRuleRequest, problem: Null field\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@2bf42a23; line: 3, column: 5]"}`)
-	}
-	if rule.Value == "" {
-		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.resources.streams.rules.requests.CreateStreamRuleRequest, problem: Null value\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@a73d673; line: 3, column: 5]"}`)
+	if err := CreateValidator.Struct(rule); err != nil {
+		return 400, []byte(fmt.Sprintf(`{"type": "ApiError", "message": "%s"}`, err.Error()))
 	}
 	return 200, nil
 }
@@ -97,40 +81,6 @@ func makeHash(arr []string) map[string]interface{} {
 		h[k] = nil
 	}
 	return h
-}
-
-func validateCreateStreamRuleBody(b []byte) (
-	int, string, map[string]interface{},
-) {
-	requiredFields := []string{"value", "field"}
-	allowedFields := []string{
-		"value", "type", "description", "inverted", "field"}
-	rf := makeHash(requiredFields)
-	af := makeHash(allowedFields)
-	var a interface{}
-	if err := json.Unmarshal(b, &a); err != nil {
-		return 400, fmt.Sprintf(
-			"Failed to parse the request body as JSON: %s (%s)", string(b), err), nil
-	}
-	body, ok := a.(map[string]interface{})
-	if !ok {
-		return 400, fmt.Sprintf(
-			"Failed to parse the request body as a JSON object : %s", string(b)), nil
-	}
-	for k, _ := range body {
-		if _, ok := af[k]; !ok {
-			return 400, fmt.Sprintf(
-				"In the request body an invalid field is found: %s\nThe allowed fields: %s, request body: %s",
-				k, strings.Join(allowedFields, ", "), string(b)), body
-		}
-	}
-	for k, _ := range rf {
-		if _, ok := body[k]; !ok {
-			return 400, fmt.Sprintf(
-				"In the request body the field %s is required", k), body
-		}
-	}
-	return 200, "", body
 }
 
 // POST /streams/{streamid}/rules Create a stream rule
@@ -145,13 +95,14 @@ func (ms *MockServer) handleCreateStreamRule(
 
 	streamId := ps.ByName("streamId")
 	if _, ok := ms.Streams[streamId]; !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "Stream <%s> not found!"}`, streamId)))
+		writeApiError(w, 404, "Stream <%s> not found!", streamId)
 		return
 	}
 
-	sc, msg, body := validateCreateStreamRuleBody(b)
+	requiredFields := []string{"value", "field"}
+	allowedFields := []string{
+		"value", "type", "description", "inverted", "field"}
+	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields)
 	if sc != 200 {
 		w.WriteHeader(sc)
 		w.Write([]byte(msg))
@@ -163,25 +114,94 @@ func (ms *MockServer) handleCreateStreamRule(
 		ms.Logger.WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as StreamRule")
-		w.WriteHeader(400)
-		w.Write([]byte(`{"message":"400 Bad Request"}`))
+		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
 	ms.Logger.WithFields(log.Fields{
 		"body": string(b), "stream_rule": rule,
 	}).Debug("request body")
+
+	rule.StreamId = streamId
 	if sc, msg := ms.validateCreateStreamRule(rule); sc != 200 {
 		w.WriteHeader(sc)
 		w.Write(msg)
 		return
 	}
-	rule.StreamId = streamId
 	if err := ms.AddStreamRule(rule); err != nil {
 		ms.Logger.WithFields(log.Fields{
 			"error": err, "rule": rule,
 		}).Error("Faield to add rule to mock server")
-		w.WriteHeader(500)
-		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
+		write500Error(w)
+		return
+	}
+	ret := map[string]string{"streamrule_id": rule.Id}
+	writeOr500Error(w, ret)
+}
+
+// null body 415 {"type": "ApiError", "message": "HTTP 415 Unsupported Media Type"}
+// {} value field 400 {"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.resources.streams.rules.requests.CreateStreamRuleRequest, problem: Null value\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@162d5cc5; line: 1, column: 2]"}
+// type 400 {"type": "ApiError", "message": "Unknown stream rule type 0"}
+// value, type, description, inverted, field
+
+func (ms *MockServer) handleUpdateStreamRule(
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) {
+	b, err := ms.handleInit(w, r, true)
+	if err != nil {
+		write500Error(w)
+		return
+	}
+	streamId := ps.ByName("streamId")
+
+	if _, ok := ms.Streams[streamId]; !ok {
+		writeApiError(w, 404, "No stream found with id %s", streamId)
+		return
+	}
+	ruleId := ps.ByName("streamRuleId")
+	rules, ok := ms.StreamRules[streamId]
+	if !ok || rules == nil {
+		writeApiError(w, 404, "No StreamRule found with id %s", ruleId)
+		return
+	}
+	rule, ok := rules[ruleId]
+	if !ok {
+		writeApiError(w, 404, "No StreamRule found with id %s", ruleId)
+		return
+	}
+
+	requiredFields := []string{"value", "field"}
+	allowedFields := []string{
+		"value", "type", "description", "inverted", "field"}
+	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields)
+	if sc != 200 {
+		w.WriteHeader(sc)
+		w.Write([]byte(msg))
+		return
+	}
+
+	rule = StreamRule{}
+	if err := mapstructure.Decode(body, &rule); err != nil {
+		ms.Logger.WithFields(log.Fields{
+			"body": string(b), "error": err,
+		}).Info("Failed to parse request body as StreamRule")
+		writeApiError(w, 400, "400 Bad Request")
+		return
+	}
+	ms.Logger.WithFields(log.Fields{
+		"body": string(b), "stream_rule": rule,
+	}).Debug("request body")
+
+	rule.StreamId = streamId
+	rule.Id = ruleId
+	if err := UpdateValidator.Struct(&rule); err != nil {
+		writeApiError(w, 400, err.Error())
+		return
+	}
+	if err := ms.AddStreamRule(&rule); err != nil {
+		ms.Logger.WithFields(log.Fields{
+			"error": err, "rule": &rule,
+		}).Error("Faield to add rule to mock server")
+		write500Error(w)
 	}
 	ret := map[string]string{"streamrule_id": rule.Id}
 	writeOr500Error(w, ret)

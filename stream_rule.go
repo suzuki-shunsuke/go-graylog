@@ -13,22 +13,20 @@ import (
 // GET /streams/{streamid}/rules/types Get all available stream types
 // GetStreamRule returns a stream rule
 // GET /streams/{streamid}/rules/{streamRuleId} Get a single stream rules
-// UpdateStreamRule updates a stream rule
-// PUT /streams/{streamid}/rules/{streamRuleId} Update a stream rule
 // DeleteStreamRule deletes a stream rule
 // DELETE /streams/{streamid}/rules/{streamRuleId} Delete a stream rule
 
 // StreamRule represents a stream rule.
 type StreamRule struct {
 	// ex. "5a9b53c7c006c6000127f965"
-	Id    string `json:"id,omitempty"`
-	Field string `json:"field,omitempty"`
+	Id    string `json:"id,omitempty" v-create:"isdefault" v-update:"required"`
+	Field string `json:"field,omitempty" v-create:"required" v-update:"required"`
 	// ex. "5a94abdac006c60001f04fc1"
-	StreamId    string `json:"stream_id,omitempty"`
+	StreamId    string `json:"stream_id,omitempty" v-create:"required" v-update:"required"`
 	Description string `json:"description,omitempty"`
 	Type        int    `json:"type,omitempty"`
 	Inverted    bool   `json:"inverted,omitempty"`
-	Value       string `json:"value,omitempty"`
+	Value       string `json:"value,omitempty" v-create:"required" v-update:"required"`
 }
 
 // GetStreamRules returns a list of all stream rules
@@ -65,10 +63,10 @@ func (client *Client) GetStreamRulesContext(
 }
 
 // CreateStreamRule creates a stream
-func (client *Client) CreateStreamRule(streamId string, rule *StreamRule) (
+func (client *Client) CreateStreamRule(rule *StreamRule) (
 	string, *ErrorInfo, error,
 ) {
-	return client.CreateStreamRuleContext(context.Background(), streamId, rule)
+	return client.CreateStreamRuleContext(context.Background(), rule)
 }
 
 type streamRuleIdBody struct {
@@ -77,15 +75,14 @@ type streamRuleIdBody struct {
 
 // CreateStreamRuleContext creates a stream with a context
 func (client *Client) CreateStreamRuleContext(
-	ctx context.Context, streamId string, rule *StreamRule,
+	ctx context.Context, rule *StreamRule,
 ) (ruleId string, ei *ErrorInfo, err error) {
 	// POST /streams/{streamid}/rules Create a stream rule
 	if rule == nil {
 		return "", nil, errors.New("rule is required")
 	}
-	if streamId == "" {
-		return "", nil, errors.New("streamId is required")
-	}
+	streamId := rule.StreamId
+	rule.StreamId = ""
 	b, err := json.Marshal(rule)
 	if err != nil {
 		return "", nil, errors.Wrap(err, "Failed to json.Marshal(stream)")
@@ -104,4 +101,37 @@ func (client *Client) CreateStreamRuleContext(
 				"Failed to parse response body: %s", string(ei.ResponseBody)))
 	}
 	return body.StreamRuleId, ei, nil
+}
+
+// UpdateStreamRule updates a stream rule
+func (client *Client) UpdateStreamRule(rule *StreamRule) (*ErrorInfo, error) {
+	return client.UpdateStreamRuleContext(context.Background(), rule)
+}
+
+// UpdateStreamRuleContext updates a stream rule
+func (client *Client) UpdateStreamRuleContext(
+	ctx context.Context, rule *StreamRule,
+) (*ErrorInfo, error) {
+	// PUT /streams/{streamid}/rules/{streamRuleId} Update a stream rule
+	if rule == nil {
+		return nil, errors.New("rule is required")
+	}
+	streamId := rule.StreamId
+	if streamId == "" {
+		return nil, errors.New("streamId is empty")
+	}
+	ruleId := rule.Id
+	if ruleId == "" {
+		return nil, errors.New("streamRuleId is empty")
+	}
+	rule.StreamId = ""
+	rule.Id = ""
+	b, err := json.Marshal(rule)
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to json.Marshal(rule)")
+	}
+
+	return client.callReq(
+		ctx, http.MethodPut, client.endpoints.StreamRule(
+			streamId, ruleId), b, false)
 }

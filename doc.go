@@ -74,5 +74,12 @@ you can persist the data to the json file by setting the file path to server.Dat
   server.Start()
 
 When the mock server's data are changed by a http request and server.DataPath is set, it's data are written to the file automatically for persistence.
+
+Validation:
+
+  role := &graylog.Role{}
+  if err := graylog.CreateValidator.Struct(role); err != nil {
+  	return "", nil, err
+  }
 */
 package graylog

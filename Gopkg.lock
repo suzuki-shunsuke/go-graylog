@@ -2,6 +2,21 @@
 
 
 [[projects]]
+  name = "github.com/go-playground/locales"
+  packages = [
+    ".",
+    "currency"
+  ]
+  revision = "e4cbcb5d0652150d40ad0646651076b6bd2be4f6"
+  version = "v0.11.2"
+
+[[projects]]
+  name = "github.com/go-playground/universal-translator"
+  packages = ["."]
+  revision = "b32fa301c9fe55953584134cb6853a13c87ec0a1"
+  version = "v0.16.0"
+
+[[projects]]
   name = "github.com/julienschmidt/httprouter"
   packages = ["."]
   revision = "8c199fb6259ffc1af525cc3ad52ee60ba8359669"
@@ -40,9 +55,15 @@
   ]
   revision = "f6cff0780e542efa0c8e864dc8fa522808f6a598"
 
+[[projects]]
+  name = "gopkg.in/go-playground/validator.v9"
+  packages = ["."]
+  revision = "150fe5b6a4ccc9cd6ffdbf5d184b67fbea75efcc"
+  version = "v9.11.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b804abd0944f152b9c7f591cbe4bd4d88469210cddee6d5b09efc7bdb8ba7026"
+  inputs-digest = "dc054e31526091f930d10bf1ac42efc3105e2f673114e137b1e5fc16758d8eb4"
   solver-name = "gps-cdcl"
   solver-version = 1

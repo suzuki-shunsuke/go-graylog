@@ -48,9 +48,9 @@ func TestCreateStreamRule(t *testing.T) {
 	stream := dummyStream()
 	rule := dummyStreamRule()
 	rule.Id = ""
-	rule.StreamId = ""
+	rule.StreamId = stream.Id
 	server.AddStream(stream)
-	if _, _, err := client.CreateStreamRule(stream.Id, rule); err != nil {
+	if _, _, err := client.CreateStreamRule(rule); err != nil {
 		t.Fatal(err)
 	}
 }
