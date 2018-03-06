@@ -2,8 +2,6 @@ package graylog
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -60,10 +58,7 @@ func validateIndexSet(indexSet *IndexSet) (int, []byte) {
 func (ms *MockServer) handleGetIndexSets(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	arr := ms.IndexSetList()
 	indexSets := &indexSetsBody{
 		IndexSets: arr, Total: len(arr), Stats: &IndexSetStats{}}
@@ -79,15 +74,10 @@ func (ms *MockServer) handleGetIndexSet(
 		ms.handleGetAllIndexSetsStats(w, r, ps)
 		return
 	}
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	indexSet, ok := ms.IndexSets[id]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
+		writeApiError(w, 404, "No indexSet found with id %s", id)
 		return
 	}
 	writeOr500Error(w, &indexSet)
@@ -97,11 +87,7 @@ func (ms *MockServer) handleGetIndexSet(
 func (ms *MockServer) handleCreateIndexSet(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
-	b, err := ioutil.ReadAll(r.Body)
+	b, err := ms.handleInit(w, r, true)
 	if err != nil {
 		write500Error(w)
 		return
@@ -112,8 +98,7 @@ func (ms *MockServer) handleCreateIndexSet(
 		ms.Logger.WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as IndexSet")
-		w.WriteHeader(400)
-		w.Write([]byte(`{"message":"400 Bad Request"}`))
+		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
 	ms.Logger.WithFields(log.Fields{
@@ -133,27 +118,20 @@ func (ms *MockServer) handleCreateIndexSet(
 func (ms *MockServer) handleUpdateIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
-	b, err := ioutil.ReadAll(r.Body)
+	b, err := ms.handleInit(w, r, true)
 	if err != nil {
 		write500Error(w)
 		return
 	}
 	id := ps.ByName("indexSetId")
 	if _, ok := ms.IndexSets[id]; !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
+		writeApiError(w, 404, "No indexSet found with id %s", id)
 		return
 	}
 	indexSet := &IndexSet{}
 	err = json.Unmarshal(b, indexSet)
 	if err != nil {
-		w.WriteHeader(400)
-		w.Write([]byte(`{"message":"400 Bad Request"}`))
+		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
 	indexSet.Id = id
@@ -171,16 +149,11 @@ func (ms *MockServer) handleUpdateIndexSet(
 func (ms *MockServer) handleDeleteIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	id := ps.ByName("indexSetId")
 	_, ok := ms.IndexSets[id]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
+		writeApiError(w, 404, "No indexSet found with id %s", id)
 		return
 	}
 	ms.DeleteIndexSet(id)
@@ -190,22 +163,15 @@ func (ms *MockServer) handleDeleteIndexSet(
 func (ms *MockServer) handleSetDefaultIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	id := ps.ByName("indexSetId")
 	indexSet, ok := ms.IndexSets[id]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
+		writeApiError(w, 404, "No indexSet found with id %s", id)
 		return
 	}
 	if !indexSet.Writable {
-		w.WriteHeader(409)
-		w.Write([]byte(
-			`{"type": "ApiError", "message": "Default index set must be writable."}`))
+		writeApiError(w, 409, "Default index set must be writable.")
 		return
 	}
 	for k, v := range ms.IndexSets {
@@ -224,16 +190,11 @@ func (ms *MockServer) handleSetDefaultIndexSet(
 func (ms *MockServer) handleGetIndexSetStats(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	id := ps.ByName("indexSetId")
 	indexSetStats, ok := ms.IndexSetStats[id]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No indexSet found with id %s"}`, id)))
+		writeApiError(w, 404, "No indexSet found with id %s", id)
 		return
 	}
 	writeOr500Error(w, &indexSetStats)
@@ -243,9 +204,6 @@ func (ms *MockServer) handleGetIndexSetStats(
 func (ms *MockServer) handleGetAllIndexSetsStats(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	writeOr500Error(w, ms.AllIndexSetsStats())
 }
