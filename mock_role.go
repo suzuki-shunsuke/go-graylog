@@ -2,8 +2,6 @@ package graylog
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -43,18 +41,13 @@ func (ms *MockServer) RoleList() []Role {
 func (ms *MockServer) handleGetRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	name := ps.ByName("rolename")
 	ms.Logger.WithFields(log.Fields{
 		"handler": "handleGetRole", "rolename": name}).Info("request start")
 	role, ok := ms.Roles[name]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
+		writeApiError(w, 404, "No role found with name %s", name)
 		return
 	}
 	writeOr500Error(w, &role)
@@ -64,33 +57,23 @@ func (ms *MockServer) handleGetRole(
 func (ms *MockServer) handleUpdateRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
-	b, err := ioutil.ReadAll(r.Body)
+	b, err := ms.handleInit(w, r, true)
 	if err != nil {
 		write500Error(w)
 		return
 	}
 	name := ps.ByName("rolename")
 	if _, ok := ms.Roles[name]; !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
+		writeApiError(w, 404, "No role found with name %s", name)
 		return
 	}
 	role := &Role{}
-	err = json.Unmarshal(b, role)
-	if err != nil {
-		w.WriteHeader(400)
-		w.Write([]byte(`{"message":"400 Bad Request"}`))
+	if err = json.Unmarshal(b, role); err != nil {
+		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
-	sc, msg := validateRole(role)
-	if sc != 200 {
-		w.WriteHeader(sc)
-		w.Write(msg)
+	if err := UpdateValidator.Struct(role); err != nil {
+		writeApiError(w, 400, err.Error())
 		return
 	}
 	ms.UpdateRole(name, role)
@@ -101,62 +84,37 @@ func (ms *MockServer) handleUpdateRole(
 func (ms *MockServer) handleDeleteRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	name := ps.ByName("rolename")
 	_, ok := ms.Roles[name]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
+		writeApiError(w, 404, "No role found with name %s", name)
 		return
 	}
 	ms.DeleteRole(name)
-}
-
-func validateRole(role *Role) (int, []byte) {
-	if role.Name == "" {
-		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.models.roles.responses.RoleResponse, problem: Null name\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@472db3c8; line: 1, column: 31]"}`)
-	}
-	if role.Permissions == nil || len(role.Permissions) == 0 {
-		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.models.roles.responses.RoleResponse, problem: Null permissions\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@7e64a22d; line: 1, column: 16]"}`)
-	}
-	return 200, []byte("")
 }
 
 // POST /roles Create a new role
 func (ms *MockServer) handleCreateRole(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
-	b, err := ioutil.ReadAll(r.Body)
+	b, err := ms.handleInit(w, r, true)
 	if err != nil {
 		write500Error(w)
 		return
 	}
 	role := &Role{}
-	err = json.Unmarshal(b, role)
-	if err != nil {
-		w.WriteHeader(400)
-		w.Write([]byte(`{"message":"400 Bad Request"}`))
+
+	if err := json.Unmarshal(b, role); err != nil {
+		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
-	sc, msg := validateRole(role)
-	if sc != 200 {
-		w.WriteHeader(sc)
-		w.Write(msg)
+	if err := CreateValidator.Struct(role); err != nil {
+		writeApiError(w, 400, err.Error())
 		return
 	}
 	if _, ok := ms.Roles[role.Name]; ok {
-		w.WriteHeader(400)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "Role %s already exists."}`,
-			role.Name)))
+		writeApiError(w, 400, "Role %s already exists.", role.Name)
 		return
 	}
 	ms.AddRole(role)
@@ -167,10 +125,7 @@ func (ms *MockServer) handleCreateRole(
 func (ms *MockServer) handleGetRoles(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	arr := ms.RoleList()
 	roles := &rolesBody{Roles: arr, Total: len(arr)}
 	writeOr500Error(w, roles)

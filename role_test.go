@@ -42,6 +42,12 @@ func TestCreateRole(t *testing.T) {
 	if _, _, err := client.CreateRole(params); err == nil {
 		t.Fatal("user name is required")
 	}
+
+	params.Name = "bar"
+	params.Permissions = nil
+	if _, _, err := client.CreateRole(params); err == nil {
+		t.Fatal("user permissions are required")
+	}
 }
 
 func TestGetRoles(t *testing.T) {
