@@ -2,8 +2,6 @@ package graylog
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -41,16 +39,11 @@ func (ms *MockServer) InputList() []Input {
 func (ms *MockServer) handleGetInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	id := ps.ByName("inputId")
 	input, ok := ms.Inputs[id]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No input found with name %s"}`, id)))
+		writeApiError(w, 404, "No input found with id %s", id)
 		return
 	}
 	writeOr500Error(w, &input)
@@ -60,20 +53,14 @@ func (ms *MockServer) handleGetInput(
 func (ms *MockServer) handleUpdateInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
-	b, err := ioutil.ReadAll(r.Body)
+	b, err := ms.handleInit(w, r, true)
 	if err != nil {
 		write500Error(w)
 		return
 	}
 	id := ps.ByName("inputId")
 	if _, ok := ms.Inputs[id]; !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No input found with id %s"}`, id)))
+		writeApiError(w, 404, "No input found with id %s", id)
 		return
 	}
 
@@ -83,8 +70,7 @@ func (ms *MockServer) handleUpdateInput(
 		ms.Logger.WithFields(log.Fields{
 			"body": string(b), "id": id, "error": err,
 		}).Debug("Bad Request")
-		w.WriteHeader(400)
-		w.Write([]byte(`{"message":"400 Bad Request"}`))
+		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
 
@@ -109,16 +95,11 @@ func (ms *MockServer) handleUpdateInput(
 func (ms *MockServer) handleDeleteInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	id := ps.ByName("inputId")
 	_, ok := ms.Inputs[id]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No input found with id %s"}`, id)))
+		writeApiError(w, 404, "No input found with id %s", id)
 		return
 	}
 	ms.DeleteInput(id)
@@ -159,11 +140,7 @@ func validateInput(input *Input) (int, []byte) {
 func (ms *MockServer) handleCreateInput(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
-	b, err := ioutil.ReadAll(r.Body)
+	b, err := ms.handleInit(w, r, true)
 	if err != nil {
 		write500Error(w)
 		return
@@ -171,8 +148,7 @@ func (ms *MockServer) handleCreateInput(
 	input := &Input{}
 	err = json.Unmarshal(b, input)
 	if err != nil {
-		w.WriteHeader(400)
-		w.Write([]byte(`{"message":"400 Bad Request"}`))
+		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
 	sc, msg := validateInput(input)
@@ -190,10 +166,7 @@ func (ms *MockServer) handleCreateInput(
 func (ms *MockServer) handleGetInputs(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	arr := ms.InputList()
 	inputs := &inputsBody{Inputs: arr, Total: len(arr)}
 	writeOr500Error(w, inputs)

@@ -12,11 +12,12 @@ import (
 // User represents a user.
 type User struct {
 	// ex. "local:admin"
+	Username    string   `json:"username,omitempty" v-create:"required" v-update:"required"`
+	Email       string   `json:"email,omitempty" v-create:"required" v-update:"required"`
+	Permissions []string `json:"permissions,omitempty" v-create:"required" v-update:"required"`
+
 	Id          string       `json:"id,omitempty"`
-	Username    string       `json:"username,omitempty"`
-	Email       string       `json:"email,omitempty"`
 	FullName    string       `json:"full_name,omitempty"`
-	Permissions []string     `json:"permissions,omitempty"`
 	Preferences *Preferences `json:"preferences,omitempty"`
 	// ex. "UTC"
 	Timezone string `json:"timezone,omitempty"`

@@ -2,12 +2,9 @@ package graylog
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	log "github.com/sirupsen/logrus"
 )
 
 // AddUser adds a user to the MockServer.
@@ -57,11 +54,7 @@ func validateUser(user *User) (int, []byte) {
 func (ms *MockServer) handleCreateUser(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
-	b, err := ioutil.ReadAll(r.Body)
+	b, err := ms.handleInit(w, r, true)
 	if err != nil {
 		write500Error(w)
 		return
@@ -69,8 +62,7 @@ func (ms *MockServer) handleCreateUser(
 	user := &User{}
 	err = json.Unmarshal(b, user)
 	if err != nil {
-		w.WriteHeader(400)
-		w.Write([]byte(`{"message":"400 Bad Request"}`))
+		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
 	sc, msg := validateUser(user)
@@ -80,10 +72,7 @@ func (ms *MockServer) handleCreateUser(
 		return
 	}
 	if _, ok := ms.Users[user.Username]; ok {
-		w.WriteHeader(400)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "User %s already exists."}`,
-			user.Username)))
+		writeApiError(w, 400, "User %s already exists.", user.Username)
 		return
 	}
 	ms.AddUser(user)
@@ -93,10 +82,7 @@ func (ms *MockServer) handleCreateUser(
 func (ms *MockServer) handleGetUsers(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	arr := ms.UserList()
 	users := &usersBody{Users: arr}
 	writeOr500Error(w, users)
@@ -106,16 +92,11 @@ func (ms *MockServer) handleGetUsers(
 func (ms *MockServer) handleGetUser(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	name := ps.ByName("username")
 	user, ok := ms.Users[name]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No user found with name %s"}`, name)))
+		writeApiError(w, 404, "No user found with name %s", name)
 		return
 	}
 	writeOr500Error(w, &user)
@@ -125,27 +106,20 @@ func (ms *MockServer) handleGetUser(
 func (ms *MockServer) handleUpdateUser(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
-	b, err := ioutil.ReadAll(r.Body)
+	b, err := ms.handleInit(w, r, true)
 	if err != nil {
 		write500Error(w)
 		return
 	}
 	name := ps.ByName("username")
 	if _, ok := ms.Users[name]; !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No user found with name %s"}`, name)))
+		writeApiError(w, 404, "No user found with name %s", name)
 		return
 	}
 	user := &User{}
 	err = json.Unmarshal(b, user)
 	if err != nil {
-		w.WriteHeader(400)
-		w.Write([]byte(`{"message":"400 Bad Request"}`))
+		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
 	sc, msg := validateUser(user)
@@ -161,16 +135,11 @@ func (ms *MockServer) handleUpdateUser(
 func (ms *MockServer) handleDeleteUser(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	name := ps.ByName("username")
 	_, ok := ms.Users[name]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No user found with name %s"}`, name)))
+		writeApiError(w, 404, "No user found with name %s", name)
 		return
 	}
 	ms.DeleteUser(name)

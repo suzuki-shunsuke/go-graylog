@@ -3,7 +3,6 @@ package graylog
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -96,10 +95,7 @@ func validateCreateStream(stream *Stream) (int, []byte) {
 func (ms *MockServer) handleGetStreams(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	arr := ms.StreamList()
 	streams := &streamsBody{Streams: arr, Total: len(arr)}
 	writeOr500Error(w, streams)
@@ -109,11 +105,7 @@ func (ms *MockServer) handleGetStreams(
 func (ms *MockServer) handleCreateStream(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
-	b, err := ioutil.ReadAll(r.Body)
+	b, err := ms.handleInit(w, r, true)
 	if err != nil {
 		write500Error(w)
 		return
@@ -124,8 +116,7 @@ func (ms *MockServer) handleCreateStream(
 		ms.Logger.WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as Stream")
-		w.WriteHeader(400)
-		w.Write([]byte(`{"message":"400 Bad Request"}`))
+		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
 	ms.Logger.WithFields(log.Fields{
@@ -146,10 +137,7 @@ func (ms *MockServer) handleCreateStream(
 func (ms *MockServer) handleGetEnabledStreams(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	arr := ms.EnabledStreamList()
 	streams := &streamsBody{Streams: arr, Total: len(arr)}
 	writeOr500Error(w, streams)
@@ -164,15 +152,10 @@ func (ms *MockServer) handleGetStream(
 		ms.handleGetEnabledStreams(w, r, ps)
 		return
 	}
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	stream, ok := ms.Streams[id]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
+		writeApiError(w, 404, "No stream found with id %s", id)
 		return
 	}
 	writeOr500Error(w, &stream)
@@ -182,11 +165,7 @@ func (ms *MockServer) handleGetStream(
 func (ms *MockServer) handleUpdateStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
-	b, err := ioutil.ReadAll(r.Body)
+	b, err := ms.handleInit(w, r, true)
 	if err != nil {
 		write500Error(w)
 		return
@@ -194,23 +173,19 @@ func (ms *MockServer) handleUpdateStream(
 	id := ps.ByName("streamId")
 	stream, ok := ms.Streams[id]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
+		writeApiError(w, 404, "No stream found with id %s", id)
 		return
 	}
 	data := map[string]interface{}{}
 	err = json.Unmarshal(b, &data)
 	if err != nil {
-		w.WriteHeader(400)
-		w.Write([]byte(`{"message":"400 Bad Request"}`))
+		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
 	if title, ok := data["title"]; ok {
 		t, ok := title.(string)
 		if !ok {
-			w.WriteHeader(400)
-			w.Write([]byte(`{"message":"title must be string"}`))
+			writeApiError(w, 400, "title must be string")
 			return
 		}
 		stream.Title = t
@@ -218,27 +193,16 @@ func (ms *MockServer) handleUpdateStream(
 	if description, ok := data["description"]; ok {
 		d, ok := description.(string)
 		if !ok {
-			w.WriteHeader(400)
-			w.Write([]byte(`{"message":"description must be string"}`))
+			writeApiError(w, 400, "description must be string")
 			return
 		}
 		stream.Description = d
 	}
-	// outputs
+	// TODO outputs
 	if matchingType, ok := data["matching_type"]; ok {
 		m, ok := matchingType.(string)
 		if !ok {
-			w.WriteHeader(400)
-			w.Write([]byte(`{"message":"matching_type must be string"}`))
-			return
-		}
-		stream.MatchingType = m
-	}
-	if matchingType, ok := data["matching_type"]; ok {
-		m, ok := matchingType.(string)
-		if !ok {
-			w.WriteHeader(400)
-			w.Write([]byte(`{"message":"matching_type must be string"}`))
+			writeApiError(w, 400, "matching_type must be string")
 			return
 		}
 		stream.MatchingType = m
@@ -246,9 +210,7 @@ func (ms *MockServer) handleUpdateStream(
 	if removeMathcesFromDefaultStream, ok := data["remove_matches_from_default_stream"]; ok {
 		m, ok := removeMathcesFromDefaultStream.(bool)
 		if !ok {
-			w.WriteHeader(400)
-			w.Write([]byte(
-				`{"message":"remove_matches_from_default_stream must be bool"}`))
+			writeApiError(w, 400, "remove_matches_from_default_stream must be bool")
 			return
 		}
 		stream.RemoveMatchesFromDefaultStream = m
@@ -256,8 +218,7 @@ func (ms *MockServer) handleUpdateStream(
 	if indexSetId, ok := data["index_set_id"]; ok {
 		m, ok := indexSetId.(string)
 		if !ok {
-			w.WriteHeader(400)
-			w.Write([]byte(`{"message":"index_set_id must be string"}`))
+			writeApiError(w, 400, "index_set_id must be string")
 			return
 		}
 		stream.IndexSetId = m
@@ -271,16 +232,11 @@ func (ms *MockServer) handleUpdateStream(
 func (ms *MockServer) handleDeleteStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	id := ps.ByName("streamId")
 	_, ok := ms.Streams[id]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
+		writeApiError(w, 404, "No stream found with id %s", id)
 		return
 	}
 	ms.DeleteStream(id)
@@ -290,16 +246,11 @@ func (ms *MockServer) handleDeleteStream(
 func (ms *MockServer) handlePauseStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	id := ps.ByName("streamId")
 	_, ok := ms.Streams[id]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
+		writeApiError(w, 404, "No stream found with id %s", id)
 		return
 	}
 	// TODO pause
@@ -308,16 +259,11 @@ func (ms *MockServer) handlePauseStream(
 func (ms *MockServer) handleResumeStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	id := ps.ByName("streamId")
 	_, ok := ms.Streams[id]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No stream found with id %s"}`, id)))
+		writeApiError(w, 404, "No stream found with id %s", id)
 		return
 	}
 	// TODO resume

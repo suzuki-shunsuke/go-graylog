@@ -1,11 +1,9 @@
 package graylog
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	log "github.com/sirupsen/logrus"
 )
 
 type membersBody struct {
@@ -34,14 +32,10 @@ func (ms *MockServer) RoleMembers(name string) []User {
 func (ms *MockServer) handleRoleMembers(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	name := ps.ByName("rolename")
 	if _, ok := ms.Roles[name]; !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(`{"type": "ApiError", "message": "No role found with name %s"}`, name)))
+		writeApiError(w, 404, "No role found with name %s", name)
 		return
 	}
 	arr := ms.RoleMembers(name)
@@ -53,25 +47,16 @@ func (ms *MockServer) handleRoleMembers(
 func (ms *MockServer) handleAddUserToRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	roleName := ps.ByName("rolename")
 	userName := ps.ByName("username")
 	if _, ok := ms.Roles[roleName]; !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No role found with name %s"}`,
-			roleName)))
+		writeApiError(w, 404, "No role found with name %s", roleName)
 		return
 	}
 	user, ok := ms.Users[userName]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "User %s has not been found."}`,
-			userName)))
+		writeApiError(w, 404, "User %s has not been found.", userName)
 		return
 	}
 	user.Roles = addToStringArray(user.Roles, roleName)
@@ -82,25 +67,16 @@ func (ms *MockServer) handleAddUserToRole(
 func (ms *MockServer) handleRemoveUserFromRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	roleName := ps.ByName("rolename")
 	userName := ps.ByName("username")
 	if _, ok := ms.Roles[roleName]; !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "No role found with name %s"}`,
-			roleName)))
+		writeApiError(w, 404, "No role found with name %s", roleName)
 		return
 	}
 	user, ok := ms.Users[userName]
 	if !ok {
-		w.WriteHeader(404)
-		w.Write([]byte(fmt.Sprintf(
-			`{"type": "ApiError", "message": "User %s has not been found."}`,
-			userName)))
+		writeApiError(w, 404, "User %s has not been found.", userName)
 		return
 	}
 	user.Roles = removeFromStringArray(user.Roles, roleName)

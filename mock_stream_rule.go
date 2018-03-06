@@ -58,10 +58,7 @@ func (ms *MockServer) StreamRuleList(streamId string) []StreamRule {
 func (ms *MockServer) handleGetStreamRules(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	ms.Logger.WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
+	ms.handleInit(w, r, false)
 	streamId := ps.ByName("streamId")
 	arr := ms.StreamRuleList(streamId)
 	body := &streamRulesBody{StreamRules: arr, Total: len(arr)}
