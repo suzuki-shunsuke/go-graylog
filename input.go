@@ -29,20 +29,23 @@ type InputConfiguration struct {
 
 // Input represents Graylog Input.
 type Input struct {
+	// required
+	Title         string              `json:"title,omitempty" v-create:"required"`
+	Type          string              `json:"type,omitempty" v-create:"required"`
+	Configuration *InputConfiguration `json:"configuration,omitempty" v-create:"required"`
+
 	// ex. "5a90d5c2c006c60001efc368"
-	Id    string `json:"id,omitempty"`
-	Title string `json:"title,omitempty"`
+	Id string `json:"id,omitempty" v-update:"required"`
+
 	// ex. "org.graylog2.inputs.syslog.udp.SyslogUDPInput"
-	Type   string `json:"type,omitempty"`
-	Global bool   `json:"global,omitempty"`
+	Global bool `json:"global,omitempty"`
 	// ex. "2ad6b340-3e5f-4a96-ae81-040cfb8b6024"
 	Node string `json:"node,omitempty"`
 	// ex. 2018-02-24T03:02:26.001Z
 	CreatedAt string `json:"created_at,omitempty"`
 	// ex. "admin"
-	CreatorUserId string              `json:"creator_user_id,omitempty"`
-	Attributes    *InputAttributes    `json:"attributes,omitempty"`
-	Configuration *InputConfiguration `json:"configuration,omitempty"`
+	CreatorUserId string           `json:"creator_user_id,omitempty"`
+	Attributes    *InputAttributes `json:"attributes,omitempty"`
 	// ContextPack `json:"context_pack,omitempty"`
 	// StaticFields `json:"static_fields,omitempty"`
 }
@@ -140,17 +143,17 @@ func (client *Client) GetInputContext(
 }
 
 // UpdateInput updates an given input.
-func (client *Client) UpdateInput(id string, input *Input) (
+func (client *Client) UpdateInput(input *Input) (
 	*Input, *ErrorInfo, error,
 ) {
-	return client.UpdateInputContext(context.Background(), id, input)
+	return client.UpdateInputContext(context.Background(), input)
 }
 
 // UpdateInputContext updates an given input with a context.
 func (client *Client) UpdateInputContext(
-	ctx context.Context, id string, input *Input,
+	ctx context.Context, input *Input,
 ) (*Input, *ErrorInfo, error) {
-	if id == "" {
+	if input.Id == "" {
 		return nil, nil, errors.New("id is empty")
 	}
 	b, err := json.Marshal(input)
@@ -159,7 +162,7 @@ func (client *Client) UpdateInputContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPut, client.endpoints.Input(id), b, true)
+		ctx, http.MethodPut, client.endpoints.Input(input.Id), b, true)
 	if err != nil {
 		return nil, ei, err
 	}

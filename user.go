@@ -13,28 +13,27 @@ import (
 type User struct {
 	// ex. "local:admin"
 	Username    string   `json:"username,omitempty" v-create:"required" v-update:"required"`
-	Email       string   `json:"email,omitempty" v-create:"required" v-update:"required"`
-	Permissions []string `json:"permissions,omitempty" v-create:"required" v-update:"required"`
+	Email       string   `json:"email,omitempty" v-create:"required"`
+	Permissions []string `json:"permissions,omitempty" v-create:"required"`
+	FullName    string   `json:"full_name,omitempty" v-create:"required" mapstructure:"full_name"`
+	Password    string   `json:"password,omitempty" v-create:"required"`
 
 	Id          string       `json:"id,omitempty"`
-	FullName    string       `json:"full_name,omitempty"`
 	Preferences *Preferences `json:"preferences,omitempty"`
 	// ex. "UTC"
 	Timezone string `json:"timezone,omitempty"`
 	// ex. 28800000
-	SessionTimeoutMs int        `json:"session_timeout_ms,omitempty"`
+	SessionTimeoutMs int        `json:"session_timeout_ms,omitempty" mapstructure:"session_timeout_ms"`
 	External         bool       `json:"external,omitempty"`
-	Startpage        *Startpage `json:"startpage,omitempty"`
+	Startpage        *Startpage `json:"startpage,omitempty" mapstructure:"startpage"`
 	// ex. ["Admin"]
 	Roles         []string `json:"roles,omitempty"`
-	ReadOnly      bool     `json:"read_only,omitempty"`
-	SessionActive bool     `json:"session_active,omitempty"`
+	ReadOnly      bool     `json:"read_only,omitempty" mapstructure:"read_only"`
+	SessionActive bool     `json:"session_active,omitempty" mapstructure:"session_active"`
 	// ex. "2018-03-02T06:32:01.841+0000"
-	LastActivity string `json:"last_activity,omitempty"`
+	LastActivity string `json:"last_activity,omitempty" mapstructure:"last_activity"`
 	// ex. "192.168.192.1"
-	ClientAddress string `json:"client_address,omitempty"`
-
-	Password string `json:"password,omitempty"`
+	ClientAddress string `json:"client_address,omitempty" mapstructure:"client_address"`
 }
 
 // Preferences represents user's preferences.
@@ -123,15 +122,15 @@ func (client *Client) GetUserContext(
 }
 
 // UpdateUser updates a given user.
-func (client *Client) UpdateUser(name string, user *User) (*ErrorInfo, error) {
-	return client.UpdateUserContext(context.Background(), name, user)
+func (client *Client) UpdateUser(user *User) (*ErrorInfo, error) {
+	return client.UpdateUserContext(context.Background(), user)
 }
 
 // UpdateUserContext updates a given user with a context.
 func (client *Client) UpdateUserContext(
-	ctx context.Context, name string, user *User,
+	ctx context.Context, user *User,
 ) (*ErrorInfo, error) {
-	if name == "" {
+	if user.Username == "" {
 		return nil, errors.New("name is empty")
 	}
 	b, err := json.Marshal(user)
@@ -140,7 +139,7 @@ func (client *Client) UpdateUserContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodPut, client.endpoints.User(name), b, false)
+		ctx, http.MethodPut, client.endpoints.User(user.Username), b, false)
 }
 
 // DeleteUser deletes a given user.

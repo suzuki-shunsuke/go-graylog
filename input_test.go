@@ -92,13 +92,11 @@ func TestUpdateInput(t *testing.T) {
 	exp := dummyInput()
 	id := exp.Id
 	server.Inputs[id] = *exp
-	exp.Id = ""
 	exp.Title += " updated"
-	act, _, err := client.UpdateInput(id, exp)
+	act, _, err := client.UpdateInput(exp)
 	if err != nil {
 		t.Fatal("Failed to UpdateInput", err)
 	}
-	exp.Id = id
 	if !reflect.DeepEqual(*act, *exp) {
 		t.Fatalf("client.UpdateInput() == %v, wanted %v", act, exp)
 	}
@@ -110,42 +108,44 @@ func TestUpdateInput(t *testing.T) {
 		t.Fatalf("client.UpdateInput() == %v, wanted %v", act2, exp)
 	}
 
-	if _, _, err := client.UpdateInput("", exp); err == nil {
+	exp.Id = ""
+	if _, _, err := client.UpdateInput(exp); err == nil {
 		t.Fatal("input id is required")
 	}
 
-	if _, _, err := client.UpdateInput("h", exp); err == nil {
+	exp.Id = "h"
+	if _, _, err := client.UpdateInput(exp); err == nil {
 		t.Fatal(`no input whose id is "h"`)
 	}
 
 	exp.Type = ""
-	if _, _, err := client.UpdateInput(exp.Id, exp); err == nil {
+	if _, _, err := client.UpdateInput(exp); err == nil {
 		t.Fatal("input type is required")
 	}
 	exp.Type = act.Type
 	exp.Configuration = nil
-	if _, _, err := client.UpdateInput(exp.Id, exp); err == nil {
+	if _, _, err := client.UpdateInput(exp); err == nil {
 		t.Fatal("input configuration is required")
 	}
 	exp.Configuration = act.Configuration
 	exp.Title = ""
-	if _, _, err := client.UpdateInput(exp.Id, exp); err == nil {
+	if _, _, err := client.UpdateInput(exp); err == nil {
 		t.Fatal("input title is required")
 	}
 
 	exp.Title = act.Title
 	exp.Configuration.BindAddress = ""
-	if _, _, err := client.UpdateInput(exp.Id, exp); err == nil {
+	if _, _, err := client.UpdateInput(exp); err == nil {
 		t.Fatal("input bind_address is required")
 	}
 	exp.Configuration.BindAddress = "0.0.0.0"
 	exp.Configuration.Port = 0
-	if _, _, err := client.UpdateInput(exp.Id, exp); err == nil {
+	if _, _, err := client.UpdateInput(exp); err == nil {
 		t.Fatal("input port is required")
 	}
 	exp.Configuration.Port = 514
 	exp.Configuration.RecvBufferSize = 0
-	if _, _, err := client.UpdateInput(exp.Id, exp); err == nil {
+	if _, _, err := client.UpdateInput(exp); err == nil {
 		t.Fatal("input recv_buffer_size is required")
 	}
 }

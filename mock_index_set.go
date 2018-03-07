@@ -104,10 +104,8 @@ func (ms *MockServer) handleCreateIndexSet(
 	ms.Logger.WithFields(log.Fields{
 		"body": string(b), "index_set": indexSet,
 	}).Debug("request body")
-	sc, msg := validateIndexSet(indexSet)
-	if sc != 200 {
-		w.WriteHeader(sc)
-		w.Write(msg)
+	if err := CreateValidator.Struct(indexSet); err != nil {
+		writeApiError(w, 400, err.Error())
 		return
 	}
 	ms.AddIndexSet(indexSet)
@@ -135,12 +133,16 @@ func (ms *MockServer) handleUpdateIndexSet(
 		return
 	}
 	indexSet.Id = id
-	sc, msg := validateIndexSet(indexSet)
-	if sc != 200 {
-		w.WriteHeader(sc)
-		w.Write(msg)
+	if UpdateValidator.Struct(indexSet); err != nil {
+		writeApiError(w, 400, err.Error())
 		return
 	}
+	// sc, msg := validateIndexSet(indexSet)
+	// if sc != 200 {
+	// 	w.WriteHeader(sc)
+	// 	w.Write(msg)
+	// 	return
+	// }
 	ms.AddIndexSet(indexSet)
 	writeOr500Error(w, indexSet)
 }

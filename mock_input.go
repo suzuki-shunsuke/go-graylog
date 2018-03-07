@@ -145,6 +145,9 @@ func (ms *MockServer) handleCreateInput(
 		write500Error(w)
 		return
 	}
+
+	// allowed title, type, global, configuration, node
+
 	input := &Input{}
 	err = json.Unmarshal(b, input)
 	if err != nil {

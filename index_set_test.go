@@ -85,12 +85,16 @@ func TestCreateIndexSet(t *testing.T) {
 	}
 	defer server.Close()
 	exp := dummyIndexSet()
+	exp.Id = ""
 	act, _, err := client.CreateIndexSet(exp)
 	if err != nil {
 		t.Fatal("Failed to CreateIndexSet", err)
 	}
 	if act == nil {
 		t.Fatal("client.CreateIndexSet() == nil")
+	}
+	if act.Id == "" {
+		t.Fatal("returned IndexSet's id is empty")
 	}
 	if act.Title != exp.Title {
 		t.Fatalf("indexSet.Title == %s, wanted %s", act.Title, exp.Title)
@@ -125,22 +129,24 @@ func TestUpdateIndexSet(t *testing.T) {
 	indexSet := dummyIndexSet()
 	server.IndexSets[indexSet.Id] = *indexSet
 	indexSet.Description = "changed!"
-	updatedIndexSet, _, err := client.UpdateIndexSet(indexSet.Id, indexSet)
+	updatedIndexSet, _, err := client.UpdateIndexSet(indexSet)
 	if err != nil {
-		t.Fatal("Failed to UpdateIndexSet", err)
+		t.Fatal("UpdateIndexSet is failure", err)
 	}
 	if !reflect.DeepEqual(*updatedIndexSet, *indexSet) {
 		t.Fatalf(
 			"client.UpdateIndexSet() == %v, wanted %v", updatedIndexSet, indexSet)
 	}
-	if _, _, err := client.UpdateIndexSet("", indexSet); err == nil {
+	indexSet.Id = ""
+	if _, _, err := client.UpdateIndexSet(indexSet); err == nil {
 		t.Fatal("index set id is required")
 	}
-	if _, _, err := client.UpdateIndexSet("h", indexSet); err == nil {
+	indexSet.Id = "h"
+	if _, _, err := client.UpdateIndexSet(indexSet); err == nil {
 		t.Fatal(`no index set whose id is "h"`)
 	}
 	indexSet.Title = ""
-	if _, _, err := client.UpdateIndexSet(indexSet.Id, indexSet); err == nil {
+	if _, _, err := client.UpdateIndexSet(indexSet); err == nil {
 		t.Fatal("title is required")
 	}
 }

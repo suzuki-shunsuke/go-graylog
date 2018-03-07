@@ -11,26 +11,28 @@ import (
 
 // IndexSet represents a Graylog's Index Set.
 type IndexSet struct {
-	// ex. 5a8c086fc006c600013ca6f5
-	Id          string `json:"id,omitempty"`
-	Title       string `json:"title,omitempty"`
-	Description string `json:"description,omitempty"`
-	IndexPrefix string `json:"index_prefix,omitempty"`
-	Shards      int    `json:"shards,omitempty"`
-	Replicas    int    `json:"replicas,omitempty"`
+	// required
+	Title       string `json:"title,omitempty" v-create:"required" v-update:"required"`
+	IndexPrefix string `json:"index_prefix,omitempty" v-create:"required" v-update:"required"`
 	// ex. "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy"
-	RotationStrategyClass string            `json:"rotation_strategy_class,omitempty"`
-	RotationStrategy      *RotationStrategy `json:"rotation_strategy,omitempty"`
+	RotationStrategyClass string            `json:"rotation_strategy_class,omitempty" v-create:"required" v-update:"required"`
+	RotationStrategy      *RotationStrategy `json:"rotation_strategy,omitempty" v-create:"required" v-update:"required"`
 	// ex. "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy"
-	RetentionStrategyClass string             `json:"retention_strategy_class,omitempty"`
-	RetentionStrategy      *RetentionStrategy `json:"retention_strategy,omitempty"`
+	RetentionStrategyClass string             `json:"retention_strategy_class,omitempty" v-create:"required" v-update:"required"`
+	RetentionStrategy      *RetentionStrategy `json:"retention_strategy,omitempty" v-create:"required" v-update:"required"`
 	// ex. "2018-02-20T11:37:19.305Z"
-	CreationDate                    string `json:"creation_date,omitempty"`
-	IndexAnalyzer                   string `json:"index_analyzer,omitempty"`
-	IndexOptimizationMaxNumSegments int    `json:"index_optimization_max_num_segments,omitempty"`
-	IndexOptimizationDisabled       bool   `json:"index_optimization_disabled,omitempty"`
-	Writable                        bool   `json:"writable,omitempty"`
-	Default                         bool   `json:"default,omitempty"`
+	CreationDate                    string `json:"creation_date,omitempty" v-create:"required" v-update:"required"`
+	IndexAnalyzer                   string `json:"index_analyzer,omitempty" v-create:"required" v-update:"required"`
+	Shards                          int    `json:"shards,omitempty" v-create:"required" v-update:"required"`
+	IndexOptimizationMaxNumSegments int    `json:"index_optimization_max_num_segments,omitempty" v-create:"required" v-update:"required"`
+
+	Id string `json:"id,omitempty" v-create:"isdefault" v-update:"required"`
+
+	Description               string `json:"description,omitempty"`
+	Replicas                  int    `json:"replicas,omitempty"`
+	IndexOptimizationDisabled bool   `json:"index_optimization_disabled,omitempty"`
+	Writable                  bool   `json:"writable,omitempty"`
+	Default                   bool   `json:"default,omitempty"`
 }
 
 // IndexSetStats represents a Graylog's Index Set Stats.
@@ -151,19 +153,22 @@ func (client *Client) CreateIndexSetContext(
 
 // UpdateIndexSet updates a given Index Set.
 func (client *Client) UpdateIndexSet(
-	id string, indexSet *IndexSet,
+	indexSet *IndexSet,
 ) (*IndexSet, *ErrorInfo, error) {
-	return client.UpdateIndexSetContext(context.Background(), id, indexSet)
+	return client.UpdateIndexSetContext(context.Background(), indexSet)
 }
 
 // UpdateIndexSetContext updates a given Index Set with a context.
 func (client *Client) UpdateIndexSetContext(
-	ctx context.Context, id string, indexSet *IndexSet,
+	ctx context.Context, indexSet *IndexSet,
 ) (*IndexSet, *ErrorInfo, error) {
+	id := indexSet.Id
 	if id == "" {
 		return nil, nil, errors.New("id is empty")
 	}
-	b, err := json.Marshal(indexSet)
+	copiedIndexSet := *indexSet
+	copiedIndexSet.Id = ""
+	b, err := json.Marshal(&copiedIndexSet)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "Failed to json.Marshal(indexSet)")
 	}
@@ -175,8 +180,8 @@ func (client *Client) UpdateIndexSetContext(
 	}
 
 	is := &IndexSet{}
-	err = json.Unmarshal(ei.ResponseBody, is)
-	if err != nil {
+
+	if err := json.Unmarshal(ei.ResponseBody, is); err != nil {
 		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf(
 				"Failed to parse response body as IndexSet: %s",

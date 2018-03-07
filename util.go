@@ -146,11 +146,11 @@ func randStringBytesMaskImprSrc(n int) string {
 	return string(b)
 }
 
-func validateRequestBody(b []byte, requiredFields, allowedFields []string) (
+func validateRequestBody(
+	b []byte, requiredFields, allowedFields, acceptedFields []string,
+) (
 	int, string, map[string]interface{},
 ) {
-	rf := makeHash(requiredFields)
-	af := makeHash(allowedFields)
 	var a interface{}
 	if err := json.Unmarshal(b, &a); err != nil {
 		return 400, fmt.Sprintf(
@@ -161,18 +161,43 @@ func validateRequestBody(b []byte, requiredFields, allowedFields []string) (
 		return 400, fmt.Sprintf(
 			"Failed to parse the request body as a JSON object : %s", string(b)), nil
 	}
-	for k, _ := range body {
-		if _, ok := af[k]; !ok {
-			return 400, fmt.Sprintf(
-				"In the request body an invalid field is found: %s\nThe allowed fields: %s, request body: %s",
-				k, strings.Join(allowedFields, ", "), string(b)), body
+	if allowedFields != nil && len(allowedFields) != 0 {
+		alf := makeHash(allowedFields)
+		for k, _ := range body {
+			if _, ok := alf[k]; !ok {
+				return 400, fmt.Sprintf(
+					"In the request body an invalid field is found: %s\nThe allowed fields: %s, request body: %s",
+					k, strings.Join(allowedFields, ", "), string(b)), body
+			}
 		}
 	}
-	for k, _ := range rf {
-		if _, ok := body[k]; !ok {
-			return 400, fmt.Sprintf(
-				"In the request body the field %s is required", k), body
+	rqf := makeHash(requiredFields)
+	if rqf != nil {
+		for k, _ := range rqf {
+			if _, ok := body[k]; !ok {
+				return 400, fmt.Sprintf(
+					"In the request body the field %s is required", k), body
+			}
+		}
+	}
+	if acceptedFields != nil && len(acceptedFields) != 0 {
+		acf := makeHash(acceptedFields)
+		for k, _ := range body {
+			if _, ok := acf[k]; !ok {
+				delete(body, k)
+			}
 		}
 	}
 	return 200, "", body
+}
+
+func makeHash(arr []string) map[string]interface{} {
+	if arr == nil {
+		return map[string]interface{}{}
+	}
+	h := map[string]interface{}{}
+	for _, k := range arr {
+		h[k] = nil
+	}
+	return h
 }

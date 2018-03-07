@@ -5,6 +5,16 @@ import (
 	"testing"
 )
 
+func dummyNewUser() *User {
+	return &User{
+		Username:    "admin",
+		Email:       "hoge@example.com",
+		FullName:    "Administrator",
+		Password:    "password",
+		Permissions: []string{"*"},
+	}
+}
+
 func dummyAdmin() *User {
 	return &User{
 		Id:          "local:admin",
@@ -34,7 +44,7 @@ func TestCreateUser(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	admin := dummyAdmin()
+	admin := dummyNewUser()
 	if _, err := client.CreateUser(admin); err != nil {
 		t.Fatal("Failed to CreateUser", err)
 	}
@@ -98,19 +108,16 @@ func TestUpdateUser(t *testing.T) {
 	user := dummyAdmin()
 	server.Users[user.Username] = *user
 	user.FullName = "changed!"
-	if _, err := client.UpdateUser(user.Username, user); err != nil {
+	if _, err := client.UpdateUser(user); err != nil {
 		t.Fatal("Failed to UpdateUser", err)
 	}
-	if _, err := client.UpdateUser("", user); err == nil {
+	user.Username = ""
+	if _, err := client.UpdateUser(user); err == nil {
 		t.Fatal("username should be required.")
 	}
-	if _, err := client.UpdateUser("h", user); err == nil {
+	user.Username = "h"
+	if _, err := client.UpdateUser(user); err == nil {
 		t.Fatal(`no user whoname name is "h"`)
-	}
-	key := user.Username
-	user.Username = ""
-	if _, err := client.UpdateUser(key, user); err == nil {
-		t.Fatal("Username is required.")
 	}
 }
 

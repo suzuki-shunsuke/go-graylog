@@ -1,10 +1,10 @@
 package graylog
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -62,16 +62,32 @@ func (ms *MockServer) handleUpdateRole(
 		write500Error(w)
 		return
 	}
+
 	name := ps.ByName("rolename")
 	if _, ok := ms.Roles[name]; !ok {
 		writeApiError(w, 404, "No role found with name %s", name)
 		return
 	}
+
+	requiredFields := []string{"name", "permissions"}
+	allowedFields := []string{
+		"name", "description", "read_only", "permissions"}
+	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
+	if sc != 200 {
+		w.WriteHeader(sc)
+		w.Write([]byte(msg))
+		return
+	}
+
 	role := &Role{}
-	if err = json.Unmarshal(b, role); err != nil {
+	if err := mapstructure.Decode(body, role); err != nil {
+		ms.Logger.WithFields(log.Fields{
+			"body": string(b), "error": err,
+		}).Info("Failed to parse request body as Role")
 		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
+
 	if err := UpdateValidator.Struct(role); err != nil {
 		writeApiError(w, 400, err.Error())
 		return
@@ -103,12 +119,26 @@ func (ms *MockServer) handleCreateRole(
 		write500Error(w)
 		return
 	}
-	role := &Role{}
 
-	if err := json.Unmarshal(b, role); err != nil {
+	requiredFields := []string{"name", "permissions"}
+	allowedFields := []string{
+		"name", "description", "read_only", "permissions"}
+	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
+	if sc != 200 {
+		w.WriteHeader(sc)
+		w.Write([]byte(msg))
+		return
+	}
+
+	role := &Role{}
+	if err := mapstructure.Decode(body, &role); err != nil {
+		ms.Logger.WithFields(log.Fields{
+			"body": string(b), "error": err,
+		}).Info("Failed to parse request body as Role")
 		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
+
 	if err := CreateValidator.Struct(role); err != nil {
 		writeApiError(w, 400, err.Error())
 		return

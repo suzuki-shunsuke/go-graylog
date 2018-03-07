@@ -72,14 +72,6 @@ func (mc *MockServer) validateCreateStreamRule(rule *StreamRule) (int, []byte) {
 	return 200, nil
 }
 
-func makeHash(arr []string) map[string]interface{} {
-	h := map[string]interface{}{}
-	for _, k := range arr {
-		h[k] = nil
-	}
-	return h
-}
-
 // POST /streams/{streamid}/rules Create a stream rule
 func (ms *MockServer) handleCreateStreamRule(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -99,7 +91,7 @@ func (ms *MockServer) handleCreateStreamRule(
 	requiredFields := []string{"value", "field"}
 	allowedFields := []string{
 		"value", "type", "description", "inverted", "field"}
-	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields)
+	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
 	if sc != 200 {
 		w.WriteHeader(sc)
 		w.Write([]byte(msg))
@@ -169,7 +161,7 @@ func (ms *MockServer) handleUpdateStreamRule(
 	requiredFields := []string{"value", "field"}
 	allowedFields := []string{
 		"value", "type", "description", "inverted", "field"}
-	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields)
+	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
 	if sc != 200 {
 		w.WriteHeader(sc)
 		w.Write([]byte(msg))

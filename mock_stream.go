@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -53,10 +54,6 @@ func (ms *MockServer) EnabledStreamList() []Stream {
 	return arr
 }
 
-// CreateStream
-// {"type": "ApiError", "message": "Unable to map property id.\nKnown properties include: index_set_id, rules, title, description, content_pack, matching_type, remove_matches_from_default_stream"}
-// not allowed id, creator_user_id, outputs, created_at, disabled, alert_conditions, alert_receivers, is_default
-// Assigned index set must be writable!
 func validateCreateStream(stream *Stream) (int, []byte) {
 	key := ""
 	switch {
@@ -110,22 +107,29 @@ func (ms *MockServer) handleCreateStream(
 		write500Error(w)
 		return
 	}
+
+	requiredFields := []string{"title", "index_set_id"}
+	allowedFields := []string{
+		"title", "index_set_id", "rules", "description", "content_pack",
+		"matching_type", "remove_matches_from_default_stream"}
+	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
+	if sc != 200 {
+		w.WriteHeader(sc)
+		w.Write([]byte(msg))
+		return
+	}
+
 	stream := &Stream{}
-	err = json.Unmarshal(b, stream)
-	if err != nil {
+	if err := mapstructure.Decode(body, stream); err != nil {
 		ms.Logger.WithFields(log.Fields{
 			"body": string(b), "error": err,
-		}).Info("Failed to parse request body as Stream")
+		}).Info("Failed to parse request body as stream")
 		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
-	ms.Logger.WithFields(log.Fields{
-		"body": string(b), "stream": stream,
-	}).Debug("request body")
-	sc, msg := validateCreateStream(stream)
-	if sc != 200 {
-		w.WriteHeader(sc)
-		w.Write(msg)
+
+	if err := CreateValidator.Struct(stream); err != nil {
+		writeApiError(w, 400, err.Error())
 		return
 	}
 	ms.AddStream(stream)

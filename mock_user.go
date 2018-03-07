@@ -1,10 +1,11 @@
 package graylog
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/mitchellh/mapstructure"
+	log "github.com/sirupsen/logrus"
 )
 
 // AddUser adds a user to the MockServer.
@@ -59,18 +60,33 @@ func (ms *MockServer) handleCreateUser(
 		write500Error(w)
 		return
 	}
+
+	requiredFields := []string{
+		"username", "email", "permissions", "full_name", "password"}
+	allowedFields := []string{
+		"startpage", "permissions", "username", "timezone", "password", "email",
+		"session_timeout_ms", "full_name", "roles"}
+	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
+	if sc != 200 {
+		w.WriteHeader(sc)
+		w.Write([]byte(msg))
+		return
+	}
+
 	user := &User{}
-	err = json.Unmarshal(b, user)
-	if err != nil {
+	if err := mapstructure.Decode(body, user); err != nil {
+		ms.Logger.WithFields(log.Fields{
+			"body": string(b), "error": err,
+		}).Info("Failed to parse request body as User")
 		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
-	sc, msg := validateUser(user)
-	if sc != 200 {
-		w.WriteHeader(sc)
-		w.Write(msg)
+
+	if err := UpdateValidator.Struct(user); err != nil {
+		writeApiError(w, 400, err.Error())
 		return
 	}
+
 	if _, ok := ms.Users[user.Username]; ok {
 		writeApiError(w, 400, "User %s already exists.", user.Username)
 		return
@@ -112,23 +128,33 @@ func (ms *MockServer) handleUpdateUser(
 		return
 	}
 	name := ps.ByName("username")
-	if _, ok := ms.Users[name]; !ok {
+	user, ok := ms.Users[name]
+	if !ok {
 		writeApiError(w, 404, "No user found with name %s", name)
 		return
 	}
-	user := &User{}
-	err = json.Unmarshal(b, user)
-	if err != nil {
+
+	acceptedFields := []string{
+		"email", "permissions", "full_name", "password"}
+	sc, msg, body := validateRequestBody(b, nil, nil, acceptedFields)
+	if sc != 200 {
+		w.WriteHeader(sc)
+		w.Write([]byte(msg))
+		return
+	}
+	if err := mapstructure.Decode(body, &user); err != nil {
+		ms.Logger.WithFields(log.Fields{
+			"body": string(b), "error": err,
+		}).Info("Failed to parse request body as User")
 		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
-	sc, msg := validateUser(user)
-	if sc != 200 {
-		w.WriteHeader(sc)
-		w.Write(msg)
+	if err := UpdateValidator.Struct(&user); err != nil {
+		writeApiError(w, 400, err.Error())
 		return
 	}
-	ms.UpdateUser(name, user)
+
+	ms.UpdateUser(name, &user)
 }
 
 // DELETE /users/{username} Removes a user account
