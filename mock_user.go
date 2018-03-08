@@ -75,6 +75,22 @@ func (ms *MockServer) handleCreateUser(
 		return
 	}
 
+	// check role exists
+	if user.Roles != nil && len(user.Roles) != 0 {
+		if ms.Roles == nil || len(ms.Roles) == 0 {
+			// unfortunately, graylog 2.4.3-1 returns 500 error
+			writeApiError(w, 500, "No role found with name %s", user.Roles[0])
+			return
+		}
+		for _, roleName := range user.Roles {
+			if _, ok := ms.Roles[roleName]; !ok {
+				// unfortunately, graylog 2.4.3-1 returns 500 error
+				writeApiError(w, 500, "No role found with name %s", roleName)
+				return
+			}
+		}
+	}
+
 	if err := UpdateValidator.Struct(user); err != nil {
 		writeApiError(w, 400, err.Error())
 		return

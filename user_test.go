@@ -52,9 +52,16 @@ func TestCreateUser(t *testing.T) {
 		t.Fatal("User name must be unique.")
 	}
 
+	userName := admin.Username
 	admin.Username = ""
 	if _, err := client.CreateUser(admin); err == nil {
 		t.Fatal("Username is required.")
+	}
+	admin.Username = userName
+	roleName := "no roles"
+	admin.Roles = []string{roleName}
+	if _, err := client.CreateUser(admin); err == nil {
+		t.Fatalf("No role found with name %s", roleName)
 	}
 }
 
