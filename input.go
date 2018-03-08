@@ -21,18 +21,18 @@ type InputAttributes struct {
 // InputConfiguration represents Input's configuration.
 type InputConfiguration struct {
 	// ex. 0.0.0.0
-	BindAddress string `json:"bind_address,omitempty"`
-	Port        int    `json:"port,omitempty"`
+	BindAddress string `json:"bind_address,omitempty" v-create:"required" v-update:"required"`
+	Port        int    `json:"port,omitempty" v-create:"required" v-update:"required"`
 	// ex. 262144
-	RecvBufferSize int `json:"recv_buffer_size,omitempty"`
+	RecvBufferSize int `json:"recv_buffer_size,omitempty" v-create:"required" v-update:"required"`
 }
 
 // Input represents Graylog Input.
 type Input struct {
 	// required
-	Title         string              `json:"title,omitempty" v-create:"required"`
-	Type          string              `json:"type,omitempty" v-create:"required"`
-	Configuration *InputConfiguration `json:"configuration,omitempty" v-create:"required"`
+	Title         string              `json:"title,omitempty" v-create:"required" v-update:"required"`
+	Type          string              `json:"type,omitempty" v-create:"required" v-update:"required"`
+	Configuration *InputConfiguration `json:"configuration,omitempty" v-create:"required" v-update:"required"`
 
 	// ex. "5a90d5c2c006c60001efc368"
 	Id string `json:"id,omitempty" v-update:"required"`
@@ -42,10 +42,10 @@ type Input struct {
 	// ex. "2ad6b340-3e5f-4a96-ae81-040cfb8b6024"
 	Node string `json:"node,omitempty"`
 	// ex. 2018-02-24T03:02:26.001Z
-	CreatedAt string `json:"created_at,omitempty"`
+	CreatedAt string `json:"created_at,omitempty" v-create:"isdefault" v-update:"isdefault"`
 	// ex. "admin"
-	CreatorUserId string           `json:"creator_user_id,omitempty"`
-	Attributes    *InputAttributes `json:"attributes,omitempty"`
+	CreatorUserId string           `json:"creator_user_id,omitempty" v-create:"isdefault" v-update:"isdefault"`
+	Attributes    *InputAttributes `json:"attributes,omitempty" v-create:"isdefault"`
 	// ContextPack `json:"context_pack,omitempty"`
 	// StaticFields `json:"static_fields,omitempty"`
 }
@@ -156,7 +156,9 @@ func (client *Client) UpdateInputContext(
 	if input.Id == "" {
 		return nil, nil, errors.New("id is empty")
 	}
-	b, err := json.Marshal(input)
+	copiedInput := *input
+	copiedInput.Id = ""
+	b, err := json.Marshal(copiedInput)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "Failed to json.Marshal(input)")
 	}

@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -80,7 +79,7 @@ func (ms *MockServer) handleUpdateRole(
 	}
 
 	role := &Role{}
-	if err := mapstructure.Decode(body, role); err != nil {
+	if err := msDecode(body, role); err != nil {
 		ms.Logger.WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as Role")
@@ -131,7 +130,7 @@ func (ms *MockServer) handleCreateRole(
 	}
 
 	role := &Role{}
-	if err := mapstructure.Decode(body, &role); err != nil {
+	if err := msDecode(body, &role); err != nil {
 		ms.Logger.WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as Role")

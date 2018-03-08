@@ -21,7 +21,7 @@ type Role struct {
 	Description string `json:"description,omitempty"`
 	// ex. ["clusterconfigentry:read", "users:edit"]
 	Permissions []string `json:"permissions,omitempty" v-create:"required" v-update:"required"`
-	ReadOnly    bool     `json:"read_only,omitempty" mapstructure:"read_only"`
+	ReadOnly    bool     `json:"read_only,omitempty"`
 }
 
 // CreateRole creates a new role.

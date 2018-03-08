@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -99,7 +98,7 @@ func (ms *MockServer) handleCreateStreamRule(
 	}
 
 	rule := &StreamRule{}
-	if err := mapstructure.Decode(body, rule); err != nil {
+	if err := msDecode(body, rule); err != nil {
 		ms.Logger.WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as StreamRule")
@@ -169,7 +168,7 @@ func (ms *MockServer) handleUpdateStreamRule(
 	}
 
 	rule = StreamRule{}
-	if err := mapstructure.Decode(body, &rule); err != nil {
+	if err := msDecode(body, &rule); err != nil {
 		ms.Logger.WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as StreamRule")

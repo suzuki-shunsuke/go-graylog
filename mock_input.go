@@ -1,7 +1,6 @@
 package graylog
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -64,29 +63,34 @@ func (ms *MockServer) handleUpdateInput(
 		return
 	}
 
+	requiredFields := []string{"title", "type", "configuration"}
+	allowedFields := []string{
+		"title", "type", "global", "configuration", "node"}
+	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
+	if sc != 200 {
+		w.WriteHeader(sc)
+		w.Write([]byte(msg))
+		return
+	}
+
 	input := &Input{}
-	err = json.Unmarshal(b, input)
-	if err != nil {
+	if err := msDecode(body, input); err != nil {
 		ms.Logger.WithFields(log.Fields{
-			"body": string(b), "id": id, "error": err,
-		}).Debug("Bad Request")
+			"body": string(b), "error": err,
+		}).Info("Failed to parse request body as Input")
 		writeApiError(w, 400, "400 Bad Request")
+		return
+	}
+
+	input.Id = id
+	if err := UpdateValidator.Struct(input); err != nil {
+		writeApiError(w, 400, err.Error())
 		return
 	}
 
 	ms.Logger.WithFields(log.Fields{
 		"body": string(b), "input": input, "id": id,
 	}).Debug("request body")
-
-	input.Id = id
-
-	// {"type": "ApiError", "message": "Unable to map property id.\nKnown properties include: title, type, global, configuration, node"}
-	sc, msg := validateInput(input)
-	if sc != 200 {
-		w.WriteHeader(sc)
-		w.Write(msg)
-		return
-	}
 	ms.AddInput(input)
 	writeOr500Error(w, input)
 }
@@ -105,37 +109,6 @@ func (ms *MockServer) handleDeleteInput(
 	ms.DeleteInput(id)
 }
 
-func validateInput(input *Input) (int, []byte) {
-	// Required
-	// type, title configuration.bind_address, configuration.port
-	// configuration.recv_buffer_size
-	if input.Type == "" {
-		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.models.system.inputs.requests.InputCreateRequest, problem: Null type\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@107566a4; line: 1, column: 17]"}`)
-	}
-	if input.Title == "" {
-		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.models.system.inputs.requests.InputCreateRequest, problem: Null title\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@320397d1; line: 8, column: 1]"}`)
-	}
-	if input.Configuration == nil {
-		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.models.system.inputs.requests.InputCreateRequest, problem: Null configuration\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@3d687f1; line: 1, column: 30]"}`)
-	}
-	if input.Configuration.BindAddress == "" {
-		return 400, []byte(
-			`{"type": "ApiError", "message": "Missing or invalid input configuration."}`)
-	}
-	if input.Configuration.Port == 0 {
-		return 400, []byte(
-			`{"type": "ApiError", "message": "Missing or invalid input configuration."}`)
-	}
-	if input.Configuration.RecvBufferSize == 0 {
-		return 400, []byte(
-			`{"type": "ApiError", "message": "Missing or invalid input configuration."}`)
-	}
-	// node optional
-	// skip type validation
-	// 404 {"type": "ApiError", "message": "There is no such input type registered."}
-	return 200, []byte("")
-}
-
 // POST /system/inputs Launch input on this node
 func (ms *MockServer) handleCreateInput(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
@@ -146,20 +119,30 @@ func (ms *MockServer) handleCreateInput(
 		return
 	}
 
-	// allowed title, type, global, configuration, node
+	requiredFields := []string{"title", "type", "configuration"}
+	allowedFields := []string{
+		"title", "type", "global", "configuration", "node"}
+	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
+	if sc != 200 {
+		w.WriteHeader(sc)
+		w.Write([]byte(msg))
+		return
+	}
 
 	input := &Input{}
-	err = json.Unmarshal(b, input)
-	if err != nil {
+	if err := msDecode(body, input); err != nil {
+		ms.Logger.WithFields(log.Fields{
+			"body": string(b), "error": err,
+		}).Info("Failed to parse request body as Input")
 		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
-	sc, msg := validateInput(input)
-	if sc != 200 {
-		w.WriteHeader(sc)
-		w.Write(msg)
+
+	if err := CreateValidator.Struct(input); err != nil {
+		writeApiError(w, 400, err.Error())
 		return
 	}
+
 	ms.AddInput(input)
 	d := map[string]string{"id": input.Id}
 	writeOr500Error(w, &d)

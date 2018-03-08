@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -44,13 +43,6 @@ func (ms *MockServer) UserList() []User {
 	return arr
 }
 
-func validateUser(user *User) (int, []byte) {
-	if user.Username == "" {
-		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.models.users.responses.UserResponse, problem: Null name\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@472db3c8; line: 1, column: 31]"}`)
-	}
-	return 200, []byte("")
-}
-
 // POST /users Create a new user account.
 func (ms *MockServer) handleCreateUser(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
@@ -74,7 +66,8 @@ func (ms *MockServer) handleCreateUser(
 	}
 
 	user := &User{}
-	if err := mapstructure.Decode(body, user); err != nil {
+	if err := msDecode(body, user); err != nil {
+		// if err := decoder.Decode(body); err != nil {
 		ms.Logger.WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as User")
@@ -142,7 +135,7 @@ func (ms *MockServer) handleUpdateUser(
 		w.Write([]byte(msg))
 		return
 	}
-	if err := mapstructure.Decode(body, &user); err != nil {
+	if err := msDecode(body, &user); err != nil {
 		ms.Logger.WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as User")

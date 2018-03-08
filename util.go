@@ -12,8 +12,20 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
 )
+
+func msDecode(input, output interface{}) error {
+	config := &mapstructure.DecoderConfig{
+		Metadata: nil, Result: output, TagName: "json",
+	}
+	decoder, err := mapstructure.NewDecoder(config)
+	if err != nil {
+		return err
+	}
+	return decoder.Decode(input)
+}
 
 func writeOr500Error(w http.ResponseWriter, v interface{}) {
 	b, err := json.Marshal(v)
