@@ -9,14 +9,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (ms *MockServer) HasIndexSet(id string) bool {
-	_, ok := ms.indexSets[id]
-	return ok
+func (ms *MockServer) HasIndexSet(id string) (bool, error) {
+	return ms.store.HasIndexSet(id)
 }
 
-func (ms *MockServer) GetIndexSet(id string) (IndexSet, bool) {
-	is, ok := ms.indexSets[id]
-	return is, ok
+func (ms *MockServer) GetIndexSet(id string) (IndexSet, bool, error) {
+	return ms.store.GetIndexSet(id)
 }
 
 // AddIndexSet adds an index set to the Mock Server.
@@ -34,15 +32,21 @@ func (ms *MockServer) AddIndexSet(indexSet *IndexSet) (*IndexSet, int, error) {
 	}
 	s := *indexSet
 	s.Id = randStringBytesMaskImprSrc(24)
-	ms.indexSets[s.Id] = s
-	return &s, 200, nil
+	return ms.store.AddIndexSet(&s)
 }
 
 // UpdateIndexSet updates an index set at the Mock Server.
 func (ms *MockServer) UpdateIndexSet(
 	indexSet *IndexSet,
 ) (int, error) {
-	if !ms.HasIndexSet(indexSet.Id) {
+	ok, err := ms.HasIndexSet(indexSet.Id)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "id": indexSet.Id,
+		}).Error("ms.HasIndexSet() is failure")
+		return 500, err
+	}
+	if !ok {
 		return 404, fmt.Errorf("No indexSet found with id %s", indexSet.Id)
 	}
 	if err := UpdateValidator.Struct(indexSet); err != nil {
@@ -56,31 +60,27 @@ func (ms *MockServer) UpdateIndexSet(
 				indexSet.IndexPrefix)
 		}
 	}
-	ms.indexSets[indexSet.Id] = *indexSet
-	return 200, nil
+	return ms.store.UpdateIndexSet(indexSet)
 }
 
 // DeleteIndexSet removes a index set from the Mock Server.
 func (ms *MockServer) DeleteIndexSet(id string) (int, error) {
-	if !ms.HasIndexSet(id) {
-		return 404, fmt.Errorf("The indexSet is not found")
+	ok, err := ms.HasIndexSet(id)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "id": id,
+		}).Error("ms.HasIndexSet() is failure")
+		return 500, err
 	}
-	delete(ms.indexSets, id)
-	return 200, nil
+	if !ok {
+		return 404, fmt.Errorf("No indexSet with id %s is not found", id)
+	}
+	return ms.store.DeleteIndexSet(id)
 }
 
 // IndexSetList returns a list of all index sets.
-func (ms *MockServer) IndexSetList() []IndexSet {
-	if ms.indexSets == nil {
-		return []IndexSet{}
-	}
-	arr := make([]IndexSet, len(ms.indexSets))
-	i := 0
-	for _, index := range ms.indexSets {
-		arr[i] = index
-		i++
-	}
-	return arr
+func (ms *MockServer) IndexSetList() ([]IndexSet, error) {
+	return ms.store.GetIndexSets()
 }
 
 // GET /system/indices/index_sets Get a list of all index sets
@@ -88,7 +88,14 @@ func (ms *MockServer) handleGetIndexSets(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
 	ms.handleInit(w, r, false)
-	arr := ms.IndexSetList()
+	arr, err := ms.IndexSetList()
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err,
+		}).Error("ms.HasIndexList() is failure")
+		write500Error(w)
+		return
+	}
 	indexSets := &indexSetsBody{
 		IndexSets: arr, Total: len(arr), Stats: &IndexSetStats{}}
 	writeOr500Error(w, indexSets)
@@ -104,7 +111,14 @@ func (ms *MockServer) handleGetIndexSet(
 		return
 	}
 	ms.handleInit(w, r, false)
-	indexSet, ok := ms.GetIndexSet(id)
+	indexSet, ok, err := ms.GetIndexSet(id)
+	if err != nil {
+		ms.logger.WithFields(log.Fields{
+			"error": err, "id": id,
+		}).Info("ms.GetIndexSet() is failure")
+		writeApiError(w, 500, err.Error())
+		return
+	}
 	if !ok {
 		writeApiError(w, 404, "No indexSet found with id %s", id)
 		return
@@ -167,7 +181,14 @@ func (ms *MockServer) handleUpdateIndexSet(
 		return
 	}
 	id := ps.ByName("indexSetId")
-	indexSet, ok := ms.GetIndexSet(id)
+	indexSet, ok, err := ms.GetIndexSet(id)
+	if err != nil {
+		ms.logger.WithFields(log.Fields{
+			"error": err, "id": id,
+		}).Info("ms.GetIndexSet() is failure")
+		writeApiError(w, 500, err.Error())
+		return
+	}
 	if !ok {
 		writeApiError(w, 404, "No indexSet found with id %s", id)
 		return
@@ -205,7 +226,14 @@ func (ms *MockServer) handleSetDefaultIndexSet(
 ) {
 	ms.handleInit(w, r, false)
 	id := ps.ByName("indexSetId")
-	indexSet, ok := ms.GetIndexSet(id)
+	indexSet, ok, err := ms.GetIndexSet(id)
+	if err != nil {
+		ms.logger.WithFields(log.Fields{
+			"error": err, "id": id,
+		}).Info("ms.GetIndexSet() is failure")
+		writeApiError(w, 500, err.Error())
+		return
+	}
 	if !ok {
 		writeApiError(w, 404, "No indexSet found with id %s", id)
 		return

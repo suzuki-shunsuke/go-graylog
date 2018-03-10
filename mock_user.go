@@ -10,22 +10,22 @@ import (
 
 // HasUser
 func (ms *MockServer) HasUser(username string) bool {
-	_, ok := ms.users[username]
-	return ok
+	return ms.store.HasUser(username)
 }
 
-// GetUser
+// GetUser returns a user.
 func (ms *MockServer) GetUser(username string) (User, bool) {
-	s, ok := ms.users[username]
-	return s, ok
+	return ms.store.GetUser(username)
+}
+
+// UsersList returns a user.
+func (ms *MockServer) UsersList() []User {
+	arr, _ := ms.store.GetUsers()
+	return arr
 }
 
 func (ms *MockServer) checkUserRoles(roles []string) (int, error) {
 	if roles != nil && len(roles) != 0 {
-		if ms.roles == nil || len(ms.roles) == 0 {
-			// unfortunately, graylog 2.4.3-1 returns 500 error
-			return 500, fmt.Errorf("No role found with name %s", roles[0])
-		}
 		for _, roleName := range roles {
 			if !ms.HasRole(roleName) {
 				// unfortunately, graylog 2.4.3-1 returns 500 error
@@ -52,15 +52,13 @@ func (ms *MockServer) AddUser(user *User) (*User, int, error) {
 		return nil, sc, err
 	}
 	s.Id = randStringBytesMaskImprSrc(24)
-	ms.users[s.Username] = s
-	return &s, 200, nil
+	return ms.store.AddUser(&s)
 }
 
 // UpdateUser updates a user of the MockServer.
 // "email", "permissions", "full_name", "password"
 func (ms *MockServer) UpdateUser(user *User) (int, error) {
-	u, ok := ms.GetUser(user.Username)
-	if !ok {
+	if !ms.HasUser(user.Username) {
 		return 404, fmt.Errorf("The user is not found")
 	}
 	if err := UpdateValidator.Struct(user); err != nil {
@@ -70,20 +68,7 @@ func (ms *MockServer) UpdateUser(user *User) (int, error) {
 	if sc, err := ms.checkUserRoles(user.Roles); err != nil {
 		return sc, err
 	}
-	if user.Email != "" {
-		u.Email = user.Email
-	}
-	if user.Permissions != nil {
-		u.Permissions = user.Permissions
-	}
-	if user.FullName != "" {
-		u.FullName = user.FullName
-	}
-	if user.Password != "" {
-		u.Password = user.Password
-	}
-	ms.users[u.Username] = u
-	return 200, nil
+	return ms.store.UpdateUser(user)
 }
 
 // DeleteUser removes a user from the MockServer.
@@ -91,19 +76,12 @@ func (ms *MockServer) DeleteUser(name string) (int, error) {
 	if !ms.HasUser(name) {
 		return 404, fmt.Errorf("The user is not found")
 	}
-	delete(ms.users, name)
-	return 200, nil
+	return ms.store.DeleteUser(name)
 }
 
 // UserList returns a list of all users.
 func (ms *MockServer) UserList() []User {
-	size := len(ms.users)
-	arr := make([]User, size)
-	i := 0
-	for _, user := range ms.users {
-		arr[i] = user
-		i++
-	}
+	arr, _ := ms.store.GetUsers()
 	return arr
 }
 

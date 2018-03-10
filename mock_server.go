@@ -23,14 +23,15 @@ type MockServer struct {
 	server   *httptest.Server `json:"-"`
 	endpoint string           `json:"-"`
 
-	users         map[string]User                  `json:"users"`
-	roles         map[string]Role                  `json:"roles"`
+	// users         map[string]User                  `json:"users"`
+	// roles         map[string]Role                  `json:"roles"`
 	inputs        map[string]Input                 `json:"inputs"`
 	indexSets     map[string]IndexSet              `json:"index_sets"`
 	indexSetStats map[string]IndexSetStats         `json:"index_set_stats"`
 	streams       map[string]Stream                `json:"streams"`
 	streamRules   map[string]map[string]StreamRule `json:"stream_rules"`
 
+	store    Store       `json:"-"`
 	logger   *log.Logger `json:"-"`
 	dataPath string      `json:"-"`
 }
@@ -42,15 +43,22 @@ func (ms *MockServer) Logger() *log.Logger {
 // NewMockServer returns new MockServer but doesn't start it.
 // If addr is an empty string, the free port is assigned automatially.
 func NewMockServer(addr string) (*MockServer, error) {
-	ms := &MockServer{
-		users:         map[string]User{},
+	store := &InMemoryStore{
 		roles:         map[string]Role{},
+		users:         map[string]User{},
 		inputs:        map[string]Input{},
 		indexSets:     map[string]IndexSet{},
 		indexSetStats: map[string]IndexSetStats{},
 		streams:       map[string]Stream{},
 		streamRules:   map[string]map[string]StreamRule{},
-		logger:        log.New(),
+	}
+	ms := &MockServer{
+		indexSetStats: map[string]IndexSetStats{},
+		streams:       map[string]Stream{},
+		streamRules:   map[string]map[string]StreamRule{},
+
+		store:  store,
+		logger: log.New(),
 	}
 	// By Default logLevel is error
 	// because debug and info logs are often noisy at unit tests.

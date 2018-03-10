@@ -10,14 +10,16 @@ import (
 
 // HasRole
 func (ms *MockServer) HasRole(name string) bool {
-	_, ok := ms.roles[name]
-	return ok
+	return ms.store.HasRole(name)
+	// _, ok := ms.roles[name]
+	// return ok
 }
 
 // GetRole returns a Role.
 func (ms *MockServer) GetRole(name string) (Role, bool) {
-	s, ok := ms.roles[name]
-	return s, ok
+	return ms.store.GetRole(name)
+	// s, ok := ms.roles[name]
+	// return s, ok
 }
 
 // AddRole adds a new role to the mock server.
@@ -28,24 +30,21 @@ func (ms *MockServer) AddRole(role *Role) (int, error) {
 	if ms.HasRole(role.Name) {
 		return 400, fmt.Errorf("Role %s already exists.", role.Name)
 	}
-	ms.roles[role.Name] = *role
-	return 200, nil
+	return ms.store.AddRole(role)
 }
 
 // UpdateRole updates a role.
 func (ms *MockServer) UpdateRole(name string, role *Role) (int, error) {
-	if !ms.HasRole(name) {
-		return 404, fmt.Errorf("No role found with name %s", name)
-	}
 	if err := UpdateValidator.Struct(role); err != nil {
 		return 400, err
+	}
+	if !ms.HasRole(name) {
+		return 404, fmt.Errorf("No role found with name %s", name)
 	}
 	if name != role.Name && ms.HasRole(role.Name) {
 		return 400, fmt.Errorf("The role %s has already existed.", name)
 	}
-	delete(ms.roles, name)
-	ms.roles[role.Name] = *role
-	return 200, nil
+	return ms.store.UpdateRole(name, role)
 }
 
 // DeleteRole
@@ -53,21 +52,11 @@ func (ms *MockServer) DeleteRole(name string) (int, error) {
 	if !ms.HasRole(name) {
 		return 404, fmt.Errorf("No role found with name %s", name)
 	}
-	delete(ms.roles, name)
-	return 200, nil
+	return ms.store.DeleteRole(name)
 }
 
 func (ms *MockServer) RoleList() []Role {
-	if ms.roles == nil {
-		return []Role{}
-	}
-	size := len(ms.roles)
-	arr := make([]Role, size)
-	i := 0
-	for _, role := range ms.roles {
-		arr[i] = role
-		i++
-	}
+	arr, _ := ms.store.GetRoles()
 	return arr
 }
 

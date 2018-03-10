@@ -9,15 +9,13 @@ import (
 )
 
 // HasInput
-func (ms *MockServer) HasInput(id string) bool {
-	_, ok := ms.inputs[id]
-	return ok
+func (ms *MockServer) HasInput(id string) (bool, error) {
+	return ms.store.HasInput(id)
 }
 
-// GetInput
-func (ms *MockServer) GetInput(id string) (Input, bool) {
-	s, ok := ms.inputs[id]
-	return s, ok
+// GetInput returns an input.
+func (ms *MockServer) GetInput(id string) (Input, bool, error) {
+	return ms.store.GetInput(id)
 }
 
 // AddInput adds an input to the mock server.
@@ -27,53 +25,36 @@ func (ms *MockServer) AddInput(input *Input) (*Input, int, error) {
 	}
 	s := *input
 	s.Id = randStringBytesMaskImprSrc(24)
-	ms.inputs[s.Id] = s
-	return &s, 200, nil
+	return ms.store.AddInput(&s)
 }
 
 // UpdateInput updates an input at the MockServer.
 // Required: Title, Type, Configuration
 // Allowed: Global, Node
 func (ms *MockServer) UpdateInput(input *Input) (int, error) {
-	u, ok := ms.GetInput(input.Id)
-	if !ok {
-		return 404, fmt.Errorf("The input is not found")
-	}
 	if err := UpdateValidator.Struct(input); err != nil {
 		return 400, err
 	}
-	u.Title = input.Title
-	u.Type = input.Type
-	u.Configuration = &(*(input.Configuration))
-
-	u.Global = input.Global
-	u.Node = input.Node
-
-	ms.inputs[u.Id] = u
-	return 200, nil
+	return ms.store.UpdateInput(input)
 }
 
 // DeleteInput deletes a input from the mock server.
 func (ms *MockServer) DeleteInput(id string) (int, error) {
-	if !ms.HasInput(id) {
+	ok, err := ms.HasInput(id)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "id": id,
+		}).Error("ms.HasInput() is failure")
+		return 500, err
+	}
+	if !ok {
 		return 404, fmt.Errorf("The input is not found")
 	}
-	delete(ms.inputs, id)
-	return 200, nil
+	return ms.store.DeleteInput(id)
 }
 
-func (ms *MockServer) InputList() []Input {
-	if ms.inputs == nil {
-		return []Input{}
-	}
-	size := len(ms.inputs)
-	arr := make([]Input, size)
-	i := 0
-	for _, input := range ms.inputs {
-		arr[i] = input
-		i++
-	}
-	return arr
+func (ms *MockServer) InputList() ([]Input, error) {
+	return ms.store.GetInputs()
 }
 
 // GET /system/inputs/{inputId} Get information of a single input on this node
@@ -82,7 +63,14 @@ func (ms *MockServer) handleGetInput(
 ) {
 	ms.handleInit(w, r, false)
 	id := ps.ByName("inputId")
-	input, ok := ms.GetInput(id)
+	input, ok, err := ms.GetInput(id)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "id": id,
+		}).Error("ms.GetInput() is failure")
+		write500Error(w)
+		return
+	}
 	if !ok {
 		writeApiError(w, 404, "No input found with id %s", id)
 		return
@@ -96,6 +84,9 @@ func (ms *MockServer) handleUpdateInput(
 ) {
 	b, err := ms.handleInit(w, r, true)
 	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err,
+		}).Error("ms.handleInit() is failure")
 		write500Error(w)
 		return
 	}
@@ -187,7 +178,13 @@ func (ms *MockServer) handleGetInputs(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
 	ms.handleInit(w, r, false)
-	arr := ms.InputList()
+	arr, err := ms.InputList()
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err,
+		}).Error("ms.InputList() is failure")
+		write500Error(w)
+	}
 	inputs := &inputsBody{Inputs: arr, Total: len(arr)}
 	writeOr500Error(w, inputs)
 }
