@@ -30,7 +30,7 @@ func dummyNewIndexSet() *IndexSet {
 
 func dummyIndexSet() *IndexSet {
 	return &IndexSet{
-		Id:                    "5a8c086fc006c600013ca6f5",
+		ID:                    "5a8c086fc006c600013ca6f5",
 		Title:                 "Default index set",
 		Description:           "The Graylog default index set",
 		IndexPrefix:           "graylog",
@@ -81,8 +81,8 @@ func TestGetIndexSets(t *testing.T) {
 	if len(indexSets) != 1 {
 		t.Fatalf("len(indexSets) == %d, wanted %d", len(indexSets), 1)
 	}
-	if indexSets[0].Id != is.Id {
-		t.Fatalf("indexSets[0].Id == %s, wanted %s", indexSets[0].Id, is.Id)
+	if indexSets[0].ID != is.ID {
+		t.Fatalf("indexSets[0].ID == %s, wanted %s", indexSets[0].ID, is.ID)
 	}
 }
 
@@ -97,7 +97,7 @@ func TestGetIndexSet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	act, _, err := client.GetIndexSet(exp.Id)
+	act, _, err := client.GetIndexSet(exp.ID)
 	if err != nil {
 		t.Fatal("Failed to GetIndexSet", err)
 	}
@@ -126,7 +126,7 @@ func TestCreateIndexSet(t *testing.T) {
 	if act == nil {
 		t.Fatal("client.CreateIndexSet() == nil")
 	}
-	if act.Id == "" {
+	if act.ID == "" {
 		t.Fatal("returned IndexSet's id is empty")
 	}
 	if act.Title != exp.Title {
@@ -173,11 +173,11 @@ func TestUpdateIndexSet(t *testing.T) {
 		t.Fatalf(
 			"client.UpdateIndexSet() == %v, wanted %v", updatedIndexSet, indexSet)
 	}
-	indexSet.Id = ""
+	indexSet.ID = ""
 	if _, _, err := client.UpdateIndexSet(indexSet); err == nil {
 		t.Fatal("index set id is required")
 	}
-	indexSet.Id = "h"
+	indexSet.ID = "h"
 	if _, _, err := client.UpdateIndexSet(indexSet); err == nil {
 		t.Fatal(`no index set whose id is "h"`)
 	}
@@ -198,7 +198,7 @@ func TestDeleteIndexSet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err = client.DeleteIndexSet(indexSet.Id); err != nil {
+	if _, err = client.DeleteIndexSet(indexSet.ID); err != nil {
 		t.Fatal("Failed to DeleteIndexSet", err)
 	}
 	if _, err = client.DeleteIndexSet(""); err == nil {
@@ -222,16 +222,16 @@ func TestSetDefaultIndexSet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	updatedIndexSet, _, err := client.SetDefaultIndexSet(is.Id)
+	updatedIndexSet, _, err := client.SetDefaultIndexSet(is.ID)
 	if err != nil {
 		t.Fatal("Failed to UpdateIndexSet", err)
 	}
 	if !updatedIndexSet.Default {
 		t.Fatal("updatedIndexSet.Default == false")
 	}
-	if updatedIndexSet.Id != is.Id {
+	if updatedIndexSet.ID != is.ID {
 		t.Fatalf(
-			"updatedIndexSet.Id == %v, wanted %v", updatedIndexSet.Id, is.Id)
+			"updatedIndexSet.ID == %v, wanted %v", updatedIndexSet.ID, is.ID)
 	}
 	if _, _, err := client.SetDefaultIndexSet(""); err == nil {
 		t.Fatal("index set id is required")
@@ -246,7 +246,7 @@ func TestSetDefaultIndexSet(t *testing.T) {
 	if _, err := server.UpdateIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
-	if _, _, err := client.SetDefaultIndexSet(is.Id); err == nil {
+	if _, _, err := client.SetDefaultIndexSet(is.ID); err == nil {
 		t.Fatal("Default index set must be writable.")
 	}
 }
@@ -263,8 +263,8 @@ func TestGetIndexSetStats(t *testing.T) {
 		t.Fatal(err)
 	}
 	indexSetStats := dummyIndexSetStats()
-	server.indexSetStats[indexSet.Id] = *indexSetStats
-	isStats, _, err := client.GetIndexSetStats(indexSet.Id)
+	server.indexSetStats[indexSet.ID] = *indexSetStats
+	isStats, _, err := client.GetIndexSetStats(indexSet.ID)
 	if err != nil {
 		t.Fatal("Failed to UpdateIndexSet", err)
 	}
@@ -292,7 +292,7 @@ func TestGetAllIndexSetsStats(t *testing.T) {
 		t.Fatal(err)
 	}
 	indexSetStats := dummyIndexSetStats()
-	server.indexSetStats[indexSet.Id] = *indexSetStats
+	server.indexSetStats[indexSet.ID] = *indexSetStats
 	isStats, _, err := client.GetAllIndexSetsStats()
 	if err != nil {
 		t.Fatal("Failed to UpdateIndexSet", err)

@@ -84,36 +84,36 @@ func NewMockServer(addr string) (*MockServer, error) {
 		"/api/roles/:rolename/members/:username", ms.handleRemoveUserFromRole)
 
 	router.GET("/api/system/inputs", ms.handleGetInputs)
-	router.GET("/api/system/inputs/:inputId", ms.handleGetInput)
+	router.GET("/api/system/inputs/:inputID", ms.handleGetInput)
 	router.POST("/api/system/inputs", ms.handleCreateInput)
-	router.PUT("/api/system/inputs/:inputId", ms.handleUpdateInput)
-	router.DELETE("/api/system/inputs/:inputId", ms.handleDeleteInput)
+	router.PUT("/api/system/inputs/:inputID", ms.handleUpdateInput)
+	router.DELETE("/api/system/inputs/:inputID", ms.handleDeleteInput)
 
 	router.GET("/api/system/indices/index_sets", ms.handleGetIndexSets)
 	router.GET(
-		"/api/system/indices/index_sets/:indexSetId", ms.handleGetIndexSet)
+		"/api/system/indices/index_sets/:indexSetID", ms.handleGetIndexSet)
 	router.POST("/api/system/indices/index_sets", ms.handleCreateIndexSet)
 	router.PUT(
-		"/api/system/indices/index_sets/:indexSetId", ms.handleUpdateIndexSet)
+		"/api/system/indices/index_sets/:indexSetID", ms.handleUpdateIndexSet)
 	router.DELETE(
-		"/api/system/indices/index_sets/:indexSetId", ms.handleDeleteIndexSet)
+		"/api/system/indices/index_sets/:indexSetID", ms.handleDeleteIndexSet)
 	router.GET(
-		"/api/system/indices/index_sets/:indexSetId/stats",
+		"/api/system/indices/index_sets/:indexSetID/stats",
 		ms.handleGetIndexSetStats)
 	router.PUT(
-		"/api/system/indices/index_sets/:indexSetId/default",
+		"/api/system/indices/index_sets/:indexSetID/default",
 		ms.handleSetDefaultIndexSet)
 
 	router.GET("/api/streams", ms.handleGetStreams)
 	router.POST("/api/streams", ms.handleCreateStream)
-	router.GET("/api/streams/:streamId", ms.handleGetStream)
-	router.PUT("/api/streams/:streamId", ms.handleUpdateStream)
-	router.DELETE("/api/streams/:streamId", ms.handleDeleteStream)
-	router.POST("/api/streams/:streamId/pause", ms.handlePauseStream)
-	router.POST("/api/streams/:streamId/resume", ms.handleResumeStream)
+	router.GET("/api/streams/:streamID", ms.handleGetStream)
+	router.PUT("/api/streams/:streamID", ms.handleUpdateStream)
+	router.DELETE("/api/streams/:streamID", ms.handleDeleteStream)
+	router.POST("/api/streams/:streamID/pause", ms.handlePauseStream)
+	router.POST("/api/streams/:streamID/resume", ms.handleResumeStream)
 
-	router.GET("/api/streams/:streamId/rules", ms.handleGetStreamRules)
-	router.POST("/api/streams/:streamId/rules", ms.handleCreateStreamRule)
+	router.GET("/api/streams/:streamID/rules", ms.handleGetStreamRules)
+	router.POST("/api/streams/:streamID/rules", ms.handleCreateStreamRule)
 
 	router.NotFound = ms.handleNotFound
 

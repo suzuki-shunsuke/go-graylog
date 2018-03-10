@@ -18,7 +18,7 @@ func (store *InMemoryStore) GetInput(id string) (Input, bool, error) {
 
 // AddInput adds an input to the store.
 func (store *InMemoryStore) AddInput(input *Input) (*Input, int, error) {
-	store.inputs[input.Id] = *input
+	store.inputs[input.ID] = *input
 	return input, 200, nil
 }
 
@@ -26,7 +26,7 @@ func (store *InMemoryStore) AddInput(input *Input) (*Input, int, error) {
 // Required: Title, Type, Configuration
 // Allowed: Global, Node
 func (store *InMemoryStore) UpdateInput(input *Input) (int, error) {
-	u, ok, _ := store.GetInput(input.Id)
+	u, ok, _ := store.GetInput(input.ID)
 	if !ok {
 		return 404, fmt.Errorf("The input is not found")
 	}
@@ -37,7 +37,7 @@ func (store *InMemoryStore) UpdateInput(input *Input) (int, error) {
 	u.Global = input.Global
 	u.Node = input.Node
 
-	store.inputs[u.Id] = u
+	store.inputs[u.ID] = u
 	return 200, nil
 }
 

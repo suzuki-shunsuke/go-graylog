@@ -18,7 +18,7 @@ func dummyNewInput() *Input {
 
 func dummyInput() *Input {
 	return &Input{
-		Id:    "5a90cee5c006c60001efbbf5",
+		ID:    "5a90cee5c006c60001efbbf5",
 		Title: "test",
 		Type:  "org.graylog2.inputs.gelf.tcp.GELFTCPInput",
 		Node:  "2ad6b340-3e5f-4a96-ae81-040cfb8b6024",
@@ -86,7 +86,7 @@ func TestGetInput(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	act, _, err := client.GetInput(exp.Id)
+	act, _, err := client.GetInput(exp.ID)
 	if err != nil {
 		t.Fatal("Failed to GetInput", err)
 	}
@@ -122,7 +122,7 @@ func TestUpdateInput(t *testing.T) {
 	if act.Title != exp.Title {
 		t.Fatalf(`UpdateInput title "%s" != "%s"`, act.Title, exp.Title)
 	}
-	act2, ok, err := server.GetInput(exp.Id)
+	act2, ok, err := server.GetInput(exp.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -133,12 +133,12 @@ func TestUpdateInput(t *testing.T) {
 		t.Fatalf(`UpdateInput title "%s" != "%s"`, act2.Title, exp.Title)
 	}
 
-	exp.Id = ""
+	exp.ID = ""
 	if _, _, err := client.UpdateInput(exp); err == nil {
 		t.Fatal("input id is required")
 	}
 
-	exp.Id = "h"
+	exp.ID = "h"
 	if _, _, err := client.UpdateInput(exp); err == nil {
 		t.Fatal(`no input whose id is "h"`)
 	}
@@ -186,7 +186,7 @@ func TestDeleteInput(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = client.DeleteInput(input.Id)
+	_, err = client.DeleteInput(input.ID)
 	if err != nil {
 		t.Fatal("Failed to DeleteInput", err)
 	}

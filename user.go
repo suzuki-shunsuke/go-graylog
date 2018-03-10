@@ -18,7 +18,7 @@ type User struct {
 	FullName    string   `json:"full_name,omitempty" v-create:"required"`
 	Password    string   `json:"password,omitempty" v-create:"required"`
 
-	Id          string       `json:"id,omitempty"`
+	ID          string       `json:"id,omitempty"`
 	Preferences *Preferences `json:"preferences,omitempty"`
 	// ex. "UTC"
 	Timezone string `json:"timezone,omitempty"`
@@ -45,7 +45,7 @@ type Preferences struct {
 // Startpage represents a user's startpage.
 type Startpage struct {
 	Type string `json:"type,omitempty"`
-	Id   string `json:"id,omitempty"`
+	ID   string `json:"id,omitempty"`
 }
 
 // CreateUser creates a new user account.

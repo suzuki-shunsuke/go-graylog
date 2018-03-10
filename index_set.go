@@ -26,7 +26,7 @@ type IndexSet struct {
 	Shards                          int    `json:"shards,omitempty" v-create:"required" v-update:"required"`
 	IndexOptimizationMaxNumSegments int    `json:"index_optimization_max_num_segments,omitempty" v-create:"required" v-update:"required"`
 
-	Id string `json:"id,omitempty" v-create:"isdefault" v-update:"required"`
+	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required"`
 
 	Description               string `json:"description,omitempty"`
 	Replicas                  int    `json:"replicas,omitempty"`
@@ -162,12 +162,12 @@ func (client *Client) UpdateIndexSet(
 func (client *Client) UpdateIndexSetContext(
 	ctx context.Context, indexSet *IndexSet,
 ) (*IndexSet, *ErrorInfo, error) {
-	id := indexSet.Id
+	id := indexSet.ID
 	if id == "" {
 		return nil, nil, errors.New("id is empty")
 	}
 	copiedIndexSet := *indexSet
-	copiedIndexSet.Id = ""
+	copiedIndexSet.ID = ""
 	b, err := json.Marshal(&copiedIndexSet)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "Failed to json.Marshal(indexSet)")

@@ -63,22 +63,22 @@ func (endpoint *Endpoints) Stream(id string) string {
 }
 
 // StreamRules returns Stream Rules API's endpoint url.
-func (endpoint *Endpoints) StreamRules(streamId string) string {
+func (endpoint *Endpoints) StreamRules(streamID string) string {
 	// /streams/{streamid}/rules
-	return fmt.Sprintf("%s/%s/rules", endpoint.Streams, streamId)
+	return fmt.Sprintf("%s/%s/rules", endpoint.Streams, streamID)
 }
 
 // StreamRuleTypes returns Stream Rule Types API's endpoint url.
-func (endpoint *Endpoints) StreamRuleTypes(streamId string) string {
+func (endpoint *Endpoints) StreamRuleTypes(streamID string) string {
 	// /streams/{streamid}/rules/types
-	return fmt.Sprintf("%s/%s/rules/types", endpoint.Streams, streamId)
+	return fmt.Sprintf("%s/%s/rules/types", endpoint.Streams, streamID)
 }
 
 // StreamRule returns a Stream Rule API's endpoint url.
-func (endpoint *Endpoints) StreamRule(streamId, streamRuleId string) string {
-	// /streams/{streamid}/rules/{streamRuleId}
+func (endpoint *Endpoints) StreamRule(streamID, streamRuleID string) string {
+	// /streams/{streamid}/rules/{streamRuleID}
 	return fmt.Sprintf(
-		"%s/%s/rules/%s", endpoint.Streams, streamId, streamRuleId)
+		"%s/%s/rules/%s", endpoint.Streams, streamID, streamRuleID)
 }
 
 // PauseStream returns PauseStream API's endpoint url.

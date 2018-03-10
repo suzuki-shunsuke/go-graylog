@@ -25,21 +25,21 @@ func (ms *MockServer) AddStream(stream *Stream) (*Stream, int, error) {
 		return nil, 400, err
 	}
 	s := *stream
-	s.Id = randStringBytesMaskImprSrc(24)
+	s.ID = randStringBytesMaskImprSrc(24)
 	return ms.store.AddStream(&s)
 }
 
 // UpdateStream updates a stream at the MockServer.
 func (ms *MockServer) UpdateStream(stream *Stream) (int, error) {
-	ok, err := ms.HasStream(stream.Id)
+	ok, err := ms.HasStream(stream.ID)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
-			"error": err, "id": stream.Id,
+			"error": err, "id": stream.ID,
 		}).Error("ms.HasStream() is failure")
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("No stream found with id %s", stream.Id)
+		return 404, fmt.Errorf("No stream found with id %s", stream.ID)
 	}
 	if err := UpdateValidator.Struct(stream); err != nil {
 		return 400, err
@@ -125,7 +125,7 @@ func (ms *MockServer) handleCreateStream(
 		writeApiError(w, 400, err.Error())
 		return
 	}
-	ret := map[string]string{"stream_id": s.Id}
+	ret := map[string]string{"stream_id": s.ID}
 	writeOr500Error(w, ret)
 }
 
@@ -146,11 +146,11 @@ func (ms *MockServer) handleGetEnabledStreams(
 	writeOr500Error(w, streams)
 }
 
-// GET /streams/{streamId} Get a single stream
+// GET /streams/{streamID} Get a single stream
 func (ms *MockServer) handleGetStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	id := ps.ByName("streamId")
+	id := ps.ByName("streamID")
 	if id == "enabled" {
 		ms.handleGetEnabledStreams(w, r, ps)
 		return
@@ -171,7 +171,7 @@ func (ms *MockServer) handleGetStream(
 	writeOr500Error(w, &stream)
 }
 
-// PUT /streams/{streamId} Update a stream
+// PUT /streams/{streamID} Update a stream
 func (ms *MockServer) handleUpdateStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
@@ -180,7 +180,7 @@ func (ms *MockServer) handleUpdateStream(
 		write500Error(w)
 		return
 	}
-	id := ps.ByName("streamId")
+	id := ps.ByName("streamID")
 	stream, ok, err := ms.GetStream(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -232,15 +232,15 @@ func (ms *MockServer) handleUpdateStream(
 		}
 		stream.RemoveMatchesFromDefaultStream = m
 	}
-	if indexSetId, ok := data["index_set_id"]; ok {
-		m, ok := indexSetId.(string)
+	if indexSetID, ok := data["index_set_id"]; ok {
+		m, ok := indexSetID.(string)
 		if !ok {
 			writeApiError(w, 400, "index_set_id must be string")
 			return
 		}
-		stream.IndexSetId = m
+		stream.IndexSetID = m
 	}
-	stream.Id = id
+	stream.ID = id
 	if sc, err := ms.UpdateStream(&stream); err != nil {
 		writeApiError(w, sc, err.Error())
 		return
@@ -249,12 +249,12 @@ func (ms *MockServer) handleUpdateStream(
 	writeOr500Error(w, &stream)
 }
 
-// DELETE /streams/{streamId} Delete a stream
+// DELETE /streams/{streamID} Delete a stream
 func (ms *MockServer) handleDeleteStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
 	ms.handleInit(w, r, false)
-	id := ps.ByName("streamId")
+	id := ps.ByName("streamID")
 	ok, err := ms.HasStream(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -272,12 +272,12 @@ func (ms *MockServer) handleDeleteStream(
 	ms.safeSave()
 }
 
-// POST /streams/{streamId}/pause Pause a stream
+// POST /streams/{streamID}/pause Pause a stream
 func (ms *MockServer) handlePauseStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
 	ms.handleInit(w, r, false)
-	id := ps.ByName("streamId")
+	id := ps.ByName("streamID")
 	ok, err := ms.HasStream(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -297,7 +297,7 @@ func (ms *MockServer) handleResumeStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
 	ms.handleInit(w, r, false)
-	id := ps.ByName("streamId")
+	id := ps.ByName("streamID")
 	ok, err := ms.HasStream(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{

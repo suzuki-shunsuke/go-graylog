@@ -39,12 +39,12 @@ func TestMockServerHandleUpdateStream(t *testing.T) {
 		t.Fatal(err)
 	}
 	stream := dummyNewStream()
-	stream.IndexSetId = is.Id
+	stream.IndexSetID = is.ID
 	s, _, err := server.AddStream(stream)
 	if err != nil {
 		t.Fatal(err)
 	}
-	endpoint := client.endpoints.Stream(s.Id)
+	endpoint := client.endpoints.Stream(s.ID)
 
 	body := bytes.NewBuffer([]byte("hoge"))
 	if err := testUpdateStreamStatusCode(t, endpoint, body, 400); err != nil {

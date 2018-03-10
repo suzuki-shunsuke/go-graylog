@@ -14,10 +14,10 @@ func dummyNewStreamRule() *StreamRule {
 
 func dummyStreamRule() *StreamRule {
 	return &StreamRule{
-		Id:       "5a9b53c7c006c6000127f965",
+		ID:       "5a9b53c7c006c6000127f965",
 		Type:     1,
 		Value:    "test",
-		StreamId: "5a94abdac006c60001f04fc1",
+		StreamID: "5a94abdac006c60001f04fc1",
 		Field:    "tag",
 	}
 }
@@ -33,11 +33,11 @@ func TestGetStreamRules(t *testing.T) {
 		t.Fatal(err)
 	}
 	streamRule := dummyStreamRule()
-	streamRule.StreamId = stream.Id
+	streamRule.StreamID = stream.ID
 	if err := server.AddStreamRule(streamRule); err != nil {
 		t.Fatal(err)
 	}
-	rules, total, _, err := client.GetStreamRules(stream.Id)
+	rules, total, _, err := client.GetStreamRules(stream.ID)
 	if err != nil {
 		t.Fatal("Failed to GetStreamRules", err)
 	}
@@ -61,13 +61,13 @@ func TestCreateStreamRule(t *testing.T) {
 		t.Fatal(err)
 	}
 	stream := dummyNewStream()
-	stream.IndexSetId = is.Id
+	stream.IndexSetID = is.ID
 	stream, _, err = server.AddStream(stream)
 	if err != nil {
 		t.Fatal(err)
 	}
 	rule := dummyNewStreamRule()
-	rule.StreamId = stream.Id
+	rule.StreamID = stream.ID
 	if _, _, err := client.CreateStreamRule(rule); err != nil {
 		t.Fatal(err)
 	}
@@ -85,15 +85,15 @@ func TestCreateStreamRule(t *testing.T) {
 // 		t.Fatal(err)
 // 	}
 // 	stream := dummyStream()
-// 	stream.IndexSetId = is.Id
+// 	stream.IndexSetID = is.ID
 // 	is, _, err = client.CreateStream(stream)
 // 	if err != nil {
 // 		t.Fatal(err)
 // 	}
 //
-// 	server.streams[stream.Id] = *stream
+// 	server.streams[stream.ID] = *stream
 // 	stream.Description = "changed!"
-// 	updatedStream, _, err := client.UpdateStream(stream.Id, stream)
+// 	updatedStream, _, err := client.UpdateStream(stream.ID, stream)
 // 	if err != nil {
 // 		t.Fatal("Failed to UpdateStream", err)
 // 	}

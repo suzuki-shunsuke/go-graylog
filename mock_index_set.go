@@ -31,7 +31,7 @@ func (ms *MockServer) AddIndexSet(indexSet *IndexSet) (*IndexSet, int, error) {
 		}
 	}
 	s := *indexSet
-	s.Id = randStringBytesMaskImprSrc(24)
+	s.ID = randStringBytesMaskImprSrc(24)
 	return ms.store.AddIndexSet(&s)
 }
 
@@ -39,22 +39,22 @@ func (ms *MockServer) AddIndexSet(indexSet *IndexSet) (*IndexSet, int, error) {
 func (ms *MockServer) UpdateIndexSet(
 	indexSet *IndexSet,
 ) (int, error) {
-	ok, err := ms.HasIndexSet(indexSet.Id)
+	ok, err := ms.HasIndexSet(indexSet.ID)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
-			"error": err, "id": indexSet.Id,
+			"error": err, "id": indexSet.ID,
 		}).Error("ms.HasIndexSet() is failure")
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("No indexSet found with id %s", indexSet.Id)
+		return 404, fmt.Errorf("No indexSet found with id %s", indexSet.ID)
 	}
 	if err := UpdateValidator.Struct(indexSet); err != nil {
 		return 400, err
 	}
 	// indexPrefix unique check
 	for _, is := range ms.indexSets {
-		if is.IndexPrefix == indexSet.IndexPrefix && is.Id != indexSet.Id {
+		if is.IndexPrefix == indexSet.IndexPrefix && is.ID != indexSet.ID {
 			return 400, fmt.Errorf(
 				`Index prefix "%s" would conflict with an existing index set!`,
 				indexSet.IndexPrefix)
@@ -105,7 +105,7 @@ func (ms *MockServer) handleGetIndexSets(
 func (ms *MockServer) handleGetIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
-	id := ps.ByName("indexSetId")
+	id := ps.ByName("indexSetID")
 	if id == "stats" {
 		ms.handleGetAllIndexSetsStats(w, r, ps)
 		return
@@ -180,7 +180,7 @@ func (ms *MockServer) handleUpdateIndexSet(
 		write500Error(w)
 		return
 	}
-	id := ps.ByName("indexSetId")
+	id := ps.ByName("indexSetID")
 	indexSet, ok, err := ms.GetIndexSet(id)
 	if err != nil {
 		ms.logger.WithFields(log.Fields{
@@ -198,7 +198,7 @@ func (ms *MockServer) handleUpdateIndexSet(
 		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
-	indexSet.Id = id
+	indexSet.ID = id
 	if sc, err := ms.UpdateIndexSet(&indexSet); err != nil {
 		writeApiError(w, sc, err.Error())
 		return
@@ -212,7 +212,7 @@ func (ms *MockServer) handleDeleteIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
 	ms.handleInit(w, r, false)
-	id := ps.ByName("indexSetId")
+	id := ps.ByName("indexSetID")
 	if sc, err := ms.DeleteIndexSet(id); err != nil {
 		writeApiError(w, sc, err.Error())
 		return
@@ -225,7 +225,7 @@ func (ms *MockServer) handleSetDefaultIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
 	ms.handleInit(w, r, false)
-	id := ps.ByName("indexSetId")
+	id := ps.ByName("indexSetID")
 	indexSet, ok, err := ms.GetIndexSet(id)
 	if err != nil {
 		ms.logger.WithFields(log.Fields{
@@ -260,7 +260,7 @@ func (ms *MockServer) handleGetIndexSetStats(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
 	ms.handleInit(w, r, false)
-	id := ps.ByName("indexSetId")
+	id := ps.ByName("indexSetID")
 	indexSetStats, ok := ms.indexSetStats[id]
 	if !ok {
 		writeApiError(w, 404, "No indexSet found with id %s", id)

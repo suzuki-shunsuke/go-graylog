@@ -51,7 +51,7 @@ func (ms *MockServer) AddUser(user *User) (*User, int, error) {
 	if sc, err := ms.checkUserRoles(user.Roles); err != nil {
 		return nil, sc, err
 	}
-	s.Id = randStringBytesMaskImprSrc(24)
+	s.ID = randStringBytesMaskImprSrc(24)
 	return ms.store.AddUser(&s)
 }
 

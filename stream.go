@@ -10,23 +10,23 @@ import (
 )
 
 // CloneStream
-// POST /streams/{streamId}/clone Clone a stream
+// POST /streams/{streamID}/clone Clone a stream
 // TestMatchStream
-// POST /streams/{streamId}/testMatch Test matching of a stream against a supplied message
+// POST /streams/{streamID}/testMatch Test matching of a stream against a supplied message
 
 // Stream represents a steram.
 type Stream struct {
 	// required
 	Title string `json:"title,omitempty" v-create:"required"`
 	// ex. "5a8c086fc006c600013ca6f5"
-	IndexSetId string `json:"index_set_id,omitempty" v-create:"required"`
+	IndexSetID string `json:"index_set_id,omitempty" v-create:"required"`
 
 	// ex. "5a94abdac006c60001f04fc1"
-	Id string `json:"id,omitempty" v-create:"isdefault" v-update:"required"`
+	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required"`
 	// ex. "2018-02-20T11:37:19.371Z"
 	CreatedAt string `json:"created_at,omitempty" v-create:"isdefault"`
 	// ex. local:admin
-	CreatorUserId string   `json:"creator_user_id,omitempty" v-create:"isdefault"`
+	CreatorUserID string   `json:"creator_user_id,omitempty" v-create:"isdefault"`
 	Description   string   `json:"description,omitempty"`
 	Outputs       []Output `json:"outputs,omitempty" v-create:"isdefault"`
 	// ex. "AND"

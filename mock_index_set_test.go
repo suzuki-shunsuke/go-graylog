@@ -19,7 +19,7 @@ func TestMockServerHandleUpdateIndexSet(t *testing.T) {
 	}
 	body := bytes.NewBuffer([]byte("hoge"))
 	req, err := http.NewRequest(
-		http.MethodPut, client.endpoints.IndexSet(indexSet.Id), body)
+		http.MethodPut, client.endpoints.IndexSet(indexSet.ID), body)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -13,31 +13,31 @@ import (
 
 // AddStreamRule adds a stream rule to the MockServer.
 func (ms *MockServer) AddStreamRule(rule *StreamRule) error {
-	if rule.StreamId == "" {
+	if rule.StreamID == "" {
 		return errors.New("stream id is required")
 	}
-	ok, err := ms.HasStream(rule.StreamId)
+	ok, err := ms.HasStream(rule.StreamID)
 	if err != nil {
 		return err
 	}
 	if !ok {
-		return fmt.Errorf("no stream is not found: %s", rule.StreamId)
+		return fmt.Errorf("no stream is not found: %s", rule.StreamID)
 	}
-	if rule.Id == "" {
-		rule.Id = randStringBytesMaskImprSrc(24)
+	if rule.ID == "" {
+		rule.ID = randStringBytesMaskImprSrc(24)
 	}
-	rules, ok := ms.streamRules[rule.StreamId]
+	rules, ok := ms.streamRules[rule.StreamID]
 	if !ok || rules == nil {
 		rules = map[string]StreamRule{}
 	}
-	rules[rule.Id] = *rule
-	ms.streamRules[rule.StreamId] = rules
+	rules[rule.ID] = *rule
+	ms.streamRules[rule.StreamID] = rules
 	return nil
 }
 
 // StreamRuleList returns a list of all stream rules of a given stream.
-func (ms *MockServer) StreamRuleList(streamId string) []StreamRule {
-	rules, ok := ms.streamRules[streamId]
+func (ms *MockServer) StreamRuleList(streamID string) []StreamRule {
+	rules, ok := ms.streamRules[streamID]
 	if !ok || rules == nil {
 		return []StreamRule{}
 	}
@@ -55,8 +55,8 @@ func (ms *MockServer) handleGetStreamRules(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
 	ms.handleInit(w, r, false)
-	streamId := ps.ByName("streamId")
-	arr := ms.StreamRuleList(streamId)
+	streamID := ps.ByName("streamID")
+	arr := ms.StreamRuleList(streamID)
 	body := &streamRulesBody{StreamRules: arr, Total: len(arr)}
 	writeOr500Error(w, body)
 }
@@ -78,14 +78,14 @@ func (ms *MockServer) handleCreateStreamRule(
 		return
 	}
 
-	streamId := ps.ByName("streamId")
-	ok, err := ms.HasStream(streamId)
+	streamID := ps.ByName("streamID")
+	ok, err := ms.HasStream(streamID)
 	if err != nil {
 		writeApiError(w, 500, err.Error())
 		return
 	}
 	if !ok {
-		writeApiError(w, 404, "Stream <%s> not found!", streamId)
+		writeApiError(w, 404, "Stream <%s> not found!", streamID)
 		return
 	}
 
@@ -111,7 +111,7 @@ func (ms *MockServer) handleCreateStreamRule(
 		"body": string(b), "stream_rule": rule,
 	}).Debug("request body")
 
-	rule.StreamId = streamId
+	rule.StreamID = streamID
 	if sc, msg := ms.validateCreateStreamRule(rule); sc != 200 {
 		w.WriteHeader(sc)
 		w.Write(msg)
@@ -125,7 +125,7 @@ func (ms *MockServer) handleCreateStreamRule(
 		return
 	}
 	ms.safeSave()
-	ret := map[string]string{"streamrule_id": rule.Id}
+	ret := map[string]string{"streamrule_id": rule.ID}
 	writeOr500Error(w, ret)
 }
 
@@ -142,27 +142,27 @@ func (ms *MockServer) handleUpdateStreamRule(
 		write500Error(w)
 		return
 	}
-	streamId := ps.ByName("streamId")
+	streamID := ps.ByName("streamID")
 
-	ok, err := ms.HasStream(streamId)
+	ok, err := ms.HasStream(streamID)
 	if err != nil {
 		writeApiError(w, 500, err.Error())
 		return
 	}
 	if !ok {
-		writeApiError(w, 404, "Stream <%s> not found!", streamId)
+		writeApiError(w, 404, "Stream <%s> not found!", streamID)
 		return
 	}
 
-	ruleId := ps.ByName("streamRuleId")
-	rules, ok := ms.streamRules[streamId]
+	ruleID := ps.ByName("streamRuleID")
+	rules, ok := ms.streamRules[streamID]
 	if !ok || rules == nil {
-		writeApiError(w, 404, "No StreamRule found with id %s", ruleId)
+		writeApiError(w, 404, "No StreamRule found with id %s", ruleID)
 		return
 	}
-	rule, ok := rules[ruleId]
+	rule, ok := rules[ruleID]
 	if !ok {
-		writeApiError(w, 404, "No StreamRule found with id %s", ruleId)
+		writeApiError(w, 404, "No StreamRule found with id %s", ruleID)
 		return
 	}
 
@@ -188,8 +188,8 @@ func (ms *MockServer) handleUpdateStreamRule(
 		"body": string(b), "stream_rule": rule,
 	}).Debug("request body")
 
-	rule.StreamId = streamId
-	rule.Id = ruleId
+	rule.StreamID = streamID
+	rule.ID = ruleID
 	if err := UpdateValidator.Struct(&rule); err != nil {
 		writeApiError(w, 400, err.Error())
 		return
@@ -201,6 +201,6 @@ func (ms *MockServer) handleUpdateStreamRule(
 		write500Error(w)
 	}
 	ms.safeSave()
-	ret := map[string]string{"streamrule_id": rule.Id}
+	ret := map[string]string{"streamrule_id": rule.ID}
 	writeOr500Error(w, ret)
 }

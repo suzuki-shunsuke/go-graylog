@@ -14,7 +14,7 @@ func (store *InMemoryStore) GetIndexSet(id string) (IndexSet, bool, error) {
 
 // AddIndexSet adds an index set to the store.
 func (store *InMemoryStore) AddIndexSet(indexSet *IndexSet) (*IndexSet, int, error) {
-	store.indexSets[indexSet.Id] = *indexSet
+	store.indexSets[indexSet.ID] = *indexSet
 	return indexSet, 200, nil
 }
 
@@ -22,7 +22,7 @@ func (store *InMemoryStore) AddIndexSet(indexSet *IndexSet) (*IndexSet, int, err
 func (store *InMemoryStore) UpdateIndexSet(
 	indexSet *IndexSet,
 ) (int, error) {
-	store.indexSets[indexSet.Id] = *indexSet
+	store.indexSets[indexSet.ID] = *indexSet
 	return 200, nil
 }
 

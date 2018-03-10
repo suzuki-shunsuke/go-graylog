@@ -10,7 +10,7 @@ func addDummyStream(server *MockServer) (*IndexSet, *Stream, error) {
 		return nil, nil, err
 	}
 	stream := dummyNewStream()
-	stream.IndexSetId = indexSet.Id
+	stream.IndexSetID = indexSet.ID
 	stream, _, err = server.AddStream(stream)
 	return indexSet, stream, err
 }
@@ -26,8 +26,8 @@ func dummyNewStream() *Stream {
 
 func dummyStream() *Stream {
 	return &Stream{
-		Id:              "000000000000000000000001",
-		CreatorUserId:   "local:admin",
+		ID:              "000000000000000000000001",
+		CreatorUserID:   "local:admin",
 		Outputs:         []Output{},
 		MatchingType:    "AND",
 		Description:     "Stream containing all messages",
@@ -39,7 +39,7 @@ func dummyStream() *Stream {
 			Users:  []string{},
 		},
 		Title:      "All messages",
-		IndexSetId: "5a8c086fc006c600013ca6f5",
+		IndexSetID: "5a8c086fc006c600013ca6f5",
 		// "content_pack": null,
 	}
 }
@@ -61,8 +61,8 @@ func TestGetStreams(t *testing.T) {
 	if total != 1 {
 		t.Fatalf("total == %d, wanted %d", total, 1)
 	}
-	if streams[0].Id != stream.Id {
-		t.Fatalf("streams[0].Id == %s, wanted %s", streams[0].Id, stream.Id)
+	if streams[0].ID != stream.ID {
+		t.Fatalf("streams[0].ID == %s, wanted %s", streams[0].ID, stream.ID)
 	}
 }
 
@@ -81,7 +81,7 @@ func TestCreateStream(t *testing.T) {
 		t.Fatal(err)
 	}
 	stream = dummyNewStream()
-	stream.IndexSetId = indexSet.Id
+	stream.IndexSetID = indexSet.ID
 	id, _, err := client.CreateStream(stream)
 	if err != nil {
 		t.Fatal("Failed to CreateStream", err)
@@ -89,16 +89,16 @@ func TestCreateStream(t *testing.T) {
 	if id == "" {
 		t.Fatal(`client.CreateStream() == ""`)
 	}
-	stream.Id = "h"
+	stream.ID = "h"
 	if _, _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("id must be empty")
 	}
-	stream.Id = ""
-	stream.CreatorUserId = "h"
+	stream.ID = ""
+	stream.CreatorUserID = "h"
 	if _, _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("creator_user_id must be empty")
 	}
-	stream.CreatorUserId = ""
+	stream.CreatorUserID = ""
 	stream.CreatedAt = "h"
 	if _, _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("created_at must be empty")
@@ -121,11 +121,11 @@ func TestCreateStream(t *testing.T) {
 		t.Fatal("title is required")
 	}
 	stream.Title = copiedStream.Title
-	stream.IndexSetId = ""
+	stream.IndexSetID = ""
 	if _, _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("index_set_id is required")
 	}
-	stream.IndexSetId = copiedStream.IndexSetId
+	stream.IndexSetID = copiedStream.IndexSetID
 	stream.AlertReceivers = &AlertReceivers{}
 	if _, _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("alert_receiver is required")
@@ -150,8 +150,8 @@ func TestGetEnabledStreams(t *testing.T) {
 	if total != 1 {
 		t.Fatalf("total == %d, wanted %d", total, 1)
 	}
-	if streams[0].Id != exp[0].Id {
-		t.Fatalf("streams[0].Id == %s, wanted %s", streams[0].Id, exp[0].Id)
+	if streams[0].ID != exp[0].ID {
+		t.Fatalf("streams[0].ID == %s, wanted %s", streams[0].ID, exp[0].ID)
 	}
 
 	stream.Disabled = true
@@ -178,7 +178,7 @@ func TestGetStream(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	act, _, err := client.GetStream(stream.Id)
+	act, _, err := client.GetStream(stream.ID)
 	if err != nil {
 		t.Fatal("Failed to GetStream", err)
 	}
@@ -205,7 +205,7 @@ func TestUpdateStream(t *testing.T) {
 	}
 
 	stream.Description = "changed!"
-	updatedStream, _, err := client.UpdateStream(stream.Id, stream)
+	updatedStream, _, err := client.UpdateStream(stream.ID, stream)
 	if err != nil {
 		t.Fatal("Failed to UpdateStream", err)
 	}
@@ -242,7 +242,7 @@ func TestDeleteStream(t *testing.T) {
 	if _, err := client.DeleteStream("h"); err == nil {
 		t.Fatal(`no stream whose id is "h"`)
 	}
-	if _, err := client.DeleteStream(stream.Id); err != nil {
+	if _, err := client.DeleteStream(stream.ID); err != nil {
 		t.Fatal("Failed to DeleteStream", err)
 	}
 	s := len(server.streams)
@@ -262,7 +262,7 @@ func TestPauseStream(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if _, err = client.PauseStream(stream.Id); err != nil {
+	if _, err = client.PauseStream(stream.ID); err != nil {
 		t.Fatal("Failed to PauseStream", err)
 	}
 	if _, err := client.PauseStream(""); err == nil {
@@ -285,7 +285,7 @@ func TestResumeStream(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if _, err = client.ResumeStream(stream.Id); err != nil {
+	if _, err = client.ResumeStream(stream.ID); err != nil {
 		t.Fatal("Failed to ResumeStream", err)
 	}
 

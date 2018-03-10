@@ -35,7 +35,7 @@ type Input struct {
 	Configuration *InputConfiguration `json:"configuration,omitempty" v-create:"required" v-update:"required"`
 
 	// ex. "5a90d5c2c006c60001efc368"
-	Id string `json:"id,omitempty" v-create:"isdefault" v-update:"required"`
+	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required"`
 
 	Global bool `json:"global,omitempty"`
 	// ex. "2ad6b340-3e5f-4a96-ae81-040cfb8b6024"
@@ -43,7 +43,7 @@ type Input struct {
 	// ex. 2018-02-24T03:02:26.001Z
 	CreatedAt string `json:"created_at,omitempty" v-create:"isdefault" v-update:"isdefault"`
 	// ex. "admin"
-	CreatorUserId string           `json:"creator_user_id,omitempty" v-create:"isdefault" v-update:"isdefault"`
+	CreatorUserID string           `json:"creator_user_id,omitempty" v-create:"isdefault" v-update:"isdefault"`
 	Attributes    *InputAttributes `json:"attributes,omitempty" v-create:"isdefault"`
 	// ContextPack `json:"context_pack,omitempty"`
 	// StaticFields `json:"static_fields,omitempty"`
@@ -78,7 +78,7 @@ func (client *Client) CreateInputContext(
 			err, fmt.Sprintf("Failed to parse response body as Input: %s",
 				string(ei.ResponseBody)))
 	}
-	return ret.Id, ei, nil
+	return ret.ID, ei, nil
 }
 
 type inputsBody struct {
@@ -152,18 +152,18 @@ func (client *Client) UpdateInput(input *Input) (
 func (client *Client) UpdateInputContext(
 	ctx context.Context, input *Input,
 ) (*Input, *ErrorInfo, error) {
-	if input.Id == "" {
+	if input.ID == "" {
 		return nil, nil, errors.New("id is empty")
 	}
 	copiedInput := *input
-	copiedInput.Id = ""
+	copiedInput.ID = ""
 	b, err := json.Marshal(copiedInput)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "Failed to json.Marshal(input)")
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPut, client.endpoints.Input(input.Id), b, true)
+		ctx, http.MethodPut, client.endpoints.Input(input.ID), b, true)
 	if err != nil {
 		return nil, ei, err
 	}

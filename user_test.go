@@ -16,7 +16,7 @@ func dummyNewUser() *User {
 
 func dummyAdmin() *User {
 	return &User{
-		Id:          "local:admin",
+		ID:          "local:admin",
 		Username:    "admin",
 		Email:       "hoge@example.com",
 		FullName:    "Administrator",

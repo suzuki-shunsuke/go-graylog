@@ -24,7 +24,7 @@ func (ms *MockServer) AddInput(input *Input) (*Input, int, error) {
 		return nil, 400, err
 	}
 	s := *input
-	s.Id = randStringBytesMaskImprSrc(24)
+	s.ID = randStringBytesMaskImprSrc(24)
 	return ms.store.AddInput(&s)
 }
 
@@ -57,12 +57,12 @@ func (ms *MockServer) InputList() ([]Input, error) {
 	return ms.store.GetInputs()
 }
 
-// GET /system/inputs/{inputId} Get information of a single input on this node
+// GET /system/inputs/{inputID} Get information of a single input on this node
 func (ms *MockServer) handleGetInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
 	ms.handleInit(w, r, false)
-	id := ps.ByName("inputId")
+	id := ps.ByName("inputID")
 	input, ok, err := ms.GetInput(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -78,7 +78,7 @@ func (ms *MockServer) handleGetInput(
 	writeOr500Error(w, &input)
 }
 
-// PUT /system/inputs/{inputId} Update input on this node
+// PUT /system/inputs/{inputID} Update input on this node
 func (ms *MockServer) handleUpdateInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
@@ -90,7 +90,7 @@ func (ms *MockServer) handleUpdateInput(
 		write500Error(w)
 		return
 	}
-	id := ps.ByName("inputId")
+	id := ps.ByName("inputID")
 	requiredFields := []string{"title", "type", "configuration"}
 	allowedFields := []string{"global", "node"}
 	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
@@ -113,7 +113,7 @@ func (ms *MockServer) handleUpdateInput(
 		"body": string(b), "input": input, "id": id,
 	}).Debug("request body")
 
-	input.Id = id
+	input.ID = id
 	if sc, err := ms.UpdateInput(input); err != nil {
 		writeApiError(w, sc, err.Error())
 		return
@@ -122,12 +122,12 @@ func (ms *MockServer) handleUpdateInput(
 	writeOr500Error(w, input)
 }
 
-// DELETE /system/inputs/{inputId} Terminate input on this node
+// DELETE /system/inputs/{inputID} Terminate input on this node
 func (ms *MockServer) handleDeleteInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) {
 	ms.handleInit(w, r, false)
-	id := ps.ByName("inputId")
+	id := ps.ByName("inputID")
 	if sc, err := ms.DeleteInput(id); err != nil {
 		writeApiError(w, sc, err.Error())
 		return
@@ -169,7 +169,7 @@ func (ms *MockServer) handleCreateInput(
 		return
 	}
 	ms.safeSave()
-	d := map[string]string{"id": input.Id}
+	d := map[string]string{"id": input.ID}
 	writeOr500Error(w, &d)
 }
 

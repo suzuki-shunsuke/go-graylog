@@ -38,7 +38,7 @@ func TestMockServerHandleUpdateInput(t *testing.T) {
 	server.AddInput(input)
 	body := bytes.NewBuffer([]byte("hoge"))
 	req, err := http.NewRequest(
-		http.MethodPut, client.endpoints.Input(input.Id), body)
+		http.MethodPut, client.endpoints.Input(input.ID), body)
 	if err != nil {
 		t.Fatal(err)
 	}
