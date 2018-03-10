@@ -5,6 +5,29 @@ import (
 	"testing"
 )
 
+func dummyNewIndexSet() *IndexSet {
+	return &IndexSet{
+		Title:                 "Default index set",
+		Description:           "The Graylog default index set",
+		IndexPrefix:           "graylog",
+		Shards:                4,
+		Replicas:              0,
+		RotationStrategyClass: "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy",
+		RotationStrategy: &RotationStrategy{
+			Type:            "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig",
+			MaxDocsPerIndex: 20000000},
+		RetentionStrategyClass: "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy",
+		RetentionStrategy: &RetentionStrategy{
+			Type:               "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig",
+			MaxNumberOfIndices: 20},
+		CreationDate:                    "2018-02-20T11:37:19.305Z",
+		IndexAnalyzer:                   "standard",
+		IndexOptimizationMaxNumSegments: 1,
+		IndexOptimizationDisabled:       false,
+		Writable:                        true,
+		Default:                         true}
+}
+
 func dummyIndexSet() *IndexSet {
 	return &IndexSet{
 		Id:                    "5a8c086fc006c600013ca6f5",
@@ -43,15 +66,23 @@ func TestGetIndexSets(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet := dummyIndexSet()
-	exp := []IndexSet{*indexSet}
-	server.IndexSets[indexSet.Id] = *indexSet
+	indexSet := dummyNewIndexSet()
+	is, _, err := server.AddIndexSet(indexSet)
+	if err != nil {
+		t.Fatal(err)
+	}
 	indexSets, _, _, err := client.GetIndexSets(0, 0)
 	if err != nil {
 		t.Fatal("Failed to GetIndexSets", err)
 	}
-	if !reflect.DeepEqual(indexSets, exp) {
-		t.Fatalf("client.GetIndexSets() == %v, wanted %v", indexSets, exp)
+	if indexSets == nil {
+		t.Fatal("indexSets == nil")
+	}
+	if len(indexSets) != 1 {
+		t.Fatalf("len(indexSets) == %d, wanted %d", len(indexSets), 1)
+	}
+	if indexSets[0].Id != is.Id {
+		t.Fatalf("indexSets[0].Id == %s, wanted %s", indexSets[0].Id, is.Id)
 	}
 }
 
@@ -61,8 +92,11 @@ func TestGetIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	exp := dummyIndexSet()
-	server.IndexSets[exp.Id] = *exp
+	is := dummyNewIndexSet()
+	exp, _, err := server.AddIndexSet(is)
+	if err != nil {
+		t.Fatal(err)
+	}
 	act, _, err := client.GetIndexSet(exp.Id)
 	if err != nil {
 		t.Fatal("Failed to GetIndexSet", err)
@@ -84,8 +118,7 @@ func TestCreateIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	exp := dummyIndexSet()
-	exp.Id = ""
+	exp := dummyNewIndexSet()
 	act, _, err := client.CreateIndexSet(exp)
 	if err != nil {
 		t.Fatal("Failed to CreateIndexSet", err)
@@ -126,8 +159,11 @@ func TestUpdateIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet := dummyIndexSet()
-	server.IndexSets[indexSet.Id] = *indexSet
+	is := dummyNewIndexSet()
+	indexSet, _, err := server.AddIndexSet(is)
+	if err != nil {
+		t.Fatal(err)
+	}
 	indexSet.Description = "changed!"
 	updatedIndexSet, _, err := client.UpdateIndexSet(indexSet)
 	if err != nil {
@@ -157,8 +193,11 @@ func TestDeleteIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet := dummyIndexSet()
-	server.IndexSets[indexSet.Id] = *indexSet
+	is := dummyNewIndexSet()
+	indexSet, _, err := server.AddIndexSet(is)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if _, err = client.DeleteIndexSet(indexSet.Id); err != nil {
 		t.Fatal("Failed to DeleteIndexSet", err)
 	}
@@ -176,22 +215,23 @@ func TestSetDefaultIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet := dummyIndexSet()
+	indexSet := dummyNewIndexSet()
 	indexSet.Default = false
 	indexSet.Writable = true
-	server.IndexSets[indexSet.Id] = *indexSet
-	updatedIndexSet, _, err := client.SetDefaultIndexSet(indexSet.Id)
+	is, _, err := server.AddIndexSet(indexSet)
+	if err != nil {
+		t.Fatal(err)
+	}
+	updatedIndexSet, _, err := client.SetDefaultIndexSet(is.Id)
 	if err != nil {
 		t.Fatal("Failed to UpdateIndexSet", err)
 	}
 	if !updatedIndexSet.Default {
 		t.Fatal("updatedIndexSet.Default == false")
 	}
-	indexSet.Default = true
-	if !reflect.DeepEqual(*updatedIndexSet, *indexSet) {
+	if updatedIndexSet.Id != is.Id {
 		t.Fatalf(
-			"client.SetDefaultIndexSet() == %v, wanted %v",
-			updatedIndexSet, indexSet)
+			"updatedIndexSet.Id == %v, wanted %v", updatedIndexSet.Id, is.Id)
 	}
 	if _, _, err := client.SetDefaultIndexSet(""); err == nil {
 		t.Fatal("index set id is required")
@@ -200,10 +240,13 @@ func TestSetDefaultIndexSet(t *testing.T) {
 		t.Fatal(`no index set whose id is "h"`)
 	}
 
-	indexSet.Default = false
-	indexSet.Writable = false
-	server.IndexSets[indexSet.Id] = *indexSet
-	if _, _, err := client.SetDefaultIndexSet(indexSet.Id); err == nil {
+	is.Default = false
+	is.Writable = false
+
+	if _, err := server.UpdateIndexSet(is); err != nil {
+		t.Fatal(err)
+	}
+	if _, _, err := client.SetDefaultIndexSet(is.Id); err == nil {
 		t.Fatal("Default index set must be writable.")
 	}
 }
@@ -214,10 +257,13 @@ func TestGetIndexSetStats(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet := dummyIndexSet()
+	indexSet := dummyNewIndexSet()
+	indexSet, _, err = server.AddIndexSet(indexSet)
+	if err != nil {
+		t.Fatal(err)
+	}
 	indexSetStats := dummyIndexSetStats()
-	server.IndexSets[indexSet.Id] = *indexSet
-	server.IndexSetStats[indexSet.Id] = *indexSetStats
+	server.indexSetStats[indexSet.Id] = *indexSetStats
 	isStats, _, err := client.GetIndexSetStats(indexSet.Id)
 	if err != nil {
 		t.Fatal("Failed to UpdateIndexSet", err)
@@ -240,10 +286,13 @@ func TestGetAllIndexSetsStats(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet := dummyIndexSet()
+	indexSet := dummyNewIndexSet()
+	indexSet, _, err = server.AddIndexSet(indexSet)
+	if err != nil {
+		t.Fatal(err)
+	}
 	indexSetStats := dummyIndexSetStats()
-	server.IndexSets[indexSet.Id] = *indexSet
-	server.IndexSetStats[indexSet.Id] = *indexSetStats
+	server.indexSetStats[indexSet.Id] = *indexSetStats
 	isStats, _, err := client.GetAllIndexSetsStats()
 	if err != nil {
 		t.Fatal("Failed to UpdateIndexSet", err)

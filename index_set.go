@@ -301,10 +301,10 @@ func (client *Client) GetAllIndexSetsStatsContext(
 // AllIndexSetsStats returns all index set's statistics.
 func (ms *MockServer) AllIndexSetsStats() *IndexSetStats {
 	indexSetStats := &IndexSetStats{}
-	if ms.IndexSetStats == nil {
+	if ms.indexSetStats == nil {
 		return indexSetStats
 	}
-	for _, stats := range ms.IndexSetStats {
+	for _, stats := range ms.indexSetStats {
 		indexSetStats.Indices += stats.Indices
 		indexSetStats.Documents += stats.Documents
 		indexSetStats.Size += stats.Size

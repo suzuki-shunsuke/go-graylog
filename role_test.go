@@ -68,7 +68,9 @@ func TestGetRoles(t *testing.T) {
 	}
 	admin := dummyRole()
 	exp := []Role{*admin}
-	server.Roles[admin.Name] = *admin
+	if _, err := server.AddRole(admin); err != nil {
+		t.Fatal(err)
+	}
 	roles, _, err = client.GetRoles()
 	if err != nil {
 		t.Fatal("Failed to GetRoles", err)
@@ -85,7 +87,9 @@ func TestGetRole(t *testing.T) {
 	}
 	defer server.Close()
 	admin := dummyRole()
-	server.Roles[admin.Name] = *admin
+	if _, err := server.AddRole(admin); err != nil {
+		t.Fatal(err)
+	}
 	role, _, err := client.GetRole(admin.Name)
 	if err != nil {
 		t.Fatal("Failed to GetRole", err)
@@ -108,7 +112,9 @@ func TestUpdateRole(t *testing.T) {
 	}
 	defer server.Close()
 	admin := dummyRole()
-	server.Roles[admin.Name] = *admin
+	if _, err := server.AddRole(admin); err != nil {
+		t.Fatal(err)
+	}
 	admin.Description = "changed!"
 	updatedRole, _, err := client.UpdateRole(admin.Name, admin)
 	if err != nil {
@@ -143,7 +149,9 @@ func TestDeleteRole(t *testing.T) {
 	}
 	defer server.Close()
 	admin := dummyRole()
-	server.Roles[admin.Name] = *admin
+	if _, err := server.AddRole(admin); err != nil {
+		t.Fatal(err)
+	}
 	if _, err = client.DeleteRole(admin.Name); err != nil {
 		t.Fatal("Failed to DeleteRole", err)
 	}

@@ -17,7 +17,7 @@ func TestMockServerLoad(t *testing.T) {
 	if err := server.Load(); err != nil {
 		t.Fatal(err)
 	}
-	server.DataPath = "hoge"
+	server.dataPath = "hoge"
 	if err := server.Load(); err != nil {
 		t.Fatal(err)
 	}
@@ -34,7 +34,7 @@ func TestMockServerSave(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer os.Remove(tmpfile.Name())
-	server.DataPath = tmpfile.Name()
+	server.dataPath = tmpfile.Name()
 	if err := server.Save(); err != nil {
 		t.Fatal(err)
 	}
@@ -49,7 +49,7 @@ func TestMockServerHandleNotFound(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	endpoint := fmt.Sprintf("%s/dummy", server.Endpoint)
+	endpoint := fmt.Sprintf("%s/dummy", server.endpoint)
 	req, err := http.NewRequest(http.MethodGet, endpoint, nil)
 	if err != nil {
 		t.Fatal(err)

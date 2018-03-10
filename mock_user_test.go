@@ -35,7 +35,7 @@ func TestMockServerHandleUpdateUser(t *testing.T) {
 	}
 	defer server.Close()
 	user := dummyAdmin()
-	server.Users[user.Username] = *user
+	server.users[user.Username] = *user
 	body := bytes.NewBuffer([]byte("hoge"))
 	req, err := http.NewRequest(
 		http.MethodPut, client.endpoints.User(user.Username), body)

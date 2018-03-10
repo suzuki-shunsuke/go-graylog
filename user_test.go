@@ -1,7 +1,6 @@
 package graylog
 
 import (
-	"reflect"
 	"testing"
 )
 
@@ -19,8 +18,9 @@ func dummyAdmin() *User {
 	return &User{
 		Id:          "local:admin",
 		Username:    "admin",
-		Email:       "",
+		Email:       "hoge@example.com",
 		FullName:    "Administrator",
+		Password:    "password",
 		Permissions: []string{"*"},
 		Preferences: &Preferences{
 			UpdateUnfocussed:  false,
@@ -72,14 +72,23 @@ func TestGetUsers(t *testing.T) {
 	}
 	defer server.Close()
 	admin := dummyAdmin()
-	server.Users[admin.Username] = *admin
+	admin.Roles = nil
+	if _, _, err := server.AddUser(admin); err != nil {
+		t.Fatal(err)
+	}
 	users, _, err := client.GetUsers()
 	if err != nil {
 		t.Fatal("Failed to GetUsers", err)
 	}
-	exp := []User{*admin}
-	if !reflect.DeepEqual(users, exp) {
-		t.Fatalf("client.GetUsers() == %v, wanted %v", users, exp)
+	if users == nil {
+		t.Fatal("client.GetUsers() returns nil")
+	}
+	if len(users) != 1 {
+		t.Fatalf("len(users) == %d, wanted 1", len(users))
+	}
+	if users[0].Password != admin.Password {
+		t.Fatalf(
+			"users[0].Password == %v, wanted %v", users[0].Password, admin.Password)
 	}
 }
 
@@ -90,13 +99,16 @@ func TestGetUser(t *testing.T) {
 	}
 	defer server.Close()
 	exp := dummyAdmin()
-	server.Users[exp.Username] = *exp
+	exp.Roles = nil
+	if _, _, err := server.AddUser(exp); err != nil {
+		t.Fatal(err)
+	}
 	user, _, err := client.GetUser(exp.Username)
 	if err != nil {
 		t.Fatal("Failed to GetUser", err)
 	}
-	if !reflect.DeepEqual(*user, *exp) {
-		t.Fatalf("client.GetUser() == %v, wanted %v", user, exp)
+	if user.Password != exp.Password {
+		t.Fatalf("user.Password %v, wanted %v", user.Password, exp.Password)
 	}
 	if _, _, err := client.GetUser(""); err == nil {
 		t.Fatal("username should be required.")
@@ -113,7 +125,10 @@ func TestUpdateUser(t *testing.T) {
 	}
 	defer server.Close()
 	user := dummyAdmin()
-	server.Users[user.Username] = *user
+	user.Roles = nil
+	if _, _, err := server.AddUser(user); err != nil {
+		t.Fatal(err)
+	}
 	user.FullName = "changed!"
 	if _, err := client.UpdateUser(user); err != nil {
 		t.Fatal("Failed to UpdateUser", err)
@@ -135,7 +150,10 @@ func TestDeleteUser(t *testing.T) {
 	}
 	defer server.Close()
 	user := dummyAdmin()
-	server.Users[user.Username] = *user
+	user.Roles = nil
+	if _, _, err := server.AddUser(user); err != nil {
+		t.Fatal(err)
+	}
 	if _, err := client.DeleteUser(user.Username); err != nil {
 		t.Fatal("Failed to DeleteUser", err)
 	}

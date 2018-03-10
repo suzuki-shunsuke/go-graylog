@@ -35,7 +35,7 @@ func TestMockServerHandleUpdateRole(t *testing.T) {
 	}
 	defer server.Close()
 	admin := dummyRole()
-	server.Roles[admin.Name] = *admin
+	server.AddRole(admin)
 	body := bytes.NewBuffer([]byte("hoge"))
 	req, err := http.NewRequest(
 		http.MethodPut, client.endpoints.Role(admin.Name), body)

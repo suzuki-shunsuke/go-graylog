@@ -20,37 +20,41 @@ var (
 
 // MockServer represents a mock of the Graylog API.
 type MockServer struct {
-	Server   *httptest.Server `json:"-"`
-	Endpoint string           `json:"-"`
+	server   *httptest.Server `json:"-"`
+	endpoint string           `json:"-"`
 
-	Users         map[string]User                  `json:"users"`
-	Roles         map[string]Role                  `json:"roles"`
-	Inputs        map[string]Input                 `json:"inputs"`
-	IndexSets     map[string]IndexSet              `json:"index_sets"`
-	IndexSetStats map[string]IndexSetStats         `json:"index_set_stats"`
-	Streams       map[string]Stream                `json:"streams"`
-	StreamRules   map[string]map[string]StreamRule `json:"stream_rules"`
+	users         map[string]User                  `json:"users"`
+	roles         map[string]Role                  `json:"roles"`
+	inputs        map[string]Input                 `json:"inputs"`
+	indexSets     map[string]IndexSet              `json:"index_sets"`
+	indexSetStats map[string]IndexSetStats         `json:"index_set_stats"`
+	streams       map[string]Stream                `json:"streams"`
+	streamRules   map[string]map[string]StreamRule `json:"stream_rules"`
 
-	Logger   *log.Logger `json:"-"`
-	DataPath string      `json:"-"`
+	logger   *log.Logger `json:"-"`
+	dataPath string      `json:"-"`
+}
+
+func (ms *MockServer) Logger() *log.Logger {
+	return ms.logger
 }
 
 // NewMockServer returns new MockServer but doesn't start it.
 // If addr is an empty string, the free port is assigned automatially.
 func NewMockServer(addr string) (*MockServer, error) {
 	ms := &MockServer{
-		Users:         map[string]User{},
-		Roles:         map[string]Role{},
-		Inputs:        map[string]Input{},
-		IndexSets:     map[string]IndexSet{},
-		IndexSetStats: map[string]IndexSetStats{},
-		Streams:       map[string]Stream{},
-		StreamRules:   map[string]map[string]StreamRule{},
-		Logger:        log.New(),
+		users:         map[string]User{},
+		roles:         map[string]Role{},
+		inputs:        map[string]Input{},
+		indexSets:     map[string]IndexSet{},
+		indexSetStats: map[string]IndexSetStats{},
+		streams:       map[string]Stream{},
+		streamRules:   map[string]map[string]StreamRule{},
+		logger:        log.New(),
 	}
 	// By Default logLevel is error
 	// because debug and info logs are often noisy at unit tests.
-	ms.Logger.SetLevel(log.ErrorLevel)
+	ms.logger.SetLevel(log.ErrorLevel)
 
 	router := httprouter.New()
 
@@ -114,47 +118,47 @@ func NewMockServer(addr string) (*MockServer, error) {
 		server.Listener = ln
 	}
 	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
-	ms.Endpoint = u
-	ms.Server = server
+	ms.endpoint = u
+	ms.server = server
 	return ms, nil
 }
 
 // Start starts a server from NewUnstartedServer.
 func (ms *MockServer) Start() {
-	ms.Server.Start()
+	ms.server.Start()
 }
 
 // Close shuts down the server and blocks until all outstanding requests
 // on this server have completed.
 func (ms *MockServer) Close() {
-	ms.Logger.Info("Close Server")
-	ms.Server.Close()
+	ms.Logger().Info("Close Server")
+	ms.server.Close()
 }
 
 // Save writes Mock Server's data in a file for persistence.
 func (ms *MockServer) Save() error {
-	if ms.DataPath == "" {
+	if ms.dataPath == "" {
 		return nil
 	}
 	b, err := json.Marshal(ms)
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(ms.DataPath, b, 0600)
+	return ioutil.WriteFile(ms.dataPath, b, 0600)
 }
 
 // Load reads Mock Server's data from a file.
 func (ms *MockServer) Load() error {
-	if ms.DataPath == "" {
+	if ms.dataPath == "" {
 		return nil
 	}
-	if _, err := os.Stat(ms.DataPath); err != nil {
-		ms.Logger.WithFields(log.Fields{
+	if _, err := os.Stat(ms.dataPath); err != nil {
+		ms.Logger().WithFields(log.Fields{
 			"error": err,
-			"path":  ms.DataPath}).Info("data file is not found")
+			"path":  ms.dataPath}).Info("data file is not found")
 		return nil
 	}
-	b, err := ioutil.ReadFile(ms.DataPath)
+	b, err := ioutil.ReadFile(ms.dataPath)
 	if err != nil {
 		return err
 	}
@@ -163,14 +167,14 @@ func (ms *MockServer) Load() error {
 
 func (ms *MockServer) safeSave() {
 	if err := ms.Save(); err != nil {
-		ms.Logger.WithFields(log.Fields{
-			"error": err, "data_path": ms.DataPath,
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "data_path": ms.dataPath,
 		}).Error("Failed to save data")
 	}
 }
 
 func (ms *MockServer) handleNotFound(w http.ResponseWriter, r *http.Request) {
-	ms.Logger.WithFields(log.Fields{
+	ms.Logger().WithFields(log.Fields{
 		"path": r.URL.Path, "method": r.Method,
 		"message": "404 Page Not Found",
 	}).Info("request start")
@@ -183,7 +187,7 @@ func (ms *MockServer) handleNotFound(w http.ResponseWriter, r *http.Request) {
 func (ms *MockServer) handleInit(
 	w http.ResponseWriter, r *http.Request, isReadBody bool,
 ) ([]byte, error) {
-	ms.Logger.WithFields(log.Fields{
+	ms.Logger().WithFields(log.Fields{
 		"path": r.URL.Path, "method": r.Method,
 	}).Info("request start")
 	w.Header().Set("Content-Type", "application/json")

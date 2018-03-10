@@ -2,25 +2,29 @@ package graylog
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"net/http"
 	"testing"
 )
 
-func testUpdateStream400(t *testing.T, endpoint string, body io.Reader) {
+func testUpdateStreamStatusCode(
+	t *testing.T, endpoint string, body io.Reader, statusCode int,
+) error {
 	req, err := http.NewRequest(
 		http.MethodPut, endpoint, body)
 	if err != nil {
-		t.Fatal(err)
+		return err
 	}
 	hc := &http.Client{}
 	resp, err := hc.Do(req)
 	if err != nil {
-		t.Fatal(err)
+		return err
 	}
-	if resp.StatusCode != 400 {
-		t.Fatalf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
+	if resp.StatusCode != statusCode {
+		return fmt.Errorf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
 	}
+	return nil
 }
 
 func TestMockServerHandleUpdateStream(t *testing.T) {
@@ -29,27 +33,48 @@ func TestMockServerHandleUpdateStream(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	stream := dummyStream()
-	server.Streams[stream.Id] = *stream
-	endpoint := client.endpoints.Stream(stream.Id)
+	indexSet := dummyNewIndexSet()
+	is, _, err := server.AddIndexSet(indexSet)
+	if err != nil {
+		t.Fatal(err)
+	}
+	stream := dummyNewStream()
+	stream.IndexSetId = is.Id
+	s, _, err := server.AddStream(stream)
+	if err != nil {
+		t.Fatal(err)
+	}
+	endpoint := client.endpoints.Stream(s.Id)
 
 	body := bytes.NewBuffer([]byte("hoge"))
-	testUpdateStream400(t, endpoint, body)
+	if err := testUpdateStreamStatusCode(t, endpoint, body, 400); err != nil {
+		t.Fatal(err)
+	}
 
 	body = bytes.NewBuffer([]byte(`{"title": 0}`))
-	testUpdateStream400(t, endpoint, body)
+	if err := testUpdateStreamStatusCode(t, endpoint, body, 400); err != nil {
+		t.Fatal(err)
+	}
 
 	body = bytes.NewBuffer([]byte(`{"description": 0}`))
-	testUpdateStream400(t, endpoint, body)
+	if err := testUpdateStreamStatusCode(t, endpoint, body, 400); err != nil {
+		t.Fatal(err)
+	}
 
 	body = bytes.NewBuffer([]byte(`{"matching_type": 0}`))
-	testUpdateStream400(t, endpoint, body)
+	if err := testUpdateStreamStatusCode(t, endpoint, body, 400); err != nil {
+		t.Fatal(err)
+	}
 
 	body = bytes.NewBuffer([]byte(`{"remove_matches_from_default_stream": 0}`))
-	testUpdateStream400(t, endpoint, body)
+	if err := testUpdateStreamStatusCode(t, endpoint, body, 400); err != nil {
+		t.Fatal(err)
+	}
 
 	body = bytes.NewBuffer([]byte(`{"index_set_id": 0}`))
-	testUpdateStream400(t, endpoint, body)
+	if err := testUpdateStreamStatusCode(t, endpoint, body, 400); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestMockServerHandleCreateStream(t *testing.T) {

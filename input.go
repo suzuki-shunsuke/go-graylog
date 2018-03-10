@@ -35,9 +35,8 @@ type Input struct {
 	Configuration *InputConfiguration `json:"configuration,omitempty" v-create:"required" v-update:"required"`
 
 	// ex. "5a90d5c2c006c60001efc368"
-	Id string `json:"id,omitempty" v-update:"required"`
+	Id string `json:"id,omitempty" v-create:"isdefault" v-update:"required"`
 
-	// ex. "org.graylog2.inputs.syslog.udp.SyslogUDPInput"
 	Global bool `json:"global,omitempty"`
 	// ex. "2ad6b340-3e5f-4a96-ae81-040cfb8b6024"
 	Node string `json:"node,omitempty"`

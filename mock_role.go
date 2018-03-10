@@ -1,35 +1,70 @@
 package graylog
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 )
 
-func (ms *MockServer) AddRole(role *Role) {
-	ms.Roles[role.Name] = *role
-	ms.safeSave()
+// HasRole
+func (ms *MockServer) HasRole(name string) bool {
+	_, ok := ms.roles[name]
+	return ok
 }
 
-func (ms *MockServer) UpdateRole(name string, role *Role) {
-	delete(ms.Roles, name)
-	ms.AddRole(role)
+// GetRole returns a Role.
+func (ms *MockServer) GetRole(name string) (Role, bool) {
+	s, ok := ms.roles[name]
+	return s, ok
 }
 
-func (ms *MockServer) DeleteRole(name string) {
-	delete(ms.Roles, name)
-	ms.safeSave()
+// AddRole adds a new role to the mock server.
+func (ms *MockServer) AddRole(role *Role) (int, error) {
+	if err := CreateValidator.Struct(role); err != nil {
+		return 400, err
+	}
+	if ms.HasRole(role.Name) {
+		return 400, fmt.Errorf("Role %s already exists.", role.Name)
+	}
+	ms.roles[role.Name] = *role
+	return 200, nil
+}
+
+// UpdateRole updates a role.
+func (ms *MockServer) UpdateRole(name string, role *Role) (int, error) {
+	if !ms.HasRole(name) {
+		return 404, fmt.Errorf("No role found with name %s", name)
+	}
+	if err := UpdateValidator.Struct(role); err != nil {
+		return 400, err
+	}
+	if name != role.Name && ms.HasRole(role.Name) {
+		return 400, fmt.Errorf("The role %s has already existed.", name)
+	}
+	delete(ms.roles, name)
+	ms.roles[role.Name] = *role
+	return 200, nil
+}
+
+// DeleteRole
+func (ms *MockServer) DeleteRole(name string) (int, error) {
+	if !ms.HasRole(name) {
+		return 404, fmt.Errorf("No role found with name %s", name)
+	}
+	delete(ms.roles, name)
+	return 200, nil
 }
 
 func (ms *MockServer) RoleList() []Role {
-	if ms.Roles == nil {
+	if ms.roles == nil {
 		return []Role{}
 	}
-	size := len(ms.Roles)
+	size := len(ms.roles)
 	arr := make([]Role, size)
 	i := 0
-	for _, role := range ms.Roles {
+	for _, role := range ms.roles {
 		arr[i] = role
 		i++
 	}
@@ -42,9 +77,9 @@ func (ms *MockServer) handleGetRole(
 ) {
 	ms.handleInit(w, r, false)
 	name := ps.ByName("rolename")
-	ms.Logger.WithFields(log.Fields{
+	ms.Logger().WithFields(log.Fields{
 		"handler": "handleGetRole", "rolename": name}).Info("request start")
-	role, ok := ms.Roles[name]
+	role, ok := ms.GetRole(name)
 	if !ok {
 		writeApiError(w, 404, "No role found with name %s", name)
 		return
@@ -63,14 +98,9 @@ func (ms *MockServer) handleUpdateRole(
 	}
 
 	name := ps.ByName("rolename")
-	if _, ok := ms.Roles[name]; !ok {
-		writeApiError(w, 404, "No role found with name %s", name)
-		return
-	}
 
 	requiredFields := []string{"name", "permissions"}
-	allowedFields := []string{
-		"name", "description", "read_only", "permissions"}
+	allowedFields := []string{"description", "read_only"}
 	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
 	if sc != 200 {
 		w.WriteHeader(sc)
@@ -80,18 +110,18 @@ func (ms *MockServer) handleUpdateRole(
 
 	role := &Role{}
 	if err := msDecode(body, role); err != nil {
-		ms.Logger.WithFields(log.Fields{
+		ms.Logger().WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as Role")
 		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
 
-	if err := UpdateValidator.Struct(role); err != nil {
-		writeApiError(w, 400, err.Error())
+	if sc, err := ms.UpdateRole(name, role); err != nil {
+		writeApiError(w, sc, err.Error())
 		return
 	}
-	ms.UpdateRole(name, role)
+	ms.safeSave()
 	writeOr500Error(w, role)
 }
 
@@ -101,12 +131,13 @@ func (ms *MockServer) handleDeleteRole(
 ) {
 	ms.handleInit(w, r, false)
 	name := ps.ByName("rolename")
-	_, ok := ms.Roles[name]
+	_, ok := ms.GetRole(name)
 	if !ok {
 		writeApiError(w, 404, "No role found with name %s", name)
 		return
 	}
 	ms.DeleteRole(name)
+	ms.safeSave()
 }
 
 // POST /roles Create a new role
@@ -120,8 +151,7 @@ func (ms *MockServer) handleCreateRole(
 	}
 
 	requiredFields := []string{"name", "permissions"}
-	allowedFields := []string{
-		"name", "description", "read_only", "permissions"}
+	allowedFields := []string{"description", "read_only"}
 	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
 	if sc != 200 {
 		w.WriteHeader(sc)
@@ -131,22 +161,18 @@ func (ms *MockServer) handleCreateRole(
 
 	role := &Role{}
 	if err := msDecode(body, &role); err != nil {
-		ms.Logger.WithFields(log.Fields{
+		ms.Logger().WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as Role")
 		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
 
-	if err := CreateValidator.Struct(role); err != nil {
-		writeApiError(w, 400, err.Error())
+	if sc, err := ms.AddRole(role); err != nil {
+		writeApiError(w, sc, err.Error())
 		return
 	}
-	if _, ok := ms.Roles[role.Name]; ok {
-		writeApiError(w, 400, "Role %s already exists.", role.Name)
-		return
-	}
-	ms.AddRole(role)
+	ms.safeSave()
 	writeOr500Error(w, role)
 }
 

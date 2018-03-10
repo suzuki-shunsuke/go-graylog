@@ -52,9 +52,9 @@ func getServerAndClient() (*MockServer, *Client, error) {
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "Failed to Get Mock Server")
 	}
-	client, err := NewClient(server.Endpoint, "admin", "password")
+	client, err := NewClient(server.endpoint, "admin", "password")
 	if err != nil {
-		server.Server.Close()
+		server.Close()
 		return nil, nil, errors.Wrap(err, "Failed to NewClient")
 	}
 	server.Start()
@@ -173,27 +173,40 @@ func validateRequestBody(
 		return 400, fmt.Sprintf(
 			"Failed to parse the request body as a JSON object : %s", string(b)), nil
 	}
-	if allowedFields != nil && len(allowedFields) != 0 {
-		alf := makeHash(allowedFields)
+	rqf := makeHash(requiredFields)
+	for k, _ := range rqf {
+		if _, ok := body[k]; !ok {
+			return 400, fmt.Sprintf(
+				"In the request body the field %s is required", k), body
+		}
+	}
+	alf := makeHash(allowedFields)
+	if len(alf) != 0 {
+		for k, _ := range rqf {
+			alf[k] = nil
+		}
+		arr := make([]string, len(alf))
+		i := 0
+		for k, _ := range alf {
+			arr[i] = k
+			i++
+		}
 		for k, _ := range body {
 			if _, ok := alf[k]; !ok {
 				return 400, fmt.Sprintf(
 					"In the request body an invalid field is found: %s\nThe allowed fields: %s, request body: %s",
-					k, strings.Join(allowedFields, ", "), string(b)), body
+					k, strings.Join(arr, ", "), string(b)), body
 			}
 		}
 	}
-	rqf := makeHash(requiredFields)
-	if rqf != nil {
+	acf := makeHash(acceptedFields)
+	if len(acf) != 0 {
 		for k, _ := range rqf {
-			if _, ok := body[k]; !ok {
-				return 400, fmt.Sprintf(
-					"In the request body the field %s is required", k), body
-			}
+			acf[k] = nil
 		}
-	}
-	if acceptedFields != nil && len(acceptedFields) != 0 {
-		acf := makeHash(acceptedFields)
+		for k, _ := range alf {
+			acf[k] = nil
+		}
 		for k, _ := range body {
 			if _, ok := acf[k]; !ok {
 				delete(body, k)

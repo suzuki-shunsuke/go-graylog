@@ -14,7 +14,7 @@ type membersBody struct {
 // RoleMembers returns members of a given role.
 func (ms *MockServer) RoleMembers(name string) []User {
 	users := []User{}
-	for _, user := range ms.Users {
+	for _, user := range ms.users {
 		if user.Roles == nil {
 			continue
 		}
@@ -34,7 +34,7 @@ func (ms *MockServer) handleRoleMembers(
 ) {
 	ms.handleInit(w, r, false)
 	name := ps.ByName("rolename")
-	if _, ok := ms.Roles[name]; !ok {
+	if _, ok := ms.roles[name]; !ok {
 		writeApiError(w, 404, "No role found with name %s", name)
 		return
 	}
@@ -50,11 +50,11 @@ func (ms *MockServer) handleAddUserToRole(
 	ms.handleInit(w, r, false)
 	roleName := ps.ByName("rolename")
 	userName := ps.ByName("username")
-	if _, ok := ms.Roles[roleName]; !ok {
+	if _, ok := ms.roles[roleName]; !ok {
 		writeApiError(w, 404, "No role found with name %s", roleName)
 		return
 	}
-	user, ok := ms.Users[userName]
+	user, ok := ms.users[userName]
 	if !ok {
 		writeApiError(w, 404, "User %s has not been found.", userName)
 		return
@@ -70,11 +70,11 @@ func (ms *MockServer) handleRemoveUserFromRole(
 	ms.handleInit(w, r, false)
 	roleName := ps.ByName("rolename")
 	userName := ps.ByName("username")
-	if _, ok := ms.Roles[roleName]; !ok {
+	if _, ok := ms.roles[roleName]; !ok {
 		writeApiError(w, 404, "No role found with name %s", roleName)
 		return
 	}
-	user, ok := ms.Users[userName]
+	user, ok := ms.users[userName]
 	if !ok {
 		writeApiError(w, 404, "User %s has not been found.", userName)
 		return

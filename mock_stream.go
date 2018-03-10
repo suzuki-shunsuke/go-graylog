@@ -9,29 +9,55 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// HasStream
+func (ms *MockServer) HasStream(id string) bool {
+	_, ok := ms.streams[id]
+	return ok
+}
+
+// GetStream
+func (ms *MockServer) GetStream(id string) (Stream, bool) {
+	s, ok := ms.streams[id]
+	return s, ok
+}
+
 // AddStream adds a stream to the MockServer.
-func (ms *MockServer) AddStream(stream *Stream) {
-	if stream.Id == "" {
-		stream.Id = randStringBytesMaskImprSrc(24)
+func (ms *MockServer) AddStream(stream *Stream) (*Stream, int, error) {
+	if err := CreateValidator.Struct(stream); err != nil {
+		return nil, 400, err
 	}
-	ms.Streams[stream.Id] = *stream
-	ms.safeSave()
+	s := *stream
+	s.Id = randStringBytesMaskImprSrc(24)
+	ms.streams[s.Id] = s
+	return &s, 200, nil
+}
+
+// UpdateStream updates a stream at the MockServer.
+func (ms *MockServer) UpdateStream(stream *Stream) (int, error) {
+	if !ms.HasStream(stream.Id) {
+		return 404, fmt.Errorf("No stream found with id %s", stream.Id)
+	}
+	if err := UpdateValidator.Struct(stream); err != nil {
+		return 400, err
+	}
+	ms.streams[stream.Id] = *stream
+	return 200, nil
 }
 
 // DeleteStream removes a stream from the MockServer.
-func (ms *MockServer) DeleteStream(id string) {
-	delete(ms.Streams, id)
-	ms.safeSave()
+func (ms *MockServer) DeleteStream(id string) error {
+	if !ms.HasStream(id) {
+		return fmt.Errorf("No stream found with id %s", id)
+	}
+	delete(ms.streams, id)
+	return nil
 }
 
 // StreamList returns a list of all streams.
 func (ms *MockServer) StreamList() []Stream {
-	if ms.Streams == nil {
-		return []Stream{}
-	}
-	arr := make([]Stream, len(ms.Streams))
+	arr := make([]Stream, len(ms.streams))
 	i := 0
-	for _, index := range ms.Streams {
+	for _, index := range ms.streams {
 		arr[i] = index
 		i++
 	}
@@ -40,51 +66,14 @@ func (ms *MockServer) StreamList() []Stream {
 
 // EnabledStreamList returns all enabled streams.
 func (ms *MockServer) EnabledStreamList() []Stream {
-	if ms.Streams == nil {
-		return []Stream{}
-	}
 	arr := []Stream{}
-	for _, index := range ms.Streams {
+	for _, index := range ms.streams {
 		if index.Disabled {
 			continue
 		}
 		arr = append(arr, index)
 	}
 	return arr
-}
-
-func validateCreateStream(stream *Stream) (int, []byte) {
-	key := ""
-	switch {
-	case stream.Id != "":
-		key = "id"
-	case stream.CreatorUserId != "":
-		key = "creator_user_id"
-	case stream.Outputs != nil && len(stream.Outputs) != 0:
-		key = "outputs"
-	case stream.CreatedAt != "":
-		key = "created_at"
-	case stream.Disabled:
-		key = "disabled"
-	case stream.AlertConditions != nil && len(stream.AlertConditions) != 0:
-		key = "alert_conditions"
-	case stream.AlertReceivers != nil:
-		key = "alert_receivers"
-	case stream.IsDefault:
-		key = "is_default"
-	}
-	if key != "" {
-		return 400, []byte(fmt.Sprintf(`{"type": "ApiError", "message": "Unable to map property %s.\nKnown properties include: index_set_id, rules, title, description, content_pack, matching_type, remove_matches_from_default_stream"}`, key))
-	}
-	if stream.Title == "" {
-		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.resources.streams.requests.CreateStreamRequest, problem: Null title\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@53a6a093; line: 1, column: 2]" }`)
-	}
-	if stream.IndexSetId == "" {
-		return 400, []byte(`{"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.resources.streams.requests.CreateStreamRequest, problem: Null indexSetId\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@3b7194f4; line: 1, column: 17]"}`)
-	}
-	// 500, {"type": "ApiError", "message": "invalid hexadecimal representation of an ObjectId: [%s]"}
-
-	return 200, []byte("")
 }
 
 // GET /streams Get a list of all streams
@@ -109,7 +98,7 @@ func (ms *MockServer) handleCreateStream(
 
 	requiredFields := []string{"title", "index_set_id"}
 	allowedFields := []string{
-		"title", "index_set_id", "rules", "description", "content_pack",
+		"rules", "description", "content_pack",
 		"matching_type", "remove_matches_from_default_stream"}
 	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
 	if sc != 200 {
@@ -120,19 +109,19 @@ func (ms *MockServer) handleCreateStream(
 
 	stream := &Stream{}
 	if err := msDecode(body, stream); err != nil {
-		ms.Logger.WithFields(log.Fields{
+		ms.logger.WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as stream")
 		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
 
-	if err := CreateValidator.Struct(stream); err != nil {
+	s, sc, err := ms.AddStream(stream)
+	if err != nil {
 		writeApiError(w, 400, err.Error())
 		return
 	}
-	ms.AddStream(stream)
-	ret := map[string]string{"stream_id": stream.Id}
+	ret := map[string]string{"stream_id": s.Id}
 	writeOr500Error(w, ret)
 }
 
@@ -156,7 +145,7 @@ func (ms *MockServer) handleGetStream(
 		return
 	}
 	ms.handleInit(w, r, false)
-	stream, ok := ms.Streams[id]
+	stream, ok := ms.GetStream(id)
 	if !ok {
 		writeApiError(w, 404, "No stream found with id %s", id)
 		return
@@ -174,7 +163,7 @@ func (ms *MockServer) handleUpdateStream(
 		return
 	}
 	id := ps.ByName("streamId")
-	stream, ok := ms.Streams[id]
+	stream, ok := ms.GetStream(id)
 	if !ok {
 		writeApiError(w, 404, "No stream found with id %s", id)
 		return
@@ -227,7 +216,11 @@ func (ms *MockServer) handleUpdateStream(
 		stream.IndexSetId = m
 	}
 	stream.Id = id
-	ms.AddStream(&stream)
+	if sc, err := ms.UpdateStream(&stream); err != nil {
+		writeApiError(w, sc, err.Error())
+		return
+	}
+	ms.safeSave()
 	writeOr500Error(w, &stream)
 }
 
@@ -237,12 +230,12 @@ func (ms *MockServer) handleDeleteStream(
 ) {
 	ms.handleInit(w, r, false)
 	id := ps.ByName("streamId")
-	_, ok := ms.Streams[id]
-	if !ok {
+	if !ms.HasStream(id) {
 		writeApiError(w, 404, "No stream found with id %s", id)
 		return
 	}
 	ms.DeleteStream(id)
+	ms.safeSave()
 }
 
 // POST /streams/{streamId}/pause Pause a stream
@@ -251,8 +244,7 @@ func (ms *MockServer) handlePauseStream(
 ) {
 	ms.handleInit(w, r, false)
 	id := ps.ByName("streamId")
-	_, ok := ms.Streams[id]
-	if !ok {
+	if !ms.HasStream(id) {
 		writeApiError(w, 404, "No stream found with id %s", id)
 		return
 	}
@@ -264,8 +256,7 @@ func (ms *MockServer) handleResumeStream(
 ) {
 	ms.handleInit(w, r, false)
 	id := ps.ByName("streamId")
-	_, ok := ms.Streams[id]
-	if !ok {
+	if !ms.HasStream(id) {
 		writeApiError(w, 404, "No stream found with id %s", id)
 		return
 	}

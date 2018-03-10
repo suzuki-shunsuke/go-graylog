@@ -1,9 +1,20 @@
 package graylog
 
 import (
-	"reflect"
 	"testing"
 )
+
+func dummyNewInput() *Input {
+	return &Input{
+		Title: "test",
+		Type:  "org.graylog2.inputs.gelf.tcp.GELFTCPInput",
+		Node:  "2ad6b340-3e5f-4a96-ae81-040cfb8b6024",
+		Configuration: &InputConfiguration{
+			BindAddress:    "0.0.0.0",
+			Port:           514,
+			RecvBufferSize: 262144,
+		}}
+}
 
 func dummyInput() *Input {
 	return &Input{
@@ -24,8 +35,7 @@ func TestCreateInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	params := dummyInput()
-	params.Id = ""
+	params := dummyNewInput()
 	id, _, err := client.CreateInput(params)
 	if err != nil {
 		t.Fatal("Failed to CreateInput", err)
@@ -46,15 +56,22 @@ func TestGetInputs(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	input := dummyInput()
-	exp := []Input{*input}
-	server.Inputs[input.Id] = *input
+	input := dummyNewInput()
+	if _, _, err := server.AddInput(input); err != nil {
+		t.Fatal(err)
+	}
 	act, _, err := client.GetInputs()
 	if err != nil {
 		t.Fatal("Failed to GetInputs", err)
 	}
-	if !reflect.DeepEqual(act, exp) {
-		t.Fatalf("client.GetInputs() == %v, wanted %v", act, exp)
+	if act == nil {
+		t.Fatal("client.GetInputs() returns nil")
+	}
+	if len(act) != 1 {
+		t.Fatalf("len(act) == %d, wanted 1", len(act))
+	}
+	if act[0].Node != input.Node {
+		t.Fatalf("Node == %s, wanted %s", act[0].Node, input.Node)
 	}
 }
 
@@ -64,14 +81,17 @@ func TestGetInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	exp := dummyInput()
-	server.Inputs[exp.Id] = *exp
+	input := dummyNewInput()
+	exp, _, err := server.AddInput(input)
+	if err != nil {
+		t.Fatal(err)
+	}
 	act, _, err := client.GetInput(exp.Id)
 	if err != nil {
 		t.Fatal("Failed to GetInput", err)
 	}
-	if !reflect.DeepEqual(*exp, *act) {
-		t.Fatalf("client.GetInput() == %v, wanted %v", act, exp)
+	if exp.Node != act.Node {
+		t.Fatalf("Node == %s, wanted %s", act.Node, exp.Node)
 	}
 
 	if _, _, err := client.GetInput(""); err == nil {
@@ -89,9 +109,11 @@ func TestUpdateInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	exp := dummyInput()
-	id := exp.Id
-	server.Inputs[id] = *exp
+	input := dummyNewInput()
+	exp, _, err := server.AddInput(input)
+	if err != nil {
+		t.Fatal(err)
+	}
 	exp.Title += " updated"
 	act, _, err := client.UpdateInput(exp)
 	if err != nil {
@@ -100,7 +122,7 @@ func TestUpdateInput(t *testing.T) {
 	if act.Title != exp.Title {
 		t.Fatalf(`UpdateInput title "%s" != "%s"`, act.Title, exp.Title)
 	}
-	act2, ok := server.Inputs[id]
+	act2, ok := server.GetInput(exp.Id)
 	if !ok {
 		t.Fatal("input is not found")
 	}
@@ -156,8 +178,11 @@ func TestDeleteInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	input := dummyInput()
-	server.Inputs[input.Id] = *input
+	input := dummyNewInput()
+	input, _, err = server.AddInput(input)
+	if err != nil {
+		t.Fatal(err)
+	}
 	_, err = client.DeleteInput(input.Id)
 	if err != nil {
 		t.Fatal("Failed to DeleteInput", err)

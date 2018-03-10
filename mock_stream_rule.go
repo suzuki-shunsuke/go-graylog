@@ -16,31 +16,30 @@ func (ms *MockServer) AddStreamRule(rule *StreamRule) error {
 	if rule.StreamId == "" {
 		return errors.New("stream id is required")
 	}
-	if ms.Streams == nil {
+	if ms.streams == nil {
 		return fmt.Errorf("no stream is not found: %s", rule.StreamId)
 	}
-	if _, ok := ms.Streams[rule.StreamId]; !ok {
+	if _, ok := ms.streams[rule.StreamId]; !ok {
 		return fmt.Errorf("no stream is not found: %s", rule.StreamId)
 	}
 	if rule.Id == "" {
 		rule.Id = randStringBytesMaskImprSrc(24)
 	}
-	rules, ok := ms.StreamRules[rule.StreamId]
+	rules, ok := ms.streamRules[rule.StreamId]
 	if !ok || rules == nil {
 		rules = map[string]StreamRule{}
 	}
 	rules[rule.Id] = *rule
-	ms.StreamRules[rule.StreamId] = rules
-	ms.safeSave()
+	ms.streamRules[rule.StreamId] = rules
 	return nil
 }
 
 // StreamRuleList returns a list of all stream rules of a given stream.
 func (ms *MockServer) StreamRuleList(streamId string) []StreamRule {
-	if ms.StreamRules == nil {
+	if ms.streamRules == nil {
 		return []StreamRule{}
 	}
-	rules, ok := ms.StreamRules[streamId]
+	rules, ok := ms.streamRules[streamId]
 	if !ok || rules == nil {
 		return []StreamRule{}
 	}
@@ -82,7 +81,7 @@ func (ms *MockServer) handleCreateStreamRule(
 	}
 
 	streamId := ps.ByName("streamId")
-	if _, ok := ms.Streams[streamId]; !ok {
+	if _, ok := ms.streams[streamId]; !ok {
 		writeApiError(w, 404, "Stream <%s> not found!", streamId)
 		return
 	}
@@ -99,13 +98,13 @@ func (ms *MockServer) handleCreateStreamRule(
 
 	rule := &StreamRule{}
 	if err := msDecode(body, rule); err != nil {
-		ms.Logger.WithFields(log.Fields{
+		ms.Logger().WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as StreamRule")
 		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
-	ms.Logger.WithFields(log.Fields{
+	ms.Logger().WithFields(log.Fields{
 		"body": string(b), "stream_rule": rule,
 	}).Debug("request body")
 
@@ -116,12 +115,13 @@ func (ms *MockServer) handleCreateStreamRule(
 		return
 	}
 	if err := ms.AddStreamRule(rule); err != nil {
-		ms.Logger.WithFields(log.Fields{
+		ms.Logger().WithFields(log.Fields{
 			"error": err, "rule": rule,
 		}).Error("Faield to add rule to mock server")
 		write500Error(w)
 		return
 	}
+	ms.safeSave()
 	ret := map[string]string{"streamrule_id": rule.Id}
 	writeOr500Error(w, ret)
 }
@@ -141,12 +141,12 @@ func (ms *MockServer) handleUpdateStreamRule(
 	}
 	streamId := ps.ByName("streamId")
 
-	if _, ok := ms.Streams[streamId]; !ok {
+	if _, ok := ms.streams[streamId]; !ok {
 		writeApiError(w, 404, "No stream found with id %s", streamId)
 		return
 	}
 	ruleId := ps.ByName("streamRuleId")
-	rules, ok := ms.StreamRules[streamId]
+	rules, ok := ms.streamRules[streamId]
 	if !ok || rules == nil {
 		writeApiError(w, 404, "No StreamRule found with id %s", ruleId)
 		return
@@ -169,13 +169,13 @@ func (ms *MockServer) handleUpdateStreamRule(
 
 	rule = StreamRule{}
 	if err := msDecode(body, &rule); err != nil {
-		ms.Logger.WithFields(log.Fields{
+		ms.Logger().WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as StreamRule")
 		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
-	ms.Logger.WithFields(log.Fields{
+	ms.Logger().WithFields(log.Fields{
 		"body": string(b), "stream_rule": rule,
 	}).Debug("request body")
 
@@ -186,11 +186,12 @@ func (ms *MockServer) handleUpdateStreamRule(
 		return
 	}
 	if err := ms.AddStreamRule(&rule); err != nil {
-		ms.Logger.WithFields(log.Fields{
+		ms.Logger().WithFields(log.Fields{
 			"error": err, "rule": &rule,
 		}).Error("Faield to add rule to mock server")
 		write500Error(w)
 	}
+	ms.safeSave()
 	ret := map[string]string{"streamrule_id": rule.Id}
 	writeOr500Error(w, ret)
 }

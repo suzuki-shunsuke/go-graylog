@@ -12,9 +12,9 @@ func TestGetRoleMembers(t *testing.T) {
 	}
 	defer server.Close()
 	user := dummyAdmin()
-	server.Users[user.Username] = *user
+	server.users[user.Username] = *user
 	role := dummyRole()
-	server.Roles[role.Name] = *role
+	server.roles[role.Name] = *role
 	users, _, err := client.GetRoleMembers(role.Name)
 	if err != nil {
 		t.Fatal("Failed to GetRoleMembers", err)
@@ -38,9 +38,9 @@ func TestAddUserToRole(t *testing.T) {
 	}
 	defer server.Close()
 	user := dummyAdmin()
-	server.Users[user.Username] = *user
+	server.users[user.Username] = *user
 	role := dummyRole()
-	server.Roles[role.Name] = *role
+	server.roles[role.Name] = *role
 	if _, err = client.AddUserToRole(user.Username, role.Name); err != nil {
 		t.Fatal("Failed to AddUserToRole", err)
 	}
@@ -65,9 +65,9 @@ func TestRemoveUserFromRole(t *testing.T) {
 	}
 	defer server.Close()
 	user := dummyAdmin()
-	server.Users[user.Username] = *user
+	server.users[user.Username] = *user
 	role := dummyRole()
-	server.Roles[role.Name] = *role
+	server.roles[role.Name] = *role
 	if _, err = client.RemoveUserFromRole(user.Username, role.Name); err != nil {
 		t.Fatal("Failed to RemoveUserFromRole", err)
 	}
