@@ -16,10 +16,11 @@ func (ms *MockServer) AddStreamRule(rule *StreamRule) error {
 	if rule.StreamId == "" {
 		return errors.New("stream id is required")
 	}
-	if ms.streams == nil {
-		return fmt.Errorf("no stream is not found: %s", rule.StreamId)
+	ok, err := ms.HasStream(rule.StreamId)
+	if err != nil {
+		return err
 	}
-	if _, ok := ms.streams[rule.StreamId]; !ok {
+	if !ok {
 		return fmt.Errorf("no stream is not found: %s", rule.StreamId)
 	}
 	if rule.Id == "" {
@@ -36,9 +37,6 @@ func (ms *MockServer) AddStreamRule(rule *StreamRule) error {
 
 // StreamRuleList returns a list of all stream rules of a given stream.
 func (ms *MockServer) StreamRuleList(streamId string) []StreamRule {
-	if ms.streamRules == nil {
-		return []StreamRule{}
-	}
 	rules, ok := ms.streamRules[streamId]
 	if !ok || rules == nil {
 		return []StreamRule{}
@@ -81,7 +79,12 @@ func (ms *MockServer) handleCreateStreamRule(
 	}
 
 	streamId := ps.ByName("streamId")
-	if _, ok := ms.streams[streamId]; !ok {
+	ok, err := ms.HasStream(streamId)
+	if err != nil {
+		writeApiError(w, 500, err.Error())
+		return
+	}
+	if !ok {
 		writeApiError(w, 404, "Stream <%s> not found!", streamId)
 		return
 	}
@@ -141,10 +144,16 @@ func (ms *MockServer) handleUpdateStreamRule(
 	}
 	streamId := ps.ByName("streamId")
 
-	if _, ok := ms.streams[streamId]; !ok {
-		writeApiError(w, 404, "No stream found with id %s", streamId)
+	ok, err := ms.HasStream(streamId)
+	if err != nil {
+		writeApiError(w, 500, err.Error())
 		return
 	}
+	if !ok {
+		writeApiError(w, 404, "Stream <%s> not found!", streamId)
+		return
+	}
+
 	ruleId := ps.ByName("streamRuleId")
 	rules, ok := ms.streamRules[streamId]
 	if !ok || rules == nil {

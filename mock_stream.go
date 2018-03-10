@@ -10,15 +10,13 @@ import (
 )
 
 // HasStream
-func (ms *MockServer) HasStream(id string) bool {
-	_, ok := ms.streams[id]
-	return ok
+func (ms *MockServer) HasStream(id string) (bool, error) {
+	return ms.store.HasStream(id)
 }
 
-// GetStream
-func (ms *MockServer) GetStream(id string) (Stream, bool) {
-	s, ok := ms.streams[id]
-	return s, ok
+// GetStream returns a stream.
+func (ms *MockServer) GetStream(id string) (Stream, bool, error) {
+	return ms.store.GetStream(id)
 }
 
 // AddStream adds a stream to the MockServer.
@@ -28,52 +26,50 @@ func (ms *MockServer) AddStream(stream *Stream) (*Stream, int, error) {
 	}
 	s := *stream
 	s.Id = randStringBytesMaskImprSrc(24)
-	ms.streams[s.Id] = s
-	return &s, 200, nil
+	return ms.store.AddStream(&s)
 }
 
 // UpdateStream updates a stream at the MockServer.
 func (ms *MockServer) UpdateStream(stream *Stream) (int, error) {
-	if !ms.HasStream(stream.Id) {
+	ok, err := ms.HasStream(stream.Id)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "id": stream.Id,
+		}).Error("ms.HasStream() is failure")
+		return 500, err
+	}
+	if !ok {
 		return 404, fmt.Errorf("No stream found with id %s", stream.Id)
 	}
 	if err := UpdateValidator.Struct(stream); err != nil {
 		return 400, err
 	}
-	ms.streams[stream.Id] = *stream
-	return 200, nil
+	return ms.store.UpdateStream(stream)
 }
 
 // DeleteStream removes a stream from the MockServer.
-func (ms *MockServer) DeleteStream(id string) error {
-	if !ms.HasStream(id) {
-		return fmt.Errorf("No stream found with id %s", id)
+func (ms *MockServer) DeleteStream(id string) (int, error) {
+	ok, err := ms.HasStream(id)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "id": id,
+		}).Error("ms.HasStream() is failure")
+		return 500, err
 	}
-	delete(ms.streams, id)
-	return nil
+	if !ok {
+		return 404, fmt.Errorf("No stream found with id %s", id)
+	}
+	return ms.store.DeleteStream(id)
 }
 
 // StreamList returns a list of all streams.
-func (ms *MockServer) StreamList() []Stream {
-	arr := make([]Stream, len(ms.streams))
-	i := 0
-	for _, index := range ms.streams {
-		arr[i] = index
-		i++
-	}
-	return arr
+func (ms *MockServer) StreamList() ([]Stream, error) {
+	return ms.store.GetStreams()
 }
 
 // EnabledStreamList returns all enabled streams.
-func (ms *MockServer) EnabledStreamList() []Stream {
-	arr := []Stream{}
-	for _, index := range ms.streams {
-		if index.Disabled {
-			continue
-		}
-		arr = append(arr, index)
-	}
-	return arr
+func (ms *MockServer) EnabledStreamList() ([]Stream, error) {
+	return ms.store.GetEnabledStreams()
 }
 
 // GET /streams Get a list of all streams
@@ -81,7 +77,15 @@ func (ms *MockServer) handleGetStreams(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
 	ms.handleInit(w, r, false)
-	arr := ms.StreamList()
+	arr, err := ms.StreamList()
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err,
+		}).Error("ms.StreamList() is failure")
+		writeApiError(w, 500, err.Error())
+		return
+	}
+
 	streams := &streamsBody{Streams: arr, Total: len(arr)}
 	writeOr500Error(w, streams)
 }
@@ -130,7 +134,14 @@ func (ms *MockServer) handleGetEnabledStreams(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
 	ms.handleInit(w, r, false)
-	arr := ms.EnabledStreamList()
+	arr, err := ms.EnabledStreamList()
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err,
+		}).Error("ms.EnabledStreamList() is failure")
+		writeApiError(w, 500, err.Error())
+		return
+	}
 	streams := &streamsBody{Streams: arr, Total: len(arr)}
 	writeOr500Error(w, streams)
 }
@@ -145,7 +156,14 @@ func (ms *MockServer) handleGetStream(
 		return
 	}
 	ms.handleInit(w, r, false)
-	stream, ok := ms.GetStream(id)
+	stream, ok, err := ms.GetStream(id)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "id": id,
+		}).Error("ms.GetStream() is failure")
+		writeApiError(w, 500, err.Error())
+		return
+	}
 	if !ok {
 		writeApiError(w, 404, "No stream found with id %s", id)
 		return
@@ -163,7 +181,14 @@ func (ms *MockServer) handleUpdateStream(
 		return
 	}
 	id := ps.ByName("streamId")
-	stream, ok := ms.GetStream(id)
+	stream, ok, err := ms.GetStream(id)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "id": id,
+		}).Error("ms.GetStream() is failure")
+		writeApiError(w, 500, err.Error())
+		return
+	}
 	if !ok {
 		writeApiError(w, 404, "No stream found with id %s", id)
 		return
@@ -230,7 +255,16 @@ func (ms *MockServer) handleDeleteStream(
 ) {
 	ms.handleInit(w, r, false)
 	id := ps.ByName("streamId")
-	if !ms.HasStream(id) {
+	ok, err := ms.HasStream(id)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "id": id,
+		}).Error("ms.HasStream() is failure")
+		writeApiError(w, 500, err.Error())
+		return
+	}
+
+	if !ok {
 		writeApiError(w, 404, "No stream found with id %s", id)
 		return
 	}
@@ -244,7 +278,15 @@ func (ms *MockServer) handlePauseStream(
 ) {
 	ms.handleInit(w, r, false)
 	id := ps.ByName("streamId")
-	if !ms.HasStream(id) {
+	ok, err := ms.HasStream(id)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "id": id,
+		}).Error("ms.HasStream() is failure")
+		writeApiError(w, 500, err.Error())
+		return
+	}
+	if !ok {
 		writeApiError(w, 404, "No stream found with id %s", id)
 		return
 	}
@@ -256,7 +298,15 @@ func (ms *MockServer) handleResumeStream(
 ) {
 	ms.handleInit(w, r, false)
 	id := ps.ByName("streamId")
-	if !ms.HasStream(id) {
+	ok, err := ms.HasStream(id)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "id": id,
+		}).Error("ms.HasStream() is failure")
+		writeApiError(w, 500, err.Error())
+		return
+	}
+	if !ok {
 		writeApiError(w, 404, "No stream found with id %s", id)
 		return
 	}

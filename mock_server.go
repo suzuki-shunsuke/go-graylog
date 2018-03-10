@@ -54,8 +54,8 @@ func NewMockServer(addr string) (*MockServer, error) {
 	}
 	ms := &MockServer{
 		indexSetStats: map[string]IndexSetStats{},
-		streams:       map[string]Stream{},
-		streamRules:   map[string]map[string]StreamRule{},
+		// streams:       map[string]Stream{},
+		streamRules: map[string]map[string]StreamRule{},
 
 		store:  store,
 		logger: log.New(),

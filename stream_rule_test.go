@@ -28,10 +28,12 @@ func TestGetStreamRules(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	stream := dummyStream()
+	_, stream, err := addDummyStream(server)
+	if err != nil {
+		t.Fatal(err)
+	}
 	streamRule := dummyStreamRule()
 	streamRule.StreamId = stream.Id
-	server.streams[stream.Id] = *stream
 	if err := server.AddStreamRule(streamRule); err != nil {
 		t.Fatal(err)
 	}

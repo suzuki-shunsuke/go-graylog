@@ -28,4 +28,12 @@ type Store interface {
 	AddIndexSet(indexSet *IndexSet) (*IndexSet, int, error)
 	UpdateIndexSet(indexSet *IndexSet) (int, error)
 	DeleteIndexSet(id string) (int, error)
+
+	HasStream(id string) (bool, error)
+	GetStream(id string) (Stream, bool, error)
+	GetStreams() ([]Stream, error)
+	AddStream(stream *Stream) (*Stream, int, error)
+	UpdateStream(stream *Stream) (int, error)
+	DeleteStream(id string) (int, error)
+	GetEnabledStreams() ([]Stream, error)
 }

@@ -2,6 +2,7 @@
 
 ## Summary
 
+* https://github.com/golang/go/wiki/CodeReviewComments
 * [AngularJS Commit Message Format](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#commit-message-format)
 * Format with `go fmt`
 * Limit all lines to a maximum of 79 characters as much as possible
@@ -65,13 +66,6 @@ $ git push origin master --follow-tags
 
 ## Coding Guide
 
+* https://github.com/golang/go/wiki/CodeReviewComments
 * Format with `go fmt`
 * Limit all lines to a maximum of 79 characters as much as possible
-
-### Variable name Guide
-
-base | good | bad
---- | --- | ---
-id | Id | ID
-user_name | UserName | -
-username | Username | UserName

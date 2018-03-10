@@ -4,6 +4,17 @@ import (
 	"testing"
 )
 
+func addDummyStream(server *MockServer) (*IndexSet, *Stream, error) {
+	indexSet, _, err := server.AddIndexSet(dummyNewIndexSet())
+	if err != nil {
+		return nil, nil, err
+	}
+	stream := dummyNewStream()
+	stream.IndexSetId = indexSet.Id
+	stream, _, err = server.AddStream(stream)
+	return indexSet, stream, err
+}
+
 func dummyNewStream() *Stream {
 	return &Stream{
 		MatchingType: "AND",
@@ -39,13 +50,7 @@ func TestGetStreams(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet, _, err := server.AddIndexSet(dummyNewIndexSet())
-	if err != nil {
-		t.Fatal(err)
-	}
-	stream := dummyNewStream()
-	stream.IndexSetId = indexSet.Id
-	s, _, err := server.AddStream(stream)
+	_, stream, err := addDummyStream(server)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -56,8 +61,8 @@ func TestGetStreams(t *testing.T) {
 	if total != 1 {
 		t.Fatalf("total == %d, wanted %d", total, 1)
 	}
-	if streams[0].Id != s.Id {
-		t.Fatalf("streams[0].Id == %s, wanted %s", streams[0].Id, s.Id)
+	if streams[0].Id != stream.Id {
+		t.Fatalf("streams[0].Id == %s, wanted %s", streams[0].Id, stream.Id)
 	}
 }
 
@@ -133,9 +138,11 @@ func TestGetEnabledStreams(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	stream := dummyStream()
+	_, stream, err := addDummyStream(server)
+	if err != nil {
+		t.Fatal(err)
+	}
 	exp := []Stream{*stream}
-	server.streams[stream.Id] = *stream
 	streams, total, _, err := client.GetEnabledStreams()
 	if err != nil {
 		t.Fatal("Failed to GetStreams", err)
@@ -148,7 +155,9 @@ func TestGetEnabledStreams(t *testing.T) {
 	}
 
 	stream.Disabled = true
-	server.streams[stream.Id] = *stream
+	if _, err := server.UpdateStream(stream); err != nil {
+		t.Fatal(err)
+	}
 	streams, total, _, err = client.GetEnabledStreams()
 	if err != nil {
 		t.Fatal("Failed to GetStreams", err)
@@ -164,14 +173,17 @@ func TestGetStream(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	exp := dummyStream()
-	server.streams[exp.Id] = *exp
-	act, _, err := client.GetStream(exp.Id)
+	_, stream, err := addDummyStream(server)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	act, _, err := client.GetStream(stream.Id)
 	if err != nil {
 		t.Fatal("Failed to GetStream", err)
 	}
-	if act.Title != exp.Title {
-		t.Fatalf("act.Title == %s, wanted %s", act.Title, exp.Title)
+	if act.Title != stream.Title {
+		t.Fatalf("act.Title == %s, wanted %s", act.Title, stream.Title)
 	}
 	if _, _, err := client.GetStream(""); err == nil {
 		t.Fatal("id is required")
@@ -187,16 +199,11 @@ func TestUpdateStream(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet, _, err := server.AddIndexSet(dummyNewIndexSet())
+	_, stream, err := addDummyStream(server)
 	if err != nil {
 		t.Fatal(err)
 	}
-	stream := dummyNewStream()
-	stream.IndexSetId = indexSet.Id
-	stream, _, err = server.AddStream(stream)
-	if err != nil {
-		t.Fatal(err)
-	}
+
 	stream.Description = "changed!"
 	updatedStream, _, err := client.UpdateStream(stream.Id, stream)
 	if err != nil {
@@ -224,8 +231,11 @@ func TestDeleteStream(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	stream := dummyStream()
-	server.streams[stream.Id] = *stream
+	_, stream, err := addDummyStream(server)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	if _, err = client.DeleteStream(""); err == nil {
 		t.Fatal("id is required")
 	}
@@ -247,15 +257,13 @@ func TestPauseStream(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	stream := dummyStream()
-	server.streams[stream.Id] = *stream
+	_, stream, err := addDummyStream(server)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	if _, err = client.PauseStream(stream.Id); err != nil {
 		t.Fatal("Failed to PauseStream", err)
-	}
-	s := len(server.streams)
-	if s != 1 {
-		t.Fatalf("len(server.streams) == %d, wanted 1", s)
 	}
 	if _, err := client.PauseStream(""); err == nil {
 		t.Fatal("id is required")
@@ -272,15 +280,13 @@ func TestResumeStream(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	stream := dummyStream()
-	server.streams[stream.Id] = *stream
+	_, stream, err := addDummyStream(server)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	if _, err = client.ResumeStream(stream.Id); err != nil {
 		t.Fatal("Failed to ResumeStream", err)
-	}
-	s := len(server.streams)
-	if s != 1 {
-		t.Fatalf("len(server.streams) == %d, wanted 1", s)
 	}
 
 	if _, err = client.ResumeStream(""); err == nil {
