@@ -22,12 +22,14 @@ func (ms *MockServer) AddIndexSet(indexSet *IndexSet) (*IndexSet, int, error) {
 		return nil, 400, err
 	}
 	// indexPrefix unique check
-	for _, is := range ms.indexSets {
-		if is.IndexPrefix == indexSet.IndexPrefix {
-			return nil, 400, fmt.Errorf(
-				`Index prefix "%s" would conflict with an existing index set!`,
-				indexSet.IndexPrefix)
-		}
+	ok, err := ms.store.IsConflictIndexPrefix("", indexSet.IndexPrefix)
+	if err != nil {
+		return nil, 500, err
+	}
+	if ok {
+		return nil, 400, fmt.Errorf(
+			`Index prefix "%s" would conflict with an existing index set!`,
+			indexSet.IndexPrefix)
 	}
 	s := *indexSet
 	s.ID = randStringBytesMaskImprSrc(24)
@@ -56,13 +58,16 @@ func (ms *MockServer) UpdateIndexSet(
 		return 400, err
 	}
 	// indexPrefix unique check
-	for _, is := range ms.indexSets {
-		if is.IndexPrefix == indexSet.IndexPrefix && is.ID != indexSet.ID {
-			return 400, fmt.Errorf(
-				`Index prefix "%s" would conflict with an existing index set!`,
-				indexSet.IndexPrefix)
-		}
+	ok, err = ms.store.IsConflictIndexPrefix(indexSet.ID, indexSet.IndexPrefix)
+	if err != nil {
+		return 500, err
 	}
+	if ok {
+		return 400, fmt.Errorf(
+			`Index prefix "%s" would conflict with an existing index set!`,
+			indexSet.IndexPrefix)
+	}
+
 	if err := ms.store.UpdateIndexSet(indexSet); err != nil {
 		return 500, err
 	}

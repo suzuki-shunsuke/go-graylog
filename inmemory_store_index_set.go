@@ -2,6 +2,7 @@ package graylog
 
 import (
 	"fmt"
+	"strings"
 )
 
 // HasIndexSet
@@ -72,4 +73,17 @@ func (store *InMemoryStore) GetIndexSets() ([]IndexSet, error) {
 		i++
 	}
 	return arr, nil
+}
+
+// IsConflictIndexPrefix returns true if indexPrefix would conflict with an existing index set.
+func (store *InMemoryStore) IsConflictIndexPrefix(id, indexPrefix string) (bool, error) {
+	for _, indexSet := range store.indexSets {
+		if id != indexSet.ID && strings.HasPrefix(indexPrefix, indexSet.IndexPrefix) {
+			return true, nil
+		}
+		if id != indexSet.ID && strings.HasPrefix(indexSet.IndexPrefix, indexPrefix) {
+			return true, nil
+		}
+	}
+	return false, nil
 }

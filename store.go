@@ -34,6 +34,7 @@ type Store interface {
 	DeleteIndexSet(id string) error
 	SetDefaultIndexSetID(id string) error
 	GetDefaultIndexSetID() (string, error)
+	IsConflictIndexPrefix(id, indexPrefix string) (bool, error)
 
 	HasStream(id string) (bool, error)
 	GetStream(id string) (Stream, bool, error)
