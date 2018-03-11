@@ -7,27 +7,30 @@ func (store *InMemoryStore) HasStream(id string) (bool, error) {
 }
 
 // GetStream returns a stream.
-func (store *InMemoryStore) GetStream(id string) (Stream, bool, error) {
+func (store *InMemoryStore) GetStream(id string) (*Stream, error) {
 	s, ok := store.streams[id]
-	return s, ok, nil
+	if ok {
+		return &s, nil
+	}
+	return nil, nil
 }
 
 // AddStream adds a stream to the store.
-func (store *InMemoryStore) AddStream(stream *Stream) (*Stream, int, error) {
+func (store *InMemoryStore) AddStream(stream *Stream) (*Stream, error) {
 	store.streams[stream.ID] = *stream
-	return stream, 200, nil
+	return stream, nil
 }
 
 // UpdateStream updates a stream at the store.
-func (store *InMemoryStore) UpdateStream(stream *Stream) (int, error) {
+func (store *InMemoryStore) UpdateStream(stream *Stream) error {
 	store.streams[stream.ID] = *stream
-	return 200, nil
+	return nil
 }
 
 // DeleteStream removes a stream from the store.
-func (store *InMemoryStore) DeleteStream(id string) (int, error) {
+func (store *InMemoryStore) DeleteStream(id string) error {
 	delete(store.streams, id)
-	return 200, nil
+	return nil
 }
 
 // GetStreams returns a list of all streams.

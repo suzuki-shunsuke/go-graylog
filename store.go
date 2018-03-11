@@ -37,10 +37,10 @@ type Store interface {
 	IsConflictIndexPrefix(id, indexPrefix string) (bool, error)
 
 	HasStream(id string) (bool, error)
-	GetStream(id string) (Stream, bool, error)
+	GetStream(id string) (*Stream, error)
 	GetStreams() ([]Stream, error)
-	AddStream(stream *Stream) (*Stream, int, error)
-	UpdateStream(stream *Stream) (int, error)
-	DeleteStream(id string) (int, error)
+	AddStream(stream *Stream) (*Stream, error)
+	UpdateStream(stream *Stream) error
+	DeleteStream(id string) error
 	GetEnabledStreams() ([]Stream, error)
 }

@@ -15,7 +15,7 @@ func (ms *MockServer) HasStream(id string) (bool, error) {
 }
 
 // GetStream returns a stream.
-func (ms *MockServer) GetStream(id string) (Stream, bool, error) {
+func (ms *MockServer) GetStream(id string) (*Stream, error) {
 	return ms.store.GetStream(id)
 }
 
@@ -26,7 +26,11 @@ func (ms *MockServer) AddStream(stream *Stream) (*Stream, int, error) {
 	}
 	s := *stream
 	s.ID = randStringBytesMaskImprSrc(24)
-	return ms.store.AddStream(&s)
+	stream, err := ms.store.AddStream(&s)
+	if err != nil {
+		return nil, 500, err
+	}
+	return stream, 200, nil
 }
 
 // UpdateStream updates a stream at the MockServer.
@@ -44,7 +48,10 @@ func (ms *MockServer) UpdateStream(stream *Stream) (int, error) {
 	if err := UpdateValidator.Struct(stream); err != nil {
 		return 400, err
 	}
-	return ms.store.UpdateStream(stream)
+	if err := ms.store.UpdateStream(stream); err != nil {
+		return 500, err
+	}
+	return 200, nil
 }
 
 // DeleteStream removes a stream from the MockServer.
@@ -59,7 +66,10 @@ func (ms *MockServer) DeleteStream(id string) (int, error) {
 	if !ok {
 		return 404, fmt.Errorf("No stream found with id %s", id)
 	}
-	return ms.store.DeleteStream(id)
+	if err := ms.store.DeleteStream(id); err != nil {
+		return 500, err
+	}
+	return 200, nil
 }
 
 // StreamList returns a list of all streams.
@@ -156,7 +166,7 @@ func (ms *MockServer) handleGetStream(
 		return
 	}
 	ms.handleInit(w, r, false)
-	stream, ok, err := ms.GetStream(id)
+	stream, err := ms.GetStream(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"error": err, "id": id,
@@ -164,11 +174,11 @@ func (ms *MockServer) handleGetStream(
 		writeApiError(w, 500, err.Error())
 		return
 	}
-	if !ok {
+	if stream == nil {
 		writeApiError(w, 404, "No stream found with id %s", id)
 		return
 	}
-	writeOr500Error(w, &stream)
+	writeOr500Error(w, stream)
 }
 
 // PUT /streams/{streamID} Update a stream
@@ -181,7 +191,7 @@ func (ms *MockServer) handleUpdateStream(
 		return
 	}
 	id := ps.ByName("streamID")
-	stream, ok, err := ms.GetStream(id)
+	stream, err := ms.GetStream(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"error": err, "id": id,
@@ -189,7 +199,7 @@ func (ms *MockServer) handleUpdateStream(
 		writeApiError(w, 500, err.Error())
 		return
 	}
-	if !ok {
+	if stream == nil {
 		writeApiError(w, 404, "No stream found with id %s", id)
 		return
 	}
@@ -241,12 +251,12 @@ func (ms *MockServer) handleUpdateStream(
 		stream.IndexSetID = m
 	}
 	stream.ID = id
-	if sc, err := ms.UpdateStream(&stream); err != nil {
+	if sc, err := ms.UpdateStream(stream); err != nil {
 		writeApiError(w, sc, err.Error())
 		return
 	}
 	ms.safeSave()
-	writeOr500Error(w, &stream)
+	writeOr500Error(w, stream)
 }
 
 // DELETE /streams/{streamID} Delete a stream
