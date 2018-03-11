@@ -11,24 +11,30 @@ func (store *InMemoryStore) HasInput(id string) (bool, error) {
 }
 
 // GetInput returns an input.
-func (store *InMemoryStore) GetInput(id string) (Input, bool, error) {
+func (store *InMemoryStore) GetInput(id string) (*Input, error) {
 	s, ok := store.inputs[id]
-	return s, ok, nil
+	if ok {
+		return &s, nil
+	}
+	return nil, nil
 }
 
 // AddInput adds an input to the store.
-func (store *InMemoryStore) AddInput(input *Input) (*Input, int, error) {
+func (store *InMemoryStore) AddInput(input *Input) (*Input, error) {
 	store.inputs[input.ID] = *input
-	return input, 200, nil
+	return input, nil
 }
 
 // UpdateInput updates an input at the InMemoryStore.
 // Required: Title, Type, Configuration
 // Allowed: Global, Node
-func (store *InMemoryStore) UpdateInput(input *Input) (int, error) {
-	u, ok, _ := store.GetInput(input.ID)
-	if !ok {
-		return 404, fmt.Errorf("The input is not found")
+func (store *InMemoryStore) UpdateInput(input *Input) error {
+	u, err := store.GetInput(input.ID)
+	if err != nil {
+		return err
+	}
+	if u == nil {
+		return fmt.Errorf("The input is not found")
 	}
 	u.Title = input.Title
 	u.Type = input.Type
@@ -37,14 +43,14 @@ func (store *InMemoryStore) UpdateInput(input *Input) (int, error) {
 	u.Global = input.Global
 	u.Node = input.Node
 
-	store.inputs[u.ID] = u
-	return 200, nil
+	store.inputs[u.ID] = *u
+	return nil
 }
 
 // DeleteInput deletes an input from the store.
-func (store *InMemoryStore) DeleteInput(id string) (int, error) {
+func (store *InMemoryStore) DeleteInput(id string) error {
 	delete(store.inputs, id)
-	return 200, nil
+	return nil
 }
 
 // GetInputs returns inputs.

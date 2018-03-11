@@ -20,11 +20,11 @@ type Store interface {
 	DeleteUser(name string) error
 
 	HasInput(id string) (bool, error)
-	GetInput(id string) (Input, bool, error)
+	GetInput(id string) (*Input, error)
 	GetInputs() ([]Input, error)
-	AddInput(input *Input) (*Input, int, error)
-	UpdateInput(input *Input) (int, error)
-	DeleteInput(id string) (int, error)
+	AddInput(input *Input) (*Input, error)
+	UpdateInput(input *Input) error
+	DeleteInput(id string) error
 
 	HasIndexSet(id string) (bool, error)
 	GetIndexSet(id string) (IndexSet, bool, error)

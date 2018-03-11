@@ -122,11 +122,11 @@ func TestUpdateInput(t *testing.T) {
 	if act.Title != exp.Title {
 		t.Fatalf(`UpdateInput title "%s" != "%s"`, act.Title, exp.Title)
 	}
-	act2, ok, err := server.GetInput(exp.ID)
+	act2, err := server.GetInput(exp.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !ok {
+	if act2 == nil {
 		t.Fatal("input is not found")
 	}
 	if act2.Title != exp.Title {

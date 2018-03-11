@@ -14,7 +14,7 @@ func (ms *MockServer) HasInput(id string) (bool, error) {
 }
 
 // GetInput returns an input.
-func (ms *MockServer) GetInput(id string) (Input, bool, error) {
+func (ms *MockServer) GetInput(id string) (*Input, error) {
 	return ms.store.GetInput(id)
 }
 
@@ -25,7 +25,11 @@ func (ms *MockServer) AddInput(input *Input) (*Input, int, error) {
 	}
 	s := *input
 	s.ID = randStringBytesMaskImprSrc(24)
-	return ms.store.AddInput(&s)
+	i, err := ms.store.AddInput(&s)
+	if err != nil {
+		return nil, 500, err
+	}
+	return i, 200, nil
 }
 
 // UpdateInput updates an input at the MockServer.
@@ -35,7 +39,10 @@ func (ms *MockServer) UpdateInput(input *Input) (int, error) {
 	if err := UpdateValidator.Struct(input); err != nil {
 		return 400, err
 	}
-	return ms.store.UpdateInput(input)
+	if err := ms.store.UpdateInput(input); err != nil {
+		return 500, err
+	}
+	return 200, nil
 }
 
 // DeleteInput deletes a input from the mock server.
@@ -50,7 +57,10 @@ func (ms *MockServer) DeleteInput(id string) (int, error) {
 	if !ok {
 		return 404, fmt.Errorf("The input is not found")
 	}
-	return ms.store.DeleteInput(id)
+	if err := ms.store.DeleteInput(id); err != nil {
+		return 500, err
+	}
+	return 200, nil
 }
 
 func (ms *MockServer) InputList() ([]Input, error) {
@@ -63,7 +73,7 @@ func (ms *MockServer) handleGetInput(
 ) {
 	ms.handleInit(w, r, false)
 	id := ps.ByName("inputID")
-	input, ok, err := ms.GetInput(id)
+	input, err := ms.GetInput(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"error": err, "id": id,
@@ -71,11 +81,11 @@ func (ms *MockServer) handleGetInput(
 		write500Error(w)
 		return
 	}
-	if !ok {
+	if input == nil {
 		writeApiError(w, 404, "No input found with id %s", id)
 		return
 	}
-	writeOr500Error(w, &input)
+	writeOr500Error(w, input)
 }
 
 // PUT /system/inputs/{inputID} Update input on this node
