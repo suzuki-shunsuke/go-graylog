@@ -5,15 +5,18 @@ import (
 )
 
 // HasUser
-func (store *InMemoryStore) HasUser(username string) bool {
+func (store *InMemoryStore) HasUser(username string) (bool, error) {
 	_, ok := store.users[username]
-	return ok
+	return ok, nil
 }
 
-// GetUser returns a user
-func (store *InMemoryStore) GetUser(username string) (User, bool) {
+// GetUser returns a user.
+func (store *InMemoryStore) GetUser(username string) (*User, error) {
 	s, ok := store.users[username]
-	return s, ok
+	if ok {
+		return &s, nil
+	}
+	return nil, nil
 }
 
 // GetUsers returns users
@@ -28,17 +31,20 @@ func (store *InMemoryStore) GetUsers() ([]User, error) {
 }
 
 // AddUser adds a user to the InMemoryStore.
-func (store *InMemoryStore) AddUser(user *User) (*User, int, error) {
+func (store *InMemoryStore) AddUser(user *User) (*User, error) {
 	store.users[user.Username] = *user
-	return user, 200, nil
+	return user, nil
 }
 
 // UpdateUser updates a user of the InMemoryStore.
 // "email", "permissions", "full_name", "password"
-func (store *InMemoryStore) UpdateUser(user *User) (int, error) {
-	u, ok := store.GetUser(user.Username)
-	if !ok {
-		return 404, fmt.Errorf("The user is not found")
+func (store *InMemoryStore) UpdateUser(user *User) error {
+	u, err := store.GetUser(user.Username)
+	if err != nil {
+		return err
+	}
+	if u == nil {
+		return fmt.Errorf("The user is not found")
 	}
 	if user.Email != "" {
 		u.Email = user.Email
@@ -52,12 +58,12 @@ func (store *InMemoryStore) UpdateUser(user *User) (int, error) {
 	if user.Password != "" {
 		u.Password = user.Password
 	}
-	store.users[u.Username] = u
-	return 200, nil
+	store.users[u.Username] = *u
+	return nil
 }
 
 // DeleteUser removes a user from the InMemoryStore.
-func (store *InMemoryStore) DeleteUser(name string) (int, error) {
+func (store *InMemoryStore) DeleteUser(name string) error {
 	delete(store.users, name)
-	return 200, nil
+	return nil
 }

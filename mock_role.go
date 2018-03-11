@@ -9,17 +9,13 @@ import (
 )
 
 // HasRole
-func (ms *MockServer) HasRole(name string) bool {
+func (ms *MockServer) HasRole(name string) (bool, error) {
 	return ms.store.HasRole(name)
-	// _, ok := ms.roles[name]
-	// return ok
 }
 
 // GetRole returns a Role.
-func (ms *MockServer) GetRole(name string) (Role, bool) {
+func (ms *MockServer) GetRole(name string) (*Role, error) {
 	return ms.store.GetRole(name)
-	// s, ok := ms.roles[name]
-	// return s, ok
 }
 
 // AddRole adds a new role to the mock server.
@@ -27,10 +23,17 @@ func (ms *MockServer) AddRole(role *Role) (int, error) {
 	if err := CreateValidator.Struct(role); err != nil {
 		return 400, err
 	}
-	if ms.HasRole(role.Name) {
+	ok, err := ms.HasRole(role.Name)
+	if err != nil {
+		return 500, err
+	}
+	if ok {
 		return 400, fmt.Errorf("Role %s already exists.", role.Name)
 	}
-	return ms.store.AddRole(role)
+	if err := ms.store.AddRole(role); err != nil {
+		return 500, err
+	}
+	return 200, nil
 }
 
 // UpdateRole updates a role.
@@ -38,26 +41,45 @@ func (ms *MockServer) UpdateRole(name string, role *Role) (int, error) {
 	if err := UpdateValidator.Struct(role); err != nil {
 		return 400, err
 	}
-	if !ms.HasRole(name) {
+	ok, err := ms.HasRole(name)
+	if err != nil {
+		return 500, err
+	}
+	if !ok {
 		return 404, fmt.Errorf("No role found with name %s", name)
 	}
-	if name != role.Name && ms.HasRole(role.Name) {
-		return 400, fmt.Errorf("The role %s has already existed.", name)
+	if name != role.Name {
+		ok, err := ms.HasRole(role.Name)
+		if err != nil {
+			return 500, err
+		}
+		if ok {
+			return 400, fmt.Errorf("The role %s has already existed.", role.Name)
+		}
 	}
-	return ms.store.UpdateRole(name, role)
+	if err := ms.store.UpdateRole(name, role); err != nil {
+		return 500, err
+	}
+	return 200, nil
 }
 
 // DeleteRole
 func (ms *MockServer) DeleteRole(name string) (int, error) {
-	if !ms.HasRole(name) {
+	ok, err := ms.HasRole(name)
+	if err != nil {
+		return 500, err
+	}
+	if !ok {
 		return 404, fmt.Errorf("No role found with name %s", name)
 	}
-	return ms.store.DeleteRole(name)
+	if err := ms.store.DeleteRole(name); err != nil {
+		return 500, err
+	}
+	return 200, nil
 }
 
-func (ms *MockServer) RoleList() []Role {
-	arr, _ := ms.store.GetRoles()
-	return arr
+func (ms *MockServer) RoleList() ([]Role, error) {
+	return ms.store.GetRoles()
 }
 
 // GET /roles/{rolename} Retrieve permissions for a single role
@@ -68,12 +90,16 @@ func (ms *MockServer) handleGetRole(
 	name := ps.ByName("rolename")
 	ms.Logger().WithFields(log.Fields{
 		"handler": "handleGetRole", "rolename": name}).Info("request start")
-	role, ok := ms.GetRole(name)
-	if !ok {
+	role, err := ms.GetRole(name)
+	if err != nil {
+		writeApiError(w, 500, err.Error())
+		return
+	}
+	if role == nil {
 		writeApiError(w, 404, "No role found with name %s", name)
 		return
 	}
-	writeOr500Error(w, &role)
+	writeOr500Error(w, role)
 }
 
 // PUT /roles/{rolename} Update an existing role
@@ -120,12 +146,11 @@ func (ms *MockServer) handleDeleteRole(
 ) {
 	ms.handleInit(w, r, false)
 	name := ps.ByName("rolename")
-	_, ok := ms.GetRole(name)
-	if !ok {
-		writeApiError(w, 404, "No role found with name %s", name)
+	sc, err := ms.DeleteRole(name)
+	if err != nil {
+		writeApiError(w, sc, err.Error())
 		return
 	}
-	ms.DeleteRole(name)
 	ms.safeSave()
 }
 
@@ -170,7 +195,11 @@ func (ms *MockServer) handleGetRoles(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) {
 	ms.handleInit(w, r, false)
-	arr := ms.RoleList()
+	arr, err := ms.RoleList()
+	if err != nil {
+		writeApiError(w, 500, err.Error())
+		return
+	}
 	roles := &rolesBody{Roles: arr, Total: len(arr)}
 	writeOr500Error(w, roles)
 }

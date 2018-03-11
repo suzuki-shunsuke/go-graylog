@@ -1,19 +1,23 @@
 package graylog
 
+// Store manage data.
+// Basically Store doesn't have responsibility to validate a request from user.
 type Store interface {
-	HasRole(name string) bool
-	GetRole(name string) (Role, bool)
+	HasRole(name string) (bool, error)
+	// GetRole returns a role.
+	// If no role with given name is found, returns nil and not returns an error.
+	GetRole(name string) (*Role, error)
 	GetRoles() ([]Role, error)
-	AddRole(role *Role) (int, error)
-	UpdateRole(name string, role *Role) (int, error)
-	DeleteRole(name string) (int, error)
+	AddRole(role *Role) error
+	UpdateRole(name string, role *Role) error
+	DeleteRole(name string) error
 
-	HasUser(username string) bool
-	GetUser(username string) (User, bool)
+	HasUser(username string) (bool, error)
+	GetUser(username string) (*User, error)
 	GetUsers() ([]User, error)
-	AddUser(user *User) (*User, int, error)
-	UpdateUser(user *User) (int, error)
-	DeleteUser(name string) (int, error)
+	AddUser(user *User) (*User, error)
+	UpdateUser(user *User) error
+	DeleteUser(name string) error
 
 	HasInput(id string) (bool, error)
 	GetInput(id string) (Input, bool, error)
