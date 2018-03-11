@@ -1,7 +1,6 @@
 package graylog
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -13,7 +12,7 @@ func (ms *MockServer) HasIndexSet(id string) (bool, error) {
 	return ms.store.HasIndexSet(id)
 }
 
-func (ms *MockServer) GetIndexSet(id string) (IndexSet, bool, error) {
+func (ms *MockServer) GetIndexSet(id string) (*IndexSet, error) {
 	return ms.store.GetIndexSet(id)
 }
 
@@ -32,7 +31,11 @@ func (ms *MockServer) AddIndexSet(indexSet *IndexSet) (*IndexSet, int, error) {
 	}
 	s := *indexSet
 	s.ID = randStringBytesMaskImprSrc(24)
-	return ms.store.AddIndexSet(&s)
+	i, err := ms.store.AddIndexSet(&s)
+	if err != nil {
+		return nil, 500, err
+	}
+	return i, 200, nil
 }
 
 // UpdateIndexSet updates an index set at the Mock Server.
@@ -60,7 +63,10 @@ func (ms *MockServer) UpdateIndexSet(
 				indexSet.IndexPrefix)
 		}
 	}
-	return ms.store.UpdateIndexSet(indexSet)
+	if err := ms.store.UpdateIndexSet(indexSet); err != nil {
+		return 500, err
+	}
+	return 200, nil
 }
 
 // DeleteIndexSet removes a index set from the Mock Server.
@@ -75,7 +81,17 @@ func (ms *MockServer) DeleteIndexSet(id string) (int, error) {
 	if !ok {
 		return 404, fmt.Errorf("No indexSet with id %s is not found", id)
 	}
-	return ms.store.DeleteIndexSet(id)
+	defID, err := ms.store.GetDefaultIndexSetID()
+	if err != nil {
+		return 500, err
+	}
+	if id == defID {
+		return 400, fmt.Errorf("default index set <%s> cannot be deleted", id)
+	}
+	if err := ms.store.DeleteIndexSet(id); err != nil {
+		return 500, err
+	}
+	return 200, nil
 }
 
 // IndexSetList returns a list of all index sets.
@@ -111,7 +127,7 @@ func (ms *MockServer) handleGetIndexSet(
 		return
 	}
 	ms.handleInit(w, r, false)
-	indexSet, ok, err := ms.GetIndexSet(id)
+	indexSet, err := ms.GetIndexSet(id)
 	if err != nil {
 		ms.logger.WithFields(log.Fields{
 			"error": err, "id": id,
@@ -119,11 +135,11 @@ func (ms *MockServer) handleGetIndexSet(
 		writeApiError(w, 500, err.Error())
 		return
 	}
-	if !ok {
+	if indexSet == nil {
 		writeApiError(w, 404, "No indexSet found with id %s", id)
 		return
 	}
-	writeOr500Error(w, &indexSet)
+	writeOr500Error(w, indexSet)
 }
 
 // POST /system/indices/index_sets Create index set
@@ -143,7 +159,10 @@ func (ms *MockServer) handleCreateIndexSet(
 	allowedFields := []string{
 		"description", "replicas", "index_optimization_disabled",
 		"writable", "default"}
-	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
+	acceptedFields := []string{
+		"description", "replicas", "index_optimization_disabled", "writable"}
+	sc, msg, body := validateRequestBody(
+		b, requiredFields, allowedFields, acceptedFields)
 	if sc != 200 {
 		w.WriteHeader(sc)
 		w.Write([]byte(msg))
@@ -181,7 +200,7 @@ func (ms *MockServer) handleUpdateIndexSet(
 		return
 	}
 	id := ps.ByName("indexSetID")
-	indexSet, ok, err := ms.GetIndexSet(id)
+	indexSet, err := ms.GetIndexSet(id)
 	if err != nil {
 		ms.logger.WithFields(log.Fields{
 			"error": err, "id": id,
@@ -189,17 +208,38 @@ func (ms *MockServer) handleUpdateIndexSet(
 		writeApiError(w, 500, err.Error())
 		return
 	}
-	if !ok {
+	if indexSet == nil {
 		writeApiError(w, 404, "No indexSet found with id %s", id)
 		return
 	}
 
-	if err := json.Unmarshal(b, &indexSet); err != nil {
+	// default can't change (ignored)
+	requiredFields := []string{
+		"title", "index_prefix", "rotation_strategy_class", "rotation_strategy",
+		"retention_strategy_class", "retention_strategy", "creation_date",
+		"index_analyzer", "shards", "index_optimization_max_num_segments"}
+	acceptedFields := []string{
+		"description", "replicas", "index_optimization_disabled", "writable"}
+	sc, msg, body := validateRequestBody(b, requiredFields, nil, acceptedFields)
+	if sc != 200 {
+		w.WriteHeader(sc)
+		w.Write([]byte(msg))
+		return
+	}
+
+	if err := msDecode(body, indexSet); err != nil {
+		ms.logger.WithFields(log.Fields{
+			"body": string(b), "error": err,
+		}).Info("Failed to parse request body as indexSet")
 		writeApiError(w, 400, "400 Bad Request")
 		return
 	}
+
+	ms.Logger().WithFields(log.Fields{
+		"body": string(b), "index_set": indexSet,
+	}).Debug("request body")
 	indexSet.ID = id
-	if sc, err := ms.UpdateIndexSet(&indexSet); err != nil {
+	if sc, err := ms.UpdateIndexSet(indexSet); err != nil {
 		writeApiError(w, sc, err.Error())
 		return
 	}
@@ -226,7 +266,7 @@ func (ms *MockServer) handleSetDefaultIndexSet(
 ) {
 	ms.handleInit(w, r, false)
 	id := ps.ByName("indexSetID")
-	indexSet, ok, err := ms.GetIndexSet(id)
+	indexSet, err := ms.GetIndexSet(id)
 	if err != nil {
 		ms.logger.WithFields(log.Fields{
 			"error": err, "id": id,
@@ -234,7 +274,7 @@ func (ms *MockServer) handleSetDefaultIndexSet(
 		writeApiError(w, 500, err.Error())
 		return
 	}
-	if !ok {
+	if indexSet == nil {
 		writeApiError(w, 404, "No indexSet found with id %s", id)
 		return
 	}
@@ -242,17 +282,12 @@ func (ms *MockServer) handleSetDefaultIndexSet(
 		writeApiError(w, 409, "Default index set must be writable.")
 		return
 	}
-	for k, v := range ms.indexSets {
-		if v.Default {
-			v.Default = false
-			ms.indexSets[k] = v
-			break
-		}
+	if err := ms.store.SetDefaultIndexSetID(id); err != nil {
+		writeApiError(w, 500, err.Error())
 	}
-	indexSet.Default = true
-	ms.AddIndexSet(&indexSet)
 	ms.safeSave()
-	writeOr500Error(w, &indexSet)
+	indexSet.Default = true
+	writeOr500Error(w, indexSet)
 }
 
 // GET /system/indices/index_sets/{id}/stats Get index set statistics

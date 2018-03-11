@@ -27,11 +27,13 @@ type Store interface {
 	DeleteInput(id string) error
 
 	HasIndexSet(id string) (bool, error)
-	GetIndexSet(id string) (IndexSet, bool, error)
+	GetIndexSet(id string) (*IndexSet, error)
 	GetIndexSets() ([]IndexSet, error)
-	AddIndexSet(indexSet *IndexSet) (*IndexSet, int, error)
-	UpdateIndexSet(indexSet *IndexSet) (int, error)
-	DeleteIndexSet(id string) (int, error)
+	AddIndexSet(indexSet *IndexSet) (*IndexSet, error)
+	UpdateIndexSet(indexSet *IndexSet) error
+	DeleteIndexSet(id string) error
+	SetDefaultIndexSetID(id string) error
+	GetDefaultIndexSetID() (string, error)
 
 	HasStream(id string) (bool, error)
 	GetStream(id string) (Stream, bool, error)
