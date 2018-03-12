@@ -6,7 +6,8 @@
     "test": "make t",
     "cover-client": "make cover-client",
     "cover-mockserver": "make cover-mockserver",
-    "build": "make graylog-mock-server"
+    "build": "make build",
+    "upload": "make upload"
   },
   "devDependencies": {
     "husky": "^0.14.3",

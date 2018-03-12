@@ -10,16 +10,16 @@ cover-client: coverage
 cover-mockserver: coverage *.go mockserver/*.go
 	go test ./mockserver -coverprofile=coverage/mockserver.txt -covermode=atomic
 	go tool cover -html=coverage/mockserver.txt
-graylog-mock-server: *.go mockserver/*.go mockserver/mock_server_bin/main.go
-	go build -o graylog-mock-server mockserver/mock_server_bin/main.go
+graylog-mock-server: *.go mockserver/*.go mockserver/exec/main.go
+	go build -o graylog-mock-server mockserver/exec/main.go
 # https://github.com/mitchellh/gox
 # brew install gox
 # go get github.com/mitchellh/gox
 build:
-	gox -output="{{.Dir}}/dist/$(TAG)/graylog-mock-server_$(TAG)_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./mockserver/mock_server_bin
+	gox -output="dist/$(TAG)/graylog-mock-server_$(TAG)_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./mockserver/exec
 # https://github.com/tcnksm/ghr
 # brew tap tcnksm/ghr
 # brew install ghr
 # go get -u github.com/tcnksm/ghr
 upload:
-	ghr $(TAG) mock_server_bin/dist/$(TAG)
+	ghr $(TAG) dist/$(TAG)
