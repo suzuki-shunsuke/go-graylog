@@ -1,6 +1,7 @@
 package mockserver
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net"
@@ -188,11 +189,20 @@ func wrapHandle(handler Handler) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		sc, body, err := handler(w, r, ps)
 		if err != nil {
-			writeApiError(w, sc, err.Error())
+			w.WriteHeader(sc)
+			w.Write([]byte(fmt.Sprintf(
+				`{"type": "ApiError", "message": "%s"}`, err.Error())))
 			return
 		}
-		if body != nil {
-			writeOr500Error(w, body)
+		if body == nil {
+			return
 		}
+		b, err := json.Marshal(body)
+		if err == nil {
+			w.Write(b)
+			return
+		}
+		w.WriteHeader(500)
+		w.Write([]byte(`{"message":"500 Internal Server Error"}`))
 	}
 }

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
-	"net/http"
 	"strings"
 	"time"
 
@@ -20,26 +19,6 @@ func msDecode(input, output interface{}) error {
 		return err
 	}
 	return decoder.Decode(input)
-}
-
-func writeOr500Error(w http.ResponseWriter, v interface{}) {
-	b, err := json.Marshal(v)
-	if err != nil {
-		write500Error(w)
-	} else {
-		w.Write(b)
-	}
-}
-
-func write500Error(w http.ResponseWriter) {
-	w.WriteHeader(500)
-	w.Write([]byte(`{"message":"500 Internal Server Error"}`))
-}
-
-func writeApiError(w http.ResponseWriter, code int, msg string, args ...interface{}) {
-	w.WriteHeader(code)
-	w.Write([]byte(fmt.Sprintf(
-		`{"type": "ApiError", "message": "%s"}`, fmt.Sprintf(msg, args...))))
 }
 
 func addToStringArray(arr []string, val string) []string {
