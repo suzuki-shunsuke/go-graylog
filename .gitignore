@@ -1,6 +1,7 @@
 vendor
 example
 coverage.txt
+coverage
 node_modules
 *.log
 graylog-mock-server

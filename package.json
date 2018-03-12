@@ -2,7 +2,11 @@
   "version": "0.1.0",
   "scripts": {
     "release": "standard-version",
-    "commitmsg": "validate-commit-msg"
+    "commitmsg": "validate-commit-msg",
+    "test": "make t",
+    "cover-client": "make cover-client",
+    "cover-mockserver": "make cover-mockserver",
+    "build": "make graylog-mock-server"
   },
   "devDependencies": {
     "husky": "^0.14.3",

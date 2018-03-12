@@ -52,7 +52,7 @@ type AlertReceivers struct {
 // AlertCondition represents an alert condition.
 type AlertCondition struct{}
 
-type streamsBody struct {
+type StreamsBody struct {
 	Total   int      `json:"total,omitempty"`
 	Streams []Stream `json:"streams,omitempty"`
 }
@@ -69,12 +69,12 @@ func (client *Client) GetStreamsContext(
 	ctx context.Context,
 ) (streams []Stream, total int, ei *ErrorInfo, err error) {
 	ei, err = client.callReq(
-		ctx, http.MethodGet, client.endpoints.Streams, nil, true)
+		ctx, http.MethodGet, client.Endpoints.Streams, nil, true)
 	if err != nil {
 		return nil, 0, ei, err
 	}
 
-	streamsBody := &streamsBody{}
+	streamsBody := &StreamsBody{}
 	err = json.Unmarshal(ei.ResponseBody, streamsBody)
 	if err != nil {
 		return nil, 0, ei, errors.Wrap(
@@ -102,7 +102,7 @@ func (client *Client) CreateStreamContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPost, client.endpoints.Streams, b, true)
+		ctx, http.MethodPost, client.Endpoints.Streams, b, true)
 	if err != nil {
 		return "", ei, err
 	}
@@ -133,11 +133,11 @@ func (client *Client) GetEnabledStreamsContext(
 	ctx context.Context,
 ) (streams []Stream, total int, ei *ErrorInfo, err error) {
 	ei, err = client.callReq(
-		ctx, http.MethodGet, client.endpoints.EnabledStreams, nil, true)
+		ctx, http.MethodGet, client.Endpoints.EnabledStreams, nil, true)
 	if err != nil {
 		return nil, 0, ei, err
 	}
-	streamsBody := &streamsBody{}
+	streamsBody := &StreamsBody{}
 	err = json.Unmarshal(ei.ResponseBody, streamsBody)
 	if err != nil {
 		return nil, 0, ei, errors.Wrap(
@@ -162,7 +162,7 @@ func (client *Client) GetStreamContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodGet, client.endpoints.Stream(id), nil, true)
+		ctx, http.MethodGet, client.Endpoints.Stream(id), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -198,7 +198,7 @@ func (client *Client) UpdateStreamContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPut, client.endpoints.Stream(id), b, true)
+		ctx, http.MethodPut, client.Endpoints.Stream(id), b, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -226,7 +226,7 @@ func (client *Client) DeleteStreamContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodDelete, client.endpoints.Stream(id), nil, false)
+		ctx, http.MethodDelete, client.Endpoints.Stream(id), nil, false)
 }
 
 // PauseStream pauses a stream.
@@ -243,7 +243,7 @@ func (client *Client) PauseStreamContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodPost, client.endpoints.PauseStream(id), nil, false)
+		ctx, http.MethodPost, client.Endpoints.PauseStream(id), nil, false)
 }
 
 // ResumeStream resumes a stream.
@@ -260,5 +260,5 @@ func (client *Client) ResumeStreamContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodPost, client.endpoints.ResumeStream(id), nil, false)
+		ctx, http.MethodPost, client.Endpoints.ResumeStream(id), nil, false)
 }

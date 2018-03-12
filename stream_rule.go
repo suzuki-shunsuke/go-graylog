@@ -36,7 +36,7 @@ func (client *Client) GetStreamRules(streamID string) (
 	return client.GetStreamRulesContext(context.Background(), streamID)
 }
 
-type streamRulesBody struct {
+type StreamRulesBody struct {
 	Total       int          `json:"total"`
 	StreamRules []StreamRule `json:"stream_rules"`
 }
@@ -47,16 +47,16 @@ func (client *Client) GetStreamRulesContext(
 ) (streamRules []StreamRule, total int, ei *ErrorInfo, err error) {
 	// GET /streams/{streamid}/rules Get a list of all stream rules
 	ei, err = client.callReq(
-		ctx, http.MethodGet, client.endpoints.StreamRules(streamID), nil, true)
+		ctx, http.MethodGet, client.Endpoints.StreamRules(streamID), nil, true)
 	if err != nil {
 		return nil, 0, ei, err
 	}
 
-	body := &streamRulesBody{}
+	body := &StreamRulesBody{}
 	if err := json.Unmarshal(ei.ResponseBody, body); err != nil {
 		return nil, 0, ei, errors.Wrap(
 			err, fmt.Sprintf(
-				"Failed to parse response body as streamRulesBody: %s",
+				"Failed to parse response body as StreamRulesBody: %s",
 				string(ei.ResponseBody)))
 	}
 	return body.StreamRules, body.Total, ei, nil
@@ -89,13 +89,13 @@ func (client *Client) CreateStreamRuleContext(
 	}
 
 	ei, err = client.callReq(
-		ctx, http.MethodPost, client.endpoints.StreamRules(streamID), b, true)
+		ctx, http.MethodPost, client.Endpoints.StreamRules(streamID), b, true)
 	if err != nil {
 		return "", ei, err
 	}
 
 	body := &streamRuleIDBody{}
-	if err = json.Unmarshal(ei.ResponseBody, body); err != nil {
+	if err := json.Unmarshal(ei.ResponseBody, body); err != nil {
 		return "", ei, errors.Wrap(
 			err, fmt.Sprintf(
 				"Failed to parse response body: %s", string(ei.ResponseBody)))
@@ -132,6 +132,6 @@ func (client *Client) UpdateStreamRuleContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodPut, client.endpoints.StreamRule(
+		ctx, http.MethodPut, client.Endpoints.StreamRule(
 			streamID, ruleID), b, false)
 }

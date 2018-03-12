@@ -29,9 +29,9 @@ func TestGetName(t *testing.T) {
 	}
 
 	exp := "http://localhost:9000/api/roles"
-	act = client.endpoints.Roles
+	act = client.Endpoints.Roles
 	if act != exp {
-		t.Fatalf("client.endpoints.Roles == %s, wanted %s", act, exp)
+		t.Fatalf("client.Endpoints.Roles == %s, wanted %s", act, exp)
 	}
 }
 

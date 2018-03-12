@@ -63,10 +63,10 @@ func (client *Client) CreateUserContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodPost, client.endpoints.Users, b, false)
+		ctx, http.MethodPost, client.Endpoints.Users, b, false)
 }
 
-type usersBody struct {
+type UsersBody struct {
 	Users []User `json:"users"`
 }
 
@@ -78,14 +78,13 @@ func (client *Client) GetUsers() ([]User, *ErrorInfo, error) {
 // GetUsersContext returns all users with a context.
 func (client *Client) GetUsersContext(ctx context.Context) ([]User, *ErrorInfo, error) {
 	ei, err := client.callReq(
-		ctx, http.MethodGet, client.endpoints.Users, nil, true)
+		ctx, http.MethodGet, client.Endpoints.Users, nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
 
-	users := usersBody{}
-	err = json.Unmarshal(ei.ResponseBody, &users)
-	if err != nil {
+	users := UsersBody{}
+	if err := json.Unmarshal(ei.ResponseBody, &users); err != nil {
 		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Users: %s",
 				string(ei.ResponseBody)))
@@ -107,13 +106,12 @@ func (client *Client) GetUserContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodGet, client.endpoints.User(name), nil, true)
+		ctx, http.MethodGet, client.Endpoints.User(name), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
 	user := &User{}
-	err = json.Unmarshal(ei.ResponseBody, user)
-	if err != nil {
+	if err := json.Unmarshal(ei.ResponseBody, user); err != nil {
 		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as User: %s",
 				string(ei.ResponseBody)))
@@ -139,7 +137,7 @@ func (client *Client) UpdateUserContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodPut, client.endpoints.User(user.Username), b, false)
+		ctx, http.MethodPut, client.Endpoints.User(user.Username), b, false)
 }
 
 // DeleteUser deletes a given user.
@@ -156,5 +154,5 @@ func (client *Client) DeleteUserContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodDelete, client.endpoints.User(name), nil, false)
+		ctx, http.MethodDelete, client.Endpoints.User(name), nil, false)
 }

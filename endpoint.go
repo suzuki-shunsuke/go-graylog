@@ -17,6 +17,22 @@ type Endpoints struct {
 	EnabledStreams string
 }
 
+func NewEndpoints(endpoint string) (*Endpoints, error) {
+	base, err := url.Parse(endpoint)
+	if err != nil {
+		return nil, err
+	}
+	return &Endpoints{
+		Roles:          getEndpoint(*base, "/roles"),
+		Users:          getEndpoint(*base, "/users"),
+		Inputs:         getEndpoint(*base, "/system/inputs"),
+		IndexSets:      getEndpoint(*base, "/system/indices/index_sets"),
+		Streams:        getEndpoint(*base, "/streams"),
+		EnabledStreams: getEndpoint(*base, "/streams/enabled"),
+		Endpoint:       base,
+	}, nil
+}
+
 func getEndpoint(u url.URL, p string) string {
 	u.Path = path.Join(u.Path, p)
 	return u.String()

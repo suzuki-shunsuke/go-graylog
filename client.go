@@ -9,7 +9,7 @@ type Client struct {
 	name      string
 	password  string
 	endpoint  *url.URL
-	endpoints *Endpoints
+	Endpoints *Endpoints
 }
 
 // NewClient returns a new Graylog API Client.
@@ -18,23 +18,12 @@ type Client struct {
 // If you use an access token instead of password, name is access token and password is literal password "token".
 // If you use a session token instead of password, name is session token and password is literal password "session".
 func NewClient(endpoint, name, password string) (*Client, error) {
-	base, err := url.Parse(endpoint)
+	endpoints, err := NewEndpoints(endpoint)
 	if err != nil {
 		return nil, err
 	}
-	endpoints := &Endpoints{}
-
-	endpoints.Roles = getEndpoint(*base, "/roles")
-	endpoints.Users = getEndpoint(*base, "/users")
-	endpoints.Inputs = getEndpoint(*base, "/system/inputs")
-	endpoints.IndexSets = getEndpoint(*base, "/system/indices/index_sets")
-	endpoints.Streams = getEndpoint(*base, "/streams")
-	endpoints.EnabledStreams = getEndpoint(*base, "/streams/enabled")
-	endpoints.Endpoint = base
-
 	return &Client{
-		name: name, password: password, endpoints: endpoints,
-		endpoint: base,
+		name: name, password: password, Endpoints: endpoints,
 	}, nil
 }
 

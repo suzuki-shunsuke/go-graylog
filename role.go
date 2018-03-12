@@ -39,14 +39,13 @@ func (client *Client) CreateRoleContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPost, client.endpoints.Roles, b, true)
+		ctx, http.MethodPost, client.Endpoints.Roles, b, true)
 	if err != nil {
 		return nil, ei, err
 	}
 
 	ret := &Role{}
-	err = json.Unmarshal(ei.ResponseBody, ret)
-	if err != nil {
+	if err := json.Unmarshal(ei.ResponseBody, ret); err != nil {
 		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Role: %s",
 				string(ei.ResponseBody)))
@@ -54,7 +53,7 @@ func (client *Client) CreateRoleContext(
 	return ret, ei, nil
 }
 
-type rolesBody struct {
+type RolesBody struct {
 	Roles []Role `json:"roles"`
 	Total int    `json:"total"`
 }
@@ -69,14 +68,13 @@ func (client *Client) GetRolesContext(ctx context.Context) (
 	[]Role, *ErrorInfo, error,
 ) {
 	ei, err := client.callReq(
-		ctx, http.MethodGet, client.endpoints.Roles, nil, true)
+		ctx, http.MethodGet, client.Endpoints.Roles, nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
 
-	roles := rolesBody{}
-	err = json.Unmarshal(ei.ResponseBody, &roles)
-	if err != nil {
+	roles := RolesBody{}
+	if err := json.Unmarshal(ei.ResponseBody, &roles); err != nil {
 		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Roles: %s",
 				string(ei.ResponseBody)))
@@ -98,14 +96,13 @@ func (client *Client) GetRoleContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodGet, client.endpoints.Role(name), nil, true)
+		ctx, http.MethodGet, client.Endpoints.Role(name), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
 
 	role := &Role{}
-	err = json.Unmarshal(ei.ResponseBody, role)
-	if err != nil {
+	if err := json.Unmarshal(ei.ResponseBody, role); err != nil {
 		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Role: %s",
 				string(ei.ResponseBody)))
@@ -133,14 +130,13 @@ func (client *Client) UpdateRoleContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPut, client.endpoints.Role(name), b, true)
+		ctx, http.MethodPut, client.Endpoints.Role(name), b, true)
 	if err != nil {
 		return nil, ei, err
 	}
 
 	ret := &Role{}
-	err = json.Unmarshal(ei.ResponseBody, ret)
-	if err != nil {
+	if err := json.Unmarshal(ei.ResponseBody, ret); err != nil {
 		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Role: %s",
 				string(ei.ResponseBody)))
@@ -162,5 +158,5 @@ func (client *Client) DeleteRoleContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodDelete, client.endpoints.Role(name), nil, false)
+		ctx, http.MethodDelete, client.Endpoints.Role(name), nil, false)
 }

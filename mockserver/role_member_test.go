@@ -1,4 +1,4 @@
-package graylog_test
+package mockserver_test
 
 import (
 	"testing"

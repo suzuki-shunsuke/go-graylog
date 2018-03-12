@@ -1,17 +1,60 @@
-package graylog_test
+package test
 
 import (
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/test"
+	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
 func TestGetStreamRules(t *testing.T) {
-	test.TestGetStreamRules(t)
+	server, client, err := testutil.GetServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	_, stream, err := addDummyStream(server)
+	if err != nil {
+		t.Fatal(err)
+	}
+	streamRule := testutil.DummyStreamRule()
+	streamRule.StreamID = stream.ID
+	if err := server.AddStreamRule(streamRule); err != nil {
+		t.Fatal(err)
+	}
+	rules, total, _, err := client.GetStreamRules(stream.ID)
+	if err != nil {
+		t.Fatal("Failed to GetStreamRules", err)
+	}
+	if total != 1 {
+		t.Fatalf("total == %d, wanted %d", total, 1)
+	}
+	if len(rules) != 1 {
+		t.Fatalf("len(rules) == %d, wanted %d", len(rules), 1)
+	}
 }
 
 func TestCreateStreamRule(t *testing.T) {
-	test.TestCreateStreamRule(t)
+	server, client, err := testutil.GetServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	indexSet := testutil.DummyNewIndexSet()
+	is, _, err := server.AddIndexSet(indexSet)
+	if err != nil {
+		t.Fatal(err)
+	}
+	stream := testutil.DummyNewStream()
+	stream.IndexSetID = is.ID
+	stream, _, err = server.AddStream(stream)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rule := testutil.DummyNewStreamRule()
+	rule.StreamID = stream.ID
+	if _, _, err := client.CreateStreamRule(rule); err != nil {
+		t.Fatal(err)
+	}
 }
 
 // func TestUpdateStreamRule(t *testing.T) {

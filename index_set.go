@@ -58,7 +58,7 @@ type RetentionStrategy struct {
 	MaxNumberOfIndices int `json:"max_number_of_indices,omitempty"`
 }
 
-type indexSetsBody struct {
+type IndexSetsBody struct {
 	IndexSets []IndexSet     `json:"index_sets"`
 	Stats     *IndexSetStats `json:"stats"`
 	Total     int            `json:"total"`
@@ -76,16 +76,16 @@ func (client *Client) GetIndexSetsContext(
 	ctx context.Context, skip, limit int,
 ) ([]IndexSet, *IndexSetStats, *ErrorInfo, error) {
 	ei, err := client.callReq(
-		ctx, http.MethodGet, client.endpoints.IndexSets, nil, true)
+		ctx, http.MethodGet, client.Endpoints.IndexSets, nil, true)
 	if err != nil {
 		return nil, nil, ei, err
 	}
-	indexSets := &indexSetsBody{}
+	indexSets := &IndexSetsBody{}
 	err = json.Unmarshal(ei.ResponseBody, indexSets)
 	if err != nil {
 		return nil, nil, ei, errors.Wrap(
 			err, fmt.Sprintf(
-				"Failed to parse response body as indexSetsBody: %s",
+				"Failed to parse response body as IndexSetsBody: %s",
 				string(ei.ResponseBody)))
 	}
 	return indexSets.IndexSets, indexSets.Stats, ei, nil
@@ -104,13 +104,12 @@ func (client *Client) GetIndexSetContext(
 		return nil, nil, errors.New("id is empty")
 	}
 	ei, err := client.callReq(
-		ctx, http.MethodGet, client.endpoints.IndexSet(id), nil, true)
+		ctx, http.MethodGet, client.Endpoints.IndexSet(id), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
 	indexSet := &IndexSet{}
-	err = json.Unmarshal(ei.ResponseBody, indexSet)
-	if err != nil {
+	if err := json.Unmarshal(ei.ResponseBody, indexSet); err != nil {
 		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf(
 				"Failed to parse response body as IndexSet: %s",
@@ -136,7 +135,7 @@ func (client *Client) CreateIndexSetContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPost, client.endpoints.IndexSets, b, true)
+		ctx, http.MethodPost, client.Endpoints.IndexSets, b, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -174,7 +173,7 @@ func (client *Client) UpdateIndexSetContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPut, client.endpoints.IndexSet(id), b, true)
+		ctx, http.MethodPut, client.Endpoints.IndexSet(id), b, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -204,7 +203,7 @@ func (client *Client) DeleteIndexSetContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodDelete, client.endpoints.IndexSet(id), nil, false)
+		ctx, http.MethodDelete, client.Endpoints.IndexSet(id), nil, false)
 }
 
 // SetDefaultIndexSet sets default Index Set.
@@ -223,7 +222,7 @@ func (client *Client) SetDefaultIndexSetContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPut, client.endpoints.SetDefaultIndexSet(id), nil, true)
+		ctx, http.MethodPut, client.Endpoints.SetDefaultIndexSet(id), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -254,14 +253,13 @@ func (client *Client) GetIndexSetStatsContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodGet, client.endpoints.IndexSetStats(id), nil, true)
+		ctx, http.MethodGet, client.Endpoints.IndexSetStats(id), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
 
 	indexSetStats := &IndexSetStats{}
-	err = json.Unmarshal(ei.ResponseBody, indexSetStats)
-	if err != nil {
+	if err := json.Unmarshal(ei.ResponseBody, indexSetStats); err != nil {
 		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf(
 				"Failed to parse response body as IndexSetStats: %s",
@@ -283,31 +281,15 @@ func (client *Client) GetAllIndexSetsStatsContext(
 ) (*IndexSetStats, *ErrorInfo, error) {
 
 	ei, err := client.callReq(
-		ctx, http.MethodGet, client.endpoints.IndexSetsStats(), nil, true)
+		ctx, http.MethodGet, client.Endpoints.IndexSetsStats(), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
-
 	indexSetStats := &IndexSetStats{}
-	err = json.Unmarshal(ei.ResponseBody, indexSetStats)
-	if err != nil {
+	if err := json.Unmarshal(ei.ResponseBody, indexSetStats); err != nil {
 		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as IndexSetStats: %s",
 				string(ei.ResponseBody)))
 	}
 	return indexSetStats, ei, nil
-}
-
-// AllIndexSetsStats returns all index set's statistics.
-func (ms *MockServer) AllIndexSetsStats() *IndexSetStats {
-	indexSetStats := &IndexSetStats{}
-	if ms.indexSetStats == nil {
-		return indexSetStats
-	}
-	for _, stats := range ms.indexSetStats {
-		indexSetStats.Indices += stats.Indices
-		indexSetStats.Documents += stats.Documents
-		indexSetStats.Size += stats.Size
-	}
-	return indexSetStats
 }

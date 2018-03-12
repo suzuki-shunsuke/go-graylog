@@ -66,7 +66,7 @@ func (client *Client) CreateInputContext(
 	}
 
 	ei, err = client.callReq(
-		ctx, http.MethodPost, client.endpoints.Inputs, b, true)
+		ctx, http.MethodPost, client.Endpoints.Inputs, b, true)
 	if err != nil {
 		return "", ei, err
 	}
@@ -81,7 +81,7 @@ func (client *Client) CreateInputContext(
 	return ret.ID, ei, nil
 }
 
-type inputsBody struct {
+type InputsBody struct {
 	Inputs []Input `json:"inputs"`
 	Total  int     `json:"total"`
 }
@@ -96,14 +96,13 @@ func (client *Client) GetInputsContext(ctx context.Context) (
 	[]Input, *ErrorInfo, error,
 ) {
 	ei, err := client.callReq(
-		ctx, http.MethodGet, client.endpoints.Inputs, nil, true)
+		ctx, http.MethodGet, client.Endpoints.Inputs, nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
 
-	inputs := &inputsBody{}
-	err = json.Unmarshal(ei.ResponseBody, inputs)
-	if err != nil {
+	inputs := &InputsBody{}
+	if err := json.Unmarshal(ei.ResponseBody, inputs); err != nil {
 		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf(
 				"Failed to parse response body as Inputs: %s",
@@ -126,14 +125,13 @@ func (client *Client) GetInputContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodGet, client.endpoints.Input(id), nil, true)
+		ctx, http.MethodGet, client.Endpoints.Input(id), nil, true)
 	if err != nil {
 		return nil, ei, err
 	}
 
 	input := &Input{}
-	err = json.Unmarshal(ei.ResponseBody, input)
-	if err != nil {
+	if err := json.Unmarshal(ei.ResponseBody, input); err != nil {
 		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf(
 				"Failed to parse response body as Input: %s", string(ei.ResponseBody)))
@@ -163,7 +161,7 @@ func (client *Client) UpdateInputContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPut, client.endpoints.Input(input.ID), b, true)
+		ctx, http.MethodPut, client.Endpoints.Input(input.ID), b, true)
 	if err != nil {
 		return nil, ei, err
 	}
@@ -191,5 +189,5 @@ func (client *Client) DeleteInputContext(
 	}
 
 	return client.callReq(
-		ctx, http.MethodDelete, client.endpoints.Input(id), nil, false)
+		ctx, http.MethodDelete, client.Endpoints.Input(id), nil, false)
 }
