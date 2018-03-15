@@ -37,8 +37,9 @@ func TestMockServerHandleUpdateInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	input, _, err := server.AddInput(testutil.DummyNewInput())
-	if err != nil {
+	input := testutil.DummyNewInput()
+
+	if _, err := server.AddInput(input); err != nil {
 		t.Fatal(err)
 	}
 	body := bytes.NewBuffer([]byte("hoge"))

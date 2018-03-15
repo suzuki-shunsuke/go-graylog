@@ -62,7 +62,7 @@ func (ms *MockServer) UpdateRole(name string, role *graylog.Role) (int, error) {
 	if err := ms.store.UpdateRole(name, role); err != nil {
 		return 500, err
 	}
-	return 200, nil
+	return 204, nil
 }
 
 // DeleteRole
@@ -132,7 +132,7 @@ func (ms *MockServer) handleUpdateRole(
 		return sc, nil, err
 	}
 	ms.safeSave()
-	return 200, role, nil
+	return 204, role, nil
 }
 
 // DELETE /roles/{rolename} Remove the named role and dissociate any users from it
@@ -146,7 +146,7 @@ func (ms *MockServer) handleDeleteRole(
 		return sc, nil, err
 	}
 	ms.safeSave()
-	return 200, nil, nil
+	return 204, nil, nil
 }
 
 // POST /roles Create a new role
@@ -177,7 +177,7 @@ func (ms *MockServer) handleCreateRole(
 		return sc, nil, err
 	}
 	ms.safeSave()
-	return 200, role, nil
+	return 201, role, nil
 }
 
 // GET /roles List all roles

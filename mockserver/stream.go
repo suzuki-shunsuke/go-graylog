@@ -22,17 +22,15 @@ func (ms *MockServer) GetStream(id string) (*graylog.Stream, error) {
 }
 
 // AddStream adds a stream to the MockServer.
-func (ms *MockServer) AddStream(stream *graylog.Stream) (*graylog.Stream, int, error) {
+func (ms *MockServer) AddStream(stream *graylog.Stream) (int, error) {
 	if err := validator.CreateValidator.Struct(stream); err != nil {
-		return nil, 400, err
+		return 400, err
 	}
-	s := *stream
-	s.ID = randStringBytesMaskImprSrc(24)
-	stream, err := ms.store.AddStream(&s)
-	if err != nil {
-		return nil, 500, err
+	stream.ID = randStringBytesMaskImprSrc(24)
+	if err := ms.store.AddStream(stream); err != nil {
+		return 500, err
 	}
-	return stream, 200, nil
+	return 200, nil
 }
 
 // UpdateStream updates a stream at the MockServer.
@@ -127,11 +125,11 @@ func (ms *MockServer) handleCreateStream(
 		return 400, nil, err
 	}
 
-	s, sc, err := ms.AddStream(stream)
+	sc, err = ms.AddStream(stream)
 	if err != nil {
 		return 400, nil, err
 	}
-	ret := map[string]string{"stream_id": s.ID}
+	ret := map[string]string{"stream_id": stream.ID}
 	return 200, ret, nil
 }
 

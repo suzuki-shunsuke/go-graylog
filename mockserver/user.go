@@ -42,37 +42,35 @@ func (ms *MockServer) checkUserRoles(roles []string) (int, error) {
 }
 
 // AddUser adds a user to the MockServer.
-func (ms *MockServer) AddUser(user *graylog.User) (*graylog.User, int, error) {
+func (ms *MockServer) AddUser(user *graylog.User) (int, error) {
 	// client side validation
 	if err := validator.CreateValidator.Struct(user); err != nil {
-		return nil, 400, err
+		return 400, err
 	}
 
 	// Check a given username has already used.
 	ok, err := ms.HasUser(user.Username)
 	if err != nil {
-		return nil, 500, err
+		return 500, err
 	}
 	if ok {
-		return nil, 400, fmt.Errorf(
+		return 400, fmt.Errorf(
 			"The user %s has already existed.", user.Username)
 	}
-	s := *user
 
 	// check role exists
 	if sc, err := ms.checkUserRoles(user.Roles); err != nil {
-		return nil, sc, err
+		return sc, err
 	}
 
 	// generate ID
-	s.ID = randStringBytesMaskImprSrc(24)
+	user.ID = randStringBytesMaskImprSrc(24)
 
 	// Add a user
-	u, err := ms.store.AddUser(&s)
-	if err != nil {
-		return u, 500, err
+	if err := ms.store.AddUser(user); err != nil {
+		return 500, err
 	}
-	return u, 200, nil
+	return 200, nil
 }
 
 // UpdateUser updates a user of the MockServer.
@@ -153,7 +151,7 @@ func (ms *MockServer) handleCreateUser(
 		return 400, nil, err
 	}
 
-	if _, sc, err := ms.AddUser(user); err != nil {
+	if sc, err := ms.AddUser(user); err != nil {
 		return sc, nil, err
 	}
 	ms.safeSave()

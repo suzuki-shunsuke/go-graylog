@@ -19,27 +19,26 @@ func (ms *MockServer) GetIndexSet(id string) (*graylog.IndexSet, error) {
 }
 
 // AddIndexSet adds an index set to the Mock Server.
-func (ms *MockServer) AddIndexSet(indexSet *graylog.IndexSet) (*graylog.IndexSet, int, error) {
+func (ms *MockServer) AddIndexSet(indexSet *graylog.IndexSet) (int, error) {
 	if err := validator.CreateValidator.Struct(indexSet); err != nil {
-		return nil, 400, err
+		return 400, err
 	}
 	// indexPrefix unique check
 	ok, err := ms.store.IsConflictIndexPrefix("", indexSet.IndexPrefix)
 	if err != nil {
-		return nil, 500, err
+		return 500, err
 	}
 	if ok {
-		return nil, 400, fmt.Errorf(
+		return 400, fmt.Errorf(
 			`Index prefix "%s" would conflict with an existing index set!`,
 			indexSet.IndexPrefix)
 	}
-	s := *indexSet
-	s.ID = randStringBytesMaskImprSrc(24)
-	i, err := ms.store.AddIndexSet(&s)
-	if err != nil {
-		return nil, 500, err
+	indexSet.ID = randStringBytesMaskImprSrc(24)
+	indexSet.Default = false
+	if err := ms.store.AddIndexSet(indexSet); err != nil {
+		return 500, err
 	}
-	return i, 200, nil
+	return 200, nil
 }
 
 // UpdateIndexSet updates an index set at the Mock Server.
@@ -180,12 +179,12 @@ func (ms *MockServer) handleCreateIndexSet(
 	ms.Logger().WithFields(log.Fields{
 		"body": string(b), "index_set": indexSet,
 	}).Debug("request body")
-	is, sc, err := ms.AddIndexSet(indexSet)
+	sc, err = ms.AddIndexSet(indexSet)
 	if err != nil {
 		return sc, nil, err
 	}
 	ms.safeSave()
-	return 200, is, nil
+	return 200, indexSet, nil
 }
 
 // PUT /system/indices/index_sets/{id} Update index set

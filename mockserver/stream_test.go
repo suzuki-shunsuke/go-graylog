@@ -36,18 +36,16 @@ func TestMockServerHandleUpdateStream(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet := testutil.DummyNewIndexSet("hoge")
-	is, _, err := server.AddIndexSet(indexSet)
-	if err != nil {
+	is := testutil.DummyNewIndexSet("hoge")
+	if _, err := server.AddIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
 	stream := testutil.DummyNewStream()
 	stream.IndexSetID = is.ID
-	s, _, err := server.AddStream(stream)
-	if err != nil {
+	if _, err := server.AddStream(stream); err != nil {
 		t.Fatal(err)
 	}
-	endpoint := client.Endpoints.Stream(s.ID)
+	endpoint := client.Endpoints.Stream(stream.ID)
 
 	body := bytes.NewBuffer([]byte("hoge"))
 	if err := testUpdateStreamStatusCode(t, endpoint, body, 400); err != nil {

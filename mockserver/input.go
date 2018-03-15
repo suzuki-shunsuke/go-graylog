@@ -21,17 +21,15 @@ func (ms *MockServer) GetInput(id string) (*graylog.Input, error) {
 }
 
 // AddInput adds an input to the mock server.
-func (ms *MockServer) AddInput(input *graylog.Input) (*graylog.Input, int, error) {
+func (ms *MockServer) AddInput(input *graylog.Input) (int, error) {
 	if err := validator.CreateValidator.Struct(input); err != nil {
-		return nil, 400, err
+		return 400, err
 	}
-	s := *input
-	s.ID = randStringBytesMaskImprSrc(24)
-	i, err := ms.store.AddInput(&s)
-	if err != nil {
-		return nil, 500, err
+	input.ID = randStringBytesMaskImprSrc(24)
+	if err := ms.store.AddInput(input); err != nil {
+		return 500, err
 	}
-	return i, 200, nil
+	return 200, nil
 }
 
 // UpdateInput updates an input at the MockServer.
@@ -164,7 +162,7 @@ func (ms *MockServer) handleCreateInput(
 		return 400, nil, err
 	}
 
-	input, sc, err = ms.AddInput(input)
+	sc, err = ms.AddInput(input)
 	if err != nil {
 		return sc, nil, err
 	}

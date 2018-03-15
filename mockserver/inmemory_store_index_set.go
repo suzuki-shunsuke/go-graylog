@@ -38,11 +38,9 @@ func (store *InMemoryStore) SetDefaultIndexSetID(id string) error {
 }
 
 // AddIndexSet adds an index set to the store.
-func (store *InMemoryStore) AddIndexSet(indexSet *graylog.IndexSet) (*graylog.IndexSet, error) {
-	is := *indexSet
-	is.Default = false
-	store.indexSets[indexSet.ID] = is
-	return &is, nil
+func (store *InMemoryStore) AddIndexSet(indexSet *graylog.IndexSet) error {
+	store.indexSets[indexSet.ID] = *indexSet
+	return nil
 }
 
 // UpdateIndexSet updates an index set at the Mock Server.

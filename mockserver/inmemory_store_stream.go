@@ -20,9 +20,9 @@ func (store *InMemoryStore) GetStream(id string) (*graylog.Stream, error) {
 }
 
 // AddStream adds a stream to the store.
-func (store *InMemoryStore) AddStream(stream *graylog.Stream) (*graylog.Stream, error) {
+func (store *InMemoryStore) AddStream(stream *graylog.Stream) error {
 	store.streams[stream.ID] = *stream
-	return stream, nil
+	return nil
 }
 
 // UpdateStream updates a stream at the store.

@@ -16,8 +16,7 @@ func TestMockServerHandleUpdateIndexSet(t *testing.T) {
 	}
 	defer server.Close()
 	indexSet := testutil.DummyNewIndexSet("hoge")
-	indexSet, _, err = server.AddIndexSet(indexSet)
-	if err != nil {
+	if _, err = server.AddIndexSet(indexSet); err != nil {
 		t.Fatal(err)
 	}
 	body := bytes.NewBuffer([]byte("hoge"))

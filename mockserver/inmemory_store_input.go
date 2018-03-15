@@ -22,9 +22,9 @@ func (store *InMemoryStore) GetInput(id string) (*graylog.Input, error) {
 }
 
 // AddInput adds an input to the store.
-func (store *InMemoryStore) AddInput(input *graylog.Input) (*graylog.Input, error) {
+func (store *InMemoryStore) AddInput(input *graylog.Input) error {
 	store.inputs[input.ID] = *input
-	return input, nil
+	return nil
 }
 
 // UpdateInput updates an input at the InMemoryStore.

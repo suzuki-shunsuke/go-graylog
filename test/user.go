@@ -43,7 +43,7 @@ func TestGetUsers(t *testing.T) {
 	user := testutil.DummyAdmin()
 	user.Roles = nil
 	user.Username = "foo"
-	if _, _, err := server.AddUser(user); err != nil {
+	if _, err := server.AddUser(user); err != nil {
 		t.Fatal(err)
 	}
 	users, _, err := client.GetUsers()
@@ -71,7 +71,7 @@ func TestGetUser(t *testing.T) {
 	exp := testutil.DummyAdmin()
 	exp.Roles = nil
 	exp.Username = "foo"
-	if _, _, err := server.AddUser(exp); err != nil {
+	if _, err := server.AddUser(exp); err != nil {
 		t.Fatal(err)
 	}
 	user, _, err := client.GetUser(exp.Username)
@@ -98,7 +98,7 @@ func TestUpdateUser(t *testing.T) {
 	user := testutil.DummyAdmin()
 	user.Roles = nil
 	user.Username = "foo"
-	if _, _, err := server.AddUser(user); err != nil {
+	if _, err := server.AddUser(user); err != nil {
 		t.Fatal(err)
 	}
 	user.FullName = "changed!"
@@ -124,7 +124,7 @@ func TestDeleteUser(t *testing.T) {
 	user := testutil.DummyAdmin()
 	user.Username = "foo"
 	user.Roles = nil
-	if _, _, err := server.AddUser(user); err != nil {
+	if _, err := server.AddUser(user); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := client.DeleteUser(user.Username); err != nil {

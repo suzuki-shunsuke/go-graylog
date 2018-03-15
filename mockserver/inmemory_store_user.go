@@ -33,9 +33,9 @@ func (store *InMemoryStore) GetUsers() ([]graylog.User, error) {
 }
 
 // AddUser adds a user to the InMemoryStore.
-func (store *InMemoryStore) AddUser(user *graylog.User) (*graylog.User, error) {
+func (store *InMemoryStore) AddUser(user *graylog.User) error {
 	store.users[user.Username] = *user
-	return user, nil
+	return nil
 }
 
 // UpdateUser updates a user of the InMemoryStore.

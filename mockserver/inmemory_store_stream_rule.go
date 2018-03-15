@@ -45,14 +45,14 @@ func (store *InMemoryStore) GetStreamRules(id string) ([]graylog.StreamRule, err
 }
 
 // AddStreamRule adds a stream rule.
-func (store *InMemoryStore) AddStreamRule(rule *graylog.StreamRule) (*graylog.StreamRule, error) {
+func (store *InMemoryStore) AddStreamRule(rule *graylog.StreamRule) error {
 	rules, ok := store.streamRules[rule.StreamID]
 	if !ok {
 		rules = map[string]graylog.StreamRule{}
 	}
 	rules[rule.ID] = *rule
 	store.streamRules[rule.StreamID] = rules
-	return rule, nil
+	return nil
 }
 
 // UpdateStreamRule updates a stream rule.

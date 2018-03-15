@@ -18,23 +18,22 @@ func (ms *MockServer) HasStreamRule(streamID, streamRuleID string) (bool, error)
 }
 
 // AddStreamRule adds a stream rule to the MockServer.
-func (ms *MockServer) AddStreamRule(rule *graylog.StreamRule) (*graylog.StreamRule, int, error) {
+func (ms *MockServer) AddStreamRule(rule *graylog.StreamRule) (int, error) {
 	if err := validator.CreateValidator.Struct(rule); err != nil {
-		return nil, 400, err
+		return 400, err
 	}
 	ok, err := ms.HasStream(rule.StreamID)
 	if err != nil {
-		return nil, 500, err
+		return 500, err
 	}
 	if !ok {
-		return nil, 404, fmt.Errorf("no stream is not found: %s", rule.StreamID)
+		return 404, fmt.Errorf("no stream is not found: %s", rule.StreamID)
 	}
 	rule.ID = randStringBytesMaskImprSrc(24)
-	rule, err = ms.store.AddStreamRule(rule)
-	if err != nil {
-		return nil, 500, err
+	if err = ms.store.AddStreamRule(rule); err != nil {
+		return 500, err
 	}
-	return rule, 200, nil
+	return 201, nil
 }
 
 // UpdateStreamRule updates a stream rule of the MockServer.
@@ -160,7 +159,7 @@ func (ms *MockServer) handleCreateStreamRule(
 	}).Debug("request body")
 
 	rule.StreamID = streamID
-	rule, sc, err = ms.AddStreamRule(rule)
+	sc, err = ms.AddStreamRule(rule)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"error": err, "rule": rule,

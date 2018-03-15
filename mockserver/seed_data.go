@@ -10,24 +10,23 @@ func (ms *MockServer) InitData() error {
 	if _, err := ms.AddRole(role); err != nil {
 		return err
 	}
-	_, _, err := ms.AddUser(seed.User())
+	_, err := ms.AddUser(seed.User())
 	if err != nil {
 		return err
 	}
 	ms.AddInput(seed.Input())
-	indexSet, _, err := ms.AddIndexSet(seed.IndexSet())
-	if err != nil {
+	indexSet := seed.IndexSet()
+	if _, err := ms.AddIndexSet(indexSet); err != nil {
 		return err
 	}
 	stream := seed.Stream()
 	stream.IndexSetID = indexSet.ID
-	stream, _, err = ms.AddStream(stream)
-	if err != nil {
+	if _, err = ms.AddStream(stream); err != nil {
 		return err
 	}
 	rule := seed.StreamRule()
 	rule.StreamID = stream.ID
-	if _, _, err := ms.AddStreamRule(rule); err != nil {
+	if _, err := ms.AddStreamRule(rule); err != nil {
 		return err
 	}
 	return nil

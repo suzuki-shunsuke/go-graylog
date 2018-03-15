@@ -52,16 +52,15 @@ func TestGetInput(t *testing.T) {
 	}
 	defer server.Close()
 	input := testutil.DummyNewInput()
-	exp, _, err := server.AddInput(input)
-	if err != nil {
+	if _, err := server.AddInput(input); err != nil {
 		t.Fatal(err)
 	}
-	act, _, err := client.GetInput(exp.ID)
+	act, _, err := client.GetInput(input.ID)
 	if err != nil {
 		t.Fatal("Failed to GetInput", err)
 	}
-	if exp.Node != act.Node {
-		t.Fatalf("Node == %s, wanted %s", act.Node, exp.Node)
+	if input.Node != act.Node {
+		t.Fatalf("Node == %s, wanted %s", act.Node, input.Node)
 	}
 
 	if _, _, err := client.GetInput(""); err == nil {
@@ -80,67 +79,66 @@ func TestUpdateInput(t *testing.T) {
 	}
 	defer server.Close()
 	input := testutil.DummyNewInput()
-	exp, _, err := server.AddInput(input)
-	if err != nil {
+	if _, err := server.AddInput(input); err != nil {
 		t.Fatal(err)
 	}
-	exp.Title += " updated"
-	act, _, err := client.UpdateInput(exp)
+	input.Title += " updated"
+	act, _, err := client.UpdateInput(input)
 	if err != nil {
 		t.Fatal("Failed to UpdateInput", err)
 	}
-	if act.Title != exp.Title {
-		t.Fatalf(`UpdateInput title "%s" != "%s"`, act.Title, exp.Title)
+	if act.Title != input.Title {
+		t.Fatalf(`UpdateInput title "%s" != "%s"`, act.Title, input.Title)
 	}
-	act2, err := server.GetInput(exp.ID)
+	act2, err := server.GetInput(input.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if act2 == nil {
 		t.Fatal("input is not found")
 	}
-	if act2.Title != exp.Title {
-		t.Fatalf(`UpdateInput title "%s" != "%s"`, act2.Title, exp.Title)
+	if act2.Title != input.Title {
+		t.Fatalf(`UpdateInput title "%s" != "%s"`, act2.Title, input.Title)
 	}
 
-	exp.ID = ""
-	if _, _, err := client.UpdateInput(exp); err == nil {
+	input.ID = ""
+	if _, _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input id is required")
 	}
 
-	exp.ID = "h"
-	if _, _, err := client.UpdateInput(exp); err == nil {
+	input.ID = "h"
+	if _, _, err := client.UpdateInput(input); err == nil {
 		t.Fatal(`no input whose id is "h"`)
 	}
 
-	exp.Type = ""
-	if _, _, err := client.UpdateInput(exp); err == nil {
+	input.Type = ""
+	if _, _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input type is required")
 	}
-	exp.Type = act.Type
-	exp.Configuration = nil
-	if _, _, err := client.UpdateInput(exp); err == nil {
+	input.Type = act.Type
+	input.Configuration = nil
+	if _, _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input configuration is required")
 	}
-	exp.Configuration = act.Configuration
-	exp.Title = ""
-	if _, _, err := client.UpdateInput(exp); err == nil {
+	input.Configuration = act.Configuration
+	input.Title = ""
+	if _, _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input title is required")
 	}
 
-	exp.Title = act.Title
-	exp.Configuration.BindAddress = ""
-	if _, _, err := client.UpdateInput(exp); err == nil {
+	input.Title = act.Title
+	input.Configuration.BindAddress = ""
+	if _, _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input bind_address is required")
 	}
-	exp.Configuration.BindAddress = "0.0.0.0"
-	exp.Configuration.Port = 0
-	if _, _, err := client.UpdateInput(exp); err == nil {
+	input.Configuration.BindAddress = "0.0.0.0"
+	input.Configuration.Port = 0
+	if _, _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input port is required")
 	}
-	exp.Configuration.Port = 514
-	exp.Configuration.RecvBufferSize = 0
-	if _, _, err := client.UpdateInput(exp); err == nil {
+	input.Configuration.Port = 514
+	input.Configuration.RecvBufferSize = 0
+	if _, _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input recv_buffer_size is required")
 	}
 }
@@ -152,12 +150,10 @@ func TestDeleteInput(t *testing.T) {
 	}
 	defer server.Close()
 	input := testutil.DummyNewInput()
-	input, _, err = server.AddInput(input)
-	if err != nil {
+	if _, err = server.AddInput(input); err != nil {
 		t.Fatal(err)
 	}
-	_, err = client.DeleteInput(input.ID)
-	if err != nil {
+	if _, err = client.DeleteInput(input.ID); err != nil {
 		t.Fatal("Failed to DeleteInput", err)
 	}
 

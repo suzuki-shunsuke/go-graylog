@@ -18,7 +18,7 @@ func TestGetStreamRules(t *testing.T) {
 	}
 	streamRule := testutil.DummyNewStreamRule()
 	streamRule.StreamID = stream.ID
-	if _, _, err := server.AddStreamRule(streamRule); err != nil {
+	if _, err := server.AddStreamRule(streamRule); err != nil {
 		t.Fatal(err)
 	}
 	rules, total, _, err := client.GetStreamRules(stream.ID)
@@ -39,15 +39,13 @@ func TestCreateStreamRule(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet := testutil.DummyNewIndexSet("hoge")
-	is, _, err := server.AddIndexSet(indexSet)
-	if err != nil {
+	is := testutil.DummyNewIndexSet("hoge")
+	if _, err := server.AddIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
 	stream := testutil.DummyNewStream()
 	stream.IndexSetID = is.ID
-	stream, _, err = server.AddStream(stream)
-	if err != nil {
+	if _, err = server.AddStream(stream); err != nil {
 		t.Fatal(err)
 	}
 	rule := testutil.DummyNewStreamRule()
