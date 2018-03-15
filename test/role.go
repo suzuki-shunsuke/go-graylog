@@ -58,20 +58,8 @@ func TestGetRoles(t *testing.T) {
 	if roles == nil {
 		t.Fatal("client.GetRoles() is nil")
 	}
-	if len(roles) != 0 {
-		t.Fatalf("len(roles) == %d, wanted 0", len(roles))
-	}
-	admin := testutil.DummyRole()
-	exp := []graylog.Role{*admin}
-	if _, err := server.AddRole(admin); err != nil {
-		t.Fatal(err)
-	}
-	roles, _, err = client.GetRoles()
-	if err != nil {
-		t.Fatal("Failed to GetRoles", err)
-	}
-	if !reflect.DeepEqual(roles, exp) {
-		t.Fatalf("client.GetRoles() == %v, wanted %v", roles, exp)
+	if len(roles) != 1 {
+		t.Fatalf("len(roles) == %d, wanted 1", len(roles))
 	}
 }
 
@@ -81,16 +69,12 @@ func TestGetRole(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	admin := testutil.DummyRole()
-	if _, err := server.AddRole(admin); err != nil {
-		t.Fatal(err)
-	}
-	role, _, err := client.GetRole(admin.Name)
+	role, _, err := client.GetRole("Admin")
 	if err != nil {
 		t.Fatal("Failed to GetRole", err)
 	}
-	if !reflect.DeepEqual(*role, *admin) {
-		t.Fatalf("client.GetRole() == %v, wanted %v", role, admin)
+	if role.Name != "Admin" {
+		t.Fatalf(`role name is "%s", wanted "Admin"`, role.Name)
 	}
 	if _, _, err := client.GetRole(""); err == nil {
 		t.Fatal("role name is required")
@@ -106,8 +90,8 @@ func TestUpdateRole(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	admin := testutil.DummyRole()
-	if _, err := server.AddRole(admin); err != nil {
+	admin, err := server.GetRole("Admin")
+	if err != nil {
 		t.Fatal(err)
 	}
 	admin.Description = "changed!"
@@ -143,11 +127,7 @@ func TestDeleteRole(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	admin := testutil.DummyRole()
-	if _, err := server.AddRole(admin); err != nil {
-		t.Fatal(err)
-	}
-	if _, err = client.DeleteRole(admin.Name); err != nil {
+	if _, err = client.DeleteRole("Admin"); err != nil {
 		t.Fatal("Failed to DeleteRole", err)
 	}
 	if _, err = client.DeleteRole(""); err == nil {

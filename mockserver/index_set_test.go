@@ -15,7 +15,7 @@ func TestMockServerHandleUpdateIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet := testutil.DummyNewIndexSet()
+	indexSet := testutil.DummyNewIndexSet("hoge")
 	indexSet, _, err = server.AddIndexSet(indexSet)
 	if err != nil {
 		t.Fatal(err)

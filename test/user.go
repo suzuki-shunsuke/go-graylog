@@ -12,23 +12,24 @@ func TestCreateUser(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	admin := testutil.DummyNewUser()
-	if _, err := client.CreateUser(admin); err != nil {
+	user := testutil.DummyNewUser()
+	user.Username = "foo"
+	if _, err := client.CreateUser(user); err != nil {
 		t.Fatal("Failed to CreateUser", err)
 	}
-	if _, err := client.CreateUser(admin); err == nil {
+	if _, err := client.CreateUser(user); err == nil {
 		t.Fatal("User name must be unique.")
 	}
 
-	userName := admin.Username
-	admin.Username = ""
-	if _, err := client.CreateUser(admin); err == nil {
+	userName := user.Username
+	user.Username = ""
+	if _, err := client.CreateUser(user); err == nil {
 		t.Fatal("Username is required.")
 	}
-	admin.Username = userName
+	user.Username = userName
 	roleName := "no roles"
-	admin.Roles = []string{roleName}
-	if _, err := client.CreateUser(admin); err == nil {
+	user.Roles = []string{roleName}
+	if _, err := client.CreateUser(user); err == nil {
 		t.Fatalf("No role found with name %s", roleName)
 	}
 }
@@ -39,9 +40,10 @@ func TestGetUsers(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	admin := testutil.DummyAdmin()
-	admin.Roles = nil
-	if _, _, err := server.AddUser(admin); err != nil {
+	user := testutil.DummyAdmin()
+	user.Roles = nil
+	user.Username = "foo"
+	if _, _, err := server.AddUser(user); err != nil {
 		t.Fatal(err)
 	}
 	users, _, err := client.GetUsers()
@@ -51,12 +53,12 @@ func TestGetUsers(t *testing.T) {
 	if users == nil {
 		t.Fatal("client.GetUsers() returns nil")
 	}
-	if len(users) != 1 {
-		t.Fatalf("len(users) == %d, wanted 1", len(users))
+	if len(users) != 2 {
+		t.Fatalf("len(users) == %d, wanted 2", len(users))
 	}
-	if users[0].Password != admin.Password {
+	if users[0].Password != user.Password {
 		t.Fatalf(
-			"users[0].Password == %v, wanted %v", users[0].Password, admin.Password)
+			"users[0].Password == %v, wanted %v", users[0].Password, user.Password)
 	}
 }
 
@@ -68,6 +70,7 @@ func TestGetUser(t *testing.T) {
 	defer server.Close()
 	exp := testutil.DummyAdmin()
 	exp.Roles = nil
+	exp.Username = "foo"
 	if _, _, err := server.AddUser(exp); err != nil {
 		t.Fatal(err)
 	}
@@ -94,6 +97,7 @@ func TestUpdateUser(t *testing.T) {
 	defer server.Close()
 	user := testutil.DummyAdmin()
 	user.Roles = nil
+	user.Username = "foo"
 	if _, _, err := server.AddUser(user); err != nil {
 		t.Fatal(err)
 	}
@@ -118,6 +122,7 @@ func TestDeleteUser(t *testing.T) {
 	}
 	defer server.Close()
 	user := testutil.DummyAdmin()
+	user.Username = "foo"
 	user.Roles = nil
 	if _, _, err := server.AddUser(user); err != nil {
 		t.Fatal(err)

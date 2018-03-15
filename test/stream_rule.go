@@ -39,7 +39,7 @@ func TestCreateStreamRule(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet := testutil.DummyNewIndexSet()
+	indexSet := testutil.DummyNewIndexSet("hoge")
 	is, _, err := server.AddIndexSet(indexSet)
 	if err != nil {
 		t.Fatal(err)

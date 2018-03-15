@@ -113,6 +113,9 @@ func NewMockServer(addr string, store Store) (*MockServer, error) {
 	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
 	ms.endpoint = u
 	ms.server = server
+	if err := ms.InitData(); err != nil {
+		return ms, err
+	}
 	return ms, nil
 }
 

@@ -33,10 +33,6 @@ func TestGetInputs(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	input := testutil.DummyNewInput()
-	if _, _, err := server.AddInput(input); err != nil {
-		t.Fatal(err)
-	}
 	act, _, err := client.GetInputs()
 	if err != nil {
 		t.Fatal("Failed to GetInputs", err)
@@ -46,9 +42,6 @@ func TestGetInputs(t *testing.T) {
 	}
 	if len(act) != 1 {
 		t.Fatalf("len(act) == %d, wanted 1", len(act))
-	}
-	if act[0].Node != input.Node {
-		t.Fatalf("Node == %s, wanted %s", act[0].Node, input.Node)
 	}
 }
 

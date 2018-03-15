@@ -9,7 +9,7 @@ import (
 )
 
 func addDummyStream(server *MockServer) (*graylog.IndexSet, *graylog.Stream, error) {
-	indexSet, _, err := server.AddIndexSet(testutil.DummyNewIndexSet())
+	indexSet, _, err := server.AddIndexSet(testutil.DummyNewIndexSet("hoge"))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -25,10 +25,6 @@ func TestGetStreams(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	_, stream, err := addDummyStream(server)
-	if err != nil {
-		t.Fatal(err)
-	}
 	streams, total, _, err := client.GetStreams()
 	if err != nil {
 		t.Fatal("Failed to GetStreams", err)
@@ -36,8 +32,8 @@ func TestGetStreams(t *testing.T) {
 	if total != 1 {
 		t.Fatalf("total == %d, wanted %d", total, 1)
 	}
-	if streams[0].ID != stream.ID {
-		t.Fatalf("streams[0].ID == %s, wanted %s", streams[0].ID, stream.ID)
+	if len(streams) != 1 {
+		t.Fatalf("len(stream) == %d, wanted %d", len(streams), 1)
 	}
 }
 
@@ -51,7 +47,7 @@ func TestCreateStream(t *testing.T) {
 	if _, _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("CreateStream() must be failed")
 	}
-	indexSet, _, err := server.AddIndexSet(testutil.DummyNewIndexSet())
+	indexSet, _, err := server.AddIndexSet(testutil.DummyNewIndexSet("hoge"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -113,11 +109,6 @@ func TestGetEnabledStreams(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	_, stream, err := addDummyStream(server)
-	if err != nil {
-		t.Fatal(err)
-	}
-	exp := []graylog.Stream{*stream}
 	streams, total, _, err := client.GetEnabledStreams()
 	if err != nil {
 		t.Fatal("Failed to GetStreams", err)
@@ -125,12 +116,11 @@ func TestGetEnabledStreams(t *testing.T) {
 	if total != 1 {
 		t.Fatalf("total == %d, wanted %d", total, 1)
 	}
-	if streams[0].ID != exp[0].ID {
-		t.Fatalf("streams[0].ID == %s, wanted %s", streams[0].ID, exp[0].ID)
-	}
+
+	stream := streams[0]
 
 	stream.Disabled = true
-	if _, err := server.UpdateStream(stream); err != nil {
+	if _, err := server.UpdateStream(&stream); err != nil {
 		t.Fatal(err)
 	}
 	streams, total, _, err = client.GetEnabledStreams()

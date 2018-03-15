@@ -80,7 +80,7 @@ func (ms *MockServer) DeleteRole(name string) (int, error) {
 	return 200, nil
 }
 
-func (ms *MockServer) RoleList() ([]graylog.Role, error) {
+func (ms *MockServer) GetRoles() ([]graylog.Role, error) {
 	return ms.store.GetRoles()
 }
 
@@ -185,7 +185,7 @@ func (ms *MockServer) handleGetRoles(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	ms.handleInit(w, r, false)
-	arr, err := ms.RoleList()
+	arr, err := ms.GetRoles()
 	if err != nil {
 		return 500, nil, err
 	}

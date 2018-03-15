@@ -37,13 +37,9 @@ func TestMockServerHandleUpdateUser(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	user, _, err := server.AddUser(testutil.DummyNewUser())
-	if err != nil {
-		t.Fatal(err)
-	}
 	body := bytes.NewBuffer([]byte("hoge"))
 	req, err := http.NewRequest(
-		http.MethodPut, client.Endpoints.User(user.Username), body)
+		http.MethodPut, client.Endpoints.User("admin"), body)
 	if err != nil {
 		t.Fatal(err)
 	}

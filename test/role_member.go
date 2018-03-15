@@ -1,10 +1,8 @@
 package test
 
 import (
-	"reflect"
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
@@ -14,23 +12,12 @@ func TestGetRoleMembers(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	role := testutil.DummyRole()
-	if _, err := server.AddRole(role); err != nil {
-		t.Fatal(err)
-	}
-	user := testutil.DummyNewUser()
-	user.Roles = []string{role.Name}
-	user, _, err = server.AddUser(user)
-	if err != nil {
-		t.Fatal(err)
-	}
-	users, _, err := client.GetRoleMembers(role.Name)
+	users, _, err := client.GetRoleMembers("Admin")
 	if err != nil {
 		t.Fatal("Failed to GetRoleMembers", err)
 	}
-	exp := []graylog.User{*user}
-	if !reflect.DeepEqual(users, exp) {
-		t.Fatalf("client.GetRoleMembers() == %v, wanted %v", users, exp)
+	if len(users) != 0 {
+		t.Fatalf("the number of Admin users is %d, wanted 0", len(users))
 	}
 	if _, _, err := client.GetRoleMembers(""); err == nil {
 		t.Fatal("name is required")
@@ -46,27 +33,19 @@ func TestAddUserToRole(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	user, _, err := server.AddUser(testutil.DummyNewUser())
-	if err != nil {
-		t.Fatal(err)
-	}
-	role := testutil.DummyRole()
-	if _, err := server.AddRole(role); err != nil {
-		t.Fatal(err)
-	}
-	if _, err = client.AddUserToRole(user.Username, role.Name); err != nil {
+	if _, err = client.AddUserToRole("admin", "Admin"); err != nil {
 		t.Fatal("Failed to AddUserToRole", err)
 	}
-	if _, err = client.AddUserToRole("", role.Name); err == nil {
+	if _, err = client.AddUserToRole("", "Admin"); err == nil {
 		t.Fatal("user name is required")
 	}
-	if _, err = client.AddUserToRole(user.Username, ""); err == nil {
+	if _, err = client.AddUserToRole("admin", ""); err == nil {
 		t.Fatal("role name is required")
 	}
-	if _, err = client.AddUserToRole("h", role.Name); err == nil {
+	if _, err = client.AddUserToRole("h", "Admin"); err == nil {
 		t.Fatal(`no user whose name is "h"`)
 	}
-	if _, err = client.AddUserToRole(user.Username, "h"); err == nil {
+	if _, err = client.AddUserToRole("admin", "h"); err == nil {
 		t.Fatal(`no role whose name is "h"`)
 	}
 }
@@ -77,27 +56,19 @@ func TestRemoveUserFromRole(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	user, _, err := server.AddUser(testutil.DummyNewUser())
-	if err != nil {
-		t.Fatal(err)
-	}
-	role := testutil.DummyRole()
-	if _, err := server.AddRole(role); err != nil {
-		t.Fatal(err)
-	}
-	if _, err = client.RemoveUserFromRole(user.Username, role.Name); err != nil {
+	if _, err = client.RemoveUserFromRole("admin", "Admin"); err != nil {
 		t.Fatal("Failed to RemoveUserFromRole", err)
 	}
-	if _, err = client.RemoveUserFromRole("", role.Name); err == nil {
+	if _, err = client.RemoveUserFromRole("", "Admin"); err == nil {
 		t.Fatal("user name is required")
 	}
-	if _, err = client.RemoveUserFromRole(user.Username, ""); err == nil {
+	if _, err = client.RemoveUserFromRole("admin", ""); err == nil {
 		t.Fatal("role name is required")
 	}
-	if _, err = client.RemoveUserFromRole("h", role.Name); err == nil {
+	if _, err = client.RemoveUserFromRole("h", "Admin"); err == nil {
 		t.Fatal(`no user whose name is "h"`)
 	}
-	if _, err = client.RemoveUserFromRole(user.Username, "h"); err == nil {
+	if _, err = client.RemoveUserFromRole("admin", "h"); err == nil {
 		t.Fatal(`no role whose name is "h"`)
 	}
 }
