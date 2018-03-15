@@ -168,7 +168,7 @@ func (ms *MockServer) handleCreateStreamRule(
 	}
 	ms.safeSave()
 	ret := map[string]string{"streamrule_id": rule.ID}
-	return 200, ret, nil
+	return 201, ret, nil
 }
 
 // null body 415 {"type": "ApiError", "message": "HTTP 415 Unsupported Media Type"}
@@ -261,5 +261,5 @@ func (ms *MockServer) handleDeleteStreamRule(
 	}
 	ms.DeleteStream(id)
 	ms.safeSave()
-	return 200, nil, nil
+	return 204, nil, nil
 }

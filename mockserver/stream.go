@@ -130,7 +130,7 @@ func (ms *MockServer) handleCreateStream(
 		return 400, nil, err
 	}
 	ret := map[string]string{"stream_id": stream.ID}
-	return 200, ret, nil
+	return 201, ret, nil
 }
 
 // GET /streams/enabled Get a list of all enabled streams
@@ -258,7 +258,7 @@ func (ms *MockServer) handleDeleteStream(
 	}
 	ms.DeleteStream(id)
 	ms.safeSave()
-	return 200, nil, nil
+	return 204, nil, nil
 }
 
 // POST /streams/{streamID}/pause Pause a stream

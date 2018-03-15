@@ -155,7 +155,7 @@ func (ms *MockServer) handleCreateUser(
 		return sc, nil, err
 	}
 	ms.safeSave()
-	return 200, nil, nil
+	return 201, nil, nil
 }
 
 // GET /users List all users
@@ -236,5 +236,5 @@ func (ms *MockServer) handleDeleteUser(
 		return sc, nil, err
 	}
 	ms.safeSave()
-	return 200, nil, nil
+	return 204, nil, nil
 }

@@ -135,7 +135,7 @@ func (ms *MockServer) handleDeleteInput(
 		return sc, nil, err
 	}
 	ms.safeSave()
-	return 200, nil, nil
+	return 204, nil, nil
 }
 
 // POST /system/inputs Launch input on this node
@@ -168,7 +168,7 @@ func (ms *MockServer) handleCreateInput(
 	}
 	ms.safeSave()
 	d := map[string]string{"id": input.ID}
-	return 200, &d, nil
+	return 201, &d, nil
 }
 
 // GET /system/inputs Get all inputs

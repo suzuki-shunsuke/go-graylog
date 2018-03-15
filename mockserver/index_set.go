@@ -184,7 +184,7 @@ func (ms *MockServer) handleCreateIndexSet(
 		return sc, nil, err
 	}
 	ms.safeSave()
-	return 200, indexSet, nil
+	return 201, indexSet, nil
 }
 
 // PUT /system/indices/index_sets/{id} Update index set
@@ -247,7 +247,7 @@ func (ms *MockServer) handleDeleteIndexSet(
 		return sc, nil, err
 	}
 	ms.safeSave()
-	return 200, nil, nil
+	return 204, nil, nil
 }
 
 // PUT /system/indices/index_sets/{id}/default Set default index set
