@@ -29,16 +29,16 @@ type StreamRule struct {
 	Value       string `json:"value,omitempty" v-create:"required" v-update:"required"`
 }
 
+type StreamRulesBody struct {
+	Total       int          `json:"total"`
+	StreamRules []StreamRule `json:"stream_rules"`
+}
+
 // GetStreamRules returns a list of all stream rules
 func (client *Client) GetStreamRules(streamID string) (
 	streamRules []StreamRule, total int, ei *ErrorInfo, err error,
 ) {
 	return client.GetStreamRulesContext(context.Background(), streamID)
-}
-
-type StreamRulesBody struct {
-	Total       int          `json:"total"`
-	StreamRules []StreamRule `json:"stream_rules"`
 }
 
 // GetStreamRulesContext returns a list of all stream rules with a context.

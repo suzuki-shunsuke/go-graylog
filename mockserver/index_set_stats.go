@@ -64,8 +64,8 @@ func (ms *MockServer) SetIndexSetStats(id string, stats *graylog.IndexSetStats) 
 	if !ok {
 		return 404, fmt.Errorf("no index set with id <%s> is found", id)
 	}
-	err = ms.store.SetIndexSetStats(id, stats)
-	if err != nil {
+
+	if err := ms.store.SetIndexSetStats(id, stats); err != nil {
 		return 500, err
 	}
 	return 200, nil

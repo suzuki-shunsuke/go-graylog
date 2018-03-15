@@ -43,9 +43,12 @@ func (ms *MockServer) checkUserRoles(roles []string) (int, error) {
 
 // AddUser adds a user to the MockServer.
 func (ms *MockServer) AddUser(user *graylog.User) (*graylog.User, int, error) {
+	// client side validation
 	if err := validator.CreateValidator.Struct(user); err != nil {
 		return nil, 400, err
 	}
+
+	// Check a given username has already used.
 	ok, err := ms.HasUser(user.Username)
 	if err != nil {
 		return nil, 500, err
@@ -60,7 +63,11 @@ func (ms *MockServer) AddUser(user *graylog.User) (*graylog.User, int, error) {
 	if sc, err := ms.checkUserRoles(user.Roles); err != nil {
 		return nil, sc, err
 	}
+
+	// generate ID
 	s.ID = randStringBytesMaskImprSrc(24)
+
+	// Add a user
 	u, err := ms.store.AddUser(&s)
 	if err != nil {
 		return u, 500, err
@@ -71,6 +78,7 @@ func (ms *MockServer) AddUser(user *graylog.User) (*graylog.User, int, error) {
 // UpdateUser updates a user of the MockServer.
 // "email", "permissions", "full_name", "password"
 func (ms *MockServer) UpdateUser(user *graylog.User) (int, error) {
+	// Check updated user exists
 	ok, err := ms.HasUser(user.Username)
 	if err != nil {
 		return 500, err
@@ -78,13 +86,18 @@ func (ms *MockServer) UpdateUser(user *graylog.User) (int, error) {
 	if !ok {
 		return 404, fmt.Errorf("The user is not found")
 	}
+
+	// client side validation
 	if err := validator.UpdateValidator.Struct(user); err != nil {
 		return 400, err
 	}
+
 	// check role exists
 	if sc, err := ms.checkUserRoles(user.Roles); err != nil {
 		return sc, err
 	}
+
+	// update
 	if err := ms.store.UpdateUser(user); err != nil {
 		return 500, err
 	}
@@ -93,6 +106,7 @@ func (ms *MockServer) UpdateUser(user *graylog.User) (int, error) {
 
 // DeleteUser removes a user from the MockServer.
 func (ms *MockServer) DeleteUser(name string) (int, error) {
+	// Check deleted user exists
 	ok, err := ms.HasUser(name)
 	if err != nil {
 		return 500, err
@@ -100,6 +114,8 @@ func (ms *MockServer) DeleteUser(name string) (int, error) {
 	if !ok {
 		return 404, fmt.Errorf("The user is not found")
 	}
+
+	// Delete a user
 	if err := ms.store.DeleteUser(name); err != nil {
 		return 500, err
 	}
@@ -131,11 +147,10 @@ func (ms *MockServer) handleCreateUser(
 
 	user := &graylog.User{}
 	if err := msDecode(body, user); err != nil {
-		// if err := decoder.Decode(body); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as User")
-		return 400, nil, fmt.Errorf("400 Bad Request")
+		return 400, nil, err
 	}
 
 	if _, sc, err := ms.AddUser(user); err != nil {
@@ -203,7 +218,7 @@ func (ms *MockServer) handleUpdateUser(
 		ms.Logger().WithFields(log.Fields{
 			"body": string(b), "error": err,
 		}).Info("Failed to parse request body as User")
-		return 400, nil, fmt.Errorf("400 Bad Request")
+		return 400, nil, err
 	}
 
 	if sc, err := ms.UpdateUser(user); err != nil {

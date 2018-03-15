@@ -3,7 +3,6 @@ package mockserver
 // GET /streams/{streamid}/rules Get a list of all stream rules
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -13,60 +12,120 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/validator"
 )
 
+// HasStreamRule
+func (ms *MockServer) HasStreamRule(streamID, streamRuleID string) (bool, error) {
+	return ms.HasStreamRule(streamID, streamRuleID)
+}
+
 // AddStreamRule adds a stream rule to the MockServer.
-func (ms *MockServer) AddStreamRule(rule *graylog.StreamRule) error {
-	if rule.StreamID == "" {
-		return errors.New("stream id is required")
+func (ms *MockServer) AddStreamRule(rule *graylog.StreamRule) (*graylog.StreamRule, int, error) {
+	if err := validator.CreateValidator.Struct(rule); err != nil {
+		return nil, 400, err
 	}
 	ok, err := ms.HasStream(rule.StreamID)
 	if err != nil {
-		return err
+		return nil, 500, err
 	}
 	if !ok {
-		return fmt.Errorf("no stream is not found: %s", rule.StreamID)
+		return nil, 404, fmt.Errorf("no stream is not found: %s", rule.StreamID)
 	}
-	if rule.ID == "" {
-		rule.ID = randStringBytesMaskImprSrc(24)
+	rule.ID = randStringBytesMaskImprSrc(24)
+	rule, err = ms.store.AddStreamRule(rule)
+	if err != nil {
+		return nil, 500, err
 	}
-	rules, ok := ms.streamRules[rule.StreamID]
-	if !ok || rules == nil {
-		rules = map[string]graylog.StreamRule{}
+	return rule, 200, nil
+}
+
+// UpdateStreamRule updates a stream rule of the MockServer.
+func (ms *MockServer) UpdateStreamRule(rule *graylog.StreamRule) (int, error) {
+	// PUT /streams/{streamid}/rules/{streamRuleID} Update a stream rule
+	if err := validator.UpdateValidator.Struct(rule); err != nil {
+		return 400, err
 	}
-	rules[rule.ID] = *rule
-	ms.streamRules[rule.StreamID] = rules
-	return nil
+	ok, err := ms.HasStream(rule.StreamID)
+	if err != nil {
+		return 500, err
+	}
+	if !ok {
+		return 404, fmt.Errorf("no stream is not found: %s", rule.StreamID)
+	}
+	r, err := ms.store.GetStreamRule(rule.StreamID, rule.ID)
+	if err != nil {
+		return 500, err
+	}
+	if r == nil {
+		return 404, fmt.Errorf("no stream rule is not found: %s", rule.ID)
+	}
+	if err := ms.store.UpdateStreamRule(rule); err != nil {
+		return 500, err
+	}
+	return 200, nil
+}
+
+// DeleteStreamRule deletes a stream rule from the MockServer.
+func (ms *MockServer) DeleteStreamRule(streamID, streamRuleID string) (int, error) {
+	ok, err := ms.HasStream(streamID)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "id": streamID,
+		}).Error("ms.HasStream() is failure")
+		return 500, err
+	}
+	if !ok {
+		return 404, fmt.Errorf("No stream found with id %s", streamID)
+	}
+	ok, err = ms.HasStreamRule(streamID, streamRuleID)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "streamID": streamID, "streamRuleID": streamRuleID,
+		}).Error("ms.HasStreamRule() is failure")
+		return 500, err
+	}
+	if !ok {
+		return 404, fmt.Errorf("No stream rule found with id %s", streamRuleID)
+	}
+
+	if err := ms.store.DeleteStreamRule(streamID, streamRuleID); err != nil {
+		return 500, err
+	}
+	return 200, nil
 }
 
 // StreamRuleList returns a list of all stream rules of a given stream.
-func (ms *MockServer) StreamRuleList(streamID string) []graylog.StreamRule {
-	rules, ok := ms.streamRules[streamID]
-	if !ok || rules == nil {
-		return []graylog.StreamRule{}
+func (ms *MockServer) StreamRuleList(streamID string) ([]graylog.StreamRule, int, error) {
+	ok, err := ms.HasStream(streamID)
+	if err != nil {
+		return nil, 500, err
 	}
-	arr := make([]graylog.StreamRule, len(rules))
-	i := 0
-	for _, rule := range rules {
-		arr[i] = rule
-		i++
+	if !ok {
+		return nil, 404, fmt.Errorf("no stream is not found: %s", streamID)
 	}
-	return arr
+	rules, err := ms.store.GetStreamRules(streamID)
+	if err != nil {
+		return nil, 500, err
+	}
+	return rules, 200, nil
 }
 
-// GET /streams Get a list of all streams
 func (ms *MockServer) handleGetStreamRules(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
+	// GET /streams/{streamid}/rules Get a list of all stream rules
 	ms.handleInit(w, r, false)
 	streamID := ps.ByName("streamID")
-	arr := ms.StreamRuleList(streamID)
+	arr, sc, err := ms.StreamRuleList(streamID)
+	if err != nil {
+		return sc, nil, err
+	}
 	body := &graylog.StreamRulesBody{StreamRules: arr, Total: len(arr)}
 	return 200, body, nil
 }
 
-// POST /streams/{streamid}/rules Create a stream rule
 func (ms *MockServer) handleCreateStreamRule(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
+	// POST /streams/{streamid}/rules Create a stream rule
 	b, err := ms.handleInit(w, r, true)
 	if err != nil {
 		return 500, nil, err
@@ -101,14 +160,12 @@ func (ms *MockServer) handleCreateStreamRule(
 	}).Debug("request body")
 
 	rule.StreamID = streamID
-	if err := validator.CreateValidator.Struct(rule); err != nil {
-		return 400, nil, err
-	}
-	if err := ms.AddStreamRule(rule); err != nil {
+	rule, sc, err = ms.AddStreamRule(rule)
+	if err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"error": err, "rule": rule,
 		}).Error("Faield to add rule to mock server")
-		return 500, nil, err
+		return sc, nil, err
 	}
 	ms.safeSave()
 	ret := map[string]string{"streamrule_id": rule.ID}
@@ -123,6 +180,7 @@ func (ms *MockServer) handleCreateStreamRule(
 func (ms *MockServer) handleUpdateStreamRule(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
+	// PUT /streams/{streamid}/rules/{streamRuleID} Update a stream rule
 	b, err := ms.handleInit(w, r, true)
 	if err != nil {
 		return 500, nil, err
@@ -171,13 +229,38 @@ func (ms *MockServer) handleUpdateStreamRule(
 	if err := validator.UpdateValidator.Struct(&rule); err != nil {
 		return 400, nil, err
 	}
-	if err := ms.AddStreamRule(&rule); err != nil {
+	if sc, err := ms.UpdateStreamRule(&rule); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"error": err, "rule": &rule,
 		}).Error("Faield to add rule to mock server")
-		return 500, nil, err
+		return sc, nil, err
 	}
 	ms.safeSave()
 	ret := map[string]string{"streamrule_id": rule.ID}
 	return 200, ret, nil
+}
+
+func (ms *MockServer) handleDeleteStreamRule(
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) (int, interface{}, error) {
+	// DELETE /streams/{streamid}/rules/{streamRuleId} Delete a stream rule
+	ms.handleInit(w, r, false)
+	streamID := ps.ByName("streamID")
+	id := ps.ByName("streamRuleID")
+	sc, err := ms.DeleteStreamRule(streamID, id)
+	return sc, nil, err
+	ok, err := ms.HasStream(id)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "id": id,
+		}).Error("ms.HasStream() is failure")
+		return 500, nil, err
+	}
+
+	if !ok {
+		return 404, nil, fmt.Errorf("No stream found with id %s", id)
+	}
+	ms.DeleteStream(id)
+	ms.safeSave()
+	return 200, nil, nil
 }

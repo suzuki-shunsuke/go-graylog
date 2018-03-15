@@ -16,9 +16,9 @@ func TestGetStreamRules(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	streamRule := testutil.DummyStreamRule()
+	streamRule := testutil.DummyNewStreamRule()
 	streamRule.StreamID = stream.ID
-	if err := server.AddStreamRule(streamRule); err != nil {
+	if _, _, err := server.AddStreamRule(streamRule); err != nil {
 		t.Fatal(err)
 	}
 	rules, total, _, err := client.GetStreamRules(stream.ID)

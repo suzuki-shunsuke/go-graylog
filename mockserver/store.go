@@ -55,4 +55,11 @@ type Store interface {
 	UpdateStream(stream *graylog.Stream) error
 	DeleteStream(id string) error
 	GetEnabledStreams() ([]graylog.Stream, error)
+
+	AddStreamRule(rule *graylog.StreamRule) (*graylog.StreamRule, error)
+	GetStreamRules(id string) ([]graylog.StreamRule, error)
+	HasStreamRule(streamID, streamRuleID string) (bool, error)
+	GetStreamRule(streamID, streamRuleID string) (*graylog.StreamRule, error)
+	UpdateStreamRule(rule *graylog.StreamRule) error
+	DeleteStreamRule(streamID, streamRuleID string) error
 }

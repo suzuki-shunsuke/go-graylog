@@ -56,7 +56,7 @@ func (ms *MockServer) UpdateStream(stream *graylog.Stream) (int, error) {
 	return 200, nil
 }
 
-// DeleteStream removes a stream from the MockServer.
+// DeleteStream deletes a stream from the MockServer.
 func (ms *MockServer) DeleteStream(id string) (int, error) {
 	ok, err := ms.HasStream(id)
 	if err != nil {
