@@ -71,7 +71,6 @@ func (ms *MockServer) InputList() ([]graylog.Input, error) {
 func (ms *MockServer) handleGetInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	id := ps.ByName("inputID")
 	input, err := ms.GetInput(id)
 	if err != nil {
@@ -90,17 +89,10 @@ func (ms *MockServer) handleGetInput(
 func (ms *MockServer) handleUpdateInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	b, err := ms.handleInit(w, r, true)
-	if err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err,
-		}).Error("ms.handleInit() is failure")
-		return 500, nil, err
-	}
 	id := ps.ByName("inputID")
 	requiredFields := []string{"title", "type", "configuration"}
 	allowedFields := []string{"global", "node"}
-	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
+	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if sc != 200 {
 		return sc, nil, fmt.Errorf(msg)
 	}
@@ -108,13 +100,13 @@ func (ms *MockServer) handleUpdateInput(
 	input := &graylog.Input{}
 	if err := msDecode(body, input); err != nil {
 		ms.Logger().WithFields(log.Fields{
-			"body": string(b), "error": err,
+			"body": body, "error": err,
 		}).Info("Failed to parse request body as Input")
 		return 400, nil, err
 	}
 
 	ms.Logger().WithFields(log.Fields{
-		"body": string(b), "input": input, "id": id,
+		"body": body, "input": input, "id": id,
 	}).Debug("request body")
 
 	input.ID = id
@@ -129,7 +121,6 @@ func (ms *MockServer) handleUpdateInput(
 func (ms *MockServer) handleDeleteInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	id := ps.ByName("inputID")
 	if sc, err := ms.DeleteInput(id); err != nil {
 		return sc, nil, err
@@ -142,14 +133,9 @@ func (ms *MockServer) handleDeleteInput(
 func (ms *MockServer) handleCreateInput(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	b, err := ms.handleInit(w, r, true)
-	if err != nil {
-		return 500, nil, err
-	}
-
 	requiredFields := []string{"title", "type", "configuration"}
 	allowedFields := []string{"global", "node"}
-	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
+	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if sc != 200 {
 		return sc, nil, fmt.Errorf(msg)
 	}
@@ -157,12 +143,12 @@ func (ms *MockServer) handleCreateInput(
 	input := &graylog.Input{}
 	if err := msDecode(body, input); err != nil {
 		ms.Logger().WithFields(log.Fields{
-			"body": string(b), "error": err,
+			"body": body, "error": err,
 		}).Info("Failed to parse request body as Input")
 		return 400, nil, err
 	}
 
-	sc, err = ms.AddInput(input)
+	sc, err := ms.AddInput(input)
 	if err != nil {
 		return sc, nil, err
 	}
@@ -175,7 +161,6 @@ func (ms *MockServer) handleCreateInput(
 func (ms *MockServer) handleGetInputs(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	arr, err := ms.InputList()
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{

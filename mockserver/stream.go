@@ -86,7 +86,6 @@ func (ms *MockServer) EnabledStreamList() ([]graylog.Stream, error) {
 func (ms *MockServer) handleGetStreams(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	arr, err := ms.StreamList()
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -103,16 +102,11 @@ func (ms *MockServer) handleGetStreams(
 func (ms *MockServer) handleCreateStream(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	b, err := ms.handleInit(w, r, true)
-	if err != nil {
-		return 500, nil, err
-	}
-
 	requiredFields := []string{"title", "index_set_id"}
 	allowedFields := []string{
 		"rules", "description", "content_pack",
 		"matching_type", "remove_matches_from_default_stream"}
-	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
+	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if sc != 200 {
 		return sc, nil, fmt.Errorf(msg)
 	}
@@ -120,12 +114,12 @@ func (ms *MockServer) handleCreateStream(
 	stream := &graylog.Stream{}
 	if err := msDecode(body, stream); err != nil {
 		ms.logger.WithFields(log.Fields{
-			"body": string(b), "error": err,
+			"body": body, "error": err,
 		}).Info("Failed to parse request body as stream")
 		return 400, nil, err
 	}
 
-	sc, err = ms.AddStream(stream)
+	sc, err := ms.AddStream(stream)
 	if err != nil {
 		return 400, nil, err
 	}
@@ -137,7 +131,6 @@ func (ms *MockServer) handleCreateStream(
 func (ms *MockServer) handleGetEnabledStreams(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	arr, err := ms.EnabledStreamList()
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -157,7 +150,6 @@ func (ms *MockServer) handleGetStream(
 	if id == "enabled" {
 		return ms.handleGetEnabledStreams(w, r, ps)
 	}
-	ms.handleInit(w, r, false)
 	stream, err := ms.GetStream(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -175,10 +167,6 @@ func (ms *MockServer) handleGetStream(
 func (ms *MockServer) handleUpdateStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	b, err := ms.handleInit(w, r, true)
-	if err != nil {
-		return 500, nil, err
-	}
 	id := ps.ByName("streamID")
 	stream, err := ms.GetStream(id)
 	if err != nil {
@@ -192,7 +180,8 @@ func (ms *MockServer) handleUpdateStream(
 	}
 	data := map[string]interface{}{}
 
-	if err := json.Unmarshal(b, &data); err != nil {
+	dec := json.NewDecoder(r.Body)
+	if err := dec.Decode(&data); err != nil {
 		return 400, nil, err
 	}
 	if title, ok := data["title"]; ok {
@@ -243,7 +232,6 @@ func (ms *MockServer) handleUpdateStream(
 func (ms *MockServer) handleDeleteStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	id := ps.ByName("streamID")
 	ok, err := ms.HasStream(id)
 	if err != nil {
@@ -265,7 +253,6 @@ func (ms *MockServer) handleDeleteStream(
 func (ms *MockServer) handlePauseStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	id := ps.ByName("streamID")
 	ok, err := ms.HasStream(id)
 	if err != nil {
@@ -284,7 +271,6 @@ func (ms *MockServer) handlePauseStream(
 func (ms *MockServer) handleResumeStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	id := ps.ByName("streamID")
 	ok, err := ms.HasStream(id)
 	if err != nil {

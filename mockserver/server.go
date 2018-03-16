@@ -3,7 +3,6 @@ package mockserver
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -50,55 +49,55 @@ func NewMockServer(addr string, store Store) (*MockServer, error) {
 
 	router := httprouter.New()
 
-	router.GET("/api/roles/:rolename", wrapHandle(ms.handleGetRole))
-	router.PUT("/api/roles/:rolename", wrapHandle(ms.handleUpdateRole))
-	router.DELETE("/api/roles/:rolename", wrapHandle(ms.handleDeleteRole))
-	router.GET("/api/roles", wrapHandle(ms.handleGetRoles))
-	router.POST("/api/roles", wrapHandle(ms.handleCreateRole))
+	router.GET("/api/roles/:rolename", wrapHandle(ms, ms.handleGetRole))
+	router.PUT("/api/roles/:rolename", wrapHandle(ms, ms.handleUpdateRole))
+	router.DELETE("/api/roles/:rolename", wrapHandle(ms, ms.handleDeleteRole))
+	router.GET("/api/roles", wrapHandle(ms, ms.handleGetRoles))
+	router.POST("/api/roles", wrapHandle(ms, ms.handleCreateRole))
 
-	router.GET("/api/users/:username", wrapHandle(ms.handleGetUser))
-	router.PUT("/api/users/:username", wrapHandle(ms.handleUpdateUser))
-	router.DELETE("/api/users/:username", wrapHandle(ms.handleDeleteUser))
-	router.GET("/api/users", wrapHandle(ms.handleGetUsers))
-	router.POST("/api/users", wrapHandle(ms.handleCreateUser))
+	router.GET("/api/users/:username", wrapHandle(ms, ms.handleGetUser))
+	router.PUT("/api/users/:username", wrapHandle(ms, ms.handleUpdateUser))
+	router.DELETE("/api/users/:username", wrapHandle(ms, ms.handleDeleteUser))
+	router.GET("/api/users", wrapHandle(ms, ms.handleGetUsers))
+	router.POST("/api/users", wrapHandle(ms, ms.handleCreateUser))
 
-	router.GET("/api/roles/:rolename/members", wrapHandle(ms.handleRoleMembers))
-	router.PUT("/api/roles/:rolename/members/:username", wrapHandle(ms.handleAddUserToRole))
+	router.GET("/api/roles/:rolename/members", wrapHandle(ms, ms.handleRoleMembers))
+	router.PUT("/api/roles/:rolename/members/:username", wrapHandle(ms, ms.handleAddUserToRole))
 	router.DELETE(
-		"/api/roles/:rolename/members/:username", wrapHandle(ms.handleRemoveUserFromRole))
+		"/api/roles/:rolename/members/:username", wrapHandle(ms, ms.handleRemoveUserFromRole))
 
-	router.GET("/api/system/inputs", wrapHandle(ms.handleGetInputs))
-	router.GET("/api/system/inputs/:inputID", wrapHandle(ms.handleGetInput))
-	router.POST("/api/system/inputs", wrapHandle(ms.handleCreateInput))
-	router.PUT("/api/system/inputs/:inputID", wrapHandle(ms.handleUpdateInput))
-	router.DELETE("/api/system/inputs/:inputID", wrapHandle(ms.handleDeleteInput))
+	router.GET("/api/system/inputs", wrapHandle(ms, ms.handleGetInputs))
+	router.GET("/api/system/inputs/:inputID", wrapHandle(ms, ms.handleGetInput))
+	router.POST("/api/system/inputs", wrapHandle(ms, ms.handleCreateInput))
+	router.PUT("/api/system/inputs/:inputID", wrapHandle(ms, ms.handleUpdateInput))
+	router.DELETE("/api/system/inputs/:inputID", wrapHandle(ms, ms.handleDeleteInput))
 
-	router.GET("/api/system/indices/index_sets", wrapHandle(ms.handleGetIndexSets))
+	router.GET("/api/system/indices/index_sets", wrapHandle(ms, ms.handleGetIndexSets))
 	router.GET(
-		"/api/system/indices/index_sets/:indexSetID", wrapHandle(ms.handleGetIndexSet))
-	router.POST("/api/system/indices/index_sets", wrapHandle(ms.handleCreateIndexSet))
+		"/api/system/indices/index_sets/:indexSetID", wrapHandle(ms, ms.handleGetIndexSet))
+	router.POST("/api/system/indices/index_sets", wrapHandle(ms, ms.handleCreateIndexSet))
 	router.PUT(
-		"/api/system/indices/index_sets/:indexSetID", wrapHandle(ms.handleUpdateIndexSet))
+		"/api/system/indices/index_sets/:indexSetID", wrapHandle(ms, ms.handleUpdateIndexSet))
 	router.DELETE(
-		"/api/system/indices/index_sets/:indexSetID", wrapHandle(ms.handleDeleteIndexSet))
+		"/api/system/indices/index_sets/:indexSetID", wrapHandle(ms, ms.handleDeleteIndexSet))
 	router.PUT(
 		"/api/system/indices/index_sets/:indexSetID/default",
-		wrapHandle(ms.handleSetDefaultIndexSet))
+		wrapHandle(ms, ms.handleSetDefaultIndexSet))
 
 	router.GET(
 		"/api/system/indices/index_sets/:indexSetID/stats",
-		wrapHandle(ms.handleGetIndexSetStats))
+		wrapHandle(ms, ms.handleGetIndexSetStats))
 
-	router.GET("/api/streams", wrapHandle(ms.handleGetStreams))
-	router.POST("/api/streams", wrapHandle(ms.handleCreateStream))
-	router.GET("/api/streams/:streamID", wrapHandle(ms.handleGetStream))
-	router.PUT("/api/streams/:streamID", wrapHandle(ms.handleUpdateStream))
-	router.DELETE("/api/streams/:streamID", wrapHandle(ms.handleDeleteStream))
-	router.POST("/api/streams/:streamID/pause", wrapHandle(ms.handlePauseStream))
-	router.POST("/api/streams/:streamID/resume", wrapHandle(ms.handleResumeStream))
+	router.GET("/api/streams", wrapHandle(ms, ms.handleGetStreams))
+	router.POST("/api/streams", wrapHandle(ms, ms.handleCreateStream))
+	router.GET("/api/streams/:streamID", wrapHandle(ms, ms.handleGetStream))
+	router.PUT("/api/streams/:streamID", wrapHandle(ms, ms.handleUpdateStream))
+	router.DELETE("/api/streams/:streamID", wrapHandle(ms, ms.handleDeleteStream))
+	router.POST("/api/streams/:streamID/pause", wrapHandle(ms, ms.handlePauseStream))
+	router.POST("/api/streams/:streamID/resume", wrapHandle(ms, ms.handleResumeStream))
 
-	router.GET("/api/streams/:streamID/rules", wrapHandle(ms.handleGetStreamRules))
-	router.POST("/api/streams/:streamID/rules", wrapHandle(ms.handleCreateStreamRule))
+	router.GET("/api/streams/:streamID/rules", wrapHandle(ms, ms.handleGetStreamRules))
+	router.POST("/api/streams/:streamID/rules", wrapHandle(ms, ms.handleCreateStreamRule))
 
 	router.NotFound = ms.handleNotFound
 
@@ -165,31 +164,22 @@ func (ms *MockServer) handleNotFound(w http.ResponseWriter, r *http.Request) {
 		`{"message":"Page Not Found %s %s"}`, r.Method, r.URL.Path)))
 }
 
-func (ms *MockServer) handleInit(
-	w http.ResponseWriter, r *http.Request, isReadBody bool,
-) ([]byte, error) {
-	ms.Logger().WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-	}).Info("request start")
-	w.Header().Set("Content-Type", "application/json")
-	if isReadBody {
-		return ioutil.ReadAll(r.Body)
-	}
-	return nil, nil
-}
-
 func (ms *MockServer) GetEndpoint() string {
 	return ms.endpoint
 }
 
 type Handler func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) (int, interface{}, error)
 
-func wrapHandle(handler Handler) httprouter.Handle {
+func wrapHandle(ms *MockServer, handler Handler) httprouter.Handle {
 	// ms.Logger().WithFields(log.Fields{
 	// 	"path": r.URL.Path, "method": r.Method,
 	// }).Info("request start")
 	// w.Header().Set("Content-Type", "application/json")
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+		w.Header().Set("Content-Type", "application/json")
+		ms.Logger().WithFields(log.Fields{
+			"path": r.URL.Path, "method": r.Method,
+		}).Info("request start")
 		sc, body, err := handler(w, r, ps)
 		if err != nil {
 			w.WriteHeader(sc)

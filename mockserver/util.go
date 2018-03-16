@@ -3,6 +3,7 @@ package mockserver
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"math/rand"
 	"strings"
 	"time"
@@ -69,19 +70,20 @@ func randStringBytesMaskImprSrc(n int) string {
 }
 
 func validateRequestBody(
-	b []byte, requiredFields, allowedFields, acceptedFields []string,
+	b io.Reader, requiredFields, allowedFields, acceptedFields []string,
 ) (
 	int, string, map[string]interface{},
 ) {
+	dec := json.NewDecoder(b)
 	var a interface{}
-	if err := json.Unmarshal(b, &a); err != nil {
+	if err := dec.Decode(&a); err != nil {
 		return 400, fmt.Sprintf(
-			"Failed to parse the request body as JSON: %s (%s)", string(b), err), nil
+			"Failed to parse the request body as JSON: %s", err), nil
 	}
 	body, ok := a.(map[string]interface{})
 	if !ok {
 		return 400, fmt.Sprintf(
-			"Failed to parse the request body as a JSON object : %s", string(b)), nil
+			"Failed to parse the request body as a JSON object : %s", a), nil
 	}
 	rqf := makeHash(requiredFields)
 	for k, _ := range rqf {
@@ -104,8 +106,8 @@ func validateRequestBody(
 		for k, _ := range body {
 			if _, ok := alf[k]; !ok {
 				return 400, fmt.Sprintf(
-					"In the request body an invalid field is found: %s\nThe allowed fields: %s, request body: %s",
-					k, strings.Join(arr, ", "), string(b)), body
+					"In the request body an invalid field is found: %s\nThe allowed fields: %s",
+					k, strings.Join(arr, ", ")), body
 			}
 		}
 	}

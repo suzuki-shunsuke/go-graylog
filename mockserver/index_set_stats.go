@@ -12,7 +12,6 @@ import (
 func (ms *MockServer) handleGetIndexSetStats(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	id := ps.ByName("indexSetID")
 	indexSetStats, err := ms.GetIndexSetStats(id)
 	if err != nil {
@@ -28,7 +27,6 @@ func (ms *MockServer) handleGetIndexSetStats(
 func (ms *MockServer) handleGetAllIndexSetsStats(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	s, err := ms.GetTotalIndexSetsStats()
 	if err != nil {
 		return 500, nil, err

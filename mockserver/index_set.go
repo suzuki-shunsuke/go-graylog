@@ -109,7 +109,6 @@ func (ms *MockServer) IndexSetList() ([]graylog.IndexSet, error) {
 func (ms *MockServer) handleGetIndexSets(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	arr, err := ms.IndexSetList()
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -130,7 +129,6 @@ func (ms *MockServer) handleGetIndexSet(
 	if id == "stats" {
 		return ms.handleGetAllIndexSetsStats(w, r, ps)
 	}
-	ms.handleInit(w, r, false)
 	indexSet, err := ms.GetIndexSet(id)
 	if err != nil {
 		ms.logger.WithFields(log.Fields{
@@ -148,11 +146,6 @@ func (ms *MockServer) handleGetIndexSet(
 func (ms *MockServer) handleCreateIndexSet(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	b, err := ms.handleInit(w, r, true)
-	if err != nil {
-		return 500, nil, err
-	}
-
 	requiredFields := []string{
 		"title", "index_prefix", "rotation_strategy_class", "rotation_strategy",
 		"retention_strategy_class", "retention_strategy", "creation_date",
@@ -163,7 +156,7 @@ func (ms *MockServer) handleCreateIndexSet(
 	acceptedFields := []string{
 		"description", "replicas", "index_optimization_disabled", "writable"}
 	sc, msg, body := validateRequestBody(
-		b, requiredFields, allowedFields, acceptedFields)
+		r.Body, requiredFields, allowedFields, acceptedFields)
 	if sc != 200 {
 		return sc, nil, fmt.Errorf(msg)
 	}
@@ -171,15 +164,15 @@ func (ms *MockServer) handleCreateIndexSet(
 	indexSet := &graylog.IndexSet{}
 	if err := msDecode(body, indexSet); err != nil {
 		ms.logger.WithFields(log.Fields{
-			"body": string(b), "error": err,
+			"body": body, "error": err,
 		}).Info("Failed to parse request body as indexSet")
 		return 400, nil, err
 	}
 
 	ms.Logger().WithFields(log.Fields{
-		"body": string(b), "index_set": indexSet,
+		"body": body, "index_set": indexSet,
 	}).Debug("request body")
-	sc, err = ms.AddIndexSet(indexSet)
+	sc, err := ms.AddIndexSet(indexSet)
 	if err != nil {
 		return sc, nil, err
 	}
@@ -191,10 +184,6 @@ func (ms *MockServer) handleCreateIndexSet(
 func (ms *MockServer) handleUpdateIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	b, err := ms.handleInit(w, r, true)
-	if err != nil {
-		return 500, nil, err
-	}
 	id := ps.ByName("indexSetID")
 	indexSet, err := ms.GetIndexSet(id)
 	if err != nil {
@@ -214,20 +203,20 @@ func (ms *MockServer) handleUpdateIndexSet(
 		"index_analyzer", "shards", "index_optimization_max_num_segments"}
 	acceptedFields := []string{
 		"description", "replicas", "index_optimization_disabled", "writable"}
-	sc, msg, body := validateRequestBody(b, requiredFields, nil, acceptedFields)
+	sc, msg, body := validateRequestBody(r.Body, requiredFields, nil, acceptedFields)
 	if sc != 200 {
 		return sc, nil, fmt.Errorf(msg)
 	}
 
 	if err := msDecode(body, indexSet); err != nil {
 		ms.logger.WithFields(log.Fields{
-			"body": string(b), "error": err,
+			"body": body, "error": err,
 		}).Info("Failed to parse request body as indexSet")
 		return 400, nil, err
 	}
 
 	ms.Logger().WithFields(log.Fields{
-		"body": string(b), "index_set": indexSet,
+		"body": body, "index_set": indexSet,
 	}).Debug("request body")
 	indexSet.ID = id
 	if sc, err := ms.UpdateIndexSet(indexSet); err != nil {
@@ -241,7 +230,6 @@ func (ms *MockServer) handleUpdateIndexSet(
 func (ms *MockServer) handleDeleteIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	id := ps.ByName("indexSetID")
 	if sc, err := ms.DeleteIndexSet(id); err != nil {
 		return sc, nil, err
@@ -254,7 +242,6 @@ func (ms *MockServer) handleDeleteIndexSet(
 func (ms *MockServer) handleSetDefaultIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	id := ps.ByName("indexSetID")
 	indexSet, err := ms.GetIndexSet(id)
 	if err != nil {

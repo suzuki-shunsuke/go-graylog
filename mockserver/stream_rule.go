@@ -111,7 +111,6 @@ func (ms *MockServer) handleGetStreamRules(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// GET /streams/{streamid}/rules Get a list of all stream rules
-	ms.handleInit(w, r, false)
 	streamID := ps.ByName("streamID")
 	arr, sc, err := ms.StreamRuleList(streamID)
 	if err != nil {
@@ -125,11 +124,6 @@ func (ms *MockServer) handleCreateStreamRule(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// POST /streams/{streamid}/rules Create a stream rule
-	b, err := ms.handleInit(w, r, true)
-	if err != nil {
-		return 500, nil, err
-	}
-
 	streamID := ps.ByName("streamID")
 	ok, err := ms.HasStream(streamID)
 	if err != nil {
@@ -142,7 +136,7 @@ func (ms *MockServer) handleCreateStreamRule(
 	requiredFields := []string{"value", "field"}
 	allowedFields := []string{
 		"value", "type", "description", "inverted", "field"}
-	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
+	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if sc != 200 {
 		return sc, nil, fmt.Errorf(msg)
 	}
@@ -150,12 +144,12 @@ func (ms *MockServer) handleCreateStreamRule(
 	rule := &graylog.StreamRule{}
 	if err := msDecode(body, rule); err != nil {
 		ms.Logger().WithFields(log.Fields{
-			"body": string(b), "error": err,
+			"body": body, "error": err,
 		}).Info("Failed to parse request body as StreamRule")
 		return 400, nil, err
 	}
 	ms.Logger().WithFields(log.Fields{
-		"body": string(b), "stream_rule": rule,
+		"body": body, "stream_rule": rule,
 	}).Debug("request body")
 
 	rule.StreamID = streamID
@@ -180,10 +174,6 @@ func (ms *MockServer) handleUpdateStreamRule(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// PUT /streams/{streamid}/rules/{streamRuleID} Update a stream rule
-	b, err := ms.handleInit(w, r, true)
-	if err != nil {
-		return 500, nil, err
-	}
 	streamID := ps.ByName("streamID")
 
 	ok, err := ms.HasStream(streamID)
@@ -207,7 +197,7 @@ func (ms *MockServer) handleUpdateStreamRule(
 	requiredFields := []string{"value", "field"}
 	allowedFields := []string{
 		"value", "type", "description", "inverted", "field"}
-	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
+	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if sc != 200 {
 		return sc, nil, fmt.Errorf(msg)
 	}
@@ -215,12 +205,12 @@ func (ms *MockServer) handleUpdateStreamRule(
 	rule = graylog.StreamRule{}
 	if err := msDecode(body, &rule); err != nil {
 		ms.Logger().WithFields(log.Fields{
-			"body": string(b), "error": err,
+			"body": body, "error": err,
 		}).Info("Failed to parse request body as StreamRule")
 		return 400, nil, err
 	}
 	ms.Logger().WithFields(log.Fields{
-		"body": string(b), "stream_rule": rule,
+		"body": body, "stream_rule": rule,
 	}).Debug("request body")
 
 	rule.StreamID = streamID
@@ -243,7 +233,6 @@ func (ms *MockServer) handleDeleteStreamRule(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// DELETE /streams/{streamid}/rules/{streamRuleId} Delete a stream rule
-	ms.handleInit(w, r, false)
 	streamID := ps.ByName("streamID")
 	id := ps.ByName("streamRuleID")
 	sc, err := ms.DeleteStreamRule(streamID, id)

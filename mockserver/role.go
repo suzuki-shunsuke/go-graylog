@@ -88,7 +88,6 @@ func (ms *MockServer) GetRoles() ([]graylog.Role, error) {
 func (ms *MockServer) handleGetRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	name := ps.ByName("rolename")
 	ms.Logger().WithFields(log.Fields{
 		"handler": "handleGetRole", "rolename": name}).Info("request start")
@@ -106,16 +105,10 @@ func (ms *MockServer) handleGetRole(
 func (ms *MockServer) handleUpdateRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	b, err := ms.handleInit(w, r, true)
-	if err != nil {
-		return 500, nil, err
-	}
-
 	name := ps.ByName("rolename")
-
 	requiredFields := []string{"name", "permissions"}
 	allowedFields := []string{"description", "read_only"}
-	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
+	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if sc != 200 {
 		return sc, nil, fmt.Errorf(msg)
 	}
@@ -123,7 +116,7 @@ func (ms *MockServer) handleUpdateRole(
 	role := &graylog.Role{}
 	if err := msDecode(body, role); err != nil {
 		ms.Logger().WithFields(log.Fields{
-			"body": string(b), "error": err,
+			"body": body, "error": err,
 		}).Info("Failed to parse request body as Role")
 		return 400, nil, fmt.Errorf("400 Bad Request")
 	}
@@ -139,7 +132,6 @@ func (ms *MockServer) handleUpdateRole(
 func (ms *MockServer) handleDeleteRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	name := ps.ByName("rolename")
 	sc, err := ms.DeleteRole(name)
 	if err != nil {
@@ -153,14 +145,9 @@ func (ms *MockServer) handleDeleteRole(
 func (ms *MockServer) handleCreateRole(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	b, err := ms.handleInit(w, r, true)
-	if err != nil {
-		return 500, nil, err
-	}
-
 	requiredFields := []string{"name", "permissions"}
 	allowedFields := []string{"description", "read_only"}
-	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
+	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if sc != 200 {
 		return sc, nil, fmt.Errorf(msg)
 	}
@@ -168,7 +155,7 @@ func (ms *MockServer) handleCreateRole(
 	role := &graylog.Role{}
 	if err := msDecode(body, &role); err != nil {
 		ms.Logger().WithFields(log.Fields{
-			"body": string(b), "error": err,
+			"body": body, "error": err,
 		}).Info("Failed to parse request body as Role")
 		return 400, nil, fmt.Errorf("400 Bad Request")
 	}
@@ -184,7 +171,6 @@ func (ms *MockServer) handleCreateRole(
 func (ms *MockServer) handleGetRoles(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	arr, err := ms.GetRoles()
 	if err != nil {
 		return 500, nil, err

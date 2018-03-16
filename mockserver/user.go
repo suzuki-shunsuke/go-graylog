@@ -129,16 +129,11 @@ func (ms *MockServer) UserList() ([]graylog.User, error) {
 func (ms *MockServer) handleCreateUser(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	b, err := ms.handleInit(w, r, true)
-	if err != nil {
-		return 500, nil, err
-	}
-
 	requiredFields := []string{
 		"username", "email", "permissions", "full_name", "password"}
 	allowedFields := []string{
 		"startpage", "timezone", "session_timeout_ms", "roles"}
-	sc, msg, body := validateRequestBody(b, requiredFields, allowedFields, nil)
+	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if sc != 200 {
 		return sc, nil, fmt.Errorf(msg)
 	}
@@ -146,7 +141,7 @@ func (ms *MockServer) handleCreateUser(
 	user := &graylog.User{}
 	if err := msDecode(body, user); err != nil {
 		ms.Logger().WithFields(log.Fields{
-			"body": string(b), "error": err,
+			"body": body, "error": err,
 		}).Info("Failed to parse request body as User")
 		return 400, nil, err
 	}
@@ -162,7 +157,6 @@ func (ms *MockServer) handleCreateUser(
 func (ms *MockServer) handleGetUsers(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	arr, err := ms.UserList()
 	if err != nil {
 		return 500, nil, err
@@ -175,7 +169,6 @@ func (ms *MockServer) handleGetUsers(
 func (ms *MockServer) handleGetUser(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	name := ps.ByName("username")
 	user, err := ms.GetUser(name)
 	if err != nil {
@@ -191,10 +184,6 @@ func (ms *MockServer) handleGetUser(
 func (ms *MockServer) handleUpdateUser(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	b, err := ms.handleInit(w, r, true)
-	if err != nil {
-		return 500, nil, err
-	}
 	name := ps.ByName("username")
 
 	user, err := ms.GetUser(name)
@@ -208,13 +197,13 @@ func (ms *MockServer) handleUpdateUser(
 	// required fields is nil
 	acceptedFields := []string{
 		"email", "permissions", "full_name", "password"}
-	sc, msg, body := validateRequestBody(b, nil, nil, acceptedFields)
+	sc, msg, body := validateRequestBody(r.Body, nil, nil, acceptedFields)
 	if sc != 200 {
 		return sc, nil, fmt.Errorf(msg)
 	}
 	if err := msDecode(body, &user); err != nil {
 		ms.Logger().WithFields(log.Fields{
-			"body": string(b), "error": err,
+			"body": body, "error": err,
 		}).Info("Failed to parse request body as User")
 		return 400, nil, err
 	}
@@ -230,7 +219,6 @@ func (ms *MockServer) handleUpdateUser(
 func (ms *MockServer) handleDeleteUser(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	name := ps.ByName("username")
 	if sc, err := ms.DeleteUser(name); err != nil {
 		return sc, nil, err

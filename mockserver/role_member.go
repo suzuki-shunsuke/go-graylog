@@ -38,7 +38,6 @@ func (ms *MockServer) RoleMembers(name string) ([]graylog.User, error) {
 func (ms *MockServer) handleRoleMembers(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	name := ps.ByName("rolename")
 	ok, err := ms.HasRole(name)
 	if err != nil {
@@ -59,7 +58,6 @@ func (ms *MockServer) handleRoleMembers(
 func (ms *MockServer) handleAddUserToRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	roleName := ps.ByName("rolename")
 	userName := ps.ByName("username")
 	ok, err := ms.HasRole(roleName)
@@ -86,7 +84,6 @@ func (ms *MockServer) handleAddUserToRole(
 func (ms *MockServer) handleRemoveUserFromRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	ms.handleInit(w, r, false)
 	roleName := ps.ByName("rolename")
 	userName := ps.ByName("username")
 	ok, err := ms.HasRole(roleName)
