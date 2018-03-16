@@ -14,7 +14,7 @@ import (
 func (ms *MockServer) handleGetStreams(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	arr, err := ms.StreamList()
+	arr, err := ms.GetStreams()
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"error": err,

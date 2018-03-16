@@ -55,42 +55,25 @@ func TestCreateStreamRule(t *testing.T) {
 	}
 }
 
-// func TestUpdateStreamRule(t *testing.T) {
-// 	server, client, err := testutil.GetServerAndClient()
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-// 	defer server.Close()
-// 	indexSet := dummyIndexSet()
-// 	is, _, err := client.CreateIndexSet(indexSet)
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-// 	stream := dummyStream()
-// 	stream.IndexSetID = is.ID
-// 	is, _, err = client.CreateStream(stream)
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-//
-// 	server.streams[stream.ID] = *stream
-// 	stream.Description = "changed!"
-// 	updatedStream, _, err := client.UpdateStream(stream.ID, stream)
-// 	if err != nil {
-// 		t.Fatal("Failed to UpdateStream", err)
-// 	}
-// 	if updatedStream == nil {
-// 		t.Fatal("UpdateStream() == nil, nil")
-// 	}
-// 	if updatedStream.Title != stream.Title {
-// 		t.Fatalf(
-// 			"updatedStream.Title == %s, wanted %s",
-// 			updatedStream.Title, stream.Title)
-// 	}
-// 	if _, _, err := client.UpdateStream("", stream); err == nil {
-// 		t.Fatal("id is required")
-// 	}
-// 	if _, _, err := client.UpdateStream("h", stream); err == nil {
-// 		t.Fatal(`no stream whose id is "h"`)
-// 	}
-// }
+func TestUpdateStreamRule(t *testing.T) {
+	server, client, err := testutil.GetServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	streams, err := server.GetStreams()
+	if err != nil {
+		t.Fatal(err)
+	}
+	stream := streams[0]
+	rules, _, err := server.GetStreamRules(stream.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rule := rules[0]
+
+	rule.Description += " changed!"
+	if _, err := client.UpdateStreamRule(&rule); err != nil {
+		t.Fatal("Failed to UpdateStream", err)
+	}
+}

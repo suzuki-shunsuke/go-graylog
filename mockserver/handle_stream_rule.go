@@ -7,7 +7,6 @@ import (
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/validator"
 )
 
 // GET /streams/{streamid}/rules Get a list of all stream rules
@@ -17,7 +16,7 @@ func (ms *MockServer) handleGetStreamRules(
 ) (int, interface{}, error) {
 	// GET /streams/{streamid}/rules Get a list of all stream rules
 	streamID := ps.ByName("streamID")
-	arr, sc, err := ms.StreamRuleList(streamID)
+	arr, sc, err := ms.GetStreamRules(streamID)
 	if err != nil {
 		return sc, nil, err
 	}
@@ -80,24 +79,7 @@ func (ms *MockServer) handleUpdateStreamRule(
 ) (int, interface{}, error) {
 	// PUT /streams/{streamid}/rules/{streamRuleID} Update a stream rule
 	streamID := ps.ByName("streamID")
-
-	ok, err := ms.HasStream(streamID)
-	if err != nil {
-		return 500, nil, err
-	}
-	if !ok {
-		return 404, nil, fmt.Errorf("Stream <%s> not found!", streamID)
-	}
-
 	ruleID := ps.ByName("streamRuleID")
-	rules, ok := ms.streamRules[streamID]
-	if !ok || rules == nil {
-		return 404, nil, fmt.Errorf("No StreamRule found with id %s", ruleID)
-	}
-	rule, ok := rules[ruleID]
-	if !ok {
-		return 404, nil, fmt.Errorf("No StreamRule found with id %s", ruleID)
-	}
 
 	requiredFields := []string{"value", "field"}
 	allowedFields := []string{
@@ -106,9 +88,8 @@ func (ms *MockServer) handleUpdateStreamRule(
 	if sc != 200 {
 		return sc, nil, fmt.Errorf(msg)
 	}
-
-	rule = graylog.StreamRule{}
-	if err := msDecode(body, &rule); err != nil {
+	rule := &graylog.StreamRule{}
+	if err := msDecode(body, rule); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as StreamRule")
@@ -120,13 +101,10 @@ func (ms *MockServer) handleUpdateStreamRule(
 
 	rule.StreamID = streamID
 	rule.ID = ruleID
-	if err := validator.UpdateValidator.Struct(&rule); err != nil {
-		return 400, nil, err
-	}
-	if sc, err := ms.UpdateStreamRule(&rule); err != nil {
+	if sc, err := ms.UpdateStreamRule(rule); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"error": err, "rule": &rule,
-		}).Error("Faield to add rule to mock server")
+		}).Error("Faield to update stream rule")
 		return sc, nil, err
 	}
 	ms.safeSave()

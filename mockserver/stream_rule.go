@@ -10,7 +10,7 @@ import (
 
 // HasStreamRule
 func (ms *MockServer) HasStreamRule(streamID, streamRuleID string) (bool, error) {
-	return ms.HasStreamRule(streamID, streamRuleID)
+	return ms.store.HasStreamRule(streamID, streamRuleID)
 }
 
 // AddStreamRule adds a stream rule to the MockServer.
@@ -38,24 +38,17 @@ func (ms *MockServer) UpdateStreamRule(rule *graylog.StreamRule) (int, error) {
 	if err := validator.UpdateValidator.Struct(rule); err != nil {
 		return 400, err
 	}
-	ok, err := ms.HasStream(rule.StreamID)
+	ok, err := ms.HasStreamRule(rule.StreamID, rule.ID)
 	if err != nil {
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("no stream is not found: %s", rule.StreamID)
-	}
-	r, err := ms.store.GetStreamRule(rule.StreamID, rule.ID)
-	if err != nil {
-		return 500, err
-	}
-	if r == nil {
-		return 404, fmt.Errorf("no stream rule is not found: %s", rule.ID)
+		return 404, fmt.Errorf("no stream rule is not found: %s", rule.StreamID)
 	}
 	if err := ms.store.UpdateStreamRule(rule); err != nil {
 		return 500, err
 	}
-	return 200, nil
+	return 204, nil
 }
 
 // DeleteStreamRule deletes a stream rule from the MockServer.
@@ -87,8 +80,8 @@ func (ms *MockServer) DeleteStreamRule(streamID, streamRuleID string) (int, erro
 	return 200, nil
 }
 
-// StreamRuleList returns a list of all stream rules of a given stream.
-func (ms *MockServer) StreamRuleList(streamID string) ([]graylog.StreamRule, int, error) {
+// GetStreamRules returns a list of all stream rules of a given stream.
+func (ms *MockServer) GetStreamRules(streamID string) ([]graylog.StreamRule, int, error) {
 	ok, err := ms.HasStream(streamID)
 	if err != nil {
 		return nil, 500, err

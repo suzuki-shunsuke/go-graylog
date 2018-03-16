@@ -69,8 +69,8 @@ func (ms *MockServer) DeleteStream(id string) (int, error) {
 	return 200, nil
 }
 
-// StreamList returns a list of all streams.
-func (ms *MockServer) StreamList() ([]graylog.Stream, error) {
+// GetStreams returns a list of all streams.
+func (ms *MockServer) GetStreams() ([]graylog.Stream, error) {
 	return ms.store.GetStreams()
 }
 
