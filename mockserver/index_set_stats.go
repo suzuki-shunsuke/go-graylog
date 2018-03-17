@@ -17,10 +17,6 @@ func (ms *MockServer) GetIndexSetStats(id string) (*graylog.IndexSetStats, error
 	return ms.store.GetIndexSetStats(id)
 }
 
-func (ms *MockServer) GetIndexSetsStats() ([]graylog.IndexSetStats, error) {
-	return ms.store.GetIndexSetsStats()
-}
-
 // GetTotalIndexSetsStats returns all index set's statistics.
 func (ms *MockServer) GetTotalIndexSetsStats() (*graylog.IndexSetStats, error) {
 	return ms.store.GetTotalIndexSetsStats()

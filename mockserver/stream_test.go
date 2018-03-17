@@ -100,6 +100,40 @@ func TestMockServerHandleCreateStream(t *testing.T) {
 	}
 }
 
+func TestServerUpdateStream(t *testing.T) {
+	server, _, err := testutil.GetServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+
+	is := testutil.DummyNewIndexSet("hoge")
+	if _, err := server.AddIndexSet(is); err != nil {
+		t.Fatal(err)
+	}
+	stream := testutil.DummyNewStream()
+	stream.IndexSetID = is.ID
+	if _, err := server.AddStream(stream); err != nil {
+		t.Fatal(err)
+	}
+
+	// nil check
+	if _, err := server.UpdateStream(nil); err == nil {
+		t.Fatal("stream is nil")
+	}
+
+	// validation
+	stream.ID = ""
+	if _, err := server.UpdateStream(stream); err == nil {
+		t.Fatal("id is required")
+	}
+	// id check
+	stream.ID = "h"
+	if _, err := server.UpdateStream(stream); err == nil {
+		t.Fatal("id check")
+	}
+}
+
 func TestGetStreams(t *testing.T) {
 	test.TestGetStreams(t)
 }

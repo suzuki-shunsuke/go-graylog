@@ -45,7 +45,6 @@ type Store interface {
 
 	SetIndexSetStats(id string, stats *graylog.IndexSetStats) error
 	GetIndexSetStats(id string) (*graylog.IndexSetStats, error)
-	GetIndexSetsStats() ([]graylog.IndexSetStats, error)
 	GetTotalIndexSetsStats() (*graylog.IndexSetStats, error)
 
 	AddStream(stream *graylog.Stream) error
