@@ -68,16 +68,6 @@ func (ms *MockServer) handleGetUser(
 func (ms *MockServer) handleUpdateUser(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	name := ps.ByName("username")
-
-	user, err := ms.GetUser(name)
-	if err != nil {
-		return 500, nil, err
-	}
-	if user == nil {
-		return 404, nil, fmt.Errorf("No user found with name %s", name)
-	}
-
 	// required fields is nil
 	acceptedFields := []string{
 		"email", "permissions", "full_name", "password"}
@@ -85,6 +75,8 @@ func (ms *MockServer) handleUpdateUser(
 	if sc != 200 {
 		return sc, nil, fmt.Errorf(msg)
 	}
+
+	user := &graylog.User{Username: ps.ByName("username")}
 	if err := msDecode(body, &user); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,

@@ -13,7 +13,7 @@ import (
 func (ms *MockServer) handleGetIndexSets(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	arr, err := ms.IndexSetList()
+	arr, err := ms.GetIndexSets()
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"error": err,
@@ -88,18 +88,6 @@ func (ms *MockServer) handleCreateIndexSet(
 func (ms *MockServer) handleUpdateIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	id := ps.ByName("indexSetID")
-	indexSet, err := ms.GetIndexSet(id)
-	if err != nil {
-		ms.logger.WithFields(log.Fields{
-			"error": err, "id": id,
-		}).Info("ms.GetIndexSet() is failure")
-		return 500, nil, err
-	}
-	if indexSet == nil {
-		return 404, nil, fmt.Errorf("No indexSet found with id %s", id)
-	}
-
 	// default can't change (ignored)
 	requiredFields := []string{
 		"title", "index_prefix", "rotation_strategy_class", "rotation_strategy",
@@ -112,7 +100,8 @@ func (ms *MockServer) handleUpdateIndexSet(
 		return sc, nil, fmt.Errorf(msg)
 	}
 
-	if err := msDecode(body, indexSet); err != nil {
+	is := &graylog.IndexSet{ID: ps.ByName("indexSetID")}
+	if err := msDecode(body, is); err != nil {
 		ms.logger.WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as indexSet")
@@ -120,14 +109,13 @@ func (ms *MockServer) handleUpdateIndexSet(
 	}
 
 	ms.Logger().WithFields(log.Fields{
-		"body": body, "index_set": indexSet,
+		"body": body, "index_set": is,
 	}).Debug("request body")
-	indexSet.ID = id
-	if sc, err := ms.UpdateIndexSet(indexSet); err != nil {
+	if sc, err := ms.UpdateIndexSet(is); err != nil {
 		return sc, nil, err
 	}
 	ms.safeSave()
-	return 200, indexSet, nil
+	return 200, is, nil
 }
 
 // DELETE /system/indices/index_sets/{id} Delete index set
@@ -146,24 +134,10 @@ func (ms *MockServer) handleDeleteIndexSet(
 func (ms *MockServer) handleSetDefaultIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	id := ps.ByName("indexSetID")
-	indexSet, err := ms.GetIndexSet(id)
+	is, sc, err := ms.SetDefaultIndexSet(ps.ByName("indexSetID"))
 	if err != nil {
-		ms.logger.WithFields(log.Fields{
-			"error": err, "id": id,
-		}).Info("ms.GetIndexSet() is failure")
-		return 500, nil, err
-	}
-	if indexSet == nil {
-		return 404, nil, fmt.Errorf("No indexSet found with id %s", id)
-	}
-	if !indexSet.Writable {
-		return 409, nil, fmt.Errorf("Default index set must be writable.")
-	}
-	if err := ms.store.SetDefaultIndexSetID(id); err != nil {
-		return 500, nil, err
+		return sc, nil, err
 	}
 	ms.safeSave()
-	indexSet.Default = true
-	return 200, indexSet, nil
+	return 200, is, nil
 }

@@ -15,12 +15,16 @@ func (ms *MockServer) InitData() error {
 		return err
 	}
 	ms.AddInput(seed.Input())
-	indexSet := seed.IndexSet()
-	if _, err := ms.AddIndexSet(indexSet); err != nil {
+	is := seed.IndexSet()
+	if _, err := ms.AddIndexSet(is); err != nil {
+		return err
+	}
+	is, _, err = ms.SetDefaultIndexSet(is.ID)
+	if err != nil {
 		return err
 	}
 	stream := seed.Stream()
-	stream.IndexSetID = indexSet.ID
+	stream.IndexSetID = is.ID
 	if _, err = ms.AddStream(stream); err != nil {
 		return err
 	}

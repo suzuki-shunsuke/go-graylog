@@ -128,6 +128,14 @@ func TestDeleteIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
+	indexSets, err := server.GetIndexSets()
+	if err != nil {
+		t.Fatal(err)
+	}
+	indexSet := indexSets[0]
+	if _, err = client.DeleteIndexSet(indexSet.ID); err == nil {
+		t.Fatal("default index set should not be deleted")
+	}
 	is := testutil.DummyNewIndexSet("hoge")
 	if _, err := server.AddIndexSet(is); err != nil {
 		t.Fatal(err)
@@ -149,22 +157,18 @@ func TestSetDefaultIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet := testutil.DummyNewIndexSet("hoge")
-	indexSet.Default = false
-	indexSet.Writable = true
-	if _, err := server.AddIndexSet(indexSet); err != nil {
+	is := testutil.DummyNewIndexSet("hoge")
+	is.Default = false
+	is.Writable = true
+	if _, err := server.AddIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
-	updatedIndexSet, _, err := client.SetDefaultIndexSet(indexSet.ID)
+	is, _, err = client.SetDefaultIndexSet(is.ID)
 	if err != nil {
 		t.Fatal("Failed to UpdateIndexSet", err)
 	}
-	if !updatedIndexSet.Default {
+	if !is.Default {
 		t.Fatal("updatedIndexSet.Default == false")
-	}
-	if updatedIndexSet.ID != indexSet.ID {
-		t.Fatalf(
-			"updatedIndexSet.ID == %v, wanted %v", updatedIndexSet.ID, indexSet.ID)
 	}
 	if _, _, err := client.SetDefaultIndexSet(""); err == nil {
 		t.Fatal("index set id is required")
@@ -173,13 +177,13 @@ func TestSetDefaultIndexSet(t *testing.T) {
 		t.Fatal(`no index set whose id is "h"`)
 	}
 
-	indexSet.Default = false
-	indexSet.Writable = false
+	is.Default = false
+	is.Writable = false
 
-	if _, err := server.UpdateIndexSet(indexSet); err != nil {
+	if _, err := server.UpdateIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
-	if _, _, err := client.SetDefaultIndexSet(indexSet.ID); err == nil {
+	if _, _, err := client.SetDefaultIndexSet(is.ID); err == nil {
 		t.Fatal("Default index set must be writable.")
 	}
 }

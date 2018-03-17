@@ -115,7 +115,7 @@ func TestUpdateUser(t *testing.T) {
 	}
 	user.Username = "h"
 	if _, err := client.UpdateUser(user); err == nil {
-		t.Fatal(`no user whoname name is "h"`)
+		t.Fatal(`no user with name is "h"`)
 	}
 	if _, err := client.UpdateUser(nil); err == nil {
 		t.Fatal("user is nil")

@@ -57,6 +57,50 @@ func TestMockServerHandleCreateIndexSet(t *testing.T) {
 	}
 }
 
+func TestServerAddIndexSet(t *testing.T) {
+	server, _, err := testutil.GetServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	is := testutil.DummyNewIndexSet("hoge")
+	if _, err := server.AddIndexSet(is); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := server.AddIndexSet(is); err == nil {
+		t.Fatal("id should be empty")
+	}
+	is.ID = ""
+	if _, err := server.AddIndexSet(is); err == nil {
+		t.Fatal("index prefix should conflict")
+	}
+}
+
+func TestServerUpdateIndexSet(t *testing.T) {
+	server, _, err := testutil.GetServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	if _, err := server.UpdateIndexSet(nil); err == nil {
+		t.Fatal("index set is nil")
+	}
+	is := testutil.DummyNewIndexSet("hoge")
+	if _, err := server.AddIndexSet(is); err != nil {
+		t.Fatal(err)
+	}
+	id := is.ID
+	is.ID = ""
+	if _, err := server.UpdateIndexSet(is); err == nil {
+		t.Fatal("index set id is required")
+	}
+	is.ID = id
+	is.IndexPrefix = "graylog"
+	if _, err := server.UpdateIndexSet(is); err == nil {
+		t.Fatal("index prefix should be conflict")
+	}
+}
+
 func TestGetIndexSets(t *testing.T) {
 	test.TestGetIndexSets(t)
 }
