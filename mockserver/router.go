@@ -57,6 +57,8 @@ func newRouter(ms *MockServer) *httprouter.Router {
 	router.GET("/api/streams/:streamID/rules", wrapHandle(ms, ms.handleGetStreamRules))
 	router.POST("/api/streams/:streamID/rules", wrapHandle(ms, ms.handleCreateStreamRule))
 	router.PUT("/api/streams/:streamID/rules/:streamRuleID", wrapHandle(ms, ms.handleUpdateStreamRule))
+	router.DELETE("/api/streams/:streamID/rules/:streamRuleID", wrapHandle(ms, ms.handleDeleteStreamRule))
+	router.GET("/api/streams/:streamID/rules/:streamRuleID", wrapHandle(ms, ms.handleGetStreamRule))
 
 	router.NotFound = ms.handleNotFound
 	return router

@@ -95,3 +95,33 @@ func (ms *MockServer) GetStreamRules(streamID string) ([]graylog.StreamRule, int
 	}
 	return rules, 200, nil
 }
+
+// GetStreamRule returns a stream rule.
+func (ms *MockServer) GetStreamRule(streamID, streamRuleID string) (*graylog.StreamRule, int, error) {
+	ok, err := ms.HasStream(streamID)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "id": streamID,
+		}).Error("ms.HasStream() is failure")
+		return nil, 500, err
+	}
+	if !ok {
+		return nil, 404, fmt.Errorf("No stream found with id %s", streamID)
+	}
+	ok, err = ms.HasStreamRule(streamID, streamRuleID)
+	if err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "streamID": streamID, "streamRuleID": streamRuleID,
+		}).Error("ms.HasStreamRule() is failure")
+		return nil, 500, err
+	}
+	if !ok {
+		return nil, 404, fmt.Errorf("No stream rule found with id %s", streamRuleID)
+	}
+
+	rule, err := ms.store.GetStreamRule(streamID, streamRuleID)
+	if err != nil {
+		return rule, 500, err
+	}
+	return rule, 200, nil
+}

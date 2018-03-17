@@ -9,8 +9,6 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
-// GET /streams/{streamid}/rules Get a list of all stream rules
-
 func (ms *MockServer) handleGetStreamRules(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
@@ -134,4 +132,13 @@ func (ms *MockServer) handleDeleteStreamRule(
 	ms.DeleteStream(id)
 	ms.safeSave()
 	return 204, nil, nil
+}
+
+func (ms *MockServer) handleGetStreamRule(
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) (int, interface{}, error) {
+	// GET /streams/{streamid}/rules/{streamRuleId} Get a single stream rules
+	rule, sc, err := ms.GetStreamRule(
+		ps.ByName("streamID"), ps.ByName("streamRuleID"))
+	return sc, rule, err
 }

@@ -77,6 +77,7 @@ func (ms *MockServer) DeleteRole(name string) (int, error) {
 	return 200, nil
 }
 
+// GetRoles returns a list of roles.
 func (ms *MockServer) GetRoles() ([]graylog.Role, error) {
 	return ms.store.GetRoles()
 }

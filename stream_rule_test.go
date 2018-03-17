@@ -17,3 +17,7 @@ func TestCreateStreamRule(t *testing.T) {
 func TestUpdateStreamRule(t *testing.T) {
 	test.TestUpdateStreamRule(t)
 }
+
+func TestDeleteStreamRule(t *testing.T) {
+	test.TestDeleteStreamRule(t)
+}

@@ -11,10 +11,6 @@ import (
 
 // GetStreamRuleTypes returns all available stream types
 // GET /streams/{streamid}/rules/types Get all available stream types
-// GetStreamRule returns a stream rule
-// GET /streams/{streamid}/rules/{streamRuleID} Get a single stream rules
-// DeleteStreamRule deletes a stream rule
-// DELETE /streams/{streamid}/rules/{streamRuleID} Delete a stream rule
 
 // StreamRule represents a stream rule.
 type StreamRule struct {
@@ -133,4 +129,59 @@ func (client *Client) UpdateStreamRuleContext(
 	return client.callReq(
 		ctx, http.MethodPut, client.Endpoints.StreamRule(
 			streamID, ruleID), b, false)
+}
+
+// DeleteStreamRule deletes a stream rule
+func (client *Client) DeleteStreamRule(streamID, ruleID string) (*ErrorInfo, error) {
+	return client.DeleteStreamRuleContext(context.Background(), streamID, ruleID)
+}
+
+// DeleteStreamRuleContext deletes a stream rule with a context
+func (client *Client) DeleteStreamRuleContext(
+	ctx context.Context, streamID, ruleID string,
+) (*ErrorInfo, error) {
+	// DELETE /streams/{streamid}/rules/{streamRuleID} Delete a stream rule
+	if streamID == "" {
+		return nil, errors.New("stream id is required")
+	}
+	if ruleID == "" {
+		return nil, errors.New("stream rule id is required")
+	}
+	return client.callReq(
+		ctx, http.MethodDelete, client.Endpoints.StreamRule(
+			streamID, ruleID), nil, false)
+}
+
+// GetStreamRule returns a stream rule
+func (client *Client) GetStreamRule(streamID, ruleID string) (*StreamRule, *ErrorInfo, error) {
+	return client.GetStreamRuleContext(context.Background(), streamID, ruleID)
+}
+
+// GetStreamRuleContext returns a stream rule with a context
+func (client *Client) GetStreamRuleContext(
+	ctx context.Context, streamID, ruleID string,
+) (*StreamRule, *ErrorInfo, error) {
+	// GET /streams/{streamid}/rules/{streamRuleID} Get a single stream rules
+	if streamID == "" {
+		return nil, nil, errors.New("stream id is required")
+	}
+	if ruleID == "" {
+		return nil, nil, errors.New("stream rule id is required")
+	}
+
+	ei, err := client.callReq(
+		ctx, http.MethodGet, client.Endpoints.StreamRule(
+			streamID, ruleID), nil, true)
+	if err != nil {
+		return nil, ei, err
+	}
+
+	rule := &StreamRule{}
+	if err := json.Unmarshal(ei.ResponseBody, rule); err != nil {
+		return nil, ei, errors.Wrap(
+			err, fmt.Sprintf(
+				"Failed to parse response body as StreamRule: %s",
+				string(ei.ResponseBody)))
+	}
+	return rule, ei, nil
 }
