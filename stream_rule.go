@@ -62,13 +62,13 @@ func (client *Client) GetStreamRulesContext(
 	return body.StreamRules, body.Total, ei, nil
 }
 
+type streamRuleIDBody struct {
+	StreamRuleID string `json:"streamrule_id"`
+}
+
 // CreateStreamRule creates a stream
 func (client *Client) CreateStreamRule(rule *StreamRule) (*ErrorInfo, error) {
 	return client.CreateStreamRuleContext(context.Background(), rule)
-}
-
-type streamRuleIDBody struct {
-	StreamRuleID string `json:"streamrule_id"`
 }
 
 // CreateStreamRuleContext creates a stream with a context

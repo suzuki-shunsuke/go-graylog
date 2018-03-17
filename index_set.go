@@ -112,17 +112,18 @@ func (client *Client) GetIndexSetContext(
 }
 
 // CreateIndexSet creates a Index Set.
-func (client *Client) CreateIndexSet(indexSet *IndexSet) (
-	*ErrorInfo, error,
-) {
+func (client *Client) CreateIndexSet(indexSet *IndexSet) (*ErrorInfo, error) {
 	return client.CreateIndexSetContext(context.Background(), indexSet)
 }
 
 // CreateIndexSetContext creates a Index Set with a context.
 func (client *Client) CreateIndexSetContext(
-	ctx context.Context, indexSet *IndexSet,
+	ctx context.Context, is *IndexSet,
 ) (*ErrorInfo, error) {
-	b, err := json.Marshal(indexSet)
+	if is == nil {
+		return nil, fmt.Errorf("IndexSet is nil")
+	}
+	b, err := json.Marshal(is)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to json.Marshal(indexSet)")
 	}
@@ -133,7 +134,7 @@ func (client *Client) CreateIndexSetContext(
 		return ei, err
 	}
 
-	if err := json.Unmarshal(ei.ResponseBody, indexSet); err != nil {
+	if err := json.Unmarshal(ei.ResponseBody, is); err != nil {
 		return ei, errors.Wrap(
 			err, fmt.Sprintf(
 				"Failed to parse response body as IndexSet: %s",
@@ -143,16 +144,18 @@ func (client *Client) CreateIndexSetContext(
 }
 
 // UpdateIndexSet updates a given Index Set.
-func (client *Client) UpdateIndexSet(indexSet *IndexSet) (*ErrorInfo, error) {
-	return client.UpdateIndexSetContext(context.Background(), indexSet)
+func (client *Client) UpdateIndexSet(is *IndexSet) (*ErrorInfo, error) {
+	return client.UpdateIndexSetContext(context.Background(), is)
 }
 
 // UpdateIndexSetContext updates a given Index Set with a context.
 func (client *Client) UpdateIndexSetContext(
 	ctx context.Context, is *IndexSet,
 ) (*ErrorInfo, error) {
-	id := is.ID
-	if id == "" {
+	if is == nil {
+		return nil, fmt.Errorf("IndexSet is nil")
+	}
+	if is.ID == "" {
 		return nil, errors.New("id is empty")
 	}
 	copiedIndexSet := *is
@@ -163,7 +166,7 @@ func (client *Client) UpdateIndexSetContext(
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPut, client.Endpoints.IndexSet(id), b, true)
+		ctx, http.MethodPut, client.Endpoints.IndexSet(is.ID), b, true)
 	if err != nil {
 		return ei, err
 	}

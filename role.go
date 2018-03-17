@@ -24,13 +24,6 @@ type Role struct {
 	ReadOnly    bool     `json:"read_only,omitempty"`
 }
 
-func CopyRole(src, dest *Role) {
-	dest.Name = src.Name
-	dest.Description = src.Description
-	dest.Permissions = src.Permissions
-	dest.ReadOnly = src.ReadOnly
-}
-
 // CreateRole creates a new role.
 func (client *Client) CreateRole(role *Role) (*ErrorInfo, error) {
 	return client.CreateRoleContext(context.Background(), role)
@@ -40,6 +33,9 @@ func (client *Client) CreateRole(role *Role) (*ErrorInfo, error) {
 func (client *Client) CreateRoleContext(
 	ctx context.Context, role *Role,
 ) (*ErrorInfo, error) {
+	if role == nil {
+		return nil, fmt.Errorf("role is nil")
+	}
 	b, err := json.Marshal(role)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to json.Marshal(role)")
@@ -51,13 +47,11 @@ func (client *Client) CreateRoleContext(
 		return ei, err
 	}
 
-	ret := &Role{}
-	if err := json.Unmarshal(ei.ResponseBody, ret); err != nil {
+	if err := json.Unmarshal(ei.ResponseBody, role); err != nil {
 		return ei, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Role: %s",
 				string(ei.ResponseBody)))
 	}
-	CopyRole(ret, role)
 	return ei, nil
 }
 
@@ -132,6 +126,9 @@ func (client *Client) UpdateRoleContext(
 	if name == "" {
 		return nil, errors.New("name is empty")
 	}
+	if role == nil {
+		return nil, fmt.Errorf("role is nil")
+	}
 	b, err := json.Marshal(role)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to json.Marshal(role)")
@@ -143,13 +140,11 @@ func (client *Client) UpdateRoleContext(
 		return ei, err
 	}
 
-	ret := &Role{}
-	if err := json.Unmarshal(ei.ResponseBody, ret); err != nil {
+	if err := json.Unmarshal(ei.ResponseBody, role); err != nil {
 		return ei, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Role: %s",
 				string(ei.ResponseBody)))
 	}
-	CopyRole(ret, role)
 	return ei, nil
 }
 

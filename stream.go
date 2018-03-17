@@ -94,6 +94,9 @@ func (client *Client) CreateStream(stream *Stream) (*ErrorInfo, error) {
 func (client *Client) CreateStreamContext(
 	ctx context.Context, stream *Stream,
 ) (*ErrorInfo, error) {
+	if stream == nil {
+		return nil, fmt.Errorf("stream is nil")
+	}
 	b, err := json.Marshal(stream)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to json.Marshal(stream)")
@@ -185,6 +188,9 @@ func (client *Client) UpdateStream(stream *Stream) (*ErrorInfo, error) {
 func (client *Client) UpdateStreamContext(
 	ctx context.Context, stream *Stream,
 ) (*ErrorInfo, error) {
+	if stream == nil {
+		return nil, fmt.Errorf("stream is nil")
+	}
 	if stream.ID == "" {
 		return nil, errors.New("id is empty")
 	}

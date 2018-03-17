@@ -60,6 +60,9 @@ func (client *Client) CreateInput(input *Input) (
 func (client *Client) CreateInputContext(
 	ctx context.Context, input *Input,
 ) (ei *ErrorInfo, err error) {
+	if input == nil {
+		return nil, fmt.Errorf("input is nil")
+	}
 	b, err := json.Marshal(input)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to json.Marshal(input)")
@@ -148,6 +151,9 @@ func (client *Client) UpdateInput(input *Input) (
 func (client *Client) UpdateInputContext(
 	ctx context.Context, input *Input,
 ) (*ErrorInfo, error) {
+	if input == nil {
+		return nil, fmt.Errorf("input is nil")
+	}
 	if input.ID == "" {
 		return nil, errors.New("id is empty")
 	}

@@ -58,7 +58,6 @@ func (client *Client) GetAllIndexSetsStats() (
 func (client *Client) GetAllIndexSetsStatsContext(
 	ctx context.Context,
 ) (*IndexSetStats, *ErrorInfo, error) {
-
 	ei, err := client.callReq(
 		ctx, http.MethodGet, client.Endpoints.IndexSetsStats(), nil, true)
 	if err != nil {

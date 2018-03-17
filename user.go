@@ -57,6 +57,9 @@ func (client *Client) CreateUser(user *User) (*ErrorInfo, error) {
 func (client *Client) CreateUserContext(
 	ctx context.Context, user *User,
 ) (*ErrorInfo, error) {
+	if user == nil {
+		return nil, fmt.Errorf("user is nil")
+	}
 	b, err := json.Marshal(user)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to json.Marshal(user)")
@@ -83,8 +86,8 @@ func (client *Client) GetUsersContext(ctx context.Context) ([]User, *ErrorInfo, 
 		return nil, ei, err
 	}
 
-	users := UsersBody{}
-	if err := json.Unmarshal(ei.ResponseBody, &users); err != nil {
+	users := &UsersBody{}
+	if err := json.Unmarshal(ei.ResponseBody, users); err != nil {
 		return nil, ei, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Users: %s",
 				string(ei.ResponseBody)))
@@ -128,6 +131,9 @@ func (client *Client) UpdateUser(user *User) (*ErrorInfo, error) {
 func (client *Client) UpdateUserContext(
 	ctx context.Context, user *User,
 ) (*ErrorInfo, error) {
+	if user == nil {
+		return nil, fmt.Errorf("user is nil")
+	}
 	if user.Username == "" {
 		return nil, errors.New("name is empty")
 	}
