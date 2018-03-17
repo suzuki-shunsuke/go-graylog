@@ -100,6 +100,9 @@ func TestCreateStream(t *testing.T) {
 	if _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("alert_receiver is required")
 	}
+	if _, err := client.CreateStream(nil); err == nil {
+		t.Fatal("stream is nil")
+	}
 }
 
 func TestGetEnabledStreams(t *testing.T) {
@@ -179,6 +182,9 @@ func TestUpdateStream(t *testing.T) {
 	stream.ID = "h"
 	if _, err := client.UpdateStream(stream); err == nil {
 		t.Fatal(`no stream whose id is "h"`)
+	}
+	if _, err := client.UpdateStream(nil); err == nil {
+		t.Fatal("stream is nil")
 	}
 }
 

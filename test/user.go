@@ -32,6 +32,10 @@ func TestCreateUser(t *testing.T) {
 	if _, err := client.CreateUser(user); err == nil {
 		t.Fatalf("No role found with name %s", roleName)
 	}
+
+	if _, err := client.CreateUser(nil); err == nil {
+		t.Fatal("user is nil")
+	}
 }
 
 func TestGetUsers(t *testing.T) {
@@ -112,6 +116,9 @@ func TestUpdateUser(t *testing.T) {
 	user.Username = "h"
 	if _, err := client.UpdateUser(user); err == nil {
 		t.Fatal(`no user whoname name is "h"`)
+	}
+	if _, err := client.UpdateUser(nil); err == nil {
+		t.Fatal("user is nil")
 	}
 }
 

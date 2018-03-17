@@ -85,6 +85,9 @@ func TestCreateIndexSet(t *testing.T) {
 	if _, err := client.CreateIndexSet(exp); err == nil {
 		t.Fatal("rotationStrategy is required")
 	}
+	if _, err := client.CreateIndexSet(nil); err == nil {
+		t.Fatal("index set is nil")
+	}
 }
 
 func TestUpdateIndexSet(t *testing.T) {
@@ -113,6 +116,9 @@ func TestUpdateIndexSet(t *testing.T) {
 	is.Title = ""
 	if _, err := client.UpdateIndexSet(is); err == nil {
 		t.Fatal("title is required")
+	}
+	if _, err := client.UpdateIndexSet(nil); err == nil {
+		t.Fatal("index set is nil")
 	}
 }
 

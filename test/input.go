@@ -25,6 +25,9 @@ func TestCreateInput(t *testing.T) {
 	if _, err := client.CreateInput(input); err == nil {
 		t.Fatal("input type is required")
 	}
+	if _, err := client.CreateInput(nil); err == nil {
+		t.Fatal("input is nil")
+	}
 }
 
 func TestGetInputs(t *testing.T) {
@@ -136,6 +139,10 @@ func TestUpdateInput(t *testing.T) {
 	input.Configuration.RecvBufferSize = 0
 	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input recv_buffer_size is required")
+	}
+
+	if _, err := client.UpdateInput(nil); err == nil {
+		t.Fatal("input is required")
 	}
 }
 

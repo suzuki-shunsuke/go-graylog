@@ -53,6 +53,10 @@ func TestCreateStreamRule(t *testing.T) {
 	if _, err := client.CreateStreamRule(rule); err != nil {
 		t.Fatal(err)
 	}
+
+	if _, err := client.CreateStreamRule(nil); err == nil {
+		t.Fatal("stream rule is nil")
+	}
 }
 
 func TestUpdateStreamRule(t *testing.T) {
@@ -75,5 +79,20 @@ func TestUpdateStreamRule(t *testing.T) {
 	rule.Description += " changed!"
 	if _, err := client.UpdateStreamRule(&rule); err != nil {
 		t.Fatal("Failed to UpdateStream", err)
+	}
+	streamID := rule.StreamID
+	rule.StreamID = ""
+	if _, err := client.UpdateStreamRule(&rule); err == nil {
+		t.Fatal("stream id is required")
+	}
+	rule.StreamID = streamID
+	// ruleID = rule.ID
+	rule.ID = ""
+	if _, err := client.UpdateStreamRule(&rule); err == nil {
+		t.Fatal("stream rule id is required")
+	}
+
+	if _, err := client.UpdateStreamRule(nil); err == nil {
+		t.Fatal("stream rule is nil")
 	}
 }
