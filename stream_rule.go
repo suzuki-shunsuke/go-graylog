@@ -63,9 +63,7 @@ func (client *Client) GetStreamRulesContext(
 }
 
 // CreateStreamRule creates a stream
-func (client *Client) CreateStreamRule(rule *StreamRule) (
-	string, *ErrorInfo, error,
-) {
+func (client *Client) CreateStreamRule(rule *StreamRule) (*ErrorInfo, error) {
 	return client.CreateStreamRuleContext(context.Background(), rule)
 }
 
@@ -76,31 +74,32 @@ type streamRuleIDBody struct {
 // CreateStreamRuleContext creates a stream with a context
 func (client *Client) CreateStreamRuleContext(
 	ctx context.Context, rule *StreamRule,
-) (ruleID string, ei *ErrorInfo, err error) {
+) (*ErrorInfo, error) {
 	// POST /streams/{streamid}/rules Create a stream rule
 	if rule == nil {
-		return "", nil, errors.New("rule is required")
+		return nil, errors.New("rule is required")
 	}
-	streamID := rule.StreamID
-	rule.StreamID = ""
-	b, err := json.Marshal(rule)
+	cr := *rule
+	cr.StreamID = ""
+	b, err := json.Marshal(cr)
 	if err != nil {
-		return "", nil, errors.Wrap(err, "Failed to json.Marshal(stream)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(stream)")
 	}
 
-	ei, err = client.callReq(
-		ctx, http.MethodPost, client.Endpoints.StreamRules(streamID), b, true)
+	ei, err := client.callReq(
+		ctx, http.MethodPost, client.Endpoints.StreamRules(rule.StreamID), b, true)
 	if err != nil {
-		return "", ei, err
+		return ei, err
 	}
 
 	body := &streamRuleIDBody{}
 	if err := json.Unmarshal(ei.ResponseBody, body); err != nil {
-		return "", ei, errors.Wrap(
+		return ei, errors.Wrap(
 			err, fmt.Sprintf(
 				"Failed to parse response body: %s", string(ei.ResponseBody)))
 	}
-	return body.StreamRuleID, ei, nil
+	rule.ID = body.StreamRuleID
+	return ei, nil
 }
 
 // UpdateStreamRule updates a stream rule

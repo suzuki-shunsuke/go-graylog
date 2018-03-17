@@ -24,33 +24,41 @@ type Role struct {
 	ReadOnly    bool     `json:"read_only,omitempty"`
 }
 
+func CopyRole(src, dest *Role) {
+	dest.Name = src.Name
+	dest.Description = src.Description
+	dest.Permissions = src.Permissions
+	dest.ReadOnly = src.ReadOnly
+}
+
 // CreateRole creates a new role.
-func (client *Client) CreateRole(role *Role) (*Role, *ErrorInfo, error) {
+func (client *Client) CreateRole(role *Role) (*ErrorInfo, error) {
 	return client.CreateRoleContext(context.Background(), role)
 }
 
 // CreateRoleContext creates a new role with a context.
 func (client *Client) CreateRoleContext(
 	ctx context.Context, role *Role,
-) (*Role, *ErrorInfo, error) {
+) (*ErrorInfo, error) {
 	b, err := json.Marshal(role)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Failed to json.Marshal(role)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(role)")
 	}
 
 	ei, err := client.callReq(
 		ctx, http.MethodPost, client.Endpoints.Roles, b, true)
 	if err != nil {
-		return nil, ei, err
+		return ei, err
 	}
 
 	ret := &Role{}
 	if err := json.Unmarshal(ei.ResponseBody, ret); err != nil {
-		return nil, ei, errors.Wrap(
+		return ei, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Role: %s",
 				string(ei.ResponseBody)))
 	}
-	return ret, ei, nil
+	CopyRole(ret, role)
+	return ei, nil
 }
 
 type RolesBody struct {
@@ -112,7 +120,7 @@ func (client *Client) GetRoleContext(
 
 // UpdateRole updates a given role.
 func (client *Client) UpdateRole(name string, role *Role) (
-	*Role, *ErrorInfo, error,
+	*ErrorInfo, error,
 ) {
 	return client.UpdateRoleContext(context.Background(), name, role)
 }
@@ -120,28 +128,29 @@ func (client *Client) UpdateRole(name string, role *Role) (
 // UpdateRoleContext updates a given role with a context.
 func (client *Client) UpdateRoleContext(
 	ctx context.Context, name string, role *Role,
-) (*Role, *ErrorInfo, error) {
+) (*ErrorInfo, error) {
 	if name == "" {
-		return nil, nil, errors.New("name is empty")
+		return nil, errors.New("name is empty")
 	}
 	b, err := json.Marshal(role)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Failed to json.Marshal(role)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(role)")
 	}
 
 	ei, err := client.callReq(
 		ctx, http.MethodPut, client.Endpoints.Role(name), b, true)
 	if err != nil {
-		return nil, ei, err
+		return ei, err
 	}
 
 	ret := &Role{}
 	if err := json.Unmarshal(ei.ResponseBody, ret); err != nil {
-		return nil, ei, errors.Wrap(
+		return ei, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Role: %s",
 				string(ei.ResponseBody)))
 	}
-	return ret, ei, nil
+	CopyRole(ret, role)
+	return ei, nil
 }
 
 // DeleteRole deletes a given role.

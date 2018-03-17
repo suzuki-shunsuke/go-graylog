@@ -44,7 +44,7 @@ func TestCreateStream(t *testing.T) {
 	}
 	defer server.Close()
 	stream := testutil.DummyStream()
-	if _, _, err := client.CreateStream(stream); err == nil {
+	if _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("CreateStream() must be failed")
 	}
 	indexSet := testutil.DummyNewIndexSet("hoge")
@@ -53,52 +53,51 @@ func TestCreateStream(t *testing.T) {
 	}
 	stream = testutil.DummyNewStream()
 	stream.IndexSetID = indexSet.ID
-	id, _, err := client.CreateStream(stream)
-	if err != nil {
+
+	if _, err := client.CreateStream(stream); err != nil {
 		t.Fatal("Failed to CreateStream", err)
 	}
-	if id == "" {
-		t.Fatal(`client.CreateStream() == ""`)
+	if stream.ID == "" {
+		t.Fatal(`stream id is empty`)
 	}
-	stream.ID = "h"
-	if _, _, err := client.CreateStream(stream); err == nil {
+	if _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("id must be empty")
 	}
 	stream.ID = ""
 	stream.CreatorUserID = "h"
-	if _, _, err := client.CreateStream(stream); err == nil {
+	if _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("creator_user_id must be empty")
 	}
 	stream.CreatorUserID = ""
 	stream.CreatedAt = "h"
-	if _, _, err := client.CreateStream(stream); err == nil {
+	if _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("created_at must be empty")
 	}
 	stream.CreatedAt = ""
 	stream.Disabled = true
-	if _, _, err := client.CreateStream(stream); err == nil {
+	if _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("disabled must be false")
 	}
 	stream.Disabled = false
 	stream.IsDefault = true
-	if _, _, err := client.CreateStream(stream); err == nil {
+	if _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("is_default must be false")
 	}
 
 	copiedStream := *stream
 	stream.IsDefault = false
 	stream.Title = ""
-	if _, _, err := client.CreateStream(stream); err == nil {
+	if _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("title is required")
 	}
 	stream.Title = copiedStream.Title
 	stream.IndexSetID = ""
-	if _, _, err := client.CreateStream(stream); err == nil {
+	if _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("index_set_id is required")
 	}
 	stream.IndexSetID = copiedStream.IndexSetID
 	stream.AlertReceivers = &graylog.AlertReceivers{}
-	if _, _, err := client.CreateStream(stream); err == nil {
+	if _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("alert_receiver is required")
 	}
 }
@@ -170,22 +169,15 @@ func TestUpdateStream(t *testing.T) {
 	}
 
 	stream.Description = "changed!"
-	updatedStream, _, err := client.UpdateStream(stream.ID, stream)
-	if err != nil {
+	if _, err := client.UpdateStream(stream); err != nil {
 		t.Fatal("Failed to UpdateStream", err)
 	}
-	if updatedStream == nil {
-		t.Fatal("UpdateStream() == nil, nil")
-	}
-	if updatedStream.Title != stream.Title {
-		t.Fatalf(
-			"updatedStream.Title == %s, wanted %s",
-			updatedStream.Title, stream.Title)
-	}
-	if _, _, err := client.UpdateStream("", stream); err == nil {
+	stream.ID = ""
+	if _, err := client.UpdateStream(stream); err == nil {
 		t.Fatal("id is required")
 	}
-	if _, _, err := client.UpdateStream("h", stream); err == nil {
+	stream.ID = "h"
+	if _, err := client.UpdateStream(stream); err == nil {
 		t.Fatal(`no stream whose id is "h"`)
 	}
 }

@@ -58,37 +58,31 @@ func TestCreateIndexSet(t *testing.T) {
 	}
 	defer server.Close()
 	exp := testutil.DummyNewIndexSet("hoge")
-	act, _, err := client.CreateIndexSet(exp)
-	if err != nil {
+	if _, err := client.CreateIndexSet(exp); err != nil {
 		t.Fatal("Failed to CreateIndexSet", err)
 	}
-	if act == nil {
-		t.Fatal("client.CreateIndexSet() == nil")
-	}
-	if act.ID == "" {
-		t.Fatal("returned IndexSet's id is empty")
-	}
-	if act.Title != exp.Title {
-		t.Fatalf("indexSet.Title == %s, wanted %s", act.Title, exp.Title)
+	if exp.ID == "" {
+		t.Fatal("IndexSet's id is empty")
 	}
 	exp.IndexPrefix = "fuga"
+	act := *exp
 	exp.Title = ""
-	if _, _, err := client.CreateIndexSet(exp); err == nil {
+	if _, err := client.CreateIndexSet(exp); err == nil {
 		t.Fatal("title is required")
 	}
 	exp.Title = act.Title
 	exp.IndexPrefix = ""
-	if _, _, err := client.CreateIndexSet(exp); err == nil {
+	if _, err := client.CreateIndexSet(exp); err == nil {
 		t.Fatal("indexPrefix is required")
 	}
 	exp.IndexPrefix = "fuga"
 	exp.RotationStrategyClass = ""
-	if _, _, err := client.CreateIndexSet(exp); err == nil {
+	if _, err := client.CreateIndexSet(exp); err == nil {
 		t.Fatal("rotationStrategyClass is required")
 	}
 	exp.RotationStrategyClass = act.RotationStrategyClass
 	exp.RotationStrategy = nil
-	if _, _, err := client.CreateIndexSet(exp); err == nil {
+	if _, err := client.CreateIndexSet(exp); err == nil {
 		t.Fatal("rotationStrategy is required")
 	}
 }
@@ -104,24 +98,20 @@ func TestUpdateIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	is.Description = "changed!"
-	updatedIndexSet, _, err := client.UpdateIndexSet(is)
-	if err != nil {
+
+	if _, err := client.UpdateIndexSet(is); err != nil {
 		t.Fatal("UpdateIndexSet is failure", err)
 	}
-	if !reflect.DeepEqual(*updatedIndexSet, *is) {
-		t.Fatalf(
-			"client.UpdateIndexSet() == %v, wanted %v", updatedIndexSet, is)
-	}
 	is.ID = ""
-	if _, _, err := client.UpdateIndexSet(is); err == nil {
+	if _, err := client.UpdateIndexSet(is); err == nil {
 		t.Fatal("index set id is required")
 	}
 	is.ID = "h"
-	if _, _, err := client.UpdateIndexSet(is); err == nil {
+	if _, err := client.UpdateIndexSet(is); err == nil {
 		t.Fatal(`no index set whose id is "h"`)
 	}
 	is.Title = ""
-	if _, _, err := client.UpdateIndexSet(is); err == nil {
+	if _, err := client.UpdateIndexSet(is); err == nil {
 		t.Fatal("title is required")
 	}
 }

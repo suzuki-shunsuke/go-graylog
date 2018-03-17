@@ -50,7 +50,7 @@ func TestCreateStreamRule(t *testing.T) {
 	}
 	rule := testutil.DummyNewStreamRule()
 	rule.StreamID = stream.ID
-	if _, _, err := client.CreateStreamRule(rule); err != nil {
+	if _, err := client.CreateStreamRule(rule); err != nil {
 		t.Fatal(err)
 	}
 }

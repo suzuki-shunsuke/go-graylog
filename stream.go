@@ -86,39 +86,37 @@ func (client *Client) GetStreamsContext(
 }
 
 // CreateStream creates a stream.
-func (client *Client) CreateStream(stream *Stream) (
-	string, *ErrorInfo, error,
-) {
+func (client *Client) CreateStream(stream *Stream) (*ErrorInfo, error) {
 	return client.CreateStreamContext(context.Background(), stream)
 }
 
 // CreateStreamContext creates a stream with a context.
 func (client *Client) CreateStreamContext(
 	ctx context.Context, stream *Stream,
-) (string, *ErrorInfo, error) {
+) (*ErrorInfo, error) {
 	b, err := json.Marshal(stream)
 	if err != nil {
-		return "", nil, errors.Wrap(err, "Failed to json.Marshal(stream)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(stream)")
 	}
 
 	ei, err := client.callReq(
 		ctx, http.MethodPost, client.Endpoints.Streams, b, true)
 	if err != nil {
-		return "", ei, err
+		return ei, err
 	}
 
 	ret := map[string]string{}
-	err = json.Unmarshal(ei.ResponseBody, &ret)
-	if err != nil {
-		return "", ei, errors.Wrap(
+	if err := json.Unmarshal(ei.ResponseBody, &ret); err != nil {
+		return ei, errors.Wrap(
 			err, fmt.Sprintf(
 				"Failed to parse response body as map[string]string: %s",
 				string(ei.ResponseBody)))
 	}
 	if id, ok := ret["stream_id"]; ok {
-		return id, ei, nil
+		stream.ID = id
+		return ei, nil
 	}
-	return "", ei, errors.New(`response doesn't have the field "stream_id"`)
+	return ei, errors.New(`response doesn't have the field "stream_id"`)
 }
 
 // GetEnabledStreams returns all enabled streams.
@@ -179,37 +177,35 @@ func (client *Client) GetStreamContext(
 }
 
 // UpdateStream updates a stream.
-func (client *Client) UpdateStream(id string, stream *Stream) (
-	*Stream, *ErrorInfo, error,
-) {
-	return client.UpdateStreamContext(context.Background(), id, stream)
+func (client *Client) UpdateStream(stream *Stream) (*ErrorInfo, error) {
+	return client.UpdateStreamContext(context.Background(), stream)
 }
 
 // UpdateStreamContext updates a stream with a context.
 func (client *Client) UpdateStreamContext(
-	ctx context.Context, id string, stream *Stream,
-) (*Stream, *ErrorInfo, error) {
-	if id == "" {
-		return nil, nil, errors.New("id is empty")
+	ctx context.Context, stream *Stream,
+) (*ErrorInfo, error) {
+	if stream.ID == "" {
+		return nil, errors.New("id is empty")
 	}
-	b, err := json.Marshal(stream)
+	body := *stream
+	body.ID = ""
+	b, err := json.Marshal(body)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Failed to json.Marshal(stream)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(stream)")
 	}
 
 	ei, err := client.callReq(
-		ctx, http.MethodPut, client.Endpoints.Stream(id), b, true)
+		ctx, http.MethodPut, client.Endpoints.Stream(stream.ID), b, true)
 	if err != nil {
-		return nil, ei, err
+		return ei, err
 	}
-	ret := &Stream{}
-
-	if err := json.Unmarshal(ei.ResponseBody, ret); err != nil {
-		return nil, ei, errors.Wrap(
+	if err := json.Unmarshal(ei.ResponseBody, stream); err != nil {
+		return ei, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Stream: %s",
 				string(ei.ResponseBody)))
 	}
-	return ret, ei, nil
+	return ei, nil
 }
 
 // DeleteStream deletes a stream.

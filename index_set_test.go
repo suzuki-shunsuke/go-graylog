@@ -29,11 +29,3 @@ func TestDeleteIndexSet(t *testing.T) {
 func TestSetDefaultIndexSet(t *testing.T) {
 	test.TestSetDefaultIndexSet(t)
 }
-
-func TestGetIndexSetStats(t *testing.T) {
-	test.TestGetIndexSetStats(t)
-}
-
-func TestGetAllIndexSetsStats(t *testing.T) {
-	test.TestGetAllIndexSetsStats(t)
-}

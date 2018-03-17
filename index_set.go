@@ -35,13 +35,6 @@ type IndexSet struct {
 	Default                   bool   `json:"default,omitempty"`
 }
 
-// IndexSetStats represents a Graylog's Index Set Stats.
-type IndexSetStats struct {
-	Indices   int `json:"indices"`
-	Documents int `json:"documents"`
-	Size      int `json:"size"`
-}
-
 // RotationStrategy represents a Graylog's Index Set Rotation Strategy.
 type RotationStrategy struct {
 	// ex. "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig"
@@ -71,7 +64,7 @@ func (client *Client) GetIndexSets(
 	return client.GetIndexSetsContext(context.Background(), skip, limit)
 }
 
-// GetIndexSetStatsContext returns a list of all index sets with a context.
+// GetIndexSetsContext returns a list of all index sets with a context.
 func (client *Client) GetIndexSetsContext(
 	ctx context.Context, skip, limit int,
 ) ([]IndexSet, *IndexSetStats, *ErrorInfo, error) {
@@ -120,7 +113,7 @@ func (client *Client) GetIndexSetContext(
 
 // CreateIndexSet creates a Index Set.
 func (client *Client) CreateIndexSet(indexSet *IndexSet) (
-	*IndexSet, *ErrorInfo, error,
+	*ErrorInfo, error,
 ) {
 	return client.CreateIndexSetContext(context.Background(), indexSet)
 }
@@ -128,65 +121,60 @@ func (client *Client) CreateIndexSet(indexSet *IndexSet) (
 // CreateIndexSetContext creates a Index Set with a context.
 func (client *Client) CreateIndexSetContext(
 	ctx context.Context, indexSet *IndexSet,
-) (*IndexSet, *ErrorInfo, error) {
+) (*ErrorInfo, error) {
 	b, err := json.Marshal(indexSet)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Failed to json.Marshal(indexSet)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(indexSet)")
 	}
 
 	ei, err := client.callReq(
 		ctx, http.MethodPost, client.Endpoints.IndexSets, b, true)
 	if err != nil {
-		return nil, ei, err
+		return ei, err
 	}
 
-	is := &IndexSet{}
-	if err := json.Unmarshal(ei.ResponseBody, is); err != nil {
-		return nil, ei, errors.Wrap(
+	if err := json.Unmarshal(ei.ResponseBody, indexSet); err != nil {
+		return ei, errors.Wrap(
 			err, fmt.Sprintf(
 				"Failed to parse response body as IndexSet: %s",
 				string(ei.ResponseBody)))
 	}
-	return is, ei, nil
+	return ei, nil
 }
 
 // UpdateIndexSet updates a given Index Set.
-func (client *Client) UpdateIndexSet(
-	indexSet *IndexSet,
-) (*IndexSet, *ErrorInfo, error) {
+func (client *Client) UpdateIndexSet(indexSet *IndexSet) (*ErrorInfo, error) {
 	return client.UpdateIndexSetContext(context.Background(), indexSet)
 }
 
 // UpdateIndexSetContext updates a given Index Set with a context.
 func (client *Client) UpdateIndexSetContext(
-	ctx context.Context, indexSet *IndexSet,
-) (*IndexSet, *ErrorInfo, error) {
-	id := indexSet.ID
+	ctx context.Context, is *IndexSet,
+) (*ErrorInfo, error) {
+	id := is.ID
 	if id == "" {
-		return nil, nil, errors.New("id is empty")
+		return nil, errors.New("id is empty")
 	}
-	copiedIndexSet := *indexSet
+	copiedIndexSet := *is
 	copiedIndexSet.ID = ""
 	b, err := json.Marshal(&copiedIndexSet)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Failed to json.Marshal(indexSet)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(indexSet)")
 	}
 
 	ei, err := client.callReq(
 		ctx, http.MethodPut, client.Endpoints.IndexSet(id), b, true)
 	if err != nil {
-		return nil, ei, err
+		return ei, err
 	}
 
-	is := &IndexSet{}
-
 	if err := json.Unmarshal(ei.ResponseBody, is); err != nil {
-		return nil, ei, errors.Wrap(
+		return ei, errors.Wrap(
 			err, fmt.Sprintf(
 				"Failed to parse response body as IndexSet: %s",
 				string(ei.ResponseBody)))
 	}
-	return is, ei, nil
+	return ei, nil
 }
 
 // DeleteIndexSet deletes a given Index Set.
@@ -235,61 +223,4 @@ func (client *Client) SetDefaultIndexSetContext(
 				string(ei.ResponseBody)))
 	}
 	return is, ei, nil
-}
-
-// GetIndexSetStats returns a given Index Set statistics.
-func (client *Client) GetIndexSetStats(id string) (
-	*IndexSetStats, *ErrorInfo, error,
-) {
-	return client.GetIndexSetStatsContext(context.Background(), id)
-}
-
-// GetIndexSetStatsContext returns a given Index Set statistics with a context.
-func (client *Client) GetIndexSetStatsContext(
-	ctx context.Context, id string,
-) (*IndexSetStats, *ErrorInfo, error) {
-	if id == "" {
-		return nil, nil, errors.New("id is empty")
-	}
-
-	ei, err := client.callReq(
-		ctx, http.MethodGet, client.Endpoints.IndexSetStats(id), nil, true)
-	if err != nil {
-		return nil, ei, err
-	}
-
-	indexSetStats := &IndexSetStats{}
-	if err := json.Unmarshal(ei.ResponseBody, indexSetStats); err != nil {
-		return nil, ei, errors.Wrap(
-			err, fmt.Sprintf(
-				"Failed to parse response body as IndexSetStats: %s",
-				string(ei.ResponseBody)))
-	}
-	return indexSetStats, ei, nil
-}
-
-// GetAllIndexSetsStats returns stats of all Index Sets.
-func (client *Client) GetAllIndexSetsStats() (
-	*IndexSetStats, *ErrorInfo, error,
-) {
-	return client.GetAllIndexSetsStatsContext(context.Background())
-}
-
-// GetAllIndexSetsStats returns stats of all Index Sets with a context.
-func (client *Client) GetAllIndexSetsStatsContext(
-	ctx context.Context,
-) (*IndexSetStats, *ErrorInfo, error) {
-
-	ei, err := client.callReq(
-		ctx, http.MethodGet, client.Endpoints.IndexSetsStats(), nil, true)
-	if err != nil {
-		return nil, ei, err
-	}
-	indexSetStats := &IndexSetStats{}
-	if err := json.Unmarshal(ei.ResponseBody, indexSetStats); err != nil {
-		return nil, ei, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as IndexSetStats: %s",
-				string(ei.ResponseBody)))
-	}
-	return indexSetStats, ei, nil
 }

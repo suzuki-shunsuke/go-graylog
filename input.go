@@ -51,7 +51,7 @@ type Input struct {
 
 // CreateInput creates an input.
 func (client *Client) CreateInput(input *Input) (
-	id string, ei *ErrorInfo, err error,
+	ei *ErrorInfo, err error,
 ) {
 	return client.CreateInputContext(context.Background(), input)
 }
@@ -59,26 +59,24 @@ func (client *Client) CreateInput(input *Input) (
 // CreateInputContext creates an input with a context.
 func (client *Client) CreateInputContext(
 	ctx context.Context, input *Input,
-) (id string, ei *ErrorInfo, err error) {
+) (ei *ErrorInfo, err error) {
 	b, err := json.Marshal(input)
 	if err != nil {
-		return "", nil, errors.Wrap(err, "Failed to json.Marshal(input)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(input)")
 	}
 
 	ei, err = client.callReq(
 		ctx, http.MethodPost, client.Endpoints.Inputs, b, true)
 	if err != nil {
-		return "", ei, err
+		return ei, err
 	}
 
-	ret := &Input{}
-
-	if err := json.Unmarshal(ei.ResponseBody, ret); err != nil {
-		return "", ei, errors.Wrap(
+	if err := json.Unmarshal(ei.ResponseBody, input); err != nil {
+		return ei, errors.Wrap(
 			err, fmt.Sprintf("Failed to parse response body as Input: %s",
 				string(ei.ResponseBody)))
 	}
-	return ret.ID, ei, nil
+	return ei, nil
 }
 
 type InputsBody struct {
@@ -141,7 +139,7 @@ func (client *Client) GetInputContext(
 
 // UpdateInput updates an given input.
 func (client *Client) UpdateInput(input *Input) (
-	*Input, *ErrorInfo, error,
+	*ErrorInfo, error,
 ) {
 	return client.UpdateInputContext(context.Background(), input)
 }
@@ -149,30 +147,29 @@ func (client *Client) UpdateInput(input *Input) (
 // UpdateInputContext updates an given input with a context.
 func (client *Client) UpdateInputContext(
 	ctx context.Context, input *Input,
-) (*Input, *ErrorInfo, error) {
+) (*ErrorInfo, error) {
 	if input.ID == "" {
-		return nil, nil, errors.New("id is empty")
+		return nil, errors.New("id is empty")
 	}
 	copiedInput := *input
 	copiedInput.ID = ""
 	b, err := json.Marshal(copiedInput)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Failed to json.Marshal(input)")
+		return nil, errors.Wrap(err, "Failed to json.Marshal(input)")
 	}
 
 	ei, err := client.callReq(
 		ctx, http.MethodPut, client.Endpoints.Input(input.ID), b, true)
 	if err != nil {
-		return nil, ei, err
+		return ei, err
 	}
 
-	ret := &Input{}
-	if err := json.Unmarshal(ei.ResponseBody, ret); err != nil {
-		return nil, ei, errors.Wrap(
+	if err := json.Unmarshal(ei.ResponseBody, input); err != nil {
+		return ei, errors.Wrap(
 			err, fmt.Sprintf(
 				"Failed to parse response body as Input: %s", string(ei.ResponseBody)))
 	}
-	return ret, ei, nil
+	return ei, nil
 }
 
 // DeleteInput deletes an given input.

@@ -12,17 +12,17 @@ func TestCreateInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	params := testutil.DummyNewInput()
-	id, _, err := client.CreateInput(params)
-	if err != nil {
+	input := testutil.DummyNewInput()
+	if _, err := client.CreateInput(input); err != nil {
 		t.Fatal("Failed to CreateInput", err)
 	}
-	if id == "" {
+	if input.ID == "" {
 		t.Fatal(`client.CreateInput() == ""`)
 	}
 
-	params.Type = ""
-	if _, _, err := client.CreateInput(params); err == nil {
+	input.ID = ""
+	input.Type = ""
+	if _, err := client.CreateInput(input); err == nil {
 		t.Fatal("input type is required")
 	}
 }
@@ -83,62 +83,58 @@ func TestUpdateInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	input.Title += " updated"
-	act, _, err := client.UpdateInput(input)
-	if err != nil {
+	if _, err := client.UpdateInput(input); err != nil {
 		t.Fatal("Failed to UpdateInput", err)
+	}
+	act, err := server.GetInput(input.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if act == nil {
+		t.Fatal("input is not found")
 	}
 	if act.Title != input.Title {
 		t.Fatalf(`UpdateInput title "%s" != "%s"`, act.Title, input.Title)
 	}
-	act2, err := server.GetInput(input.ID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if act2 == nil {
-		t.Fatal("input is not found")
-	}
-	if act2.Title != input.Title {
-		t.Fatalf(`UpdateInput title "%s" != "%s"`, act2.Title, input.Title)
-	}
 
 	input.ID = ""
-	if _, _, err := client.UpdateInput(input); err == nil {
+	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input id is required")
 	}
 
 	input.ID = "h"
-	if _, _, err := client.UpdateInput(input); err == nil {
+	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal(`no input whose id is "h"`)
 	}
 
 	input.Type = ""
-	if _, _, err := client.UpdateInput(input); err == nil {
+	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input type is required")
 	}
 	input.Type = act.Type
 	input.Configuration = nil
-	if _, _, err := client.UpdateInput(input); err == nil {
+	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input configuration is required")
 	}
 	input.Configuration = act.Configuration
 	input.Title = ""
-	if _, _, err := client.UpdateInput(input); err == nil {
+	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input title is required")
 	}
 
 	input.Title = act.Title
 	input.Configuration.BindAddress = ""
-	if _, _, err := client.UpdateInput(input); err == nil {
+	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input bind_address is required")
 	}
 	input.Configuration.BindAddress = "0.0.0.0"
 	input.Configuration.Port = 0
-	if _, _, err := client.UpdateInput(input); err == nil {
+	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input port is required")
 	}
 	input.Configuration.Port = 514
 	input.Configuration.RecvBufferSize = 0
-	if _, _, err := client.UpdateInput(input); err == nil {
+	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input recv_buffer_size is required")
 	}
 }

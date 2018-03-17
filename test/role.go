@@ -1,7 +1,6 @@
 package test
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -14,18 +13,14 @@ func TestCreateRole(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	params := &graylog.Role{Name: "foo", Permissions: []string{"*"}}
-	role, _, err := client.CreateRole(params)
-	if err != nil {
+	role := &graylog.Role{Name: "foo", Permissions: []string{"*"}}
+	if _, err := client.CreateRole(role); err != nil {
 		t.Fatal("Failed to CreateRole", err)
-	}
-	if role == nil {
-		t.Fatal("client.CreateRole() == nil")
 	}
 	if role.Name != "foo" {
 		t.Fatalf("role.Name == %s, wanted foo", role.Name)
 	}
-	_, ei, err := client.CreateRole(params)
+	ei, err := client.CreateRole(role)
 	if err == nil {
 		t.Fatal("user name must be unique")
 	}
@@ -33,14 +28,14 @@ func TestCreateRole(t *testing.T) {
 		t.Fatal("status code must be 400")
 	}
 
-	params.Name = ""
-	if _, _, err := client.CreateRole(params); err == nil {
+	role.Name = ""
+	if _, err := client.CreateRole(role); err == nil {
 		t.Fatal("user name is required")
 	}
 
-	params.Name = "bar"
-	params.Permissions = nil
-	if _, _, err := client.CreateRole(params); err == nil {
+	role.Name = "bar"
+	role.Permissions = nil
+	if _, err := client.CreateRole(role); err == nil {
 		t.Fatal("user permissions are required")
 	}
 }
@@ -95,28 +90,24 @@ func TestUpdateRole(t *testing.T) {
 		t.Fatal(err)
 	}
 	admin.Description = "changed!"
-	updatedRole, _, err := client.UpdateRole(admin.Name, admin)
-	if err != nil {
+	if _, err := client.UpdateRole(admin.Name, admin); err != nil {
 		t.Fatal("Failed to UpdateRole", err)
 	}
-	if !reflect.DeepEqual(*updatedRole, *admin) {
-		t.Fatalf("client.UpdateRole() == %v, wanted %v", updatedRole, admin)
-	}
-	if _, _, err := client.UpdateRole("", admin); err == nil {
+	if _, err := client.UpdateRole("", admin); err == nil {
 		t.Fatal("role name is required")
 	}
-	if _, _, err := client.UpdateRole("h", admin); err == nil {
+	if _, err := client.UpdateRole("h", admin); err == nil {
 		t.Fatal(`no role whose name is "h"`)
 	}
 
 	copiedAdmin := *admin
 	admin.Name = ""
-	if _, _, err := client.UpdateRole(copiedAdmin.Name, admin); err == nil {
+	if _, err := client.UpdateRole(copiedAdmin.Name, admin); err == nil {
 		t.Fatal("role name is required")
 	}
 	admin.Name = copiedAdmin.Name
 	admin.Permissions = nil
-	if _, _, err := client.UpdateRole(copiedAdmin.Name, admin); err == nil {
+	if _, err := client.UpdateRole(copiedAdmin.Name, admin); err == nil {
 		t.Fatal("role permissions is required")
 	}
 }
