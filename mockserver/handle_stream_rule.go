@@ -9,7 +9,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
-func (ms *MockServer) handleGetStreamRules(
+func (ms *Server) handleGetStreamRules(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// GET /streams/{streamid}/rules Get a list of all stream rules
@@ -22,7 +22,7 @@ func (ms *MockServer) handleGetStreamRules(
 	return 200, body, nil
 }
 
-func (ms *MockServer) handleCreateStreamRule(
+func (ms *Server) handleCreateStreamRule(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// POST /streams/{streamid}/rules Create a stream rule
@@ -72,7 +72,7 @@ func (ms *MockServer) handleCreateStreamRule(
 // type 400 {"type": "ApiError", "message": "Unknown stream rule type 0"}
 // value, type, description, inverted, field
 
-func (ms *MockServer) handleUpdateStreamRule(
+func (ms *Server) handleUpdateStreamRule(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// PUT /streams/{streamid}/rules/{streamRuleID} Update a stream rule
@@ -110,7 +110,7 @@ func (ms *MockServer) handleUpdateStreamRule(
 	return 200, ret, nil
 }
 
-func (ms *MockServer) handleDeleteStreamRule(
+func (ms *Server) handleDeleteStreamRule(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// DELETE /streams/{streamid}/rules/{streamRuleId} Delete a stream rule
@@ -134,7 +134,7 @@ func (ms *MockServer) handleDeleteStreamRule(
 	return 204, nil, nil
 }
 
-func (ms *MockServer) handleGetStreamRule(
+func (ms *Server) handleGetStreamRule(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// GET /streams/{streamid}/rules/{streamRuleId} Get a single stream rules

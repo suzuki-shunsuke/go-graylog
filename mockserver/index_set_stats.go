@@ -6,7 +6,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
-func (ms *MockServer) GetIndexSetStats(id string) (*graylog.IndexSetStats, error) {
+func (ms *Server) GetIndexSetStats(id string) (*graylog.IndexSetStats, error) {
 	ok, err := ms.HasIndexSet(id)
 	if err != nil {
 		return nil, err
@@ -18,11 +18,11 @@ func (ms *MockServer) GetIndexSetStats(id string) (*graylog.IndexSetStats, error
 }
 
 // GetTotalIndexSetsStats returns all index set's statistics.
-func (ms *MockServer) GetTotalIndexSetsStats() (*graylog.IndexSetStats, error) {
+func (ms *Server) GetTotalIndexSetsStats() (*graylog.IndexSetStats, error) {
 	return ms.store.GetTotalIndexSetsStats()
 }
 
-func (ms *MockServer) SetIndexSetStats(id string, stats *graylog.IndexSetStats) (int, error) {
+func (ms *Server) SetIndexSetStats(id string, stats *graylog.IndexSetStats) (int, error) {
 	ok, err := ms.HasIndexSet(id)
 	if err != nil {
 		return 500, err

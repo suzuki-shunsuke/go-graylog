@@ -9,7 +9,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestMockServerHandleUpdateIndexSet(t *testing.T) {
+func TestServerHandleUpdateIndexSet(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -35,7 +35,7 @@ func TestMockServerHandleUpdateIndexSet(t *testing.T) {
 	}
 }
 
-func TestMockServerHandleCreateIndexSet(t *testing.T) {
+func TestServerHandleCreateIndexSet(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)

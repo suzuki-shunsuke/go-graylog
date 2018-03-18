@@ -10,7 +10,7 @@ import (
 )
 
 // GET /system/inputs/{inputID} Get information of a single input on this node
-func (ms *MockServer) handleGetInput(
+func (ms *Server) handleGetInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
@@ -28,7 +28,7 @@ func (ms *MockServer) handleGetInput(
 }
 
 // PUT /system/inputs/{inputID} Update input on this node
-func (ms *MockServer) handleUpdateInput(
+func (ms *Server) handleUpdateInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
@@ -60,7 +60,7 @@ func (ms *MockServer) handleUpdateInput(
 }
 
 // DELETE /system/inputs/{inputID} Terminate input on this node
-func (ms *MockServer) handleDeleteInput(
+func (ms *Server) handleDeleteInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
@@ -72,7 +72,7 @@ func (ms *MockServer) handleDeleteInput(
 }
 
 // POST /system/inputs Launch input on this node
-func (ms *MockServer) handleCreateInput(
+func (ms *Server) handleCreateInput(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{"title", "type", "configuration"}
@@ -100,7 +100,7 @@ func (ms *MockServer) handleCreateInput(
 }
 
 // GET /system/inputs Get all inputs
-func (ms *MockServer) handleGetInputs(
+func (ms *Server) handleGetInputs(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.InputList()

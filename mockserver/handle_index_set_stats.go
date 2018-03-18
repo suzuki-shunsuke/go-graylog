@@ -8,7 +8,7 @@ import (
 )
 
 // GET /system/indices/index_sets/{id}/stats Get index set statistics
-func (ms *MockServer) handleGetIndexSetStats(
+func (ms *Server) handleGetIndexSetStats(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")
@@ -23,7 +23,7 @@ func (ms *MockServer) handleGetIndexSetStats(
 }
 
 // GET /system/indices/index_sets/stats Get stats of all index sets
-func (ms *MockServer) handleGetAllIndexSetsStats(
+func (ms *Server) handleGetAllIndexSetsStats(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	s, err := ms.GetTotalIndexSetsStats()

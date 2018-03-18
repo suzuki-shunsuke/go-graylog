@@ -9,12 +9,12 @@ import (
 )
 
 // HasStreamRule
-func (ms *MockServer) HasStreamRule(streamID, streamRuleID string) (bool, error) {
+func (ms *Server) HasStreamRule(streamID, streamRuleID string) (bool, error) {
 	return ms.store.HasStreamRule(streamID, streamRuleID)
 }
 
-// AddStreamRule adds a stream rule to the MockServer.
-func (ms *MockServer) AddStreamRule(rule *graylog.StreamRule) (int, error) {
+// AddStreamRule adds a stream rule to the Server.
+func (ms *Server) AddStreamRule(rule *graylog.StreamRule) (int, error) {
 	if err := validator.CreateValidator.Struct(rule); err != nil {
 		return 400, err
 	}
@@ -32,8 +32,8 @@ func (ms *MockServer) AddStreamRule(rule *graylog.StreamRule) (int, error) {
 	return 201, nil
 }
 
-// UpdateStreamRule updates a stream rule of the MockServer.
-func (ms *MockServer) UpdateStreamRule(rule *graylog.StreamRule) (int, error) {
+// UpdateStreamRule updates a stream rule of the Server.
+func (ms *Server) UpdateStreamRule(rule *graylog.StreamRule) (int, error) {
 	// PUT /streams/{streamid}/rules/{streamRuleID} Update a stream rule
 	if err := validator.UpdateValidator.Struct(rule); err != nil {
 		return 400, err
@@ -51,8 +51,8 @@ func (ms *MockServer) UpdateStreamRule(rule *graylog.StreamRule) (int, error) {
 	return 204, nil
 }
 
-// DeleteStreamRule deletes a stream rule from the MockServer.
-func (ms *MockServer) DeleteStreamRule(streamID, streamRuleID string) (int, error) {
+// DeleteStreamRule deletes a stream rule from the Server.
+func (ms *Server) DeleteStreamRule(streamID, streamRuleID string) (int, error) {
 	ok, err := ms.HasStream(streamID)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -81,7 +81,7 @@ func (ms *MockServer) DeleteStreamRule(streamID, streamRuleID string) (int, erro
 }
 
 // GetStreamRules returns a list of all stream rules of a given stream.
-func (ms *MockServer) GetStreamRules(streamID string) ([]graylog.StreamRule, int, error) {
+func (ms *Server) GetStreamRules(streamID string) ([]graylog.StreamRule, int, error) {
 	ok, err := ms.HasStream(streamID)
 	if err != nil {
 		return nil, 500, err
@@ -97,7 +97,7 @@ func (ms *MockServer) GetStreamRules(streamID string) ([]graylog.StreamRule, int
 }
 
 // GetStreamRule returns a stream rule.
-func (ms *MockServer) GetStreamRule(streamID, streamRuleID string) (*graylog.StreamRule, int, error) {
+func (ms *Server) GetStreamRule(streamID, streamRuleID string) (*graylog.StreamRule, int, error) {
 	ok, err := ms.HasStream(streamID)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{

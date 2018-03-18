@@ -11,7 +11,7 @@ import (
 )
 
 // GET /streams Get a list of all streams
-func (ms *MockServer) handleGetStreams(
+func (ms *Server) handleGetStreams(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.GetStreams()
@@ -27,7 +27,7 @@ func (ms *MockServer) handleGetStreams(
 }
 
 // POST /streams Create index set
-func (ms *MockServer) handleCreateStream(
+func (ms *Server) handleCreateStream(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{"title", "index_set_id"}
@@ -56,7 +56,7 @@ func (ms *MockServer) handleCreateStream(
 }
 
 // GET /streams/enabled Get a list of all enabled streams
-func (ms *MockServer) handleGetEnabledStreams(
+func (ms *Server) handleGetEnabledStreams(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.EnabledStreamList()
@@ -71,7 +71,7 @@ func (ms *MockServer) handleGetEnabledStreams(
 }
 
 // GET /streams/{streamID} Get a single stream
-func (ms *MockServer) handleGetStream(
+func (ms *Server) handleGetStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
@@ -92,7 +92,7 @@ func (ms *MockServer) handleGetStream(
 }
 
 // PUT /streams/{streamID} Update a stream
-func (ms *MockServer) handleUpdateStream(
+func (ms *Server) handleUpdateStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
@@ -157,7 +157,7 @@ func (ms *MockServer) handleUpdateStream(
 }
 
 // DELETE /streams/{streamID} Delete a stream
-func (ms *MockServer) handleDeleteStream(
+func (ms *Server) handleDeleteStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
@@ -178,7 +178,7 @@ func (ms *MockServer) handleDeleteStream(
 }
 
 // POST /streams/{streamID}/pause Pause a stream
-func (ms *MockServer) handlePauseStream(
+func (ms *Server) handlePauseStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
@@ -196,7 +196,7 @@ func (ms *MockServer) handlePauseStream(
 	return 200, nil, nil
 }
 
-func (ms *MockServer) handleResumeStream(
+func (ms *Server) handleResumeStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")

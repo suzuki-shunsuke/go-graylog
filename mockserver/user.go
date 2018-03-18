@@ -8,21 +8,21 @@ import (
 )
 
 // HasUser
-func (ms *MockServer) HasUser(username string) (bool, error) {
+func (ms *Server) HasUser(username string) (bool, error) {
 	return ms.store.HasUser(username)
 }
 
 // GetUser returns a user.
-func (ms *MockServer) GetUser(username string) (*graylog.User, error) {
+func (ms *Server) GetUser(username string) (*graylog.User, error) {
 	return ms.store.GetUser(username)
 }
 
 // UsersList returns a user.
-func (ms *MockServer) UsersList() ([]graylog.User, error) {
+func (ms *Server) UsersList() ([]graylog.User, error) {
 	return ms.store.GetUsers()
 }
 
-func (ms *MockServer) checkUserRoles(roles []string) (int, error) {
+func (ms *Server) checkUserRoles(roles []string) (int, error) {
 	if roles != nil && len(roles) != 0 {
 		for _, roleName := range roles {
 			ok, err := ms.HasRole(roleName)
@@ -38,8 +38,8 @@ func (ms *MockServer) checkUserRoles(roles []string) (int, error) {
 	return 200, nil
 }
 
-// AddUser adds a user to the MockServer.
-func (ms *MockServer) AddUser(user *graylog.User) (int, error) {
+// AddUser adds a user to the Server.
+func (ms *Server) AddUser(user *graylog.User) (int, error) {
 	// client side validation
 	if err := validator.CreateValidator.Struct(user); err != nil {
 		return 400, err
@@ -70,9 +70,9 @@ func (ms *MockServer) AddUser(user *graylog.User) (int, error) {
 	return 200, nil
 }
 
-// UpdateUser updates a user of the MockServer.
+// UpdateUser updates a user of the Server.
 // "email", "permissions", "full_name", "password"
-func (ms *MockServer) UpdateUser(user *graylog.User) (int, error) {
+func (ms *Server) UpdateUser(user *graylog.User) (int, error) {
 	// Check updated user exists
 	ok, err := ms.HasUser(user.Username)
 	if err != nil {
@@ -99,8 +99,8 @@ func (ms *MockServer) UpdateUser(user *graylog.User) (int, error) {
 	return 200, nil
 }
 
-// DeleteUser removes a user from the MockServer.
-func (ms *MockServer) DeleteUser(name string) (int, error) {
+// DeleteUser removes a user from the Server.
+func (ms *Server) DeleteUser(name string) (int, error) {
 	// Check deleted user exists
 	ok, err := ms.HasUser(name)
 	if err != nil {
@@ -118,6 +118,6 @@ func (ms *MockServer) DeleteUser(name string) (int, error) {
 }
 
 // UserList returns a list of all users.
-func (ms *MockServer) UserList() ([]graylog.User, error) {
+func (ms *Server) UserList() ([]graylog.User, error) {
 	return ms.store.GetUsers()
 }

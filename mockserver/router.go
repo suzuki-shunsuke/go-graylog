@@ -4,7 +4,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func newRouter(ms *MockServer) *httprouter.Router {
+func newRouter(ms *Server) *httprouter.Router {
 	router := httprouter.New()
 
 	router.GET("/api/roles/:rolename", wrapHandle(ms, ms.handleGetRole))

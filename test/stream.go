@@ -8,7 +8,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func addDummyStream(server *MockServer) (*graylog.IndexSet, *graylog.Stream, error) {
+func addDummyStream(server *Server) (*graylog.IndexSet, *graylog.Stream, error) {
 	indexSet := testutil.IndexSet("hoge")
 	if _, err := server.AddIndexSet(indexSet); err != nil {
 		return nil, nil, err

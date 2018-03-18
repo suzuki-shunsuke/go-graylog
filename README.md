@@ -42,7 +42,7 @@ func main() {
 ## Example 2 - Run a mock server in the program
 
 ```golang
-server, err := NewMockServer("")
+server, err := NewServer("")
 if err != nil {
 	t.Error("Failed to Get Mock Server", err)
 	return

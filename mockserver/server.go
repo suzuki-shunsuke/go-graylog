@@ -14,8 +14,8 @@ var (
 	once sync.Once
 )
 
-// MockServer represents a mock of the Graylog API.
-type MockServer struct {
+// Server represents a mock of the Graylog API.
+type Server struct {
 	server   *httptest.Server `json:"-"`
 	endpoint string           `json:"-"`
 
@@ -26,14 +26,14 @@ type MockServer struct {
 	dataPath string      `json:"-"`
 }
 
-func (ms *MockServer) Logger() *log.Logger {
+func (ms *Server) Logger() *log.Logger {
 	return ms.logger
 }
 
-// NewMockServer returns new MockServer but doesn't start it.
+// NewServer returns new Server but doesn't start it.
 // If addr is an empty string, the free port is assigned automatially.
-func NewMockServer(addr string, store Store) (*MockServer, error) {
-	ms := &MockServer{
+func NewServer(addr string, store Store) (*Server, error) {
+	ms := &Server{
 		// indexSetStats: map[string]graylog.IndexSetStats{},
 		streamRules: map[string]map[string]graylog.StreamRule{},
 
@@ -62,33 +62,33 @@ func NewMockServer(addr string, store Store) (*MockServer, error) {
 }
 
 // SetStore sets a store to the mock server.
-func (ms *MockServer) SetStore(store Store) {
+func (ms *Server) SetStore(store Store) {
 	ms.store = store
 }
 
 // Start starts a server from NewUnstartedServer.
-func (ms *MockServer) Start() {
+func (ms *Server) Start() {
 	ms.server.Start()
 }
 
 // Close shuts down the server and blocks until all outstanding requests
 // on this server have completed.
-func (ms *MockServer) Close() {
+func (ms *Server) Close() {
 	ms.Logger().Info("Close Server")
 	ms.server.Close()
 }
 
 // Save writes Mock Server's data in a file for persistence.
-func (ms *MockServer) Save() error {
+func (ms *Server) Save() error {
 	return ms.store.Save()
 }
 
 // Load reads Mock Server's data from a file.
-func (ms *MockServer) Load() error {
+func (ms *Server) Load() error {
 	return ms.store.Load()
 }
 
-func (ms *MockServer) safeSave() {
+func (ms *Server) safeSave() {
 	if err := ms.Save(); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"error": err, "data_path": ms.dataPath,
@@ -96,6 +96,6 @@ func (ms *MockServer) safeSave() {
 	}
 }
 
-func (ms *MockServer) GetEndpoint() string {
+func (ms *Server) GetEndpoint() string {
 	return ms.endpoint
 }

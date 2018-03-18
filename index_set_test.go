@@ -9,7 +9,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func waitAfterCreateIndexSet(server *mockserver.MockServer) {
+func waitAfterCreateIndexSet(server *mockserver.Server) {
 	// At real graylog API we need to sleep
 	// 404 Index set not found.
 	if server == nil {
@@ -18,7 +18,7 @@ func waitAfterCreateIndexSet(server *mockserver.MockServer) {
 	}
 }
 
-func waitAfterDeleteIndexSet(server *mockserver.MockServer) {
+func waitAfterDeleteIndexSet(server *mockserver.Server) {
 	// At real graylog API we need to sleep
 	// 404 Index set not found.
 	if server == nil {

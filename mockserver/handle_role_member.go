@@ -14,7 +14,7 @@ type membersBody struct {
 }
 
 // GET /roles/{rolename}/members Retrieve the role's members
-func (ms *MockServer) handleRoleMembers(
+func (ms *Server) handleRoleMembers(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -34,7 +34,7 @@ func (ms *MockServer) handleRoleMembers(
 }
 
 // PUT /roles/{rolename}/members/{username} Add a user to a role
-func (ms *MockServer) handleAddUserToRole(
+func (ms *Server) handleAddUserToRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	roleName := ps.ByName("rolename")
@@ -60,7 +60,7 @@ func (ms *MockServer) handleAddUserToRole(
 }
 
 // DELETE /roles/{rolename}/members/{username} Remove a user from a role
-func (ms *MockServer) handleRemoveUserFromRole(
+func (ms *Server) handleRemoveUserFromRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	roleName := ps.ByName("rolename")

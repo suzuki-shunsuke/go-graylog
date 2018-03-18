@@ -11,7 +11,7 @@ import (
 
 type Handler func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) (int, interface{}, error)
 
-func (ms *MockServer) handleNotFound(w http.ResponseWriter, r *http.Request) {
+func (ms *Server) handleNotFound(w http.ResponseWriter, r *http.Request) {
 	ms.Logger().WithFields(log.Fields{
 		"path": r.URL.Path, "method": r.Method,
 		"message": "404 Page Not Found",
@@ -22,7 +22,7 @@ func (ms *MockServer) handleNotFound(w http.ResponseWriter, r *http.Request) {
 		`{"message":"Page Not Found %s %s"}`, r.Method, r.URL.Path)))
 }
 
-func wrapHandle(ms *MockServer, handler Handler) httprouter.Handle {
+func wrapHandle(ms *Server, handler Handler) httprouter.Handle {
 	// ms.Logger().WithFields(log.Fields{
 	// 	"path": r.URL.Path, "method": r.Method,
 	// }).Info("request start")

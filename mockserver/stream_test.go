@@ -30,7 +30,7 @@ func testUpdateStreamStatusCode(
 	return nil
 }
 
-func TestMockServerHandleUpdateStream(t *testing.T) {
+func TestServerHandleUpdateStream(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -78,7 +78,7 @@ func TestMockServerHandleUpdateStream(t *testing.T) {
 	}
 }
 
-func TestMockServerHandleCreateStream(t *testing.T) {
+func TestServerHandleCreateStream(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)

@@ -9,7 +9,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestMockServerHandleCreateUser(t *testing.T) {
+func TestServerHandleCreateUser(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -31,7 +31,7 @@ func TestMockServerHandleCreateUser(t *testing.T) {
 	}
 }
 
-func TestMockServerHandleUpdateUser(t *testing.T) {
+func TestServerHandleUpdateUser(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)

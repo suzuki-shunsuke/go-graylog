@@ -9,17 +9,17 @@ import (
 )
 
 // HasStream
-func (ms *MockServer) HasStream(id string) (bool, error) {
+func (ms *Server) HasStream(id string) (bool, error) {
 	return ms.store.HasStream(id)
 }
 
 // GetStream returns a stream.
-func (ms *MockServer) GetStream(id string) (*graylog.Stream, error) {
+func (ms *Server) GetStream(id string) (*graylog.Stream, error) {
 	return ms.store.GetStream(id)
 }
 
-// AddStream adds a stream to the MockServer.
-func (ms *MockServer) AddStream(stream *graylog.Stream) (int, error) {
+// AddStream adds a stream to the Server.
+func (ms *Server) AddStream(stream *graylog.Stream) (int, error) {
 	if err := validator.CreateValidator.Struct(stream); err != nil {
 		return 400, err
 	}
@@ -30,8 +30,8 @@ func (ms *MockServer) AddStream(stream *graylog.Stream) (int, error) {
 	return 200, nil
 }
 
-// UpdateStream updates a stream at the MockServer.
-func (ms *MockServer) UpdateStream(stream *graylog.Stream) (int, error) {
+// UpdateStream updates a stream at the Server.
+func (ms *Server) UpdateStream(stream *graylog.Stream) (int, error) {
 	if stream == nil {
 		return 400, fmt.Errorf("stream is nil")
 	}
@@ -54,8 +54,8 @@ func (ms *MockServer) UpdateStream(stream *graylog.Stream) (int, error) {
 	return 200, nil
 }
 
-// DeleteStream deletes a stream from the MockServer.
-func (ms *MockServer) DeleteStream(id string) (int, error) {
+// DeleteStream deletes a stream from the Server.
+func (ms *Server) DeleteStream(id string) (int, error) {
 	ok, err := ms.HasStream(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -73,11 +73,11 @@ func (ms *MockServer) DeleteStream(id string) (int, error) {
 }
 
 // GetStreams returns a list of all streams.
-func (ms *MockServer) GetStreams() ([]graylog.Stream, error) {
+func (ms *Server) GetStreams() ([]graylog.Stream, error) {
 	return ms.store.GetStreams()
 }
 
 // EnabledStreamList returns all enabled streams.
-func (ms *MockServer) EnabledStreamList() ([]graylog.Stream, error) {
+func (ms *Server) EnabledStreamList() ([]graylog.Stream, error) {
 	return ms.store.GetEnabledStreams()
 }

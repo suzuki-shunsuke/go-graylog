@@ -10,7 +10,7 @@ import (
 )
 
 // GET /system/indices/index_sets Get a list of all index sets
-func (ms *MockServer) handleGetIndexSets(
+func (ms *Server) handleGetIndexSets(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.GetIndexSets()
@@ -26,7 +26,7 @@ func (ms *MockServer) handleGetIndexSets(
 }
 
 // GET /system/indices/index_sets/{id} Get index set
-func (ms *MockServer) handleGetIndexSet(
+func (ms *Server) handleGetIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")
@@ -47,7 +47,7 @@ func (ms *MockServer) handleGetIndexSet(
 }
 
 // POST /system/indices/index_sets Create index set
-func (ms *MockServer) handleCreateIndexSet(
+func (ms *Server) handleCreateIndexSet(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{
@@ -85,7 +85,7 @@ func (ms *MockServer) handleCreateIndexSet(
 }
 
 // PUT /system/indices/index_sets/{id} Update index set
-func (ms *MockServer) handleUpdateIndexSet(
+func (ms *Server) handleUpdateIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// default can't change (ignored)
@@ -119,7 +119,7 @@ func (ms *MockServer) handleUpdateIndexSet(
 }
 
 // DELETE /system/indices/index_sets/{id} Delete index set
-func (ms *MockServer) handleDeleteIndexSet(
+func (ms *Server) handleDeleteIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")
@@ -131,7 +131,7 @@ func (ms *MockServer) handleDeleteIndexSet(
 }
 
 // PUT /system/indices/index_sets/{id}/default Set default index set
-func (ms *MockServer) handleSetDefaultIndexSet(
+func (ms *Server) handleSetDefaultIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	is, sc, err := ms.SetDefaultIndexSet(ps.ByName("indexSetID"))

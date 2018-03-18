@@ -40,14 +40,14 @@ OPTIONS:
 
 func action(dataPath, logLevel string, port int) error {
 	var (
-		server *mockserver.MockServer
+		server *mockserver.Server
 		err    error
 	)
 	if port == 0 {
-		server, err = mockserver.NewMockServer(
+		server, err = mockserver.NewServer(
 			"", mockserver.NewInMemoryStore(dataPath))
 	} else {
-		server, err = mockserver.NewMockServer(
+		server, err = mockserver.NewServer(
 			fmt.Sprintf(":%d", port), mockserver.NewInMemoryStore(dataPath))
 	}
 	if err != nil {

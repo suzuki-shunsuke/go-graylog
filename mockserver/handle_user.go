@@ -10,7 +10,7 @@ import (
 )
 
 // POST /users Create a new user account.
-func (ms *MockServer) handleCreateUser(
+func (ms *Server) handleCreateUser(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{
@@ -38,7 +38,7 @@ func (ms *MockServer) handleCreateUser(
 }
 
 // GET /users List all users
-func (ms *MockServer) handleGetUsers(
+func (ms *Server) handleGetUsers(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.UserList()
@@ -50,7 +50,7 @@ func (ms *MockServer) handleGetUsers(
 }
 
 // GET /users/{username} Get user details
-func (ms *MockServer) handleGetUser(
+func (ms *Server) handleGetUser(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("username")
@@ -65,7 +65,7 @@ func (ms *MockServer) handleGetUser(
 }
 
 // PUT /users/{username} Modify user details.
-func (ms *MockServer) handleUpdateUser(
+func (ms *Server) handleUpdateUser(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// required fields is nil
@@ -92,7 +92,7 @@ func (ms *MockServer) handleUpdateUser(
 }
 
 // DELETE /users/{username} Removes a user account
-func (ms *MockServer) handleDeleteUser(
+func (ms *Server) handleDeleteUser(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("username")

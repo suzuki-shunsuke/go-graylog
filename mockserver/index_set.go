@@ -8,16 +8,16 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/validator"
 )
 
-func (ms *MockServer) HasIndexSet(id string) (bool, error) {
+func (ms *Server) HasIndexSet(id string) (bool, error) {
 	return ms.store.HasIndexSet(id)
 }
 
-func (ms *MockServer) GetIndexSet(id string) (*graylog.IndexSet, error) {
+func (ms *Server) GetIndexSet(id string) (*graylog.IndexSet, error) {
 	return ms.store.GetIndexSet(id)
 }
 
 // AddIndexSet adds an index set to the Mock Server.
-func (ms *MockServer) AddIndexSet(is *graylog.IndexSet) (int, error) {
+func (ms *Server) AddIndexSet(is *graylog.IndexSet) (int, error) {
 	if is == nil {
 		return 400, fmt.Errorf("index set is nil")
 	}
@@ -59,7 +59,7 @@ func (ms *MockServer) AddIndexSet(is *graylog.IndexSet) (int, error) {
 }
 
 // UpdateIndexSet updates an index set at the Mock Server.
-func (ms *MockServer) UpdateIndexSet(is *graylog.IndexSet) (int, error) {
+func (ms *Server) UpdateIndexSet(is *graylog.IndexSet) (int, error) {
 	if is == nil {
 		return 400, fmt.Errorf("index set is nil")
 	}
@@ -94,7 +94,7 @@ func (ms *MockServer) UpdateIndexSet(is *graylog.IndexSet) (int, error) {
 }
 
 // DeleteIndexSet removes a index set from the Mock Server.
-func (ms *MockServer) DeleteIndexSet(id string) (int, error) {
+func (ms *Server) DeleteIndexSet(id string) (int, error) {
 	ok, err := ms.HasIndexSet(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -119,12 +119,12 @@ func (ms *MockServer) DeleteIndexSet(id string) (int, error) {
 }
 
 // GetIndexSets returns a list of all index sets.
-func (ms *MockServer) GetIndexSets() ([]graylog.IndexSet, error) {
+func (ms *Server) GetIndexSets() ([]graylog.IndexSet, error) {
 	return ms.store.GetIndexSets()
 }
 
 // SetDefaultIndexSet sets a default index set
-func (ms *MockServer) SetDefaultIndexSet(id string) (*graylog.IndexSet, int, error) {
+func (ms *Server) SetDefaultIndexSet(id string) (*graylog.IndexSet, int, error) {
 	is, err := ms.GetIndexSet(id)
 	if err != nil {
 		ms.logger.WithFields(log.Fields{

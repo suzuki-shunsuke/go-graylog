@@ -32,7 +32,7 @@ In addition the conventional error object, our API returns "graylog.ErrorInfo" o
 In addition the API client, this library provides the mock server.
 
   // a port number is automatically chosen
-  server, err := NewMockServer("")
+  server, err := NewServer("")
   if err != nil {
   	t.Error("Failed to Get Mock Server", err)
   	return
@@ -40,7 +40,7 @@ In addition the API client, this library provides the mock server.
 
 You can specify the port number.
 
-  server, err := NewMockServer(":8000")
+  server, err := NewServer(":8000")
 
 The server doesn't start yet, so start it.
 

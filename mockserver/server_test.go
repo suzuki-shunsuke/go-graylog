@@ -11,7 +11,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestMockServerLoad(t *testing.T) {
+func TestServerLoad(t *testing.T) {
 	server, _, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -26,7 +26,7 @@ func TestMockServerLoad(t *testing.T) {
 	}
 }
 
-func TestMockServerSave(t *testing.T) {
+func TestServerSave(t *testing.T) {
 	server, _, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -46,7 +46,7 @@ func TestMockServerSave(t *testing.T) {
 	}
 }
 
-func TestMockServerHandleNotFound(t *testing.T) {
+func TestServerHandleNotFound(t *testing.T) {
 	server, _, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)

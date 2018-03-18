@@ -10,7 +10,7 @@ import (
 )
 
 // GET /roles/{rolename} Retrieve permissions for a single role
-func (ms *MockServer) handleGetRole(
+func (ms *Server) handleGetRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -27,7 +27,7 @@ func (ms *MockServer) handleGetRole(
 }
 
 // PUT /roles/{rolename} Update an existing role
-func (ms *MockServer) handleUpdateRole(
+func (ms *Server) handleUpdateRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -54,7 +54,7 @@ func (ms *MockServer) handleUpdateRole(
 }
 
 // DELETE /roles/{rolename} Remove the named role and dissociate any users from it
-func (ms *MockServer) handleDeleteRole(
+func (ms *Server) handleDeleteRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -67,7 +67,7 @@ func (ms *MockServer) handleDeleteRole(
 }
 
 // POST /roles Create a new role
-func (ms *MockServer) handleCreateRole(
+func (ms *Server) handleCreateRole(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{"name", "permissions"}
@@ -93,7 +93,7 @@ func (ms *MockServer) handleCreateRole(
 }
 
 // GET /roles List all roles
-func (ms *MockServer) handleGetRoles(
+func (ms *Server) handleGetRoles(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.GetRoles()

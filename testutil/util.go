@@ -14,9 +14,9 @@ import (
 // If you want to use mock server, pass "mock" as endpoint.
 // If you want to use real server, pass "real" as endpoint.
 // If endpoint is "" and GRAYLOG_WEB_ENDPOINT_URI is set, returns real server.
-func GetServerAndClient() (*mockserver.MockServer, *graylog.Client, error) {
+func GetServerAndClient() (*mockserver.Server, *graylog.Client, error) {
 	var (
-		server *mockserver.MockServer
+		server *mockserver.Server
 		err    error
 	)
 	authName := os.Getenv("GRAYLOG_AUTH_NAME")
@@ -29,7 +29,7 @@ func GetServerAndClient() (*mockserver.MockServer, *graylog.Client, error) {
 	}
 	endpoint := os.Getenv("GRAYLOG_WEB_ENDPOINT_URI")
 	if endpoint == "" {
-		server, err = mockserver.NewMockServer("", mockserver.NewInMemoryStore(""))
+		server, err = mockserver.NewServer("", mockserver.NewInMemoryStore(""))
 		if err != nil {
 			return nil, nil, errors.Wrap(err, "Failed to Get Mock Server")
 		}

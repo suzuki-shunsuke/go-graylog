@@ -5,7 +5,7 @@ import (
 )
 
 // RoleMembers returns members of a given role.
-func (ms *MockServer) RoleMembers(name string) ([]graylog.User, error) {
+func (ms *Server) RoleMembers(name string) ([]graylog.User, error) {
 	users := []graylog.User{}
 	us, err := ms.UsersList()
 	if err != nil {

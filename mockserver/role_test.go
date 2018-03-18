@@ -9,7 +9,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestMockServerHandleCreateRole(t *testing.T) {
+func TestServerHandleCreateRole(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -31,7 +31,7 @@ func TestMockServerHandleCreateRole(t *testing.T) {
 	}
 }
 
-func TestMockServerHandleUpdateRole(t *testing.T) {
+func TestServerHandleUpdateRole(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
