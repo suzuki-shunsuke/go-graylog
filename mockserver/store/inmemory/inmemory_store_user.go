@@ -1,4 +1,4 @@
-package mockserver
+package inmemory
 
 import (
 	"fmt"

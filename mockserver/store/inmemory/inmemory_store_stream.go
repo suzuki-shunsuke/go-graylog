@@ -1,4 +1,4 @@
-package mockserver
+package inmemory
 
 import (
 	"github.com/suzuki-shunsuke/go-graylog"

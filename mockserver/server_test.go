@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/mockserver"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
@@ -20,7 +20,7 @@ func TestServerLoad(t *testing.T) {
 	if err := server.Load(); err != nil {
 		t.Fatal(err)
 	}
-	server.SetStore(mockserver.NewInMemoryStore("hoge"))
+	server.SetStore(inmemory.NewStore("hoge"))
 	if err := server.Load(); err != nil {
 		t.Fatal(err)
 	}
@@ -37,7 +37,7 @@ func TestServerSave(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer os.Remove(tmpfile.Name())
-	server.SetStore(mockserver.NewInMemoryStore(tmpfile.Name()))
+	server.SetStore(inmemory.NewStore(tmpfile.Name()))
 	if err := server.Save(); err != nil {
 		t.Fatal(err)
 	}

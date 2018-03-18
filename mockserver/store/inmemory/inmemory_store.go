@@ -1,4 +1,4 @@
-package mockserver
+package inmemory
 
 import (
 	"encoding/json"
@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 )
 
 type InMemoryStore struct {
@@ -20,7 +21,7 @@ type InMemoryStore struct {
 	dataPath          string                                   `json:"-"`
 }
 
-func NewInMemoryStore(dataPath string) Store {
+func NewStore(dataPath string) store.Store {
 	return &InMemoryStore{
 		roles:         map[string]graylog.Role{},
 		users:         map[string]graylog.User{},

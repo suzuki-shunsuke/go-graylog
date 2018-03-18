@@ -29,7 +29,7 @@ func GetServerAndClient() (*mockserver.Server, *graylog.Client, error) {
 	}
 	endpoint := os.Getenv("GRAYLOG_WEB_ENDPOINT_URI")
 	if endpoint == "" {
-		server, err = mockserver.NewServer("", mockserver.NewInMemoryStore(""))
+		server, err = mockserver.NewServer("", nil)
 		if err != nil {
 			return nil, nil, errors.Wrap(err, "Failed to Get Mock Server")
 		}

@@ -8,6 +8,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/store"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
 )
 
 var (
@@ -21,7 +23,7 @@ type Server struct {
 
 	streamRules map[string]map[string]graylog.StreamRule `json:"stream_rules"`
 
-	store    Store       `json:"-"`
+	store    store.Store `json:"-"`
 	logger   *log.Logger `json:"-"`
 	dataPath string      `json:"-"`
 }
@@ -32,7 +34,10 @@ func (ms *Server) Logger() *log.Logger {
 
 // NewServer returns new Server but doesn't start it.
 // If addr is an empty string, the free port is assigned automatially.
-func NewServer(addr string, store Store) (*Server, error) {
+func NewServer(addr string, store store.Store) (*Server, error) {
+	if store == nil {
+		store = inmemory.NewStore("")
+	}
 	ms := &Server{
 		// indexSetStats: map[string]graylog.IndexSetStats{},
 		streamRules: map[string]map[string]graylog.StreamRule{},
@@ -62,7 +67,7 @@ func NewServer(addr string, store Store) (*Server, error) {
 }
 
 // SetStore sets a store to the mock server.
-func (ms *Server) SetStore(store Store) {
+func (ms *Server) SetStore(store store.Store) {
 	ms.store = store
 }
 

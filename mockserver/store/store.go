@@ -1,4 +1,4 @@
-package mockserver
+package store
 
 import (
 	"github.com/suzuki-shunsuke/go-graylog"
