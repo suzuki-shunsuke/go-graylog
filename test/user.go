@@ -12,8 +12,8 @@ func TestCreateUser(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	user := testutil.DummyNewUser()
-	user.Username = "foo"
+	user := testutil.User()
+	user.Username += "foo"
 	if _, err := client.CreateUser(user); err != nil {
 		t.Fatal("Failed to CreateUser", err)
 	}

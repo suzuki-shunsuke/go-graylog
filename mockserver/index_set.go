@@ -17,23 +17,42 @@ func (ms *MockServer) GetIndexSet(id string) (*graylog.IndexSet, error) {
 }
 
 // AddIndexSet adds an index set to the Mock Server.
-func (ms *MockServer) AddIndexSet(indexSet *graylog.IndexSet) (int, error) {
-	if err := validator.CreateValidator.Struct(indexSet); err != nil {
-		return 400, err
+func (ms *MockServer) AddIndexSet(is *graylog.IndexSet) (int, error) {
+	if is == nil {
+		return 400, fmt.Errorf("index set is nil")
 	}
 	// indexPrefix unique check
-	ok, err := ms.store.IsConflictIndexPrefix("", indexSet.IndexPrefix)
+	ok, err := ms.store.IsConflictIndexPrefix(is.ID, is.IndexPrefix)
 	if err != nil {
 		return 500, err
 	}
 	if ok {
 		return 400, fmt.Errorf(
 			`Index prefix "%s" would conflict with an existing index set!`,
-			indexSet.IndexPrefix)
+			is.IndexPrefix)
 	}
-	indexSet.ID = randStringBytesMaskImprSrc(24)
-	indexSet.Default = false
-	if err := ms.store.AddIndexSet(indexSet); err != nil {
+	ok, err = ms.HasIndexSet(is.ID)
+	if err != nil {
+		return 500, err
+	}
+	if ok {
+		// update
+		if err := validator.UpdateValidator.Struct(is); err != nil {
+			return 400, err
+		}
+		if err := ms.store.UpdateIndexSet(is); err != nil {
+			return 500, err
+		}
+		return 200, nil
+	}
+	if err := validator.CreateValidator.Struct(is); err != nil {
+		return 400, err
+	}
+	if is.ID == "" {
+		is.ID = randStringBytesMaskImprSrc(24)
+	}
+	is.Default = false
+	if err := ms.store.AddIndexSet(is); err != nil {
 		return 500, err
 	}
 	return 200, nil

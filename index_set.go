@@ -12,8 +12,9 @@ import (
 // IndexSet represents a Graylog's Index Set.
 type IndexSet struct {
 	// required
-	Title       string `json:"title,omitempty" v-create:"required" v-update:"required"`
-	IndexPrefix string `json:"index_prefix,omitempty" v-create:"required" v-update:"required"`
+	Title string `json:"title,omitempty" v-create:"required" v-update:"required"`
+	// ^[a-z0-9][a-z0-9_+-]*$
+	IndexPrefix string `json:"index_prefix,omitempty" v-create:"required,indexprefixregexp" v-update:"required,indexprefixregexp"`
 	// ex. "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy"
 	RotationStrategyClass string            `json:"rotation_strategy_class,omitempty" v-create:"required" v-update:"required"`
 	RotationStrategy      *RotationStrategy `json:"rotation_strategy,omitempty" v-create:"required" v-update:"required"`
@@ -74,8 +75,7 @@ func (client *Client) GetIndexSetsContext(
 		return nil, nil, ei, err
 	}
 	indexSets := &IndexSetsBody{}
-	err = json.Unmarshal(ei.ResponseBody, indexSets)
-	if err != nil {
+	if err := json.Unmarshal(ei.ResponseBody, indexSets); err != nil {
 		return nil, nil, ei, errors.Wrap(
 			err, fmt.Sprintf(
 				"Failed to parse response body as IndexSetsBody: %s",

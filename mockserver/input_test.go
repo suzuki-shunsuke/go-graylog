@@ -37,7 +37,7 @@ func TestMockServerHandleUpdateInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	input := testutil.DummyNewInput()
+	input := testutil.Input()
 
 	if _, err := server.AddInput(input); err != nil {
 		t.Fatal(err)

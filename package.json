@@ -3,7 +3,7 @@
   "scripts": {
     "release": "standard-version",
     "commitmsg": "validate-commit-msg",
-    "test": "make t",
+    "test": "go test ./... -covermode=atomic",
     "cover-client": "make cover-client",
     "cover-mockserver": "make cover-mockserver",
     "build": "make build",

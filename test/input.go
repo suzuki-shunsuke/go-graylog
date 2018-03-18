@@ -12,7 +12,7 @@ func TestCreateInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	input := testutil.DummyNewInput()
+	input := testutil.Input()
 	if _, err := client.CreateInput(input); err != nil {
 		t.Fatal("Failed to CreateInput", err)
 	}
@@ -54,7 +54,7 @@ func TestGetInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	input := testutil.DummyNewInput()
+	input := testutil.Input()
 	if _, err := server.AddInput(input); err != nil {
 		t.Fatal(err)
 	}
@@ -81,7 +81,7 @@ func TestUpdateInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	input := testutil.DummyNewInput()
+	input := testutil.Input()
 	if _, err := server.AddInput(input); err != nil {
 		t.Fatal(err)
 	}
@@ -152,7 +152,7 @@ func TestDeleteInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	input := testutil.DummyNewInput()
+	input := testutil.Input()
 	if _, err = server.AddInput(input); err != nil {
 		t.Fatal(err)
 	}

@@ -4,19 +4,19 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
-func DummyRole() *graylog.Role {
+func Role() *graylog.Role {
 	return &graylog.Role{
-		Name:        "Admin",
-		Description: "Grants all permissions for Graylog administrators (built-in)",
+		Name:        "Writer",
+		Description: "writer",
 		Permissions: []string{"*"},
 		ReadOnly:    true}
 }
 
-func DummyNewUser() *graylog.User {
+func User() *graylog.User {
 	return &graylog.User{
-		Username:    "admin",
-		Email:       "hoge@example.com",
-		FullName:    "Administrator",
+		Username:    "foo",
+		Email:       "foo@example.com",
+		FullName:    "foo bar",
 		Password:    "password",
 		Permissions: []string{"*"},
 	}
@@ -46,7 +46,7 @@ func DummyAdmin() *graylog.User {
 	}
 }
 
-func DummyNewInput() *graylog.Input {
+func Input() *graylog.Input {
 	return &graylog.Input{
 		Title: "test",
 		Type:  "org.graylog2.inputs.gelf.tcp.GELFTCPInput",
@@ -58,7 +58,7 @@ func DummyNewInput() *graylog.Input {
 		}}
 }
 
-func DummyNewIndexSet(prefix string) *graylog.IndexSet {
+func IndexSet(prefix string) *graylog.IndexSet {
 	return &graylog.IndexSet{
 		Title:                 "Default index set",
 		Description:           "The Graylog default index set",
@@ -89,7 +89,7 @@ func DummyIndexSetStats() *graylog.IndexSetStats {
 	}
 }
 
-func DummyNewStream() *graylog.Stream {
+func Stream() *graylog.Stream {
 	return &graylog.Stream{
 		MatchingType: "AND",
 		Description:  "Stream containing all messages",

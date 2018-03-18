@@ -36,11 +36,11 @@ func TestMockServerHandleUpdateStream(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	is := testutil.DummyNewIndexSet("hoge")
+	is := testutil.IndexSet("hoge")
 	if _, err := server.AddIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
-	stream := testutil.DummyNewStream()
+	stream := testutil.Stream()
 	stream.IndexSetID = is.ID
 	if _, err := server.AddStream(stream); err != nil {
 		t.Fatal(err)
@@ -107,11 +107,11 @@ func TestServerUpdateStream(t *testing.T) {
 	}
 	defer server.Close()
 
-	is := testutil.DummyNewIndexSet("hoge")
+	is := testutil.IndexSet("hoge")
 	if _, err := server.AddIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
-	stream := testutil.DummyNewStream()
+	stream := testutil.Stream()
 	stream.IndexSetID = is.ID
 	if _, err := server.AddStream(stream); err != nil {
 		t.Fatal(err)

@@ -15,7 +15,7 @@ func TestMockServerHandleUpdateIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet := testutil.DummyNewIndexSet("hoge")
+	indexSet := testutil.IndexSet("hoge")
 	if _, err = server.AddIndexSet(indexSet); err != nil {
 		t.Fatal(err)
 	}
@@ -63,12 +63,9 @@ func TestServerAddIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	is := testutil.DummyNewIndexSet("hoge")
+	is := testutil.IndexSet("hoge")
 	if _, err := server.AddIndexSet(is); err != nil {
 		t.Fatal(err)
-	}
-	if _, err := server.AddIndexSet(is); err == nil {
-		t.Fatal("id should be empty")
 	}
 	is.ID = ""
 	if _, err := server.AddIndexSet(is); err == nil {
@@ -85,7 +82,7 @@ func TestServerUpdateIndexSet(t *testing.T) {
 	if _, err := server.UpdateIndexSet(nil); err == nil {
 		t.Fatal("index set is nil")
 	}
-	is := testutil.DummyNewIndexSet("hoge")
+	is := testutil.IndexSet("hoge")
 	if _, err := server.AddIndexSet(is); err != nil {
 		t.Fatal(err)
 	}

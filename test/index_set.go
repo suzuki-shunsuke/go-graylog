@@ -32,7 +32,7 @@ func TestGetIndexSet(t *testing.T) {
 	}
 	defer server.Close()
 
-	is := testutil.DummyNewIndexSet("hoge")
+	is := testutil.IndexSet("hoge")
 	if _, err := server.AddIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
@@ -57,7 +57,7 @@ func TestCreateIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	exp := testutil.DummyNewIndexSet("hoge")
+	exp := testutil.IndexSet("hoge")
 	if _, err := client.CreateIndexSet(exp); err != nil {
 		t.Fatal("Failed to CreateIndexSet", err)
 	}
@@ -96,7 +96,7 @@ func TestUpdateIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	is := testutil.DummyNewIndexSet("fuga")
+	is := testutil.IndexSet("fuga")
 	if _, err := server.AddIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
@@ -136,7 +136,7 @@ func TestDeleteIndexSet(t *testing.T) {
 	if _, err = client.DeleteIndexSet(indexSet.ID); err == nil {
 		t.Fatal("default index set should not be deleted")
 	}
-	is := testutil.DummyNewIndexSet("hoge")
+	is := testutil.IndexSet("hoge")
 	if _, err := server.AddIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
@@ -157,7 +157,7 @@ func TestSetDefaultIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	is := testutil.DummyNewIndexSet("hoge")
+	is := testutil.IndexSet("hoge")
 	is.Default = false
 	is.Writable = true
 	if _, err := server.AddIndexSet(is); err != nil {
@@ -194,7 +194,7 @@ func TestGetIndexSetStats(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet := testutil.DummyNewIndexSet("hoge")
+	indexSet := testutil.IndexSet("hoge")
 	if _, err = server.AddIndexSet(indexSet); err != nil {
 		t.Fatal(err)
 	}
@@ -225,7 +225,7 @@ func TestGetAllIndexSetsStats(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet := testutil.DummyNewIndexSet("hoge")
+	indexSet := testutil.IndexSet("hoge")
 	if _, err = server.AddIndexSet(indexSet); err != nil {
 		t.Fatal(err)
 	}

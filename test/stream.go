@@ -9,11 +9,11 @@ import (
 )
 
 func addDummyStream(server *MockServer) (*graylog.IndexSet, *graylog.Stream, error) {
-	indexSet := testutil.DummyNewIndexSet("hoge")
+	indexSet := testutil.IndexSet("hoge")
 	if _, err := server.AddIndexSet(indexSet); err != nil {
 		return nil, nil, err
 	}
-	stream := testutil.DummyNewStream()
+	stream := testutil.Stream()
 	stream.IndexSetID = indexSet.ID
 	_, err := server.AddStream(stream)
 	return indexSet, stream, err
@@ -47,11 +47,11 @@ func TestCreateStream(t *testing.T) {
 	if _, err := client.CreateStream(stream); err == nil {
 		t.Fatal("CreateStream() must be failed")
 	}
-	indexSet := testutil.DummyNewIndexSet("hoge")
+	indexSet := testutil.IndexSet("hoge")
 	if _, err := server.AddIndexSet(indexSet); err != nil {
 		t.Fatal(err)
 	}
-	stream = testutil.DummyNewStream()
+	stream = testutil.Stream()
 	stream.IndexSetID = indexSet.ID
 
 	if _, err := client.CreateStream(stream); err != nil {
