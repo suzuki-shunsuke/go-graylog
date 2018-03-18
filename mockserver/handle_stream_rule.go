@@ -38,9 +38,9 @@ func (ms *MockServer) handleCreateStreamRule(
 	requiredFields := []string{"value", "field"}
 	allowedFields := []string{
 		"value", "type", "description", "inverted", "field"}
-	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if sc != 200 {
-		return sc, nil, fmt.Errorf(msg)
+		return sc, nil, err
 	}
 
 	rule := &graylog.StreamRule{}
@@ -82,9 +82,9 @@ func (ms *MockServer) handleUpdateStreamRule(
 	requiredFields := []string{"value", "field"}
 	allowedFields := []string{
 		"value", "type", "description", "inverted", "field"}
-	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if sc != 200 {
-		return sc, nil, fmt.Errorf(msg)
+		return sc, nil, err
 	}
 	rule := &graylog.StreamRule{}
 	if err := msDecode(body, rule); err != nil {

@@ -17,9 +17,9 @@ func (ms *MockServer) handleCreateUser(
 		"username", "email", "permissions", "full_name", "password"}
 	allowedFields := []string{
 		"startpage", "timezone", "session_timeout_ms", "roles"}
-	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
-	if sc != 200 {
-		return sc, nil, fmt.Errorf(msg)
+	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	if err != nil {
+		return sc, nil, err
 	}
 
 	user := &graylog.User{}
@@ -71,9 +71,9 @@ func (ms *MockServer) handleUpdateUser(
 	// required fields is nil
 	acceptedFields := []string{
 		"email", "permissions", "full_name", "password"}
-	sc, msg, body := validateRequestBody(r.Body, nil, nil, acceptedFields)
-	if sc != 200 {
-		return sc, nil, fmt.Errorf(msg)
+	body, sc, err := validateRequestBody(r.Body, nil, nil, acceptedFields)
+	if err != nil {
+		return sc, nil, err
 	}
 
 	user := &graylog.User{Username: ps.ByName("username")}

@@ -34,9 +34,9 @@ func (ms *MockServer) handleCreateStream(
 	allowedFields := []string{
 		"rules", "description", "content_pack",
 		"matching_type", "remove_matches_from_default_stream"}
-	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
-	if sc != 200 {
-		return sc, nil, fmt.Errorf(msg)
+	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	if err != nil {
+		return sc, nil, err
 	}
 
 	stream := &graylog.Stream{}
@@ -47,7 +47,7 @@ func (ms *MockServer) handleCreateStream(
 		return 400, nil, err
 	}
 
-	sc, err := ms.AddStream(stream)
+	sc, err = ms.AddStream(stream)
 	if err != nil {
 		return 400, nil, err
 	}

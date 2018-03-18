@@ -59,10 +59,10 @@ func (ms *MockServer) handleCreateIndexSet(
 		"writable", "default"}
 	acceptedFields := []string{
 		"description", "replicas", "index_optimization_disabled", "writable"}
-	sc, msg, body := validateRequestBody(
+	body, sc, err := validateRequestBody(
 		r.Body, requiredFields, allowedFields, acceptedFields)
-	if sc != 200 {
-		return sc, nil, fmt.Errorf(msg)
+	if err != nil {
+		return sc, nil, err
 	}
 
 	indexSet := &graylog.IndexSet{}
@@ -76,7 +76,7 @@ func (ms *MockServer) handleCreateIndexSet(
 	ms.Logger().WithFields(log.Fields{
 		"body": body, "index_set": indexSet,
 	}).Debug("request body")
-	sc, err := ms.AddIndexSet(indexSet)
+	sc, err = ms.AddIndexSet(indexSet)
 	if err != nil {
 		return sc, nil, err
 	}
@@ -95,9 +95,9 @@ func (ms *MockServer) handleUpdateIndexSet(
 		"index_analyzer", "shards", "index_optimization_max_num_segments"}
 	acceptedFields := []string{
 		"description", "replicas", "index_optimization_disabled", "writable"}
-	sc, msg, body := validateRequestBody(r.Body, requiredFields, nil, acceptedFields)
-	if sc != 200 {
-		return sc, nil, fmt.Errorf(msg)
+	body, sc, err := validateRequestBody(r.Body, requiredFields, nil, acceptedFields)
+	if err != nil {
+		return sc, nil, err
 	}
 
 	is := &graylog.IndexSet{ID: ps.ByName("indexSetID")}

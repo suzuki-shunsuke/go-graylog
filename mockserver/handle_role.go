@@ -33,9 +33,9 @@ func (ms *MockServer) handleUpdateRole(
 	name := ps.ByName("rolename")
 	requiredFields := []string{"name", "permissions"}
 	allowedFields := []string{"description", "read_only"}
-	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
-	if sc != 200 {
-		return sc, nil, fmt.Errorf(msg)
+	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	if err != nil {
+		return sc, nil, err
 	}
 
 	role := &graylog.Role{}
@@ -72,9 +72,9 @@ func (ms *MockServer) handleCreateRole(
 ) (int, interface{}, error) {
 	requiredFields := []string{"name", "permissions"}
 	allowedFields := []string{"description", "read_only"}
-	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
-	if sc != 200 {
-		return sc, nil, fmt.Errorf(msg)
+	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	if err != nil {
+		return sc, nil, err
 	}
 
 	role := &graylog.Role{}

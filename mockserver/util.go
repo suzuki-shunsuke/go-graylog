@@ -72,24 +72,24 @@ func randStringBytesMaskImprSrc(n int) string {
 func validateRequestBody(
 	b io.Reader, requiredFields, allowedFields, acceptedFields []string,
 ) (
-	int, string, map[string]interface{},
+	map[string]interface{}, int, error,
 ) {
 	dec := json.NewDecoder(b)
 	var a interface{}
 	if err := dec.Decode(&a); err != nil {
-		return 400, fmt.Sprintf(
-			"Failed to parse the request body as JSON: %s", err), nil
+		return nil, 400, fmt.Errorf(
+			"Failed to parse the request body as JSON: %s", err)
 	}
 	body, ok := a.(map[string]interface{})
 	if !ok {
-		return 400, fmt.Sprintf(
-			"Failed to parse the request body as a JSON object : %s", a), nil
+		return nil, 400, fmt.Errorf(
+			"Failed to parse the request body as a JSON object : %s", a)
 	}
 	rqf := makeHash(requiredFields)
 	for k, _ := range rqf {
 		if _, ok := body[k]; !ok {
-			return 400, fmt.Sprintf(
-				"In the request body the field %s is required", k), body
+			return body, 400, fmt.Errorf(
+				"In the request body the field %s is required", k)
 		}
 	}
 	alf := makeHash(allowedFields)
@@ -105,9 +105,9 @@ func validateRequestBody(
 		}
 		for k, _ := range body {
 			if _, ok := alf[k]; !ok {
-				return 400, fmt.Sprintf(
+				return body, 400, fmt.Errorf(
 					"In the request body an invalid field is found: %s\nThe allowed fields: %s",
-					k, strings.Join(arr, ", ")), body
+					k, strings.Join(arr, ", "))
 			}
 		}
 	}
@@ -125,7 +125,7 @@ func validateRequestBody(
 			}
 		}
 	}
-	return 200, "", body
+	return body, 200, nil
 }
 
 func makeHash(arr []string) map[string]interface{} {

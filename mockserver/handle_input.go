@@ -34,9 +34,9 @@ func (ms *MockServer) handleUpdateInput(
 	id := ps.ByName("inputID")
 	requiredFields := []string{"title", "type", "configuration"}
 	allowedFields := []string{"global", "node"}
-	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
-	if sc != 200 {
-		return sc, nil, fmt.Errorf(msg)
+	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	if err != nil {
+		return sc, nil, err
 	}
 
 	input := &graylog.Input{}
@@ -77,9 +77,9 @@ func (ms *MockServer) handleCreateInput(
 ) (int, interface{}, error) {
 	requiredFields := []string{"title", "type", "configuration"}
 	allowedFields := []string{"global", "node"}
-	sc, msg, body := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
-	if sc != 200 {
-		return sc, nil, fmt.Errorf(msg)
+	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	if err != nil {
+		return sc, nil, err
 	}
 
 	input := &graylog.Input{}
@@ -90,7 +90,7 @@ func (ms *MockServer) handleCreateInput(
 		return 400, nil, err
 	}
 
-	sc, err := ms.AddInput(input)
+	sc, err = ms.AddInput(input)
 	if err != nil {
 		return sc, nil, err
 	}
