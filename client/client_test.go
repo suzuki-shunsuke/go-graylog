@@ -1,11 +1,13 @@
-package graylog
+package client_test
 
 import (
 	"testing"
+
+	"github.com/suzuki-shunsuke/go-graylog/client"
 )
 
 func TestNewClient(t *testing.T) {
-	client, err := NewClient("http://localhost:9000/api", "admin", "password")
+	client, err := client.NewClient("http://localhost:9000/api", "admin", "password")
 	if err != nil {
 		t.Fatal("Failed to NewClient", err)
 	}
@@ -16,7 +18,7 @@ func TestNewClient(t *testing.T) {
 
 func TestGetName(t *testing.T) {
 	name := "admin"
-	client, err := NewClient("http://localhost:9000/api", name, "password")
+	client, err := client.NewClient("http://localhost:9000/api", name, "password")
 	if err != nil {
 		t.Fatal("Failed to NewClient", err)
 	}
@@ -37,7 +39,7 @@ func TestGetName(t *testing.T) {
 
 func TestGetPassword(t *testing.T) {
 	password := "password"
-	client, err := NewClient("http://localhost:9000/api", "admin", password)
+	client, err := client.NewClient("http://localhost:9000/api", "admin", password)
 	if err != nil {
 		t.Fatal("Failed to NewClient", err)
 	}

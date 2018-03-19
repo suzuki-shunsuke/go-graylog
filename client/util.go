@@ -1,4 +1,4 @@
-package graylog
+package client
 
 import (
 	"bytes"

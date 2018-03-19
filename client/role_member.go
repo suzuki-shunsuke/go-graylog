@@ -1,4 +1,4 @@
-package graylog
+package client
 
 import (
 	"context"
@@ -7,17 +7,18 @@ import (
 	"net/http"
 
 	"github.com/pkg/errors"
+	"github.com/suzuki-shunsuke/go-graylog"
 )
 
 // GetRoleMembers returns a given role's members.
-func (client *Client) GetRoleMembers(name string) ([]User, *ErrorInfo, error) {
+func (client *Client) GetRoleMembers(name string) ([]graylog.User, *ErrorInfo, error) {
 	return client.GetRoleMembersContext(context.Background(), name)
 }
 
 // GetRoleMembersContext returns a given role's members with a context.
 func (client *Client) GetRoleMembersContext(
 	ctx context.Context, name string,
-) ([]User, *ErrorInfo, error) {
+) ([]graylog.User, *ErrorInfo, error) {
 	if name == "" {
 		return nil, nil, errors.New("name is empty")
 	}
@@ -27,7 +28,7 @@ func (client *Client) GetRoleMembersContext(
 	if err != nil {
 		return nil, ei, err
 	}
-	users := UsersBody{}
+	users := graylog.UsersBody{}
 	err = json.Unmarshal(ei.ResponseBody, &users)
 	if err != nil {
 		return nil, ei, errors.Wrap(

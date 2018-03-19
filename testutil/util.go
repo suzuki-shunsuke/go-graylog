@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/client"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver"
 )
 
@@ -14,7 +14,7 @@ import (
 // If you want to use mock server, pass "mock" as endpoint.
 // If you want to use real server, pass "real" as endpoint.
 // If endpoint is "" and GRAYLOG_WEB_ENDPOINT_URI is set, returns real server.
-func GetServerAndClient() (*mockserver.Server, *graylog.Client, error) {
+func GetServerAndClient() (*mockserver.Server, *client.Client, error) {
 	var (
 		server *mockserver.Server
 		err    error
@@ -35,7 +35,7 @@ func GetServerAndClient() (*mockserver.Server, *graylog.Client, error) {
 		}
 		endpoint = server.GetEndpoint()
 	}
-	client, err := graylog.NewClient(endpoint, authName, authPass)
+	client, err := client.NewClient(endpoint, authName, authPass)
 	if err != nil {
 		server.Close()
 		return nil, nil, errors.Wrap(err, "Failed to NewClient")

@@ -1,4 +1,4 @@
-package graylog_test
+package client_test
 
 import (
 	"os"
