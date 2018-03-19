@@ -55,9 +55,6 @@ func (store *InMemoryStore) UpdateIndexSet(
 
 // DeleteIndexSet removes a index set from the Mock Server.
 func (store *InMemoryStore) DeleteIndexSet(id string) error {
-	if id == store.defaultIndexSetID {
-		return fmt.Errorf("default index set <%s> cannot be deleted", id)
-	}
 	delete(store.indexSets, id)
 	return nil
 }
