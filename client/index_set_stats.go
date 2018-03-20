@@ -2,9 +2,6 @@ package client
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
-	"net/http"
 
 	"github.com/pkg/errors"
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -24,21 +21,10 @@ func (client *Client) GetIndexSetStatsContext(
 	if id == "" {
 		return nil, nil, errors.New("id is empty")
 	}
-
-	ei, err := client.callReq(
-		ctx, http.MethodGet, client.Endpoints.IndexSetStats(id), nil, true)
-	if err != nil {
-		return nil, ei, err
-	}
-
 	indexSetStats := &graylog.IndexSetStats{}
-	if err := json.Unmarshal(ei.ResponseBody, indexSetStats); err != nil {
-		return nil, ei, errors.Wrap(
-			err, fmt.Sprintf(
-				"Failed to parse response body as IndexSetStats: %s",
-				string(ei.ResponseBody)))
-	}
-	return indexSetStats, ei, nil
+	ei, err := client.callGet(
+		ctx, client.Endpoints.IndexSetStats(id), nil, indexSetStats)
+	return indexSetStats, ei, err
 }
 
 // GetAllIndexSetsStats returns stats of all Index Sets.
@@ -52,16 +38,8 @@ func (client *Client) GetAllIndexSetsStats() (
 func (client *Client) GetAllIndexSetsStatsContext(
 	ctx context.Context,
 ) (*graylog.IndexSetStats, *ErrorInfo, error) {
-	ei, err := client.callReq(
-		ctx, http.MethodGet, client.Endpoints.IndexSetsStats(), nil, true)
-	if err != nil {
-		return nil, ei, err
-	}
 	indexSetStats := &graylog.IndexSetStats{}
-	if err := json.Unmarshal(ei.ResponseBody, indexSetStats); err != nil {
-		return nil, ei, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as IndexSetStats: %s",
-				string(ei.ResponseBody)))
-	}
-	return indexSetStats, ei, nil
+	ei, err := client.callGet(
+		ctx, client.Endpoints.IndexSetsStats(), nil, indexSetStats)
+	return indexSetStats, ei, err
 }

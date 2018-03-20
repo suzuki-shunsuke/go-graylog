@@ -2,9 +2,7 @@ package client
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"net/http"
 
 	"github.com/pkg/errors"
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -21,21 +19,10 @@ func (client *Client) GetStreams() (
 func (client *Client) GetStreamsContext(
 	ctx context.Context,
 ) (streams []graylog.Stream, total int, ei *ErrorInfo, err error) {
-	ei, err = client.callReq(
-		ctx, http.MethodGet, client.Endpoints.Streams, nil, true)
-	if err != nil {
-		return nil, 0, ei, err
-	}
-
 	streamsBody := &graylog.StreamsBody{}
-	err = json.Unmarshal(ei.ResponseBody, streamsBody)
-	if err != nil {
-		return nil, 0, ei, errors.Wrap(
-			err, fmt.Sprintf(
-				"Failed to parse response body as streamsBody: %s",
-				string(ei.ResponseBody)))
-	}
-	return streamsBody.Streams, streamsBody.Total, ei, nil
+	ei, err = client.callGet(
+		ctx, client.Endpoints.Streams, nil, streamsBody)
+	return streamsBody.Streams, streamsBody.Total, ei, err
 }
 
 // CreateStream creates a stream.
@@ -50,23 +37,10 @@ func (client *Client) CreateStreamContext(
 	if stream == nil {
 		return nil, fmt.Errorf("stream is nil")
 	}
-	b, err := json.Marshal(stream)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(stream)")
-	}
-
-	ei, err := client.callReq(
-		ctx, http.MethodPost, client.Endpoints.Streams, b, true)
+	ret := map[string]string{}
+	ei, err := client.callPost(ctx, client.Endpoints.Streams, stream, &ret)
 	if err != nil {
 		return ei, err
-	}
-
-	ret := map[string]string{}
-	if err := json.Unmarshal(ei.ResponseBody, &ret); err != nil {
-		return ei, errors.Wrap(
-			err, fmt.Sprintf(
-				"Failed to parse response body as map[string]string: %s",
-				string(ei.ResponseBody)))
 	}
 	if id, ok := ret["stream_id"]; ok {
 		stream.ID = id
@@ -86,20 +60,10 @@ func (client *Client) GetEnabledStreams() (
 func (client *Client) GetEnabledStreamsContext(
 	ctx context.Context,
 ) (streams []graylog.Stream, total int, ei *ErrorInfo, err error) {
-	ei, err = client.callReq(
-		ctx, http.MethodGet, client.Endpoints.EnabledStreams, nil, true)
-	if err != nil {
-		return nil, 0, ei, err
-	}
 	streamsBody := &graylog.StreamsBody{}
-	err = json.Unmarshal(ei.ResponseBody, streamsBody)
-	if err != nil {
-		return nil, 0, ei, errors.Wrap(
-			err, fmt.Sprintf(
-				"Failed to parse response body as streamsBody: %s",
-				string(ei.ResponseBody)))
-	}
-	return streamsBody.Streams, streamsBody.Total, ei, nil
+	ei, err = client.callGet(
+		ctx, client.Endpoints.EnabledStreams, nil, streamsBody)
+	return streamsBody.Streams, streamsBody.Total, ei, err
 }
 
 // GetStream returns a given stream.
@@ -114,22 +78,10 @@ func (client *Client) GetStreamContext(
 	if id == "" {
 		return nil, nil, errors.New("id is empty")
 	}
-
-	ei, err := client.callReq(
-		ctx, http.MethodGet, client.Endpoints.Stream(id), nil, true)
-	if err != nil {
-		return nil, ei, err
-	}
-
 	stream := &graylog.Stream{}
-	err = json.Unmarshal(ei.ResponseBody, stream)
-	if err != nil {
-		return nil, ei, errors.Wrap(
-			err, fmt.Sprintf(
-				"Failed to parse response body as Stream: %s",
-				string(ei.ResponseBody)))
-	}
-	return stream, ei, nil
+	ei, err := client.callGet(
+		ctx, client.Endpoints.Stream(id), nil, stream)
+	return stream, ei, err
 }
 
 // UpdateStream updates a stream.
@@ -149,22 +101,7 @@ func (client *Client) UpdateStreamContext(
 	}
 	body := *stream
 	body.ID = ""
-	b, err := json.Marshal(body)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(stream)")
-	}
-
-	ei, err := client.callReq(
-		ctx, http.MethodPut, client.Endpoints.Stream(stream.ID), b, true)
-	if err != nil {
-		return ei, err
-	}
-	if err := json.Unmarshal(ei.ResponseBody, stream); err != nil {
-		return ei, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as Stream: %s",
-				string(ei.ResponseBody)))
-	}
-	return ei, nil
+	return client.callPut(ctx, client.Endpoints.Stream(stream.ID), &body, stream)
 }
 
 // DeleteStream deletes a stream.
@@ -179,9 +116,7 @@ func (client *Client) DeleteStreamContext(
 	if id == "" {
 		return nil, errors.New("id is empty")
 	}
-
-	return client.callReq(
-		ctx, http.MethodDelete, client.Endpoints.Stream(id), nil, false)
+	return client.callDelete(ctx, client.Endpoints.Stream(id), nil, nil)
 }
 
 // PauseStream pauses a stream.
@@ -196,9 +131,7 @@ func (client *Client) PauseStreamContext(
 	if id == "" {
 		return nil, errors.New("id is empty")
 	}
-
-	return client.callReq(
-		ctx, http.MethodPost, client.Endpoints.PauseStream(id), nil, false)
+	return client.callPost(ctx, client.Endpoints.PauseStream(id), nil, nil)
 }
 
 // ResumeStream resumes a stream.
@@ -213,7 +146,5 @@ func (client *Client) ResumeStreamContext(
 	if id == "" {
 		return nil, errors.New("id is empty")
 	}
-
-	return client.callReq(
-		ctx, http.MethodPost, client.Endpoints.ResumeStream(id), nil, false)
+	return client.callPost(ctx, client.Endpoints.ResumeStream(id), nil, nil)
 }

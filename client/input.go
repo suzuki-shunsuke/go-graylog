@@ -2,9 +2,7 @@ package client
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"net/http"
 
 	"github.com/pkg/errors"
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -24,23 +22,7 @@ func (client *Client) CreateInputContext(
 	if input == nil {
 		return nil, fmt.Errorf("input is nil")
 	}
-	b, err := json.Marshal(input)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(input)")
-	}
-
-	ei, err = client.callReq(
-		ctx, http.MethodPost, client.Endpoints.Inputs, b, true)
-	if err != nil {
-		return ei, err
-	}
-
-	if err := json.Unmarshal(ei.ResponseBody, input); err != nil {
-		return ei, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as Input: %s",
-				string(ei.ResponseBody)))
-	}
-	return ei, nil
+	return client.callPost(ctx, client.Endpoints.Inputs, input, input)
 }
 
 // GetInputs returns all inputs.
@@ -52,20 +34,10 @@ func (client *Client) GetInputs() ([]graylog.Input, *ErrorInfo, error) {
 func (client *Client) GetInputsContext(ctx context.Context) (
 	[]graylog.Input, *ErrorInfo, error,
 ) {
-	ei, err := client.callReq(
-		ctx, http.MethodGet, client.Endpoints.Inputs, nil, true)
-	if err != nil {
-		return nil, ei, err
-	}
-
 	inputs := &graylog.InputsBody{}
-	if err := json.Unmarshal(ei.ResponseBody, inputs); err != nil {
-		return nil, ei, errors.Wrap(
-			err, fmt.Sprintf(
-				"Failed to parse response body as Inputs: %s",
-				string(ei.ResponseBody)))
-	}
-	return inputs.Inputs, ei, nil
+	ei, err := client.callGet(
+		ctx, client.Endpoints.Inputs, nil, inputs)
+	return inputs.Inputs, ei, err
 }
 
 // GetInput returns a given input.
@@ -80,20 +52,10 @@ func (client *Client) GetInputContext(
 	if id == "" {
 		return nil, nil, errors.New("id is empty")
 	}
-
-	ei, err := client.callReq(
-		ctx, http.MethodGet, client.Endpoints.Input(id), nil, true)
-	if err != nil {
-		return nil, ei, err
-	}
-
 	input := &graylog.Input{}
-	if err := json.Unmarshal(ei.ResponseBody, input); err != nil {
-		return nil, ei, errors.Wrap(
-			err, fmt.Sprintf(
-				"Failed to parse response body as Input: %s", string(ei.ResponseBody)))
-	}
-	return input, ei, nil
+	ei, err := client.callGet(
+		ctx, client.Endpoints.Input(id), nil, input)
+	return input, ei, err
 }
 
 // UpdateInput updates an given input.
@@ -113,25 +75,10 @@ func (client *Client) UpdateInputContext(
 	if input.ID == "" {
 		return nil, errors.New("id is empty")
 	}
+
 	copiedInput := *input
 	copiedInput.ID = ""
-	b, err := json.Marshal(copiedInput)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(input)")
-	}
-
-	ei, err := client.callReq(
-		ctx, http.MethodPut, client.Endpoints.Input(input.ID), b, true)
-	if err != nil {
-		return ei, err
-	}
-
-	if err := json.Unmarshal(ei.ResponseBody, input); err != nil {
-		return ei, errors.Wrap(
-			err, fmt.Sprintf(
-				"Failed to parse response body as Input: %s", string(ei.ResponseBody)))
-	}
-	return ei, nil
+	return client.callPut(ctx, client.Endpoints.Input(input.ID), &copiedInput, input)
 }
 
 // DeleteInput deletes an given input.
@@ -146,7 +93,5 @@ func (client *Client) DeleteInputContext(
 	if id == "" {
 		return nil, errors.New("id is empty")
 	}
-
-	return client.callReq(
-		ctx, http.MethodDelete, client.Endpoints.Input(id), nil, false)
+	return client.callDelete(ctx, client.Endpoints.Input(id), nil, nil)
 }

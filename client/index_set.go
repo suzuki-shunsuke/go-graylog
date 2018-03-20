@@ -2,9 +2,7 @@ package client
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"net/http"
 
 	"github.com/pkg/errors"
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -21,19 +19,10 @@ func (client *Client) GetIndexSets(
 func (client *Client) GetIndexSetsContext(
 	ctx context.Context, skip, limit int,
 ) ([]graylog.IndexSet, *graylog.IndexSetStats, *ErrorInfo, error) {
-	ei, err := client.callReq(
-		ctx, http.MethodGet, client.Endpoints.IndexSets, nil, true)
-	if err != nil {
-		return nil, nil, ei, err
-	}
 	indexSets := &graylog.IndexSetsBody{}
-	if err := json.Unmarshal(ei.ResponseBody, indexSets); err != nil {
-		return nil, nil, ei, errors.Wrap(
-			err, fmt.Sprintf(
-				"Failed to parse response body as IndexSetsBody: %s",
-				string(ei.ResponseBody)))
-	}
-	return indexSets.IndexSets, indexSets.Stats, ei, nil
+	ei, err := client.callGet(
+		ctx, client.Endpoints.IndexSets, nil, indexSets)
+	return indexSets.IndexSets, indexSets.Stats, ei, err
 }
 
 // GetIndexSet returns a given index set.
@@ -48,19 +37,10 @@ func (client *Client) GetIndexSetContext(
 	if id == "" {
 		return nil, nil, errors.New("id is empty")
 	}
-	ei, err := client.callReq(
-		ctx, http.MethodGet, client.Endpoints.IndexSet(id), nil, true)
-	if err != nil {
-		return nil, ei, err
-	}
-	indexSet := &graylog.IndexSet{}
-	if err := json.Unmarshal(ei.ResponseBody, indexSet); err != nil {
-		return nil, ei, errors.Wrap(
-			err, fmt.Sprintf(
-				"Failed to parse response body as IndexSet: %s",
-				string(ei.ResponseBody)))
-	}
-	return indexSet, ei, nil
+	is := &graylog.IndexSet{}
+	ei, err := client.callGet(
+		ctx, client.Endpoints.IndexSet(id), nil, is)
+	return is, ei, err
 }
 
 // CreateIndexSet creates a Index Set.
@@ -75,24 +55,7 @@ func (client *Client) CreateIndexSetContext(
 	if is == nil {
 		return nil, fmt.Errorf("IndexSet is nil")
 	}
-	b, err := json.Marshal(is)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(indexSet)")
-	}
-
-	ei, err := client.callReq(
-		ctx, http.MethodPost, client.Endpoints.IndexSets, b, true)
-	if err != nil {
-		return ei, err
-	}
-
-	if err := json.Unmarshal(ei.ResponseBody, is); err != nil {
-		return ei, errors.Wrap(
-			err, fmt.Sprintf(
-				"Failed to parse response body as IndexSet: %s",
-				string(ei.ResponseBody)))
-	}
-	return ei, nil
+	return client.callPost(ctx, client.Endpoints.IndexSets, is, is)
 }
 
 // UpdateIndexSet updates a given Index Set.
@@ -112,24 +75,7 @@ func (client *Client) UpdateIndexSetContext(
 	}
 	copiedIndexSet := *is
 	copiedIndexSet.ID = ""
-	b, err := json.Marshal(&copiedIndexSet)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(indexSet)")
-	}
-
-	ei, err := client.callReq(
-		ctx, http.MethodPut, client.Endpoints.IndexSet(is.ID), b, true)
-	if err != nil {
-		return ei, err
-	}
-
-	if err := json.Unmarshal(ei.ResponseBody, is); err != nil {
-		return ei, errors.Wrap(
-			err, fmt.Sprintf(
-				"Failed to parse response body as IndexSet: %s",
-				string(ei.ResponseBody)))
-	}
-	return ei, nil
+	return client.callPut(ctx, client.Endpoints.IndexSet(is.ID), &copiedIndexSet, is)
 }
 
 // DeleteIndexSet deletes a given Index Set.
@@ -137,16 +83,14 @@ func (client *Client) DeleteIndexSet(id string) (*ErrorInfo, error) {
 	return client.DeleteIndexSetContext(context.Background(), id)
 }
 
-// DeleteIndexSet deletes a given Index Set with a context.
+// DeleteIndexSetContext deletes a given Index Set with a context.
 func (client *Client) DeleteIndexSetContext(
 	ctx context.Context, id string,
 ) (*ErrorInfo, error) {
 	if id == "" {
 		return nil, errors.New("id is empty")
 	}
-
-	return client.callReq(
-		ctx, http.MethodDelete, client.Endpoints.IndexSet(id), nil, false)
+	return client.callDelete(ctx, client.Endpoints.IndexSet(id), nil, nil)
 }
 
 // SetDefaultIndexSet sets default Index Set.
@@ -156,26 +100,14 @@ func (client *Client) SetDefaultIndexSet(id string) (
 	return client.SetDefaultIndexSetContext(context.Background(), id)
 }
 
-// SetDefaultIndexSet sets default Index Set with a context.
+// SetDefaultIndexSetContext sets default Index Set with a context.
 func (client *Client) SetDefaultIndexSetContext(
 	ctx context.Context, id string,
 ) (*graylog.IndexSet, *ErrorInfo, error) {
 	if id == "" {
 		return nil, nil, errors.New("id is empty")
 	}
-
-	ei, err := client.callReq(
-		ctx, http.MethodPut, client.Endpoints.SetDefaultIndexSet(id), nil, true)
-	if err != nil {
-		return nil, ei, err
-	}
-
 	is := &graylog.IndexSet{}
-	if err := json.Unmarshal(ei.ResponseBody, is); err != nil {
-		return nil, ei, errors.Wrap(
-			err, fmt.Sprintf(
-				"Failed to parse response body as IndexSet: %s",
-				string(ei.ResponseBody)))
-	}
-	return is, ei, nil
+	ei, err := client.callPut(ctx, client.Endpoints.SetDefaultIndexSet(id), nil, is)
+	return is, ei, err
 }

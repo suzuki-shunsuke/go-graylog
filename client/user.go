@@ -2,9 +2,7 @@ package client
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"net/http"
 
 	"github.com/pkg/errors"
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -22,13 +20,7 @@ func (client *Client) CreateUserContext(
 	if user == nil {
 		return nil, fmt.Errorf("user is nil")
 	}
-	b, err := json.Marshal(user)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(user)")
-	}
-
-	return client.callReq(
-		ctx, http.MethodPost, client.Endpoints.Users, b, false)
+	return client.callPost(ctx, client.Endpoints.Users, user, nil)
 }
 
 // GetUsers returns all users.
@@ -38,19 +30,10 @@ func (client *Client) GetUsers() ([]graylog.User, *ErrorInfo, error) {
 
 // GetUsersContext returns all users with a context.
 func (client *Client) GetUsersContext(ctx context.Context) ([]graylog.User, *ErrorInfo, error) {
-	ei, err := client.callReq(
-		ctx, http.MethodGet, client.Endpoints.Users, nil, true)
-	if err != nil {
-		return nil, ei, err
-	}
-
 	users := &graylog.UsersBody{}
-	if err := json.Unmarshal(ei.ResponseBody, users); err != nil {
-		return nil, ei, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as Users: %s",
-				string(ei.ResponseBody)))
-	}
-	return users.Users, ei, nil
+	ei, err := client.callGet(
+		ctx, client.Endpoints.Users, nil, users)
+	return users.Users, ei, err
 }
 
 // GetUser returns a given user.
@@ -65,19 +48,10 @@ func (client *Client) GetUserContext(
 	if name == "" {
 		return nil, nil, errors.New("name is empty")
 	}
-
-	ei, err := client.callReq(
-		ctx, http.MethodGet, client.Endpoints.User(name), nil, true)
-	if err != nil {
-		return nil, ei, err
-	}
 	user := &graylog.User{}
-	if err := json.Unmarshal(ei.ResponseBody, user); err != nil {
-		return nil, ei, errors.Wrap(
-			err, fmt.Sprintf("Failed to parse response body as User: %s",
-				string(ei.ResponseBody)))
-	}
-	return user, ei, nil
+	ei, err := client.callGet(
+		ctx, client.Endpoints.User(name), nil, user)
+	return user, ei, err
 }
 
 // UpdateUser updates a given user.
@@ -95,13 +69,7 @@ func (client *Client) UpdateUserContext(
 	if user.Username == "" {
 		return nil, errors.New("name is empty")
 	}
-	b, err := json.Marshal(user)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to json.Marshal(user)")
-	}
-
-	return client.callReq(
-		ctx, http.MethodPut, client.Endpoints.User(user.Username), b, false)
+	return client.callPut(ctx, client.Endpoints.User(user.Username), user, nil)
 }
 
 // DeleteUser deletes a given user.
@@ -116,7 +84,5 @@ func (client *Client) DeleteUserContext(
 	if name == "" {
 		return nil, errors.New("name is empty")
 	}
-
-	return client.callReq(
-		ctx, http.MethodDelete, client.Endpoints.User(name), nil, false)
+	return client.callDelete(ctx, client.Endpoints.User(name), nil, nil)
 }

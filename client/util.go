@@ -5,25 +5,50 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/pkg/errors"
 )
 
-func (client *Client) callReq(
-	ctx context.Context, method, endpoint string,
-	body []byte, isReadBody bool,
+func (client *Client) callGet(
+	ctx context.Context, endpoint string, input, output interface{}) (*ErrorInfo, error) {
+	return client.callAPI(ctx, http.MethodGet, endpoint, input, output)
+}
+
+func (client *Client) callPost(
+	ctx context.Context, endpoint string, input, output interface{}) (*ErrorInfo, error) {
+	return client.callAPI(ctx, http.MethodPost, endpoint, input, output)
+}
+
+func (client *Client) callPut(
+	ctx context.Context, endpoint string, input, output interface{}) (*ErrorInfo, error) {
+	return client.callAPI(ctx, http.MethodPut, endpoint, input, output)
+}
+
+func (client *Client) callDelete(
+	ctx context.Context, endpoint string, input, output interface{}) (*ErrorInfo, error) {
+	return client.callAPI(ctx, http.MethodDelete, endpoint, input, output)
+}
+
+func (client *Client) callAPI(
+	ctx context.Context, method, endpoint string, input, output interface{},
 ) (*ErrorInfo, error) {
 	// prepare request
-	var reqBody io.Reader = nil
-	if body != nil {
-		reqBody = bytes.NewBuffer(body)
+	var (
+		req *http.Request
+		err error
+	)
+	if input != nil {
+		reqBody := &bytes.Buffer{}
+		if err := json.NewEncoder(reqBody).Encode(input); err != nil {
+			return nil, errors.Wrap(err, "failed to encode request body")
+		}
+		req, err = http.NewRequest(method, endpoint, reqBody)
+	} else {
+		req, err = http.NewRequest(method, endpoint, nil)
 	}
-	req, err := http.NewRequest(method, endpoint, reqBody)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to http.NewRequest")
+		return nil, errors.Wrap(err, "failed to call http.NewRequest")
 	}
 	ei := &ErrorInfo{Request: req}
 	req.SetBasicAuth(client.Name(), client.Password())
@@ -39,27 +64,17 @@ func (client *Client) callReq(
 	ei.Response = resp
 
 	if resp.StatusCode >= 400 {
-		defer resp.Body.Close()
-		b, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return ei, errors.Wrap(err, "Failed to read response body")
-		}
-		ei.ResponseBody = b
-		if err := json.Unmarshal(b, ei); err != nil {
+		if err := json.NewDecoder(resp.Body).Decode(ei); err != nil {
 			return ei, errors.Wrap(
-				err, fmt.Sprintf(
-					"failed to parse response body as ErrorInfo: %s", string(b)))
+				err, "failed to parse response body as ErrorInfo")
 		}
 		return ei, errors.New(ei.Message)
 	}
-
-	if isReadBody {
-		defer resp.Body.Close()
-		b, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return ei, errors.Wrap(err, "failed to read response body")
+	if output != nil {
+		if err := json.NewDecoder(ei.Response.Body).Decode(output); err != nil {
+			return ei, errors.Wrap(
+				err, "failed to decode response body")
 		}
-		ei.ResponseBody = b
 	}
 	return ei, nil
 }

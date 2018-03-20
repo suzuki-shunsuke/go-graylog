@@ -2,9 +2,6 @@ package client
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
-	"net/http"
 
 	"github.com/pkg/errors"
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -22,21 +19,10 @@ func (client *Client) GetRoleMembersContext(
 	if name == "" {
 		return nil, nil, errors.New("name is empty")
 	}
-
-	ei, err := client.callReq(
-		ctx, http.MethodGet, client.Endpoints.RoleMembers(name), nil, true)
-	if err != nil {
-		return nil, ei, err
-	}
-	users := graylog.UsersBody{}
-	err = json.Unmarshal(ei.ResponseBody, &users)
-	if err != nil {
-		return nil, ei, errors.Wrap(
-			err, fmt.Sprintf(
-				"Failed to parse response body as Users: %s",
-				string(ei.ResponseBody)))
-	}
-	return users.Users, ei, nil
+	users := &graylog.UsersBody{}
+	ei, err := client.callGet(
+		ctx, client.Endpoints.RoleMembers(name), nil, users)
+	return users.Users, ei, err
 }
 
 // AddUserToRole adds a user to a role.
@@ -56,10 +42,8 @@ func (client *Client) AddUserToRoleContext(
 	if roleName == "" {
 		return nil, errors.New("roleName is empty")
 	}
-
-	return client.callReq(
-		ctx, http.MethodPut,
-		client.Endpoints.RoleMember(userName, roleName), nil, false)
+	return client.callPut(
+		ctx, client.Endpoints.RoleMember(userName, roleName), nil, nil)
 }
 
 // RemoveUserFromRole removes a user from a role.
@@ -80,8 +64,6 @@ func (client *Client) RemoveUserFromRoleContext(
 	if roleName == "" {
 		return nil, errors.New("roleName is empty")
 	}
-
-	return client.callReq(
-		ctx, http.MethodDelete,
-		client.Endpoints.RoleMember(userName, roleName), nil, false)
+	return client.callDelete(
+		ctx, client.Endpoints.RoleMember(userName, roleName), nil, nil)
 }
