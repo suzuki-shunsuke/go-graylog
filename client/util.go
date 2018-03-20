@@ -16,6 +16,7 @@ func (client *Client) callReq(
 	ctx context.Context, method, endpoint string,
 	body []byte, isReadBody bool,
 ) (*ErrorInfo, error) {
+	// prepare request
 	var reqBody io.Reader = nil
 	if body != nil {
 		reqBody = bytes.NewBuffer(body)
@@ -25,14 +26,15 @@ func (client *Client) callReq(
 		return nil, errors.Wrap(err, "Failed to http.NewRequest")
 	}
 	ei := &ErrorInfo{Request: req}
-	req.SetBasicAuth(client.GetName(), client.GetPassword())
+	req.SetBasicAuth(client.Name(), client.Password())
 	req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/json")
 	hc := &http.Client{}
+	// request
 	resp, err := hc.Do(req)
 	if err != nil {
 		return ei, errors.Wrap(
-			err, fmt.Sprintf("Failed to call Graylog API: %s %s", method, endpoint))
+			err, fmt.Sprintf("failed to call Graylog API: %s %s", method, endpoint))
 	}
 	ei.Response = resp
 
@@ -46,7 +48,7 @@ func (client *Client) callReq(
 		if err := json.Unmarshal(b, ei); err != nil {
 			return ei, errors.Wrap(
 				err, fmt.Sprintf(
-					"Failed to parse response body as ErrorInfo: %s", string(b)))
+					"failed to parse response body as ErrorInfo: %s", string(b)))
 		}
 		return ei, errors.New(ei.Message)
 	}
@@ -55,7 +57,7 @@ func (client *Client) callReq(
 		defer resp.Body.Close()
 		b, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			return ei, errors.Wrap(err, "Failed to read response body")
+			return ei, errors.Wrap(err, "failed to read response body")
 		}
 		ei.ResponseBody = b
 	}

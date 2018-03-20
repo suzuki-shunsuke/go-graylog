@@ -28,11 +28,11 @@ func NewClient(endpoint, name, password string) (*Client, error) {
 }
 
 // GetName returns authentication name.
-func (client *Client) GetName() string {
+func (client *Client) Name() string {
 	return client.name
 }
 
 // GetName returns authentication password.
-func (client *Client) GetPassword() string {
+func (client *Client) Password() string {
 	return client.password
 }

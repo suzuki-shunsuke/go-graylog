@@ -16,7 +16,7 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
-func TestGetName(t *testing.T) {
+func TestName(t *testing.T) {
 	name := "admin"
 	client, err := client.NewClient("http://localhost:9000/api", name, "password")
 	if err != nil {
@@ -25,9 +25,9 @@ func TestGetName(t *testing.T) {
 	if client == nil {
 		t.Fatal("client == nil")
 	}
-	act := client.GetName()
+	act := client.Name()
 	if act != name {
-		t.Fatalf("client.GetName() == %s, wanted %s", act, name)
+		t.Fatalf("client.Name() == %s, wanted %s", act, name)
 	}
 
 	exp := "http://localhost:9000/api/roles"
@@ -37,7 +37,7 @@ func TestGetName(t *testing.T) {
 	}
 }
 
-func TestGetPassword(t *testing.T) {
+func TestPassword(t *testing.T) {
 	password := "password"
 	client, err := client.NewClient("http://localhost:9000/api", "admin", password)
 	if err != nil {
@@ -46,8 +46,8 @@ func TestGetPassword(t *testing.T) {
 	if client == nil {
 		t.Fatal("client == nil")
 	}
-	real := client.GetPassword()
+	real := client.Password()
 	if real != password {
-		t.Fatalf("client.GetPassword() == %s, wanted %s", real, password)
+		t.Fatalf("client.Password() == %s, wanted %s", real, password)
 	}
 }
