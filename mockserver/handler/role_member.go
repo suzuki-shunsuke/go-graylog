@@ -6,7 +6,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
 type membersBody struct {
@@ -16,7 +16,7 @@ type membersBody struct {
 
 // GET /roles/{rolename}/members Retrieve the role's members
 func HandleRoleMembers(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -37,7 +37,7 @@ func HandleRoleMembers(
 
 // PUT /roles/{rolename}/members/{username} Add a user to a role
 func HandleAddUserToRole(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	roleName := ps.ByName("rolename")
@@ -64,7 +64,7 @@ func HandleAddUserToRole(
 
 // DELETE /roles/{rolename}/members/{username} Remove a user from a role
 func HandleRemoveUserFromRole(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	roleName := ps.ByName("rolename")

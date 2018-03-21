@@ -7,12 +7,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
 // POST /users Create a new user account.
 func HandleCreateUser(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{
@@ -41,7 +41,7 @@ func HandleCreateUser(
 
 // GET /users List all users
 func HandleGetUsers(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.UserList()
@@ -54,7 +54,7 @@ func HandleGetUsers(
 
 // GET /users/{username} Get user details
 func HandleGetUser(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("username")
@@ -70,7 +70,7 @@ func HandleGetUser(
 
 // PUT /users/{username} Modify user details.
 func HandleUpdateUser(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// required fields is nil
@@ -98,7 +98,7 @@ func HandleUpdateUser(
 
 // DELETE /users/{username} Removes a user account
 func HandleDeleteUser(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("username")

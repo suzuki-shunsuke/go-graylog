@@ -7,12 +7,12 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
-type Handler func(ms *server.Server, w http.ResponseWriter, r *http.Request, ps httprouter.Params) (int, interface{}, error)
+type Handler func(ms *logic.Server, w http.ResponseWriter, r *http.Request, ps httprouter.Params) (int, interface{}, error)
 
-func wrapHandle(ms *server.Server, handler Handler) httprouter.Handle {
+func wrapHandle(ms *logic.Server, handler Handler) httprouter.Handle {
 	// ms.Logger().WithFields(log.Fields{
 	// 	"path": r.URL.Path, "method": r.Method,
 	// }).Info("request start")

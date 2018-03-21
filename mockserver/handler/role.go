@@ -7,12 +7,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
 // GET /roles/{rolename} Retrieve permissions for a single role
 func HandleGetRole(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -30,7 +30,7 @@ func HandleGetRole(
 
 // PUT /roles/{rolename} Update an existing role
 func HandleUpdateRole(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -58,7 +58,7 @@ func HandleUpdateRole(
 
 // DELETE /roles/{rolename} Remove the named role and dissociate any users from it
 func HandleDeleteRole(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -72,7 +72,7 @@ func HandleDeleteRole(
 
 // POST /roles Create a new role
 func HandleCreateRole(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{"name", "permissions"}
@@ -99,7 +99,7 @@ func HandleCreateRole(
 
 // GET /roles List all roles
 func HandleGetRoles(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.GetRoles()

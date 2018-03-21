@@ -5,10 +5,10 @@ import (
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
-func HandleNotFound(ms *server.Server) http.HandlerFunc {
+func HandleNotFound(ms *logic.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ms.Logger().WithFields(log.Fields{
 			"path": r.URL.Path, "method": r.Method,

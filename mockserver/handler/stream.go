@@ -8,12 +8,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
 // GET /streams Get a list of all streams
 func HandleGetStreams(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.GetStreams()
@@ -30,7 +30,7 @@ func HandleGetStreams(
 
 // POST /streams Create index set
 func HandleCreateStream(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{"title", "index_set_id"}
@@ -60,7 +60,7 @@ func HandleCreateStream(
 
 // GET /streams/enabled Get a list of all enabled streams
 func HandleGetEnabledStreams(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.EnabledStreamList()
@@ -76,7 +76,7 @@ func HandleGetEnabledStreams(
 
 // GET /streams/{streamID} Get a single stream
 func HandleGetStream(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
@@ -98,7 +98,7 @@ func HandleGetStream(
 
 // PUT /streams/{streamID} Update a stream
 func HandleUpdateStream(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
@@ -164,7 +164,7 @@ func HandleUpdateStream(
 
 // DELETE /streams/{streamID} Delete a stream
 func HandleDeleteStream(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
@@ -186,7 +186,7 @@ func HandleDeleteStream(
 
 // POST /streams/{streamID}/pause Pause a stream
 func HandlePauseStream(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
@@ -205,7 +205,7 @@ func HandlePauseStream(
 }
 
 func HandleResumeStream(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")

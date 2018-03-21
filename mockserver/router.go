@@ -3,10 +3,10 @@ package mockserver
 import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/handler"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
-func newRouter(ms *server.Server) *httprouter.Router {
+func newRouter(ms *logic.Server) *httprouter.Router {
 	router := httprouter.New()
 
 	router.GET("/api/roles/:rolename", wrapHandle(ms, handler.HandleGetRole))

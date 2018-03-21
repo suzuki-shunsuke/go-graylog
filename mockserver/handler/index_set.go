@@ -7,12 +7,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
 // GET /system/indices/index_sets Get a list of all index sets
 func HandleGetIndexSets(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.GetIndexSets()
@@ -29,7 +29,7 @@ func HandleGetIndexSets(
 
 // GET /system/indices/index_sets/{id} Get index set
 func HandleGetIndexSet(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")
@@ -51,7 +51,7 @@ func HandleGetIndexSet(
 
 // POST /system/indices/index_sets Create index set
 func HandleCreateIndexSet(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{
@@ -90,7 +90,7 @@ func HandleCreateIndexSet(
 
 // PUT /system/indices/index_sets/{id} Update index set
 func HandleUpdateIndexSet(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// default can't change (ignored)
@@ -125,7 +125,7 @@ func HandleUpdateIndexSet(
 
 // DELETE /system/indices/index_sets/{id} Delete index set
 func HandleDeleteIndexSet(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")
@@ -138,7 +138,7 @@ func HandleDeleteIndexSet(
 
 // PUT /system/indices/index_sets/{id}/default Set default index set
 func HandleSetDefaultIndexSet(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	is, sc, err := ms.SetDefaultIndexSet(ps.ByName("indexSetID"))

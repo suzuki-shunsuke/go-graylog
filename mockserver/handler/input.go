@@ -7,12 +7,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
 // GET /system/inputs/{inputID} Get information of a single input on this node
 func HandleGetInput(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
@@ -31,7 +31,7 @@ func HandleGetInput(
 
 // PUT /system/inputs/{inputID} Update input on this node
 func HandleUpdateInput(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
@@ -64,7 +64,7 @@ func HandleUpdateInput(
 
 // DELETE /system/inputs/{inputID} Terminate input on this node
 func HandleDeleteInput(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
@@ -77,7 +77,7 @@ func HandleDeleteInput(
 
 // POST /system/inputs Launch input on this node
 func HandleCreateInput(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{"title", "type", "configuration"}
@@ -106,7 +106,7 @@ func HandleCreateInput(
 
 // GET /system/inputs Get all inputs
 func HandleGetInputs(
-	ms *server.Server,
+	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.InputList()
