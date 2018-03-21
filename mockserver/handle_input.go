@@ -22,7 +22,7 @@ func (ms *Server) handleGetInput(
 		return 500, nil, err
 	}
 	if input == nil {
-		return 404, nil, fmt.Errorf("No input found with id %s", id)
+		return 404, nil, fmt.Errorf("no input found with id %s", id)
 	}
 	return 200, input, nil
 }

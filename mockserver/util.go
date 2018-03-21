@@ -78,18 +78,18 @@ func validateRequestBody(
 	var a interface{}
 	if err := dec.Decode(&a); err != nil {
 		return nil, 400, fmt.Errorf(
-			"Failed to parse the request body as JSON: %s", err)
+			"failed to parse the request body as JSON: %s", err)
 	}
 	body, ok := a.(map[string]interface{})
 	if !ok {
 		return nil, 400, fmt.Errorf(
-			"Failed to parse the request body as a JSON object : %s", a)
+			"failed to parse the request body as a JSON object: %s", a)
 	}
 	rqf := makeHash(requiredFields)
 	for k, _ := range rqf {
 		if _, ok := body[k]; !ok {
 			return body, 400, fmt.Errorf(
-				"In the request body the field %s is required", k)
+				`in the request body the field "%s" is required`, k)
 		}
 	}
 	alf := makeHash(allowedFields)
@@ -106,7 +106,7 @@ func validateRequestBody(
 		for k, _ := range body {
 			if _, ok := alf[k]; !ok {
 				return body, 400, fmt.Errorf(
-					"In the request body an invalid field is found: %s\nThe allowed fields: %s",
+					`in the request body an invalid field is found: "%s"\nThe allowed fields: %s`,
 					k, strings.Join(arr, ", "))
 			}
 		}

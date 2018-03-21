@@ -46,7 +46,7 @@ func (store *InMemoryStore) UpdateUser(user *graylog.User) error {
 		return err
 	}
 	if u == nil {
-		return fmt.Errorf("The user is not found")
+		return fmt.Errorf(`the user "%s" is not found`, user.Username)
 	}
 	if user.Email != "" {
 		u.Email = user.Email

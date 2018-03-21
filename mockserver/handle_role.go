@@ -21,7 +21,7 @@ func (ms *Server) handleGetRole(
 		return 500, nil, err
 	}
 	if role == nil {
-		return 404, nil, fmt.Errorf("No role found with name %s", name)
+		return 404, nil, fmt.Errorf("no role found with name %s", name)
 	}
 	return 200, role, nil
 }
@@ -43,7 +43,7 @@ func (ms *Server) handleUpdateRole(
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as Role")
-		return 400, nil, fmt.Errorf("400 Bad Request")
+		return 400, nil, err
 	}
 
 	if sc, err := ms.UpdateRole(name, role); err != nil {
@@ -82,7 +82,7 @@ func (ms *Server) handleCreateRole(
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as Role")
-		return 400, nil, fmt.Errorf("400 Bad Request")
+		return 400, nil, err
 	}
 
 	if sc, err := ms.AddRole(role); err != nil {

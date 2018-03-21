@@ -41,7 +41,7 @@ func (ms *Server) handleGetIndexSet(
 		return 500, nil, err
 	}
 	if indexSet == nil {
-		return 404, nil, fmt.Errorf("No indexSet found with id %s", id)
+		return 404, nil, fmt.Errorf("no indexSet found with id %s", id)
 	}
 	return 200, indexSet, nil
 }

@@ -59,7 +59,7 @@ func (ms *Server) handleGetUser(
 		return 500, nil, err
 	}
 	if user == nil {
-		return 404, nil, fmt.Errorf("No user found with name %s", name)
+		return 404, nil, fmt.Errorf(`no user found with name "%s"`, name)
 	}
 	return 200, user, nil
 }

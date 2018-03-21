@@ -86,7 +86,7 @@ func (ms *Server) handleGetStream(
 		return 500, nil, err
 	}
 	if stream == nil {
-		return 404, nil, fmt.Errorf("No stream found with id %s", id)
+		return 404, nil, fmt.Errorf("no stream found with id <%s>", id)
 	}
 	return 200, stream, nil
 }
@@ -104,7 +104,7 @@ func (ms *Server) handleUpdateStream(
 		return 500, nil, err
 	}
 	if stream == nil {
-		return 404, nil, fmt.Errorf("No stream found with id %s", id)
+		return 404, nil, fmt.Errorf("no stream found with id <%s>", id)
 	}
 	data := map[string]interface{}{}
 
@@ -170,7 +170,7 @@ func (ms *Server) handleDeleteStream(
 	}
 
 	if !ok {
-		return 404, nil, fmt.Errorf("No stream found with id %s", id)
+		return 404, nil, fmt.Errorf("no stream found with id <%s>", id)
 	}
 	ms.DeleteStream(id)
 	ms.safeSave()
@@ -190,7 +190,7 @@ func (ms *Server) handlePauseStream(
 		return 500, nil, err
 	}
 	if !ok {
-		return 404, nil, fmt.Errorf("No stream found with id %s", id)
+		return 404, nil, fmt.Errorf("no stream found with id <%s>", id)
 	}
 	// TODO pause
 	return 200, nil, nil
@@ -208,7 +208,7 @@ func (ms *Server) handleResumeStream(
 		return 500, nil, err
 	}
 	if !ok {
-		return 404, nil, fmt.Errorf("No stream found with id %s", id)
+		return 404, nil, fmt.Errorf("no stream found with id <%s>", id)
 	}
 	// TODO resume
 	return 200, nil, nil

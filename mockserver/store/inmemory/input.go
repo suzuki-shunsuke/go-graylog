@@ -36,7 +36,7 @@ func (store *InMemoryStore) UpdateInput(input *graylog.Input) error {
 		return err
 	}
 	if u == nil {
-		return fmt.Errorf("The input is not found")
+		return fmt.Errorf("the input <%s> is not found", input.ID)
 	}
 	u.Title = input.Title
 	u.Type = input.Type

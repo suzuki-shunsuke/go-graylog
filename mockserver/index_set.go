@@ -28,7 +28,7 @@ func (ms *Server) AddIndexSet(is *graylog.IndexSet) (int, error) {
 	}
 	if ok {
 		return 400, fmt.Errorf(
-			`Index prefix "%s" would conflict with an existing index set!`,
+			`index prefix "%s" would conflict with an existing index set`,
 			is.IndexPrefix)
 	}
 	ok, err = ms.HasIndexSet(is.ID)
@@ -74,7 +74,7 @@ func (ms *Server) UpdateIndexSet(is *graylog.IndexSet) (int, error) {
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("No indexSet found with id %s", is.ID)
+		return 404, fmt.Errorf("no indexSet found with id <%s>", is.ID)
 	}
 	// indexPrefix unique check
 	ok, err = ms.store.IsConflictIndexPrefix(is.ID, is.IndexPrefix)
@@ -83,7 +83,7 @@ func (ms *Server) UpdateIndexSet(is *graylog.IndexSet) (int, error) {
 	}
 	if ok {
 		return 400, fmt.Errorf(
-			`Index prefix "%s" would conflict with an existing index set!`,
+			`index prefix "%s" would conflict with an existing index set`,
 			is.IndexPrefix)
 	}
 
@@ -103,7 +103,7 @@ func (ms *Server) DeleteIndexSet(id string) (int, error) {
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("No indexSet with id %s is not found", id)
+		return 404, fmt.Errorf("no indexSet with id <%s> is not found", id)
 	}
 	defID, err := ms.store.GetDefaultIndexSetID()
 	if err != nil {
@@ -133,10 +133,10 @@ func (ms *Server) SetDefaultIndexSet(id string) (*graylog.IndexSet, int, error) 
 		return nil, 500, err
 	}
 	if is == nil {
-		return nil, 404, fmt.Errorf("No indexSet found with id %s", id)
+		return nil, 404, fmt.Errorf("no indexSet found with id <%s>", id)
 	}
 	if !is.Writable {
-		return nil, 409, fmt.Errorf("Default index set must be writable.")
+		return nil, 409, fmt.Errorf("default index set must be writable")
 	}
 	if err := ms.store.SetDefaultIndexSetID(id); err != nil {
 		return nil, 500, err

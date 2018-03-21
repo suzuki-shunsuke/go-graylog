@@ -53,7 +53,7 @@ func (ms *Server) DeleteInput(id string) (int, error) {
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("The input is not found")
+		return 404, fmt.Errorf("the input <%s> is not found", id)
 	}
 	if err := ms.store.DeleteInput(id); err != nil {
 		return 500, err

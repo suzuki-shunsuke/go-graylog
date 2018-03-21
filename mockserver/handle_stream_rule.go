@@ -32,7 +32,7 @@ func (ms *Server) handleCreateStreamRule(
 		return 500, nil, err
 	}
 	if !ok {
-		return 404, nil, fmt.Errorf("Stream <%s> not found!", streamID)
+		return 404, nil, fmt.Errorf("stream <%s> not found!", streamID)
 	}
 
 	requiredFields := []string{"value", "field"}
@@ -127,7 +127,7 @@ func (ms *Server) handleDeleteStreamRule(
 	}
 
 	if !ok {
-		return 404, nil, fmt.Errorf("No stream found with id %s", id)
+		return 404, nil, fmt.Errorf("no stream found with id <%s>", id)
 	}
 	ms.DeleteStream(id)
 	ms.safeSave()

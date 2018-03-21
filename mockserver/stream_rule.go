@@ -23,7 +23,7 @@ func (ms *Server) AddStreamRule(rule *graylog.StreamRule) (int, error) {
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("no stream is not found: %s", rule.StreamID)
+		return 404, fmt.Errorf("no stream is not found: <%s>", rule.StreamID)
 	}
 	rule.ID = randStringBytesMaskImprSrc(24)
 	if err = ms.store.AddStreamRule(rule); err != nil {
@@ -43,7 +43,7 @@ func (ms *Server) UpdateStreamRule(rule *graylog.StreamRule) (int, error) {
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("no stream rule is not found: %s", rule.StreamID)
+		return 404, fmt.Errorf("no stream rule is not found: <%s>", rule.StreamID)
 	}
 	if err := ms.store.UpdateStreamRule(rule); err != nil {
 		return 500, err
@@ -61,7 +61,7 @@ func (ms *Server) DeleteStreamRule(streamID, streamRuleID string) (int, error) {
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("No stream found with id %s", streamID)
+		return 404, fmt.Errorf("no stream found with id <%s>", streamID)
 	}
 	ok, err = ms.HasStreamRule(streamID, streamRuleID)
 	if err != nil {
@@ -71,7 +71,7 @@ func (ms *Server) DeleteStreamRule(streamID, streamRuleID string) (int, error) {
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("No stream rule found with id %s", streamRuleID)
+		return 404, fmt.Errorf("no stream rule found with id <%s>", streamRuleID)
 	}
 
 	if err := ms.store.DeleteStreamRule(streamID, streamRuleID); err != nil {
@@ -87,7 +87,7 @@ func (ms *Server) GetStreamRules(streamID string) ([]graylog.StreamRule, int, er
 		return nil, 500, err
 	}
 	if !ok {
-		return nil, 404, fmt.Errorf("no stream is not found: %s", streamID)
+		return nil, 404, fmt.Errorf("no stream is not found: <%s>", streamID)
 	}
 	rules, err := ms.store.GetStreamRules(streamID)
 	if err != nil {
@@ -106,7 +106,7 @@ func (ms *Server) GetStreamRule(streamID, streamRuleID string) (*graylog.StreamR
 		return nil, 500, err
 	}
 	if !ok {
-		return nil, 404, fmt.Errorf("No stream found with id %s", streamID)
+		return nil, 404, fmt.Errorf("no stream found with id <%s>", streamID)
 	}
 	ok, err = ms.HasStreamRule(streamID, streamRuleID)
 	if err != nil {
@@ -116,7 +116,7 @@ func (ms *Server) GetStreamRule(streamID, streamRuleID string) (*graylog.StreamR
 		return nil, 500, err
 	}
 	if !ok {
-		return nil, 404, fmt.Errorf("No stream rule found with id %s", streamRuleID)
+		return nil, 404, fmt.Errorf("no stream rule found with id <%s>", streamRuleID)
 	}
 
 	rule, err := ms.store.GetStreamRule(streamID, streamRuleID)

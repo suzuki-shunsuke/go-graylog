@@ -128,7 +128,7 @@ func TestSetDefaultIndexSetID(t *testing.T) {
 		t.Fatal(err)
 	}
 	if id != is.ID {
-		t.Fatalf(`default id is "%s", wanted "%s"`, id, is.ID)
+		t.Fatalf("default id is <%s>, wanted <%s>", id, is.ID)
 	}
 }
 

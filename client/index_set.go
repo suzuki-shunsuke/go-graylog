@@ -53,7 +53,7 @@ func (client *Client) CreateIndexSetContext(
 	ctx context.Context, is *graylog.IndexSet,
 ) (*ErrorInfo, error) {
 	if is == nil {
-		return nil, fmt.Errorf("IndexSet is nil")
+		return nil, fmt.Errorf("index set is nil")
 	}
 	return client.callPost(ctx, client.Endpoints.IndexSets, is, is)
 }
@@ -68,7 +68,7 @@ func (client *Client) UpdateIndexSetContext(
 	ctx context.Context, is *graylog.IndexSet,
 ) (*ErrorInfo, error) {
 	if is == nil {
-		return nil, fmt.Errorf("IndexSet is nil")
+		return nil, fmt.Errorf("index set is nil")
 	}
 	if is.ID == "" {
 		return nil, errors.New("id is empty")

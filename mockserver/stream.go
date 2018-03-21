@@ -46,7 +46,7 @@ func (ms *Server) UpdateStream(stream *graylog.Stream) (int, error) {
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("No stream found with id %s", stream.ID)
+		return 404, fmt.Errorf("no stream found with id <%s>", stream.ID)
 	}
 	if err := ms.store.UpdateStream(stream); err != nil {
 		return 500, err
@@ -64,7 +64,7 @@ func (ms *Server) DeleteStream(id string) (int, error) {
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("No stream found with id %s", id)
+		return 404, fmt.Errorf("no stream found with id <%s>", id)
 	}
 	if err := ms.store.DeleteStream(id); err != nil {
 		return 500, err

@@ -31,7 +31,8 @@ func (ms *Server) checkUserRoles(roles []string) (int, error) {
 			}
 			if !ok {
 				// unfortunately, graylog 2.4.3-1 returns 500 error
-				return 500, fmt.Errorf("No role found with name %s", roleName)
+				// https://github.com/Graylog2/graylog2-server/issues/4665
+				return 500, fmt.Errorf(`no role found with name "%s"`, roleName)
 			}
 		}
 	}
@@ -52,7 +53,7 @@ func (ms *Server) AddUser(user *graylog.User) (int, error) {
 	}
 	if ok {
 		return 400, fmt.Errorf(
-			"The user %s has already existed.", user.Username)
+			`the user "%s" has already existed`, user.Username)
 	}
 
 	// check role exists
@@ -79,7 +80,7 @@ func (ms *Server) UpdateUser(user *graylog.User) (int, error) {
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("The user is not found")
+		return 404, fmt.Errorf(`the user "%s" is not found`, user.Username)
 	}
 
 	// client side validation
@@ -107,7 +108,7 @@ func (ms *Server) DeleteUser(name string) (int, error) {
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("The user is not found")
+		return 404, fmt.Errorf(`the user "%s" is not found`, name)
 	}
 
 	// Delete a user

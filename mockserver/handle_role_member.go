@@ -23,7 +23,7 @@ func (ms *Server) handleRoleMembers(
 		return 500, nil, err
 	}
 	if !ok {
-		return 404, nil, fmt.Errorf("No role found with name %s", name)
+		return 404, nil, fmt.Errorf("no role found with name %s", name)
 	}
 	arr, err := ms.RoleMembers(name)
 	if err != nil {
@@ -44,7 +44,7 @@ func (ms *Server) handleAddUserToRole(
 		return 500, nil, err
 	}
 	if !ok {
-		return 404, nil, fmt.Errorf("No role found with name %s", roleName)
+		return 404, nil, fmt.Errorf("no role found with name %s", roleName)
 	}
 
 	user, err := ms.GetUser(userName)
@@ -52,7 +52,7 @@ func (ms *Server) handleAddUserToRole(
 		return 500, nil, err
 	}
 	if user == nil {
-		return 404, nil, fmt.Errorf("User %s has not been found.", userName)
+		return 404, nil, fmt.Errorf(`user "%s" has not been found.`, userName)
 	}
 	user.Roles = addToStringArray(user.Roles, roleName)
 	ms.AddUser(user)
@@ -70,7 +70,7 @@ func (ms *Server) handleRemoveUserFromRole(
 		return 500, nil, err
 	}
 	if !ok {
-		return 404, nil, fmt.Errorf("No role found with name %s", roleName)
+		return 404, nil, fmt.Errorf(`no role found with name "%s"`, roleName)
 	}
 
 	user, err := ms.GetUser(userName)
@@ -78,7 +78,7 @@ func (ms *Server) handleRemoveUserFromRole(
 		return 500, nil, err
 	}
 	if user == nil {
-		return 404, nil, fmt.Errorf("User %s has not been found.", userName)
+		return 404, nil, fmt.Errorf(`user "%s" is not found.`, userName)
 	}
 	user.Roles = removeFromStringArray(user.Roles, roleName)
 	if sc, err := ms.UpdateUser(user); err != nil {

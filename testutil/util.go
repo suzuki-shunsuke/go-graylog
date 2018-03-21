@@ -31,14 +31,14 @@ func GetServerAndClient() (*mockserver.Server, *client.Client, error) {
 	if endpoint == "" {
 		server, err = mockserver.NewServer("", nil)
 		if err != nil {
-			return nil, nil, errors.Wrap(err, "Failed to Get Mock Server")
+			return nil, nil, errors.Wrap(err, "Failed to get Mock Server")
 		}
 		endpoint = server.GetEndpoint()
 	}
 	client, err := client.NewClient(endpoint, authName, authPass)
 	if err != nil {
 		server.Close()
-		return nil, nil, errors.Wrap(err, "Failed to NewClient")
+		return nil, nil, errors.Wrap(err, "NewClient is failure")
 	}
 	if server != nil {
 		server.Start()
