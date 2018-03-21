@@ -13,13 +13,24 @@ func (ms *Server) HasUser(username string) (bool, error) {
 }
 
 // GetUser returns a user.
-func (ms *Server) GetUser(username string) (*graylog.User, error) {
-	return ms.store.GetUser(username)
+func (ms *Server) GetUser(username string) (*graylog.User, int, error) {
+	user, err := ms.store.GetUser(username)
+	if err != nil {
+		return user, 500, err
+	}
+	if user == nil {
+		return user, 404, fmt.Errorf(`no user "%s" is found`, username)
+	}
+	return user, 200, nil
 }
 
-// UsersList returns a user.
-func (ms *Server) UsersList() ([]graylog.User, error) {
-	return ms.store.GetUsers()
+// GetUsers returns a list of users.
+func (ms *Server) GetUsers() ([]graylog.User, int, error) {
+	users, err := ms.store.GetUsers()
+	if err != nil {
+		return users, 500, err
+	}
+	return users, 200, nil
 }
 
 func (ms *Server) checkUserRoles(roles []string) (int, error) {

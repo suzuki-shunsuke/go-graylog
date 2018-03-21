@@ -140,7 +140,7 @@ func TestUpdateInput(t *testing.T) {
 	if _, err := client.UpdateInput(input); err != nil {
 		t.Fatal("Failed to UpdateInput", err)
 	}
-	act, err := server.GetInput(input.ID)
+	act, _, err := server.GetInput(input.ID)
 	if err != nil {
 		t.Fatal(err)
 	}

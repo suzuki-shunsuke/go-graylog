@@ -135,7 +135,7 @@ func TestUpdateRole(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	admin, err := server.GetRole("Admin")
+	admin, _, err := server.GetRole("Admin")
 	if err != nil {
 		t.Fatal(err)
 	}

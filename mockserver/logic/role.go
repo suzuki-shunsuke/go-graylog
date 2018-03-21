@@ -13,8 +13,16 @@ func (ms *Server) HasRole(name string) (bool, error) {
 }
 
 // GetRole returns a Role.
-func (ms *Server) GetRole(name string) (*graylog.Role, error) {
-	return ms.store.GetRole(name)
+// If a role is not found, an error is returns.
+func (ms *Server) GetRole(name string) (*graylog.Role, int, error) {
+	role, err := ms.store.GetRole(name)
+	if err != nil {
+		return role, 500, err
+	}
+	if role == nil {
+		return nil, 404, fmt.Errorf(`no role with name "%s"`, name)
+	}
+	return role, 200, nil
 }
 
 // AddRole adds a new role to the mock server.
@@ -62,7 +70,7 @@ func (ms *Server) UpdateRole(name string, role *graylog.Role) (int, error) {
 	return 204, nil
 }
 
-// DeleteRole
+// DeleteRole deletes a role.
 func (ms *Server) DeleteRole(name string) (int, error) {
 	ok, err := ms.HasRole(name)
 	if err != nil {
@@ -78,6 +86,10 @@ func (ms *Server) DeleteRole(name string) (int, error) {
 }
 
 // GetRoles returns a list of roles.
-func (ms *Server) GetRoles() ([]graylog.Role, error) {
-	return ms.store.GetRoles()
+func (ms *Server) GetRoles() ([]graylog.Role, int, error) {
+	roles, err := ms.store.GetRoles()
+	if err != nil {
+		return roles, 500, err
+	}
+	return roles, 200, nil
 }

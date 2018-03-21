@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -36,17 +35,8 @@ func HandleGetIndexSet(
 	if id == "stats" {
 		return HandleGetAllIndexSetsStats(ms, w, r, ps)
 	}
-	indexSet, err := ms.GetIndexSet(id)
-	if err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err, "id": id,
-		}).Info("ms.GetIndexSet() is failure")
-		return 500, nil, err
-	}
-	if indexSet == nil {
-		return 404, nil, fmt.Errorf("no indexSet found with id %s", id)
-	}
-	return 200, indexSet, nil
+	is, sc, err := ms.GetIndexSet(id)
+	return sc, is, err
 }
 
 // POST /system/indices/index_sets Create index set

@@ -10,12 +10,24 @@ import (
 
 // HasIndexSet
 func (ms *Server) HasIndexSet(id string) (bool, error) {
+	// TODO authorization
 	return ms.store.HasIndexSet(id)
 }
 
 // GetIndexSet returns an index set.
-func (ms *Server) GetIndexSet(id string) (*graylog.IndexSet, error) {
-	return ms.store.GetIndexSet(id)
+// If an index set is not found, returns an error.
+func (ms *Server) GetIndexSet(id string) (*graylog.IndexSet, int, error) {
+	if id == "" {
+		return nil, 400, fmt.Errorf("index set id is empty")
+	}
+	is, err := ms.store.GetIndexSet(id)
+	if err != nil {
+		return is, 500, err
+	}
+	if is == nil {
+		return nil, 404, fmt.Errorf("no index set <%s> is found", id)
+	}
+	return is, 200, err
 }
 
 // AddIndexSet adds an index set to the Mock Server.
@@ -127,12 +139,9 @@ func (ms *Server) GetIndexSets() ([]graylog.IndexSet, error) {
 
 // SetDefaultIndexSet sets a default index set
 func (ms *Server) SetDefaultIndexSet(id string) (*graylog.IndexSet, int, error) {
-	is, err := ms.GetIndexSet(id)
+	is, sc, err := ms.GetIndexSet(id)
 	if err != nil {
-		ms.logger.WithFields(log.Fields{
-			"error": err, "id": id,
-		}).Info("ms.GetIndexSet() is failure")
-		return nil, 500, err
+		return nil, sc, err
 	}
 	if is == nil {
 		return nil, 404, fmt.Errorf("no indexSet found with id <%s>", id)

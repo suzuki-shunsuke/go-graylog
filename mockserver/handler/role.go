@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -18,14 +17,8 @@ func HandleGetRole(
 	name := ps.ByName("rolename")
 	ms.Logger().WithFields(log.Fields{
 		"handler": "handleGetRole", "rolename": name}).Info("request start")
-	role, err := ms.GetRole(name)
-	if err != nil {
-		return 500, nil, err
-	}
-	if role == nil {
-		return 404, nil, fmt.Errorf("no role found with name %s", name)
-	}
-	return 200, role, nil
+	role, sc, err := ms.GetRole(name)
+	return sc, role, err
 }
 
 // PUT /roles/{rolename} Update an existing role
@@ -94,18 +87,16 @@ func HandleCreateRole(
 		return sc, nil, err
 	}
 	ms.SafeSave()
-	return 201, role, nil
+	return sc, role, nil
 }
 
 // GET /roles List all roles
 func HandleGetRoles(
-	ms *logic.Server,
-	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+	ms *logic.Server, w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	arr, err := ms.GetRoles()
+	arr, sc, err := ms.GetRoles()
 	if err != nil {
-		return 500, nil, err
+		return sc, nil, err
 	}
-	roles := &graylog.RolesBody{Roles: arr, Total: len(arr)}
-	return 200, roles, nil
+	return sc, &graylog.RolesBody{Roles: arr, Total: len(arr)}, nil
 }

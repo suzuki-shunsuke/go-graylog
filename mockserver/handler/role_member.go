@@ -27,12 +27,12 @@ func HandleRoleMembers(
 	if !ok {
 		return 404, nil, fmt.Errorf("no role found with name %s", name)
 	}
-	arr, err := ms.RoleMembers(name)
+	arr, sc, err := ms.RoleMembers(name)
 	if err != nil {
-		return 500, nil, err
+		return sc, nil, err
 	}
 	users := &membersBody{Users: arr, Role: name}
-	return 200, users, nil
+	return sc, users, nil
 }
 
 // PUT /roles/{rolename}/members/{username} Add a user to a role
@@ -40,26 +40,8 @@ func HandleAddUserToRole(
 	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	roleName := ps.ByName("rolename")
-	userName := ps.ByName("username")
-	ok, err := ms.HasRole(roleName)
-	if err != nil {
-		return 500, nil, err
-	}
-	if !ok {
-		return 404, nil, fmt.Errorf("no role found with name %s", roleName)
-	}
-
-	user, err := ms.GetUser(userName)
-	if err != nil {
-		return 500, nil, err
-	}
-	if user == nil {
-		return 404, nil, fmt.Errorf(`user "%s" has not been found.`, userName)
-	}
-	user.Roles = addToStringArray(user.Roles, roleName)
-	ms.AddUser(user)
-	return 200, nil, nil
+	sc, err := ms.AddUserToRole(ps.ByName("username"), ps.ByName("rolename"))
+	return sc, nil, err
 }
 
 // DELETE /roles/{rolename}/members/{username} Remove a user from a role
@@ -67,26 +49,6 @@ func HandleRemoveUserFromRole(
 	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	roleName := ps.ByName("rolename")
-	userName := ps.ByName("username")
-	ok, err := ms.HasRole(roleName)
-	if err != nil {
-		return 500, nil, err
-	}
-	if !ok {
-		return 404, nil, fmt.Errorf(`no role found with name "%s"`, roleName)
-	}
-
-	user, err := ms.GetUser(userName)
-	if err != nil {
-		return 500, nil, err
-	}
-	if user == nil {
-		return 404, nil, fmt.Errorf(`user "%s" is not found.`, userName)
-	}
-	user.Roles = removeFromStringArray(user.Roles, roleName)
-	if sc, err := ms.UpdateUser(user); err != nil {
-		return sc, nil, err
-	}
-	return 200, nil, nil
+	sc, err := ms.RemoveUserFromRole(ps.ByName("username"), ps.ByName("rolename"))
+	return sc, nil, err
 }

@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -16,17 +15,8 @@ func HandleGetInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
-	input, err := ms.GetInput(id)
-	if err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err, "id": id,
-		}).Error("ms.GetInput() is failure")
-		return 500, nil, err
-	}
-	if input == nil {
-		return 404, nil, fmt.Errorf("no input found with id %s", id)
-	}
-	return 200, input, nil
+	input, sc, err := ms.GetInput(id)
+	return sc, input, err
 }
 
 // PUT /system/inputs/{inputID} Update input on this node
@@ -109,13 +99,10 @@ func HandleGetInputs(
 	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	arr, err := ms.InputList()
+	arr, sc, err := ms.GetInputs()
 	if err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err,
-		}).Error("ms.InputList() is failure")
-		return 500, nil, err
+		return sc, arr, err
 	}
 	inputs := &graylog.InputsBody{Inputs: arr, Total: len(arr)}
-	return 200, inputs, nil
+	return sc, inputs, nil
 }

@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -44,12 +43,11 @@ func HandleGetUsers(
 	ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	arr, err := ms.UserList()
+	users, sc, err := ms.GetUsers()
 	if err != nil {
-		return 500, nil, err
+		return sc, users, err
 	}
-	users := &graylog.UsersBody{Users: arr}
-	return 200, users, nil
+	return sc, &graylog.UsersBody{Users: users}, nil
 }
 
 // GET /users/{username} Get user details
@@ -58,14 +56,8 @@ func HandleGetUser(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("username")
-	user, err := ms.GetUser(name)
-	if err != nil {
-		return 500, nil, err
-	}
-	if user == nil {
-		return 404, nil, fmt.Errorf(`no user found with name "%s"`, name)
-	}
-	return 200, user, nil
+	user, sc, err := ms.GetUser(name)
+	return sc, user, err
 }
 
 // PUT /users/{username} Modify user details.

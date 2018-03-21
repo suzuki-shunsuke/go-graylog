@@ -14,8 +14,20 @@ func (ms *Server) HasInput(id string) (bool, error) {
 }
 
 // GetInput returns an input.
-func (ms *Server) GetInput(id string) (*graylog.Input, error) {
-	return ms.store.GetInput(id)
+// If an input is not found, returns an error.
+func (ms *Server) GetInput(id string) (*graylog.Input, int, error) {
+	if id == "" {
+		return nil, 400, fmt.Errorf("input id is empty")
+	}
+	// TODO id validation
+	input, err := ms.store.GetInput(id)
+	if err != nil {
+		return input, 500, err
+	}
+	if input == nil {
+		return nil, 404, fmt.Errorf("no input with id <%s> is found", id)
+	}
+	return input, 200, nil
 }
 
 // AddInput adds an input to the mock server.
@@ -61,6 +73,11 @@ func (ms *Server) DeleteInput(id string) (int, error) {
 	return 200, nil
 }
 
-func (ms *Server) InputList() ([]graylog.Input, error) {
-	return ms.store.GetInputs()
+// GetInputs returns a list of inputs.
+func (ms *Server) GetInputs() ([]graylog.Input, int, error) {
+	inputs, err := ms.store.GetInputs()
+	if err != nil {
+		return inputs, 500, err
+	}
+	return inputs, 200, nil
 }

@@ -50,26 +50,20 @@ func TestGetIndexSet(t *testing.T) {
 	if _, err := server.AddIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
-	act, err := server.GetIndexSet(is.ID)
+	act, _, err := server.GetIndexSet(is.ID)
 	if err != nil {
 		t.Fatal("Failed to GetIndexSet", err)
 	}
 	if !reflect.DeepEqual(*act, *is) {
 		t.Fatalf("server.GetIndexSet() == %v, wanted %v", act, is)
 	}
-	is, err = server.GetIndexSet("")
-	if err != nil {
-		t.Fatal(err)
+	is, _, err = server.GetIndexSet("")
+	if err == nil {
+		t.Fatal("index set id is empty")
 	}
-	if is != nil {
-		t.Fatal("index set id is required")
-	}
-	is, err = server.GetIndexSet("h")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if is != nil {
-		t.Fatal(`no index set whose id is "h"`)
+	is, _, err = server.GetIndexSet("h")
+	if err == nil {
+		t.Fatal("no index set <h> is found")
 	}
 }
 
