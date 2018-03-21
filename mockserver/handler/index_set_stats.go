@@ -1,14 +1,16 @@
-package mockserver
+package handler
 
 import (
 	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
 )
 
 // GET /system/indices/index_sets/{id}/stats Get index set statistics
-func (ms *Server) handleGetIndexSetStats(
+func HandleGetIndexSetStats(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")
@@ -23,7 +25,8 @@ func (ms *Server) handleGetIndexSetStats(
 }
 
 // GET /system/indices/index_sets/stats Get stats of all index sets
-func (ms *Server) handleGetAllIndexSetsStats(
+func HandleGetAllIndexSetsStats(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	s, err := ms.GetTotalIndexSetsStats()

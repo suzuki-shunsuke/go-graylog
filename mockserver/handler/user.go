@@ -1,4 +1,4 @@
-package mockserver
+package handler
 
 import (
 	"fmt"
@@ -7,10 +7,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
 )
 
 // POST /users Create a new user account.
-func (ms *Server) handleCreateUser(
+func HandleCreateUser(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{
@@ -33,12 +35,13 @@ func (ms *Server) handleCreateUser(
 	if sc, err := ms.AddUser(user); err != nil {
 		return sc, nil, err
 	}
-	ms.safeSave()
+	ms.SafeSave()
 	return 201, nil, nil
 }
 
 // GET /users List all users
-func (ms *Server) handleGetUsers(
+func HandleGetUsers(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.UserList()
@@ -50,7 +53,8 @@ func (ms *Server) handleGetUsers(
 }
 
 // GET /users/{username} Get user details
-func (ms *Server) handleGetUser(
+func HandleGetUser(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("username")
@@ -65,7 +69,8 @@ func (ms *Server) handleGetUser(
 }
 
 // PUT /users/{username} Modify user details.
-func (ms *Server) handleUpdateUser(
+func HandleUpdateUser(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// required fields is nil
@@ -87,18 +92,19 @@ func (ms *Server) handleUpdateUser(
 	if sc, err := ms.UpdateUser(user); err != nil {
 		return sc, nil, err
 	}
-	ms.safeSave()
+	ms.SafeSave()
 	return 200, nil, nil
 }
 
 // DELETE /users/{username} Removes a user account
-func (ms *Server) handleDeleteUser(
+func HandleDeleteUser(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("username")
 	if sc, err := ms.DeleteUser(name); err != nil {
 		return sc, nil, err
 	}
-	ms.safeSave()
+	ms.SafeSave()
 	return 204, nil, nil
 }

@@ -1,4 +1,4 @@
-package mockserver
+package handler
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
 )
 
 type membersBody struct {
@@ -14,7 +15,8 @@ type membersBody struct {
 }
 
 // GET /roles/{rolename}/members Retrieve the role's members
-func (ms *Server) handleRoleMembers(
+func HandleRoleMembers(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -34,7 +36,8 @@ func (ms *Server) handleRoleMembers(
 }
 
 // PUT /roles/{rolename}/members/{username} Add a user to a role
-func (ms *Server) handleAddUserToRole(
+func HandleAddUserToRole(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	roleName := ps.ByName("rolename")
@@ -60,7 +63,8 @@ func (ms *Server) handleAddUserToRole(
 }
 
 // DELETE /roles/{rolename}/members/{username} Remove a user from a role
-func (ms *Server) handleRemoveUserFromRole(
+func HandleRemoveUserFromRole(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	roleName := ps.ByName("rolename")

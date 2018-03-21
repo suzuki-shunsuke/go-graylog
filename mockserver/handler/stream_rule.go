@@ -1,4 +1,4 @@
-package mockserver
+package handler
 
 import (
 	"fmt"
@@ -7,9 +7,11 @@ import (
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
 )
 
-func (ms *Server) handleGetStreamRules(
+func HandleGetStreamRules(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// GET /streams/{streamid}/rules Get a list of all stream rules
@@ -22,7 +24,8 @@ func (ms *Server) handleGetStreamRules(
 	return 200, body, nil
 }
 
-func (ms *Server) handleCreateStreamRule(
+func HandleCreateStreamRule(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// POST /streams/{streamid}/rules Create a stream rule
@@ -62,7 +65,7 @@ func (ms *Server) handleCreateStreamRule(
 		}).Error("Faield to add rule to mock server")
 		return sc, nil, err
 	}
-	ms.safeSave()
+	ms.SafeSave()
 	ret := map[string]string{"streamrule_id": rule.ID}
 	return 201, ret, nil
 }
@@ -72,7 +75,8 @@ func (ms *Server) handleCreateStreamRule(
 // type 400 {"type": "ApiError", "message": "Unknown stream rule type 0"}
 // value, type, description, inverted, field
 
-func (ms *Server) handleUpdateStreamRule(
+func HandleUpdateStreamRule(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// PUT /streams/{streamid}/rules/{streamRuleID} Update a stream rule
@@ -105,12 +109,13 @@ func (ms *Server) handleUpdateStreamRule(
 		}).Error("Faield to update stream rule")
 		return sc, nil, err
 	}
-	ms.safeSave()
+	ms.SafeSave()
 	ret := map[string]string{"streamrule_id": rule.ID}
 	return 200, ret, nil
 }
 
-func (ms *Server) handleDeleteStreamRule(
+func HandleDeleteStreamRule(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// DELETE /streams/{streamid}/rules/{streamRuleId} Delete a stream rule
@@ -130,11 +135,12 @@ func (ms *Server) handleDeleteStreamRule(
 		return 404, nil, fmt.Errorf("no stream found with id <%s>", id)
 	}
 	ms.DeleteStream(id)
-	ms.safeSave()
+	ms.SafeSave()
 	return 204, nil, nil
 }
 
-func (ms *Server) handleGetStreamRule(
+func HandleGetStreamRule(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// GET /streams/{streamid}/rules/{streamRuleId} Get a single stream rules

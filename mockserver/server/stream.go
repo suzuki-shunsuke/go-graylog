@@ -1,4 +1,4 @@
-package mockserver
+package server
 
 import (
 	"fmt"

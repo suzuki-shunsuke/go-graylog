@@ -1,4 +1,4 @@
-package mockserver
+package handler
 
 import (
 	"fmt"
@@ -7,10 +7,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
 )
 
 // GET /system/indices/index_sets Get a list of all index sets
-func (ms *Server) handleGetIndexSets(
+func HandleGetIndexSets(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.GetIndexSets()
@@ -26,16 +28,17 @@ func (ms *Server) handleGetIndexSets(
 }
 
 // GET /system/indices/index_sets/{id} Get index set
-func (ms *Server) handleGetIndexSet(
+func HandleGetIndexSet(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")
 	if id == "stats" {
-		return ms.handleGetAllIndexSetsStats(w, r, ps)
+		return HandleGetAllIndexSetsStats(ms, w, r, ps)
 	}
 	indexSet, err := ms.GetIndexSet(id)
 	if err != nil {
-		ms.logger.WithFields(log.Fields{
+		ms.Logger().WithFields(log.Fields{
 			"error": err, "id": id,
 		}).Info("ms.GetIndexSet() is failure")
 		return 500, nil, err
@@ -47,7 +50,8 @@ func (ms *Server) handleGetIndexSet(
 }
 
 // POST /system/indices/index_sets Create index set
-func (ms *Server) handleCreateIndexSet(
+func HandleCreateIndexSet(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{
@@ -67,7 +71,7 @@ func (ms *Server) handleCreateIndexSet(
 
 	indexSet := &graylog.IndexSet{}
 	if err := msDecode(body, indexSet); err != nil {
-		ms.logger.WithFields(log.Fields{
+		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as indexSet")
 		return 400, nil, err
@@ -80,12 +84,13 @@ func (ms *Server) handleCreateIndexSet(
 	if err != nil {
 		return sc, nil, err
 	}
-	ms.safeSave()
+	ms.SafeSave()
 	return 201, indexSet, nil
 }
 
 // PUT /system/indices/index_sets/{id} Update index set
-func (ms *Server) handleUpdateIndexSet(
+func HandleUpdateIndexSet(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// default can't change (ignored)
@@ -102,7 +107,7 @@ func (ms *Server) handleUpdateIndexSet(
 
 	is := &graylog.IndexSet{ID: ps.ByName("indexSetID")}
 	if err := msDecode(body, is); err != nil {
-		ms.logger.WithFields(log.Fields{
+		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as indexSet")
 		return 400, nil, err
@@ -114,30 +119,32 @@ func (ms *Server) handleUpdateIndexSet(
 	if sc, err := ms.UpdateIndexSet(is); err != nil {
 		return sc, nil, err
 	}
-	ms.safeSave()
+	ms.SafeSave()
 	return 200, is, nil
 }
 
 // DELETE /system/indices/index_sets/{id} Delete index set
-func (ms *Server) handleDeleteIndexSet(
+func HandleDeleteIndexSet(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")
 	if sc, err := ms.DeleteIndexSet(id); err != nil {
 		return sc, nil, err
 	}
-	ms.safeSave()
+	ms.SafeSave()
 	return 204, nil, nil
 }
 
 // PUT /system/indices/index_sets/{id}/default Set default index set
-func (ms *Server) handleSetDefaultIndexSet(
+func HandleSetDefaultIndexSet(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	is, sc, err := ms.SetDefaultIndexSet(ps.ByName("indexSetID"))
 	if err != nil {
 		return sc, nil, err
 	}
-	ms.safeSave()
+	ms.SafeSave()
 	return 200, is, nil
 }

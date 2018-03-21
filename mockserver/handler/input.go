@@ -1,4 +1,4 @@
-package mockserver
+package handler
 
 import (
 	"fmt"
@@ -7,10 +7,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
 )
 
 // GET /system/inputs/{inputID} Get information of a single input on this node
-func (ms *Server) handleGetInput(
+func HandleGetInput(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
@@ -28,7 +30,8 @@ func (ms *Server) handleGetInput(
 }
 
 // PUT /system/inputs/{inputID} Update input on this node
-func (ms *Server) handleUpdateInput(
+func HandleUpdateInput(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
@@ -55,24 +58,26 @@ func (ms *Server) handleUpdateInput(
 	if sc, err := ms.UpdateInput(input); err != nil {
 		return sc, nil, err
 	}
-	ms.safeSave()
+	ms.SafeSave()
 	return 200, input, nil
 }
 
 // DELETE /system/inputs/{inputID} Terminate input on this node
-func (ms *Server) handleDeleteInput(
+func HandleDeleteInput(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
 	if sc, err := ms.DeleteInput(id); err != nil {
 		return sc, nil, err
 	}
-	ms.safeSave()
+	ms.SafeSave()
 	return 204, nil, nil
 }
 
 // POST /system/inputs Launch input on this node
-func (ms *Server) handleCreateInput(
+func HandleCreateInput(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{"title", "type", "configuration"}
@@ -94,13 +99,14 @@ func (ms *Server) handleCreateInput(
 	if err != nil {
 		return sc, nil, err
 	}
-	ms.safeSave()
+	ms.SafeSave()
 	d := map[string]string{"id": input.ID}
 	return 201, &d, nil
 }
 
 // GET /system/inputs Get all inputs
-func (ms *Server) handleGetInputs(
+func HandleGetInputs(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.InputList()

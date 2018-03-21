@@ -8,6 +8,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
 )
@@ -18,18 +19,11 @@ var (
 
 // Server represents a mock of the Graylog API.
 type Server struct {
-	server   *httptest.Server `json:"-"`
-	endpoint string           `json:"-"`
+	server         *httptest.Server `json:"-"`
+	*server.Server `json:"-"`
+	endpoint       string `json:"-"`
 
 	streamRules map[string]map[string]graylog.StreamRule `json:"stream_rules"`
-
-	store    store.Store `json:"-"`
-	logger   *log.Logger `json:"-"`
-	dataPath string      `json:"-"`
-}
-
-func (ms *Server) Logger() *log.Logger {
-	return ms.logger
 }
 
 // NewServer returns new Server but doesn't start it.
@@ -38,18 +32,19 @@ func NewServer(addr string, store store.Store) (*Server, error) {
 	if store == nil {
 		store = inmemory.NewStore("")
 	}
-	ms := &Server{
-		// indexSetStats: map[string]graylog.IndexSetStats{},
-		streamRules: map[string]map[string]graylog.StreamRule{},
-
-		store:  store,
-		logger: log.New(),
-	}
+	logger := log.New()
 	// By Default logLevel is error
 	// because debug and info logs are often noisy at unit tests.
-	ms.logger.SetLevel(log.ErrorLevel)
+	logger.SetLevel(log.ErrorLevel)
+	srv, err := server.NewServer(store)
+	if err != nil {
+		return nil, err
+	}
+	ms := &Server{
+		Server: srv,
+	}
 
-	server := httptest.NewUnstartedServer(newRouter(ms))
+	server := httptest.NewUnstartedServer(newRouter(srv))
 	if addr != "" {
 		ln, err := net.Listen("tcp", addr)
 		if err != nil {
@@ -60,15 +55,7 @@ func NewServer(addr string, store store.Store) (*Server, error) {
 	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
 	ms.endpoint = u
 	ms.server = server
-	if err := ms.InitData(); err != nil {
-		return ms, err
-	}
 	return ms, nil
-}
-
-// SetStore sets a store to the mock server.
-func (ms *Server) SetStore(store store.Store) {
-	ms.store = store
 }
 
 // Start starts a server from NewUnstartedServer.
@@ -81,24 +68,6 @@ func (ms *Server) Start() {
 func (ms *Server) Close() {
 	ms.Logger().Info("Close Server")
 	ms.server.Close()
-}
-
-// Save writes Mock Server's data in a file for persistence.
-func (ms *Server) Save() error {
-	return ms.store.Save()
-}
-
-// Load reads Mock Server's data from a file.
-func (ms *Server) Load() error {
-	return ms.store.Load()
-}
-
-func (ms *Server) safeSave() {
-	if err := ms.Save(); err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err, "data_path": ms.dataPath,
-		}).Error("Failed to save data")
-	}
 }
 
 func (ms *Server) GetEndpoint() string {

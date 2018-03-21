@@ -1,4 +1,4 @@
-package mockserver
+package handler
 
 import (
 	"encoding/json"
@@ -8,10 +8,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
 )
 
 // GET /streams Get a list of all streams
-func (ms *Server) handleGetStreams(
+func HandleGetStreams(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.GetStreams()
@@ -27,7 +29,8 @@ func (ms *Server) handleGetStreams(
 }
 
 // POST /streams Create index set
-func (ms *Server) handleCreateStream(
+func HandleCreateStream(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{"title", "index_set_id"}
@@ -41,7 +44,7 @@ func (ms *Server) handleCreateStream(
 
 	stream := &graylog.Stream{}
 	if err := msDecode(body, stream); err != nil {
-		ms.logger.WithFields(log.Fields{
+		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as stream")
 		return 400, nil, err
@@ -56,7 +59,8 @@ func (ms *Server) handleCreateStream(
 }
 
 // GET /streams/enabled Get a list of all enabled streams
-func (ms *Server) handleGetEnabledStreams(
+func HandleGetEnabledStreams(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.EnabledStreamList()
@@ -71,12 +75,13 @@ func (ms *Server) handleGetEnabledStreams(
 }
 
 // GET /streams/{streamID} Get a single stream
-func (ms *Server) handleGetStream(
+func HandleGetStream(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
 	if id == "enabled" {
-		return ms.handleGetEnabledStreams(w, r, ps)
+		return HandleGetEnabledStreams(ms, w, r, ps)
 	}
 	stream, err := ms.GetStream(id)
 	if err != nil {
@@ -92,7 +97,8 @@ func (ms *Server) handleGetStream(
 }
 
 // PUT /streams/{streamID} Update a stream
-func (ms *Server) handleUpdateStream(
+func HandleUpdateStream(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
@@ -152,12 +158,13 @@ func (ms *Server) handleUpdateStream(
 	if sc, err := ms.UpdateStream(stream); err != nil {
 		return sc, nil, err
 	}
-	ms.safeSave()
+	ms.SafeSave()
 	return 200, stream, nil
 }
 
 // DELETE /streams/{streamID} Delete a stream
-func (ms *Server) handleDeleteStream(
+func HandleDeleteStream(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
@@ -173,12 +180,13 @@ func (ms *Server) handleDeleteStream(
 		return 404, nil, fmt.Errorf("no stream found with id <%s>", id)
 	}
 	ms.DeleteStream(id)
-	ms.safeSave()
+	ms.SafeSave()
 	return 204, nil, nil
 }
 
 // POST /streams/{streamID}/pause Pause a stream
-func (ms *Server) handlePauseStream(
+func HandlePauseStream(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
@@ -196,7 +204,8 @@ func (ms *Server) handlePauseStream(
 	return 200, nil, nil
 }
 
-func (ms *Server) handleResumeStream(
+func HandleResumeStream(
+	ms *server.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")

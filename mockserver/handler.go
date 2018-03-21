@@ -7,22 +7,12 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/server"
 )
 
-type Handler func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) (int, interface{}, error)
+type Handler func(ms *server.Server, w http.ResponseWriter, r *http.Request, ps httprouter.Params) (int, interface{}, error)
 
-func (ms *Server) handleNotFound(w http.ResponseWriter, r *http.Request) {
-	ms.Logger().WithFields(log.Fields{
-		"path": r.URL.Path, "method": r.Method,
-		"message": "404 Page Not Found",
-	}).Info("request start")
-	w.WriteHeader(404)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(fmt.Sprintf(
-		`{"message":"Page Not Found %s %s"}`, r.Method, r.URL.Path)))
-}
-
-func wrapHandle(ms *Server, handler Handler) httprouter.Handle {
+func wrapHandle(ms *server.Server, handler Handler) httprouter.Handle {
 	// ms.Logger().WithFields(log.Fields{
 	// 	"path": r.URL.Path, "method": r.Method,
 	// }).Info("request start")
@@ -32,7 +22,7 @@ func wrapHandle(ms *Server, handler Handler) httprouter.Handle {
 		ms.Logger().WithFields(log.Fields{
 			"path": r.URL.Path, "method": r.Method,
 		}).Info("request start")
-		sc, body, err := handler(w, r, ps)
+		sc, body, err := handler(ms, w, r, ps)
 		if err != nil {
 			w.WriteHeader(sc)
 			w.Write([]byte(fmt.Sprintf(
