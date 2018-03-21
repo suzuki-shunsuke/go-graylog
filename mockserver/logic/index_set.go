@@ -8,10 +8,12 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/validator"
 )
 
+// HasIndexSet
 func (ms *Server) HasIndexSet(id string) (bool, error) {
 	return ms.store.HasIndexSet(id)
 }
 
+// GetIndexSet returns an index set.
 func (ms *Server) GetIndexSet(id string) (*graylog.IndexSet, error) {
 	return ms.store.GetIndexSet(id)
 }
