@@ -3,8 +3,21 @@ package test
 import (
 	"testing"
 
+	"github.com/suzuki-shunsuke/go-graylog"
+	. "github.com/suzuki-shunsuke/go-graylog/mockserver"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
+
+func addDummyStream(server *Server) (*graylog.IndexSet, *graylog.Stream, error) {
+	indexSet := testutil.IndexSet("hoge")
+	if _, err := server.AddIndexSet(indexSet); err != nil {
+		return nil, nil, err
+	}
+	stream := testutil.Stream()
+	stream.IndexSetID = indexSet.ID
+	_, err := server.AddStream(stream)
+	return indexSet, stream, err
+}
 
 func TestGetStreamRules(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()

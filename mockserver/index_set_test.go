@@ -3,6 +3,7 @@ package mockserver_test
 import (
 	"bytes"
 	"net/http"
+	"reflect"
 	"testing"
 
 	"github.com/suzuki-shunsuke/go-graylog/test"
@@ -99,23 +100,147 @@ func TestServerUpdateIndexSet(t *testing.T) {
 }
 
 func TestGetIndexSets(t *testing.T) {
-	test.TestGetIndexSets(t)
+	server, client, err := testutil.GetServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	indexSets, _, _, err := client.GetIndexSets(0, 0)
+	if err != nil {
+		t.Fatal("Failed to GetIndexSets", err)
+	}
+	if indexSets == nil {
+		t.Fatal("indexSets == nil")
+	}
+	if len(indexSets) != 1 {
+		t.Fatalf("len(indexSets) == %d, wanted %d", len(indexSets), 1)
+	}
 }
 
 func TestGetIndexSet(t *testing.T) {
-	test.TestGetIndexSet(t)
+	server, client, err := testutil.GetServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+
+	is := testutil.IndexSet("hoge")
+	if _, err := server.AddIndexSet(is); err != nil {
+		t.Fatal(err)
+	}
+	act, _, err := client.GetIndexSet(is.ID)
+	if err != nil {
+		t.Fatal("Failed to GetIndexSet", err)
+	}
+	if !reflect.DeepEqual(*act, *is) {
+		t.Fatalf("client.GetIndexSet() == %v, wanted %v", act, is)
+	}
+	if _, _, err := client.GetIndexSet(""); err == nil {
+		t.Fatal("index set id is required")
+	}
+	if _, _, err := client.GetIndexSet("h"); err == nil {
+		t.Fatal(`no index set whose id is "h"`)
+	}
 }
 
 func TestCreateIndexSet(t *testing.T) {
-	test.TestCreateIndexSet(t)
+	server, client, err := testutil.GetServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	exp := testutil.IndexSet("hoge")
+	if _, err := client.CreateIndexSet(exp); err != nil {
+		t.Fatal("Failed to CreateIndexSet", err)
+	}
+	if exp.ID == "" {
+		t.Fatal("IndexSet's id is empty")
+	}
+	exp.IndexPrefix = "fuga"
+	act := *exp
+	exp.Title = ""
+	if _, err := client.CreateIndexSet(exp); err == nil {
+		t.Fatal("title is required")
+	}
+	exp.Title = act.Title
+	exp.IndexPrefix = ""
+	if _, err := client.CreateIndexSet(exp); err == nil {
+		t.Fatal("indexPrefix is required")
+	}
+	exp.IndexPrefix = "fuga"
+	exp.RotationStrategyClass = ""
+	if _, err := client.CreateIndexSet(exp); err == nil {
+		t.Fatal("rotationStrategyClass is required")
+	}
+	exp.RotationStrategyClass = act.RotationStrategyClass
+	exp.RotationStrategy = nil
+	if _, err := client.CreateIndexSet(exp); err == nil {
+		t.Fatal("rotationStrategy is required")
+	}
+	if _, err := client.CreateIndexSet(nil); err == nil {
+		t.Fatal("index set is nil")
+	}
 }
 
 func TestUpdateIndexSet(t *testing.T) {
-	test.TestUpdateIndexSet(t)
+	server, client, err := testutil.GetServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	is := testutil.IndexSet("fuga")
+	if _, err := server.AddIndexSet(is); err != nil {
+		t.Fatal(err)
+	}
+	is.Description = "changed!"
+
+	if _, err := client.UpdateIndexSet(is); err != nil {
+		t.Fatal("UpdateIndexSet is failure", err)
+	}
+	is.ID = ""
+	if _, err := client.UpdateIndexSet(is); err == nil {
+		t.Fatal("index set id is required")
+	}
+	is.ID = "h"
+	if _, err := client.UpdateIndexSet(is); err == nil {
+		t.Fatal(`no index set whose id is "h"`)
+	}
+	is.Title = ""
+	if _, err := client.UpdateIndexSet(is); err == nil {
+		t.Fatal("title is required")
+	}
+	if _, err := client.UpdateIndexSet(nil); err == nil {
+		t.Fatal("index set is nil")
+	}
 }
 
 func TestDeleteIndexSet(t *testing.T) {
-	test.TestDeleteIndexSet(t)
+	server, client, err := testutil.GetServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	indexSets, err := server.GetIndexSets()
+	if err != nil {
+		t.Fatal(err)
+	}
+	indexSet := indexSets[0]
+	if _, err = client.DeleteIndexSet(indexSet.ID); err == nil {
+		t.Fatal("default index set should not be deleted")
+	}
+	is := testutil.IndexSet("hoge")
+	if _, err := server.AddIndexSet(is); err != nil {
+		t.Fatal(err)
+	}
+	if _, err = client.DeleteIndexSet(is.ID); err != nil {
+		t.Fatal("Failed to DeleteIndexSet", err)
+	}
+	if _, err = client.DeleteIndexSet(""); err == nil {
+		t.Fatal("index set id is required")
+	}
+	if _, err = client.DeleteIndexSet("h"); err == nil {
+		t.Fatal(`no index set whose id is "h"`)
+	}
 }
 
 func TestSetDefaultIndexSet(t *testing.T) {
