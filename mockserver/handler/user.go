@@ -8,6 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
+	"github.com/suzuki-shunsuke/go-set"
 )
 
 // POST /users Create a new user account.
@@ -15,10 +16,10 @@ func HandleCreateUser(
 	u *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	requiredFields := []string{
-		"username", "email", "permissions", "full_name", "password"}
-	allowedFields := []string{
-		"startpage", "timezone", "session_timeout_ms", "roles"}
+	requiredFields := set.NewStrSet(
+		"username", "email", "permissions", "full_name", "password")
+	allowedFields := set.NewStrSet(
+		"startpage", "timezone", "session_timeout_ms", "roles")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if err != nil {
 		return sc, nil, err
@@ -68,8 +69,8 @@ func HandleUpdateUser(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// required fields is nil
-	acceptedFields := []string{
-		"email", "permissions", "full_name", "password"}
+	acceptedFields := set.NewStrSet(
+		"email", "permissions", "full_name", "password")
 	body, sc, err := validateRequestBody(r.Body, nil, nil, acceptedFields)
 	if err != nil {
 		return sc, nil, err

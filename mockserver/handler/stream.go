@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
+	"github.com/suzuki-shunsuke/go-set"
 )
 
 // GET /streams Get a list of all streams
@@ -33,10 +34,10 @@ func HandleCreateStream(
 	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	requiredFields := []string{"title", "index_set_id"}
-	allowedFields := []string{
+	requiredFields := set.NewStrSet("title", "index_set_id")
+	allowedFields := set.NewStrSet(
 		"rules", "description", "content_pack",
-		"matching_type", "remove_matches_from_default_stream"}
+		"matching_type", "remove_matches_from_default_stream")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if err != nil {
 		return sc, nil, err

@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
+	"github.com/suzuki-shunsuke/go-set"
 )
 
 // GET /system/inputs/{inputID} Get information of a single input on this node
@@ -25,8 +26,8 @@ func HandleUpdateInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
-	requiredFields := []string{"title", "type", "configuration"}
-	allowedFields := []string{"global", "node"}
+	requiredFields := set.NewStrSet("title", "type", "configuration")
+	allowedFields := set.NewStrSet("global", "node")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if err != nil {
 		return sc, nil, err
@@ -70,8 +71,8 @@ func HandleCreateInput(
 	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	requiredFields := []string{"title", "type", "configuration"}
-	allowedFields := []string{"global", "node"}
+	requiredFields := set.NewStrSet("title", "type", "configuration")
+	allowedFields := set.NewStrSet("global", "node")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if err != nil {
 		return sc, nil, err

@@ -8,6 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
+	"github.com/suzuki-shunsuke/go-set"
 )
 
 func HandleGetStreamRules(
@@ -38,9 +39,9 @@ func HandleCreateStreamRule(
 		return 404, nil, fmt.Errorf("stream <%s> not found!", streamID)
 	}
 
-	requiredFields := []string{"value", "field"}
-	allowedFields := []string{
-		"value", "type", "description", "inverted", "field"}
+	requiredFields := set.NewStrSet("value", "field")
+	allowedFields := set.NewStrSet(
+		"value", "type", "description", "inverted", "field")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if sc != 200 {
 		return sc, nil, err
@@ -83,9 +84,9 @@ func HandleUpdateStreamRule(
 	streamID := ps.ByName("streamID")
 	ruleID := ps.ByName("streamRuleID")
 
-	requiredFields := []string{"value", "field"}
-	allowedFields := []string{
-		"value", "type", "description", "inverted", "field"}
+	requiredFields := set.NewStrSet("value", "field")
+	allowedFields := set.NewStrSet(
+		"value", "type", "description", "inverted", "field")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if sc != 200 {
 		return sc, nil, err

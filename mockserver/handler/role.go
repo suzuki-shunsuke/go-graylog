@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
+	"github.com/suzuki-shunsuke/go-set"
 )
 
 // GET /roles/{rolename} Retrieve permissions for a single role
@@ -27,8 +28,8 @@ func HandleUpdateRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
-	requiredFields := []string{"name", "permissions"}
-	allowedFields := []string{"description", "read_only"}
+	requiredFields := set.NewStrSet("name", "permissions")
+	allowedFields := set.NewStrSet("description", "read_only")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if err != nil {
 		return sc, nil, err
@@ -68,8 +69,8 @@ func HandleCreateRole(
 	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	requiredFields := []string{"name", "permissions"}
-	allowedFields := []string{"description", "read_only"}
+	requiredFields := set.NewStrSet("name", "permissions")
+	allowedFields := set.NewStrSet("description", "read_only")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if err != nil {
 		return sc, nil, err

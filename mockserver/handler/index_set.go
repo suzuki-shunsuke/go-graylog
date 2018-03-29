@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
+	"github.com/suzuki-shunsuke/go-set"
 )
 
 // GET /system/indices/index_sets Get a list of all index sets
@@ -44,15 +45,15 @@ func HandleCreateIndexSet(
 	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
-	requiredFields := []string{
+	requiredFields := set.NewStrSet(
 		"title", "index_prefix", "rotation_strategy_class", "rotation_strategy",
 		"retention_strategy_class", "retention_strategy", "creation_date",
-		"index_analyzer", "shards", "index_optimization_max_num_segments"}
-	allowedFields := []string{
+		"index_analyzer", "shards", "index_optimization_max_num_segments")
+	allowedFields := set.NewStrSet(
 		"description", "replicas", "index_optimization_disabled",
-		"writable", "default"}
-	acceptedFields := []string{
-		"description", "replicas", "index_optimization_disabled", "writable"}
+		"writable", "default")
+	acceptedFields := set.NewStrSet(
+		"description", "replicas", "index_optimization_disabled", "writable")
 	body, sc, err := validateRequestBody(
 		r.Body, requiredFields, allowedFields, acceptedFields)
 	if err != nil {
@@ -84,12 +85,12 @@ func HandleUpdateIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// default can't change (ignored)
-	requiredFields := []string{
+	requiredFields := set.NewStrSet(
 		"title", "index_prefix", "rotation_strategy_class", "rotation_strategy",
 		"retention_strategy_class", "retention_strategy", "creation_date",
-		"index_analyzer", "shards", "index_optimization_max_num_segments"}
-	acceptedFields := []string{
-		"description", "replicas", "index_optimization_disabled", "writable"}
+		"index_analyzer", "shards", "index_optimization_max_num_segments")
+	acceptedFields := set.NewStrSet(
+		"description", "replicas", "index_optimization_disabled", "writable")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, nil, acceptedFields)
 	if err != nil {
 		return sc, nil, err
