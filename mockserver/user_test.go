@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
+	"github.com/suzuki-shunsuke/go-set"
 )
 
 func TestServerHandleCreateUser(t *testing.T) {
@@ -20,6 +21,7 @@ func TestServerHandleCreateUser(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	req.SetBasicAuth(client.Name(), client.Password())
 	hc := &http.Client{}
 	resp, err := hc.Do(req)
 	if err != nil {
@@ -42,6 +44,7 @@ func TestServerHandleUpdateUser(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	req.SetBasicAuth(client.Name(), client.Password())
 	hc := &http.Client{}
 	resp, err := hc.Do(req)
 	if err != nil {
@@ -74,7 +77,7 @@ func TestCreateUser(t *testing.T) {
 	}
 	user.Username = userName
 	roleName := "no roles"
-	user.Roles = []string{roleName}
+	user.Roles = set.NewStrSet(roleName)
 	if _, err := client.CreateUser(user); err == nil {
 		t.Fatalf("No role found with name %s", roleName)
 	}

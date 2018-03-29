@@ -11,7 +11,7 @@ import (
 
 // GET /system/indices/index_sets Get a list of all index sets
 func HandleGetIndexSets(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.GetIndexSets()
@@ -28,12 +28,12 @@ func HandleGetIndexSets(
 
 // GET /system/indices/index_sets/{id} Get index set
 func HandleGetIndexSet(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")
 	if id == "stats" {
-		return HandleGetAllIndexSetsStats(ms, w, r, ps)
+		return HandleGetAllIndexSetsStats(user, ms, w, r, ps)
 	}
 	is, sc, err := ms.GetIndexSet(id)
 	return sc, is, err
@@ -41,7 +41,7 @@ func HandleGetIndexSet(
 
 // POST /system/indices/index_sets Create index set
 func HandleCreateIndexSet(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{
@@ -80,7 +80,7 @@ func HandleCreateIndexSet(
 
 // PUT /system/indices/index_sets/{id} Update index set
 func HandleUpdateIndexSet(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// default can't change (ignored)
@@ -115,7 +115,7 @@ func HandleUpdateIndexSet(
 
 // DELETE /system/indices/index_sets/{id} Delete index set
 func HandleDeleteIndexSet(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")
@@ -128,7 +128,7 @@ func HandleDeleteIndexSet(
 
 // PUT /system/indices/index_sets/{id}/default Set default index set
 func HandleSetDefaultIndexSet(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	is, sc, err := ms.SetDefaultIndexSet(ps.ByName("indexSetID"))

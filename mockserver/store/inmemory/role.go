@@ -1,6 +1,8 @@
 package inmemory
 
 import (
+	"fmt"
+
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
@@ -49,4 +51,32 @@ func (store *InMemoryStore) UpdateRole(name string, role *graylog.Role) error {
 func (store *InMemoryStore) DeleteRole(name string) error {
 	delete(store.roles, name)
 	return nil
+}
+
+// AuthRolesRead
+func (store *InMemoryStore) AuthRolesRead(user *graylog.User, roleName string) (bool, error) {
+	perm := fmt.Sprintf("users:read:%s", roleName)
+	// check user permissions
+	if user.Permissions != nil {
+		if user.Permissions.HasAny("*", "users:read", perm) {
+			return true, nil
+		}
+	}
+	// check user roles
+	if user.Roles == nil {
+		return false, nil
+	}
+	for k, _ := range user.Roles.ToMap(false) {
+		role, err := store.GetRole(k)
+		if err != nil {
+			return false, err
+		}
+		if role.Permissions == nil {
+			continue
+		}
+		if role.Permissions.HasAny("*", "users:read", perm) {
+			return true, nil
+		}
+	}
+	return false, nil
 }

@@ -7,6 +7,7 @@ import (
 
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
+	"github.com/suzuki-shunsuke/go-set"
 )
 
 func TestServerHandleCreateRole(t *testing.T) {
@@ -21,6 +22,7 @@ func TestServerHandleCreateRole(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	req.SetBasicAuth(client.Name(), client.Password())
 	hc := &http.Client{}
 	resp, err := hc.Do(req)
 	if err != nil {
@@ -45,6 +47,7 @@ func TestServerHandleUpdateRole(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	req.SetBasicAuth(client.Name(), client.Password())
 	hc := &http.Client{}
 	resp, err := hc.Do(req)
 	if err != nil {
@@ -63,7 +66,7 @@ func TestCreateRole(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	role := &graylog.Role{Name: "foo", Permissions: []string{"*"}}
+	role := &graylog.Role{Name: "foo", Permissions: set.NewStrSet("*")}
 	if _, err := client.CreateRole(role); err != nil {
 		t.Fatal("Failed to CreateRole", err)
 	}

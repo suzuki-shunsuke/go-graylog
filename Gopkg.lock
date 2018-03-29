@@ -41,6 +41,12 @@
   version = "v1.0.4"
 
 [[projects]]
+  name = "github.com/suzuki-shunsuke/go-set"
+  packages = ["."]
+  revision = "360bd68baaa884d620b4f0f4ad5ff42c16f6ac1f"
+  version = "v2.3.0"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
@@ -73,6 +79,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c29a80ed21ead77c59bc8ea8b132c3425809ce60b5e34af62108627db98822ef"
+  inputs-digest = "7bf45f731d7e0ba32718f3c8fcfc9f0f50b8ed1ffb97c5a39a2553a4be48153b"
   solver-name = "gps-cdcl"
   solver-version = 1

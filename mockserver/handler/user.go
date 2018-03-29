@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -11,7 +12,7 @@ import (
 
 // POST /users Create a new user account.
 func HandleCreateUser(
-	ms *logic.Server,
+	u *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{
@@ -32,6 +33,7 @@ func HandleCreateUser(
 	}
 
 	if sc, err := ms.AddUser(user); err != nil {
+		fmt.Println(sc, err)
 		return sc, nil, err
 	}
 	ms.SafeSave()
@@ -40,7 +42,7 @@ func HandleCreateUser(
 
 // GET /users List all users
 func HandleGetUsers(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	users, sc, err := ms.GetUsers()
@@ -52,7 +54,7 @@ func HandleGetUsers(
 
 // GET /users/{username} Get user details
 func HandleGetUser(
-	ms *logic.Server,
+	u *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("username")
@@ -62,7 +64,7 @@ func HandleGetUser(
 
 // PUT /users/{username} Modify user details.
 func HandleUpdateUser(
-	ms *logic.Server,
+	u *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// required fields is nil
@@ -74,7 +76,7 @@ func HandleUpdateUser(
 	}
 
 	user := &graylog.User{Username: ps.ByName("username")}
-	if err := msDecode(body, &user); err != nil {
+	if err := msDecode(body, user); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as User")
@@ -90,7 +92,7 @@ func HandleUpdateUser(
 
 // DELETE /users/{username} Removes a user account
 func HandleDeleteUser(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("username")

@@ -19,6 +19,7 @@ type InMemoryStore struct {
 	streams           map[string]graylog.Stream                `json:"streams"`
 	streamRules       map[string]map[string]graylog.StreamRule `json:"stream_rules"`
 	dataPath          string                                   `json:"-"`
+	tokens            map[string]string                        `json:"tokens"`
 }
 
 func NewStore(dataPath string) store.Store {
@@ -30,6 +31,7 @@ func NewStore(dataPath string) store.Store {
 		indexSetStats: map[string]graylog.IndexSetStats{},
 		streams:       map[string]graylog.Stream{},
 		streamRules:   map[string]map[string]graylog.StreamRule{},
+		tokens:        map[string]string{},
 		dataPath:      dataPath,
 	}
 }

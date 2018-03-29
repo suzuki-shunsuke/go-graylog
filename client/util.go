@@ -61,9 +61,11 @@ func (client *Client) callAPI(
 		return ei, errors.Wrap(
 			err, fmt.Sprintf("failed to call Graylog API: %s %s", method, endpoint))
 	}
+	defer resp.Body.Close()
 	ei.Response = resp
 
 	if resp.StatusCode >= 400 {
+		fmt.Println(resp.StatusCode, method, endpoint)
 		if err := json.NewDecoder(resp.Body).Decode(ei); err != nil {
 			return ei, errors.Wrap(
 				err, "failed to parse response body as ErrorInfo")

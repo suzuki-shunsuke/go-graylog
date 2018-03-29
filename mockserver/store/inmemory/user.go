@@ -13,6 +13,7 @@ func (store *InMemoryStore) HasUser(username string) (bool, error) {
 }
 
 // GetUser returns a user.
+// If the user is not found, this method returns nil and doesn't raise an error.
 func (store *InMemoryStore) GetUser(username string) (*graylog.User, error) {
 	s, ok := store.users[username]
 	if ok {
@@ -68,4 +69,14 @@ func (store *InMemoryStore) UpdateUser(user *graylog.User) error {
 func (store *InMemoryStore) DeleteUser(name string) error {
 	delete(store.users, name)
 	return nil
+}
+
+// GetUserByAccessToken returns a user name.
+// If the user is not found, this method returns nil and doesn't raise an error.
+func (store *InMemoryStore) GetUserByAccessToken(token string) (*graylog.User, error) {
+	userName, ok := store.tokens[token]
+	if !ok {
+		return nil, nil
+	}
+	return store.GetUser(userName)
 }

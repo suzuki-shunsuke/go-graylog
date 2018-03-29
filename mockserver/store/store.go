@@ -18,6 +18,7 @@ type Store interface {
 	UpdateRole(name string, role *graylog.Role) error
 	DeleteRole(name string) error
 	HasRole(name string) (bool, error)
+	AuthRolesRead(user *graylog.User, roleName string) (bool, error)
 
 	AddUser(user *graylog.User) error
 	GetUser(username string) (*graylog.User, error)
@@ -25,6 +26,7 @@ type Store interface {
 	UpdateUser(user *graylog.User) error
 	DeleteUser(name string) error
 	HasUser(username string) (bool, error)
+	GetUserByAccessToken(token string) (*graylog.User, error)
 
 	AddInput(input *graylog.Input) error
 	GetInput(id string) (*graylog.Input, error)

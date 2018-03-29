@@ -7,9 +7,32 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/validator"
 )
 
+// authRolesRead
+func (ms *Server) authRolesRead(user *graylog.User, name string) (int, error) {
+	if user == nil {
+		return 200, nil
+	}
+	ok, err := ms.store.AuthRolesRead(user, name)
+	if err != nil {
+		return 500, err
+	}
+	if ok {
+		return 200, nil
+	}
+	return 403, fmt.Errorf("authorization failure")
+}
+
 // HasRole
-func (ms *Server) HasRole(name string) (bool, error) {
-	return ms.store.HasRole(name)
+func (ms *Server) HasRole(user *graylog.User, name string) (bool, int, error) {
+	sc, err := ms.authRolesRead(user, name)
+	if err != nil {
+		return false, sc, err
+	}
+	ok, err := ms.store.HasRole(name)
+	if err != nil {
+		return false, 500, err
+	}
+	return ok, 200, nil
 }
 
 // GetRole returns a Role.
@@ -30,9 +53,9 @@ func (ms *Server) AddRole(role *graylog.Role) (int, error) {
 	if err := validator.CreateValidator.Struct(role); err != nil {
 		return 400, err
 	}
-	ok, err := ms.HasRole(role.Name)
+	ok, sc, err := ms.HasRole(nil, role.Name)
 	if err != nil {
-		return 500, err
+		return sc, err
 	}
 	if ok {
 		return 400, fmt.Errorf("Role %s already exists.", role.Name)
@@ -48,17 +71,17 @@ func (ms *Server) UpdateRole(name string, role *graylog.Role) (int, error) {
 	if err := validator.UpdateValidator.Struct(role); err != nil {
 		return 400, err
 	}
-	ok, err := ms.HasRole(name)
+	ok, sc, err := ms.HasRole(nil, name)
 	if err != nil {
-		return 500, err
+		return sc, err
 	}
 	if !ok {
 		return 404, fmt.Errorf("No role found with name %s", name)
 	}
 	if name != role.Name {
-		ok, err := ms.HasRole(role.Name)
+		ok, sc, err := ms.HasRole(nil, role.Name)
 		if err != nil {
-			return 500, err
+			return sc, err
 		}
 		if ok {
 			return 400, fmt.Errorf("The role %s has already existed.", role.Name)
@@ -72,9 +95,9 @@ func (ms *Server) UpdateRole(name string, role *graylog.Role) (int, error) {
 
 // DeleteRole deletes a role.
 func (ms *Server) DeleteRole(name string) (int, error) {
-	ok, err := ms.HasRole(name)
+	ok, sc, err := ms.HasRole(nil, name)
 	if err != nil {
-		return 500, err
+		return sc, err
 	}
 	if !ok {
 		return 404, fmt.Errorf("No role found with name %s", name)

@@ -2,13 +2,14 @@ package testutil
 
 import (
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-set"
 )
 
 func Role() *graylog.Role {
 	return &graylog.Role{
 		Name:        "Writer",
 		Description: "writer",
-		Permissions: []string{"*"},
+		Permissions: set.NewStrSet("*"),
 		ReadOnly:    true}
 }
 
@@ -18,7 +19,7 @@ func User() *graylog.User {
 		Email:       "foo@example.com",
 		FullName:    "foo bar",
 		Password:    "password",
-		Permissions: []string{"*"},
+		Permissions: set.NewStrSet("*"),
 	}
 }
 
@@ -29,7 +30,7 @@ func DummyAdmin() *graylog.User {
 		Email:       "hoge@example.com",
 		FullName:    "Administrator",
 		Password:    "password",
-		Permissions: []string{"*"},
+		Permissions: set.NewStrSet("*"),
 		Preferences: &graylog.Preferences{
 			UpdateUnfocussed:  false,
 			EnableSmartSearch: true,
@@ -38,7 +39,7 @@ func DummyAdmin() *graylog.User {
 		SessionTimeoutMs: 28800000,
 		External:         false,
 		Startpage:        nil,
-		Roles:            []string{"Admin"},
+		Roles:            set.NewStrSet("Admin"),
 		ReadOnly:         true,
 		SessionActive:    true,
 		LastActivity:     "2018-02-21T07:35:45.926+0000",

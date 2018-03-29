@@ -14,13 +14,14 @@ import (
 )
 
 func testUpdateStreamStatusCode(
-	t *testing.T, endpoint string, body io.Reader, statusCode int,
+	endpoint, name, password string, body io.Reader, statusCode int,
 ) error {
 	req, err := http.NewRequest(
 		http.MethodPut, endpoint, body)
 	if err != nil {
 		return err
 	}
+	req.SetBasicAuth(name, password)
 	hc := &http.Client{}
 	resp, err := hc.Do(req)
 	if err != nil {
@@ -50,32 +51,32 @@ func TestServerHandleUpdateStream(t *testing.T) {
 	endpoint := client.Endpoints.Stream(stream.ID)
 
 	body := bytes.NewBuffer([]byte("hoge"))
-	if err := testUpdateStreamStatusCode(t, endpoint, body, 400); err != nil {
+	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
 		t.Fatal(err)
 	}
 
 	body = bytes.NewBuffer([]byte(`{"title": 0}`))
-	if err := testUpdateStreamStatusCode(t, endpoint, body, 400); err != nil {
+	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
 		t.Fatal(err)
 	}
 
 	body = bytes.NewBuffer([]byte(`{"description": 0}`))
-	if err := testUpdateStreamStatusCode(t, endpoint, body, 400); err != nil {
+	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
 		t.Fatal(err)
 	}
 
 	body = bytes.NewBuffer([]byte(`{"matching_type": 0}`))
-	if err := testUpdateStreamStatusCode(t, endpoint, body, 400); err != nil {
+	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
 		t.Fatal(err)
 	}
 
 	body = bytes.NewBuffer([]byte(`{"remove_matches_from_default_stream": 0}`))
-	if err := testUpdateStreamStatusCode(t, endpoint, body, 400); err != nil {
+	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
 		t.Fatal(err)
 	}
 
 	body = bytes.NewBuffer([]byte(`{"index_set_id": 0}`))
-	if err := testUpdateStreamStatusCode(t, endpoint, body, 400); err != nil {
+	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -92,6 +93,7 @@ func TestServerHandleCreateStream(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	req.SetBasicAuth(client.Name(), client.Password())
 	hc := &http.Client{}
 	resp, err := hc.Do(req)
 	if err != nil {

@@ -2,13 +2,14 @@ package seed
 
 import (
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-set"
 )
 
 func Role() *graylog.Role {
 	return &graylog.Role{
 		Name:        "Admin",
 		Description: "Grants all permissions for Graylog administrators (built-in)",
-		Permissions: []string{"*"},
+		Permissions: set.NewStrSet("*"),
 		ReadOnly:    true}
 }
 
@@ -18,7 +19,7 @@ func User() *graylog.User {
 		Email:       "hoge@example.com",
 		FullName:    "Administrator",
 		Password:    "password",
-		Permissions: []string{"*"},
+		Permissions: set.NewStrSet("*"),
 	}
 }
 

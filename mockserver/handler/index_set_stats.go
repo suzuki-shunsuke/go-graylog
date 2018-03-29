@@ -5,12 +5,13 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
 // GET /system/indices/index_sets/{id}/stats Get index set statistics
 func HandleGetIndexSetStats(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")
@@ -26,7 +27,7 @@ func HandleGetIndexSetStats(
 
 // GET /system/indices/index_sets/stats Get stats of all index sets
 func HandleGetAllIndexSetsStats(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	s, err := ms.GetTotalIndexSetsStats()

@@ -34,11 +34,11 @@ func (ms *Server) GetUsers() ([]graylog.User, int, error) {
 }
 
 func (ms *Server) checkUserRoles(roles []string) (int, error) {
-	if roles != nil && len(roles) != 0 {
+	if len(roles) != 0 {
 		for _, roleName := range roles {
-			ok, err := ms.HasRole(roleName)
+			ok, sc, err := ms.HasRole(nil, roleName)
 			if err != nil {
-				return 500, err
+				return sc, err
 			}
 			if !ok {
 				// unfortunately, graylog 2.4.3-1 returns 500 error
@@ -68,8 +68,10 @@ func (ms *Server) AddUser(user *graylog.User) (int, error) {
 	}
 
 	// check role exists
-	if sc, err := ms.checkUserRoles(user.Roles); err != nil {
-		return sc, err
+	if user.Roles != nil {
+		if sc, err := ms.checkUserRoles(user.Roles.ToList()); err != nil {
+			return sc, err
+		}
 	}
 
 	// generate ID
@@ -100,8 +102,10 @@ func (ms *Server) UpdateUser(user *graylog.User) (int, error) {
 	}
 
 	// check role exists
-	if sc, err := ms.checkUserRoles(user.Roles); err != nil {
-		return sc, err
+	if user.Roles != nil {
+		if sc, err := ms.checkUserRoles(user.Roles.ToList()); err != nil {
+			return sc, err
+		}
 	}
 
 	// update

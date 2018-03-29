@@ -1,13 +1,17 @@
 package graylog
 
+import (
+	"github.com/suzuki-shunsuke/go-set"
+)
+
 // User represents a user.
 type User struct {
 	// ex. "local:admin"
-	Username    string   `json:"username,omitempty" v-create:"required" v-update:"required"`
-	Email       string   `json:"email,omitempty" v-create:"required"`
-	Permissions []string `json:"permissions,omitempty" v-create:"required"`
-	FullName    string   `json:"full_name,omitempty" v-create:"required"`
-	Password    string   `json:"password,omitempty" v-create:"required"`
+	Username    string      `json:"username,omitempty" v-create:"required" v-update:"required"`
+	Email       string      `json:"email,omitempty" v-create:"required"`
+	Permissions *set.StrSet `json:"permissions,omitempty" v-create:"required"`
+	FullName    string      `json:"full_name,omitempty" v-create:"required"`
+	Password    string      `json:"password,omitempty" v-create:"required"`
 
 	ID          string       `json:"id,omitempty"`
 	Preferences *Preferences `json:"preferences,omitempty"`
@@ -18,9 +22,9 @@ type User struct {
 	External         bool       `json:"external,omitempty"`
 	Startpage        *Startpage `json:"startpage,omitempty"`
 	// ex. ["Admin"]
-	Roles         []string `json:"roles,omitempty"`
-	ReadOnly      bool     `json:"read_only,omitempty"`
-	SessionActive bool     `json:"session_active,omitempty"`
+	Roles         *set.StrSet `json:"roles,omitempty"`
+	ReadOnly      bool        `json:"read_only,omitempty"`
+	SessionActive bool        `json:"session_active,omitempty"`
 	// ex. "2018-03-02T06:32:01.841+0000"
 	LastActivity string `json:"last_activity,omitempty"`
 	// ex. "192.168.192.1"

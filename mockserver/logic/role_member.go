@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-set"
 )
 
 // RoleMembers returns members of a given role.
@@ -17,7 +18,7 @@ func (ms *Server) RoleMembers(name string) ([]graylog.User, int, error) {
 		if user.Roles == nil {
 			continue
 		}
-		for _, roleName := range user.Roles {
+		for roleName, _ := range user.Roles.ToMap(false) {
 			if roleName == name {
 				users = append(users, user)
 				break
@@ -28,12 +29,10 @@ func (ms *Server) RoleMembers(name string) ([]graylog.User, int, error) {
 }
 
 // AddUserToRole adds a user to a role.
-func (ms *Server) AddUserToRole(
-	userName, roleName string,
-) (int, error) {
-	ok, err := ms.HasRole(roleName)
+func (ms *Server) AddUserToRole(userName, roleName string) (int, error) {
+	ok, sc, err := ms.HasRole(nil, roleName)
 	if err != nil {
-		return 500, err
+		return sc, err
 	}
 	if !ok {
 		return 404, fmt.Errorf("no role found with name %s", roleName)
@@ -43,7 +42,11 @@ func (ms *Server) AddUserToRole(
 	if err != nil {
 		return sc, err
 	}
-	user.Roles = addToStringArray(user.Roles, roleName)
+	if user.Roles == nil {
+		user.Roles = set.NewStrSet(roleName)
+	} else {
+		user.Roles.Add(roleName)
+	}
 	return ms.UpdateUser(user)
 }
 
@@ -51,9 +54,9 @@ func (ms *Server) AddUserToRole(
 func (ms *Server) RemoveUserFromRole(
 	userName, roleName string,
 ) (int, error) {
-	ok, err := ms.HasRole(roleName)
+	ok, sc, err := ms.HasRole(nil, roleName)
 	if err != nil {
-		return 500, err
+		return sc, err
 	}
 	if !ok {
 		return 404, fmt.Errorf(`no role found with name "%s"`, roleName)
@@ -63,6 +66,8 @@ func (ms *Server) RemoveUserFromRole(
 	if err != nil {
 		return sc, err
 	}
-	user.Roles = removeFromStringArray(user.Roles, roleName)
+	if user.Roles != nil {
+		user.Roles.Remove(roleName)
+	}
 	return ms.UpdateUser(user)
 }

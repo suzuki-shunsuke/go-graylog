@@ -11,7 +11,7 @@ import (
 
 // GET /roles/{rolename} Retrieve permissions for a single role
 func HandleGetRole(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -23,7 +23,7 @@ func HandleGetRole(
 
 // PUT /roles/{rolename} Update an existing role
 func HandleUpdateRole(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -51,7 +51,7 @@ func HandleUpdateRole(
 
 // DELETE /roles/{rolename} Remove the named role and dissociate any users from it
 func HandleDeleteRole(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -65,7 +65,7 @@ func HandleDeleteRole(
 
 // POST /roles Create a new role
 func HandleCreateRole(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{"name", "permissions"}
@@ -79,7 +79,7 @@ func HandleCreateRole(
 	if err := msDecode(body, &role); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
-		}).Info("Failed to parse request body as Role")
+		}).Warn("Failed to parse request body as Role")
 		return 400, nil, err
 	}
 
@@ -92,7 +92,8 @@ func HandleCreateRole(
 
 // GET /roles List all roles
 func HandleGetRoles(
-	ms *logic.Server, w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+	user *graylog.User, ms *logic.Server,
+	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, sc, err := ms.GetRoles()
 	if err != nil {

@@ -26,6 +26,7 @@ func TestServerHandleUpdateIndexSet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	req.SetBasicAuth(client.Name(), client.Password())
 	hc := &http.Client{}
 	resp, err := hc.Do(req)
 	if err != nil {
@@ -48,6 +49,7 @@ func TestServerHandleCreateIndexSet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	req.SetBasicAuth(client.Name(), client.Password())
 	hc := &http.Client{}
 	resp, err := hc.Do(req)
 	if err != nil {

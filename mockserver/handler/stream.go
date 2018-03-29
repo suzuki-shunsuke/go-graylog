@@ -13,7 +13,7 @@ import (
 
 // GET /streams Get a list of all streams
 func HandleGetStreams(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.GetStreams()
@@ -30,7 +30,7 @@ func HandleGetStreams(
 
 // POST /streams Create index set
 func HandleCreateStream(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	requiredFields := []string{"title", "index_set_id"}
@@ -60,7 +60,7 @@ func HandleCreateStream(
 
 // GET /streams/enabled Get a list of all enabled streams
 func HandleGetEnabledStreams(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.EnabledStreamList()
@@ -76,12 +76,12 @@ func HandleGetEnabledStreams(
 
 // GET /streams/{streamID} Get a single stream
 func HandleGetStream(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
 	if id == "enabled" {
-		return HandleGetEnabledStreams(ms, w, r, ps)
+		return HandleGetEnabledStreams(user, ms, w, r, ps)
 	}
 	stream, err := ms.GetStream(id)
 	if err != nil {
@@ -98,7 +98,7 @@ func HandleGetStream(
 
 // PUT /streams/{streamID} Update a stream
 func HandleUpdateStream(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
@@ -164,7 +164,7 @@ func HandleUpdateStream(
 
 // DELETE /streams/{streamID} Delete a stream
 func HandleDeleteStream(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
@@ -186,7 +186,7 @@ func HandleDeleteStream(
 
 // POST /streams/{streamID}/pause Pause a stream
 func HandlePauseStream(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
@@ -205,7 +205,7 @@ func HandlePauseStream(
 }
 
 func HandleResumeStream(
-	ms *logic.Server,
+	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")

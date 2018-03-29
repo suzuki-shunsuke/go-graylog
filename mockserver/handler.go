@@ -2,31 +2,65 @@ package mockserver
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
+	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
-type Handler func(ms *logic.Server, w http.ResponseWriter, r *http.Request, ps httprouter.Params) (int, interface{}, error)
+type Handler func(user *graylog.User, ms *logic.Server, w http.ResponseWriter, r *http.Request, ps httprouter.Params) (int, interface{}, error)
 
 func wrapHandle(ms *logic.Server, handler Handler) httprouter.Handle {
-	// ms.Logger().WithFields(log.Fields{
-	// 	"path": r.URL.Path, "method": r.Method,
-	// }).Info("request start")
-	// w.Header().Set("Content-Type", "application/json")
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		w.Header().Set("Content-Type", "application/json")
 		ms.Logger().WithFields(log.Fields{
 			"path": r.URL.Path, "method": r.Method,
 		}).Info("request start")
-		sc, body, err := handler(ms, w, r, ps)
+		// authentication
+		var user *graylog.User
+		if ms.GetAuth() {
+			authName, authPass, ok := r.BasicAuth()
+			if !ok {
+				ms.Logger().WithFields(log.Fields{
+					"path": r.URL.Path, "method": r.Method,
+				}).Warn("request basic authentication header is not set")
+				w.WriteHeader(401)
+				return
+			}
+			var (
+				sc  int
+				err error
+			)
+			user, sc, err = ms.Authenticate(authName, authPass)
+			if err != nil {
+				w.WriteHeader(sc)
+				if sc == 401 {
+					return
+				}
+				ae := graylog.NewAPIError(err.Error())
+				b, err := json.Marshal(ae)
+				if err != nil {
+					w.Write([]byte(`{"message":"failed to authenticate"}`))
+					return
+				}
+				w.Write(b)
+				return
+			}
+		}
+
+		sc, body, err := handler(user, ms, w, r, ps)
 		if err != nil {
 			w.WriteHeader(sc)
-			w.Write([]byte(fmt.Sprintf(
-				`{"type": "ApiError", "message": "%s"}`, err.Error())))
+
+			ae := graylog.NewAPIError(err.Error())
+			b, err := json.Marshal(ae)
+			if err != nil {
+				w.Write([]byte(`{"message":"failed to marshal an APIError"}`))
+				return
+			}
+			w.Write(b)
 			return
 		}
 		if body == nil {
