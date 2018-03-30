@@ -8,10 +8,7 @@ import (
 )
 
 // HasRole returns whether the role with given name exists.
-func (ms *Server) HasRole(user *graylog.User, name string) (bool, int, error) {
-	if sc, err := ms.Authorize(user, "roles:read", name); err != nil {
-		return false, sc, err
-	}
+func (ms *Server) HasRole(name string) (bool, int, error) {
 	ok, err := ms.store.HasRole(name)
 	if err != nil {
 		return false, 500, err
@@ -37,7 +34,7 @@ func (ms *Server) AddRole(role *graylog.Role) (int, error) {
 	if err := validator.CreateValidator.Struct(role); err != nil {
 		return 400, err
 	}
-	ok, sc, err := ms.HasRole(nil, role.Name)
+	ok, sc, err := ms.HasRole(role.Name)
 	if err != nil {
 		return sc, err
 	}
@@ -51,14 +48,11 @@ func (ms *Server) AddRole(role *graylog.Role) (int, error) {
 }
 
 // UpdateRole updates a role.
-func (ms *Server) UpdateRole(user *graylog.User, name string, role *graylog.Role) (int, error) {
-	if sc, err := ms.Authorize(user, "roles:edit", name); err != nil {
-		return sc, err
-	}
+func (ms *Server) UpdateRole(name string, role *graylog.Role) (int, error) {
 	if err := validator.UpdateValidator.Struct(role); err != nil {
 		return 400, err
 	}
-	ok, sc, err := ms.HasRole(nil, name)
+	ok, sc, err := ms.HasRole(name)
 	if err != nil {
 		return sc, err
 	}
@@ -66,7 +60,7 @@ func (ms *Server) UpdateRole(user *graylog.User, name string, role *graylog.Role
 		return 404, fmt.Errorf("No role found with name %s", name)
 	}
 	if name != role.Name {
-		ok, sc, err := ms.HasRole(nil, role.Name)
+		ok, sc, err := ms.HasRole(role.Name)
 		if err != nil {
 			return sc, err
 		}
@@ -82,7 +76,7 @@ func (ms *Server) UpdateRole(user *graylog.User, name string, role *graylog.Role
 
 // DeleteRole deletes a role.
 func (ms *Server) DeleteRole(name string) (int, error) {
-	ok, sc, err := ms.HasRole(nil, name)
+	ok, sc, err := ms.HasRole(name)
 	if err != nil {
 		return sc, err
 	}

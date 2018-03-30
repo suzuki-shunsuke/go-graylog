@@ -20,7 +20,7 @@ func HandleRoleMembers(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
-	ok, sc, err := ms.HasRole(user, name)
+	ok, sc, err := ms.HasRole(name)
 	if err != nil {
 		return sc, nil, err
 	}

@@ -36,7 +36,7 @@ func (ms *Server) GetUsers() ([]graylog.User, int, error) {
 func (ms *Server) checkUserRoles(roles []string) (int, error) {
 	if len(roles) != 0 {
 		for _, roleName := range roles {
-			ok, sc, err := ms.HasRole(nil, roleName)
+			ok, sc, err := ms.HasRole(roleName)
 			if err != nil {
 				return sc, err
 			}

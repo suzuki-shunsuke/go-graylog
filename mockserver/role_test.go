@@ -192,7 +192,7 @@ func TestHasRole(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, sc, err := server.HasRole(nobody, "Admin")
+	sc, err := server.Authorize(nobody, "roles:read", "Admin")
 	if err == nil {
 		t.Fatal("nobody should have a permission to read role")
 	}

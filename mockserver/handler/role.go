@@ -43,7 +43,10 @@ func HandleUpdateRole(
 		return 400, nil, err
 	}
 
-	if sc, err := ms.UpdateRole(user, name, role); err != nil {
+	if sc, err := ms.Authorize(user, "roles:edit", name); err != nil {
+		return sc, nil, err
+	}
+	if sc, err := ms.UpdateRole(name, role); err != nil {
 		return sc, nil, err
 	}
 	ms.SafeSave()
@@ -56,6 +59,9 @@ func HandleDeleteRole(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
+	if sc, err := ms.Authorize(user, "roles:delete", name); err != nil {
+		return sc, nil, err
+	}
 	sc, err := ms.DeleteRole(name)
 	if err != nil {
 		return sc, nil, err

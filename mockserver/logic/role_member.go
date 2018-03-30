@@ -30,7 +30,7 @@ func (ms *Server) RoleMembers(name string) ([]graylog.User, int, error) {
 
 // AddUserToRole adds a user to a role.
 func (ms *Server) AddUserToRole(userName, roleName string) (int, error) {
-	ok, sc, err := ms.HasRole(nil, roleName)
+	ok, sc, err := ms.HasRole(roleName)
 	if err != nil {
 		return sc, err
 	}
@@ -54,7 +54,7 @@ func (ms *Server) AddUserToRole(userName, roleName string) (int, error) {
 func (ms *Server) RemoveUserFromRole(
 	userName, roleName string,
 ) (int, error) {
-	ok, sc, err := ms.HasRole(nil, roleName)
+	ok, sc, err := ms.HasRole(roleName)
 	if err != nil {
 		return sc, err
 	}
