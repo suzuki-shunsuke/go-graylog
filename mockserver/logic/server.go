@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"fmt"
 	"net/http/httptest"
 
 	log "github.com/sirupsen/logrus"
@@ -77,4 +78,19 @@ func (ms *Server) SetAuth(authEnabled bool) {
 // GetAuth reruns whether the authentication and authentication are enabled.
 func (ms *Server) GetAuth() bool {
 	return ms.authEnabled
+}
+
+// Authorize
+func (ms *Server) Authorize(user *graylog.User, scope string, args ...string) (int, error) {
+	if user == nil {
+		return 200, nil
+	}
+	ok, err := ms.store.Authorize(user, scope, args...)
+	if err != nil {
+		return 500, err
+	}
+	if ok {
+		return 200, nil
+	}
+	return 403, fmt.Errorf("authorization failure")
 }

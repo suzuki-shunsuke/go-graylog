@@ -43,7 +43,7 @@ func HandleUpdateRole(
 		return 400, nil, err
 	}
 
-	if sc, err := ms.UpdateRole(name, role); err != nil {
+	if sc, err := ms.UpdateRole(user, name, role); err != nil {
 		return sc, nil, err
 	}
 	ms.SafeSave()

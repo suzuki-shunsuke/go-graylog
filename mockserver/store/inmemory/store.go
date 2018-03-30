@@ -65,7 +65,7 @@ func (store *InMemoryStore) Load() error {
 	return json.Unmarshal(b, store)
 }
 
-func (store *InMemoryStore) Auth(user *graylog.User, scope string, args ...string) (bool, error) {
+func (store *InMemoryStore) Authorize(user *graylog.User, scope string, args ...string) (bool, error) {
 	perm := fmt.Sprintf("%s:%s", scope, strings.Join(args, ":"))
 	// check user permissions
 	if user.Permissions != nil {

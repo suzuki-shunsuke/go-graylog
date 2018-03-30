@@ -9,7 +9,7 @@ import (
 type Store interface {
 	Save() error
 	Load() error
-	Auth(user *graylog.User, scope string, args ...string) (bool, error)
+	Authorize(user *graylog.User, scope string, args ...string) (bool, error)
 
 	AddRole(role *graylog.Role) error
 	// GetRole returns a role.

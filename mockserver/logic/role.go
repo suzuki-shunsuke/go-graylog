@@ -7,25 +7,9 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/validator"
 )
 
-// authRolesRead
-func (ms *Server) authRolesRead(user *graylog.User, name string) (int, error) {
-	if user == nil {
-		return 200, nil
-	}
-	ok, err := ms.store.Auth(user, "roles:read", name)
-	if err != nil {
-		return 500, err
-	}
-	if ok {
-		return 200, nil
-	}
-	return 403, fmt.Errorf("authorization failure")
-}
-
 // HasRole returns whether the role with given name exists.
 func (ms *Server) HasRole(user *graylog.User, name string) (bool, int, error) {
-	sc, err := ms.authRolesRead(user, name)
-	if err != nil {
+	if sc, err := ms.Authorize(user, "roles:read", name); err != nil {
 		return false, sc, err
 	}
 	ok, err := ms.store.HasRole(name)
@@ -67,7 +51,10 @@ func (ms *Server) AddRole(role *graylog.Role) (int, error) {
 }
 
 // UpdateRole updates a role.
-func (ms *Server) UpdateRole(name string, role *graylog.Role) (int, error) {
+func (ms *Server) UpdateRole(user *graylog.User, name string, role *graylog.Role) (int, error) {
+	if sc, err := ms.Authorize(user, "roles:edit", name); err != nil {
+		return sc, err
+	}
 	if err := validator.UpdateValidator.Struct(role); err != nil {
 		return 400, err
 	}
