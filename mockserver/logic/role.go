@@ -12,7 +12,7 @@ func (ms *Server) authRolesRead(user *graylog.User, name string) (int, error) {
 	if user == nil {
 		return 200, nil
 	}
-	ok, err := ms.store.AuthRolesRead(user, name)
+	ok, err := ms.store.Auth(user, "roles:read", name)
 	if err != nil {
 		return 500, err
 	}
@@ -22,7 +22,7 @@ func (ms *Server) authRolesRead(user *graylog.User, name string) (int, error) {
 	return 403, fmt.Errorf("authorization failure")
 }
 
-// HasRole
+// HasRole returns whether the role with given name exists.
 func (ms *Server) HasRole(user *graylog.User, name string) (bool, int, error) {
 	sc, err := ms.authRolesRead(user, name)
 	if err != nil {

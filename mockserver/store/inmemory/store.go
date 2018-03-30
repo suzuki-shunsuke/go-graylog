@@ -2,8 +2,10 @@ package inmemory
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store"
@@ -61,4 +63,33 @@ func (store *InMemoryStore) Load() error {
 		return err
 	}
 	return json.Unmarshal(b, store)
+}
+
+func (store *InMemoryStore) Auth(user *graylog.User, scope string, args ...string) (bool, error) {
+	perm := fmt.Sprintf("%s:%s", scope, strings.Join(args, ":"))
+	// check user permissions
+	if user.Permissions != nil {
+		if user.Permissions.HasAny("*", scope, perm) {
+			return true, nil
+		}
+	}
+	// check user roles
+	if user.Roles == nil {
+		return false, nil
+	}
+	for k := range user.Roles.ToMap(false) {
+		// get role
+		role, err := store.GetRole(k)
+		if err != nil {
+			return false, err
+		}
+		// check role permissions
+		if role.Permissions == nil {
+			continue
+		}
+		if role.Permissions.HasAny("*", scope, perm) {
+			return true, nil
+		}
+	}
+	return false, nil
 }

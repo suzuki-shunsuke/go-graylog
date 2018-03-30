@@ -9,6 +9,7 @@ import (
 type Store interface {
 	Save() error
 	Load() error
+	Auth(user *graylog.User, scope string, args ...string) (bool, error)
 
 	AddRole(role *graylog.Role) error
 	// GetRole returns a role.
@@ -18,7 +19,6 @@ type Store interface {
 	UpdateRole(name string, role *graylog.Role) error
 	DeleteRole(name string) error
 	HasRole(name string) (bool, error)
-	AuthRolesRead(user *graylog.User, roleName string) (bool, error)
 
 	AddUser(user *graylog.User) error
 	GetUser(username string) (*graylog.User, error)
