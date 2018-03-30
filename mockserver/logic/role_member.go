@@ -18,7 +18,7 @@ func (ms *Server) RoleMembers(name string) ([]graylog.User, int, error) {
 		if user.Roles == nil {
 			continue
 		}
-		for roleName, _ := range user.Roles.ToMap(false) {
+		for roleName := range user.Roles.ToMap(false) {
 			if roleName == name {
 				users = append(users, user)
 				break

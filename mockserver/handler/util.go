@@ -39,7 +39,7 @@ func validateRequestBody(
 			"failed to parse the request body as a JSON object: %s", a)
 	}
 	if requiredFields != nil {
-		for k, _ := range requiredFields.ToMap(false) {
+		for k := range requiredFields.ToMap(false) {
 			if _, ok := body[k]; !ok {
 				return body, 400, fmt.Errorf(
 					`in the request body the field "%s" is required`, k)
@@ -50,11 +50,11 @@ func validateRequestBody(
 		allowedFields.AddSet(requiredFields)
 		arr := make([]string, allowedFields.Len())
 		i := 0
-		for k, _ := range allowedFields.ToMap(false) {
+		for k := range allowedFields.ToMap(false) {
 			arr[i] = k
 			i++
 		}
-		for k, _ := range body {
+		for k := range body {
 			if !allowedFields.Has(k) {
 				return body, 400, fmt.Errorf(
 					`in the request body an invalid field is found: "%s". The allowed fields: %s`,
@@ -64,7 +64,7 @@ func validateRequestBody(
 	}
 	if acceptedFields != nil && acceptedFields.Len() != 0 {
 		acceptedFields.AddSets(requiredFields, allowedFields)
-		for k, _ := range body {
+		for k := range body {
 			if !acceptedFields.Has(k) {
 				delete(body, k)
 			}

@@ -66,7 +66,7 @@ func (store *InMemoryStore) AuthRolesRead(user *graylog.User, roleName string) (
 	if user.Roles == nil {
 		return false, nil
 	}
-	for k, _ := range user.Roles.ToMap(false) {
+	for k := range user.Roles.ToMap(false) {
 		role, err := store.GetRole(k)
 		if err != nil {
 			return false, err
