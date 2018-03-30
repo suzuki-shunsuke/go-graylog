@@ -181,3 +181,22 @@ func TestDeleteRole(t *testing.T) {
 		t.Fatal(`no role whose name is "h"`)
 	}
 }
+
+func TestHasRole(t *testing.T) {
+	server, client, err := testutil.GetServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	nobody, _, err := client.GetUser("nobody")
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, sc, err := server.HasRole(nobody, "Admin")
+	if err == nil {
+		t.Fatal("nobody should have a permission to read role")
+	}
+	if sc != 403 {
+		t.Fatalf("sc = %d, wanted 403", sc)
+	}
+}

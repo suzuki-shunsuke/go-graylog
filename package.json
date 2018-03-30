@@ -7,7 +7,8 @@
     "cover-client": "make cover-client",
     "cover-mockserver": "make cover-mockserver",
     "build": "make build",
-    "upload": "make upload"
+    "upload": "make upload",
+    "fmt": "git ls-files | grep .go | xargs gofmt -l -s -w"
   },
   "devDependencies": {
     "husky": "^0.14.3",

@@ -43,8 +43,8 @@
 [[projects]]
   name = "github.com/suzuki-shunsuke/go-set"
   packages = ["."]
-  revision = "360bd68baaa884d620b4f0f4ad5ff42c16f6ac1f"
-  version = "v2.3.0"
+  revision = "2314a3776b21ed4250e7d84fb526dcb8319e5974"
+  version = "v2.3.1"
 
 [[projects]]
   branch = "master"

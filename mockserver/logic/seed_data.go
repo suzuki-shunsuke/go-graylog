@@ -10,8 +10,10 @@ func (ms *Server) InitData() error {
 	if _, err := ms.AddRole(role); err != nil {
 		return err
 	}
-	_, err := ms.AddUser(seed.User())
-	if err != nil {
+	if _, err := ms.AddUser(seed.User()); err != nil {
+		return err
+	}
+	if _, err := ms.AddUser(seed.Nobody()); err != nil {
 		return err
 	}
 	ms.AddInput(seed.Input())
@@ -19,13 +21,13 @@ func (ms *Server) InitData() error {
 	if _, err := ms.AddIndexSet(is); err != nil {
 		return err
 	}
-	is, _, err = ms.SetDefaultIndexSet(is.ID)
+	is, _, err := ms.SetDefaultIndexSet(is.ID)
 	if err != nil {
 		return err
 	}
 	stream := seed.Stream()
 	stream.IndexSetID = is.ID
-	if _, err = ms.AddStream(stream); err != nil {
+	if _, err := ms.AddStream(stream); err != nil {
 		return err
 	}
 	rule := seed.StreamRule()

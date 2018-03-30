@@ -23,6 +23,16 @@ func User() *graylog.User {
 	}
 }
 
+func Nobody() *graylog.User {
+	return &graylog.User{
+		Username:    "nobody",
+		Email:       "nobody@example.com",
+		FullName:    "No Body",
+		Password:    "password",
+		Permissions: set.NewStrSet(),
+	}
+}
+
 func Input() *graylog.Input {
 	return &graylog.Input{
 		Title: "test",

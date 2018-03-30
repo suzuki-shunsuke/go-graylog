@@ -106,8 +106,8 @@ func TestGetUsers(t *testing.T) {
 	if users == nil {
 		t.Fatal("client.GetUsers() returns nil")
 	}
-	if len(users) != 2 {
-		t.Fatalf("len(users) == %d, wanted 2", len(users))
+	if len(users) != 3 {
+		t.Fatalf("len(users) == %d, wanted 3", len(users))
 	}
 	if users[0].Password != user.Password {
 		t.Fatalf(

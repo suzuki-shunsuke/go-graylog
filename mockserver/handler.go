@@ -14,10 +14,10 @@ type Handler func(user *graylog.User, ms *logic.Server, w http.ResponseWriter, r
 
 func wrapHandle(ms *logic.Server, handler Handler) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		w.Header().Set("Content-Type", "application/json")
 		ms.Logger().WithFields(log.Fields{
 			"path": r.URL.Path, "method": r.Method,
 		}).Info("request start")
+		w.Header().Set("Content-Type", "application/json")
 		// authentication
 		var user *graylog.User
 		if ms.GetAuth() {
@@ -48,6 +48,10 @@ func wrapHandle(ms *logic.Server, handler Handler) httprouter.Handle {
 				w.Write(b)
 				return
 			}
+			ms.Logger().WithFields(log.Fields{
+				"path": r.URL.Path, "method": r.Method,
+				"user_name": user.Username,
+			}).Info("request user name")
 		}
 
 		sc, body, err := handler(user, ms, w, r, ps)
