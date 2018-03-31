@@ -16,6 +16,9 @@ func HandleGetInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
+	if sc, err := ms.Authorize(user, "inputs:read", id); err != nil {
+		return sc, nil, err
+	}
 	input, sc, err := ms.GetInput(id)
 	return sc, input, err
 }
@@ -26,6 +29,9 @@ func HandleUpdateInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
+	if sc, err := ms.Authorize(user, "inputs:edit", id); err != nil {
+		return sc, nil, err
+	}
 	requiredFields := set.NewStrSet("title", "type", "configuration")
 	allowedFields := set.NewStrSet("global", "node")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
@@ -59,6 +65,9 @@ func HandleDeleteInput(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
+	if sc, err := ms.Authorize(user, "inputs:terminate", id); err != nil {
+		return sc, nil, err
+	}
 	if sc, err := ms.DeleteInput(id); err != nil {
 		return sc, nil, err
 	}
@@ -71,6 +80,9 @@ func HandleCreateInput(
 	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
+	if sc, err := ms.Authorize(user, "inputs:create"); err != nil {
+		return sc, nil, err
+	}
 	requiredFields := set.NewStrSet("title", "type", "configuration")
 	allowedFields := set.NewStrSet("global", "node")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)

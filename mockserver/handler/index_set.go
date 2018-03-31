@@ -36,6 +36,9 @@ func HandleGetIndexSet(
 	if id == "stats" {
 		return HandleGetAllIndexSetsStats(user, ms, w, r, ps)
 	}
+	if sc, err := ms.Authorize(user, "indexsets:read", id); err != nil {
+		return sc, nil, err
+	}
 	is, sc, err := ms.GetIndexSet(id)
 	return sc, is, err
 }
@@ -45,6 +48,9 @@ func HandleCreateIndexSet(
 	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
+	if sc, err := ms.Authorize(user, "indexsets:create"); err != nil {
+		return sc, nil, err
+	}
 	requiredFields := set.NewStrSet(
 		"title", "index_prefix", "rotation_strategy_class", "rotation_strategy",
 		"retention_strategy_class", "retention_strategy", "creation_date",
@@ -84,6 +90,11 @@ func HandleUpdateIndexSet(
 	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
+	is := &graylog.IndexSet{ID: ps.ByName("indexSetID")}
+	if sc, err := ms.Authorize(user, "indexsets:edit", is.ID); err != nil {
+		return sc, nil, err
+	}
+
 	// default can't change (ignored)
 	requiredFields := set.NewStrSet(
 		"title", "index_prefix", "rotation_strategy_class", "rotation_strategy",
@@ -96,7 +107,6 @@ func HandleUpdateIndexSet(
 		return sc, nil, err
 	}
 
-	is := &graylog.IndexSet{ID: ps.ByName("indexSetID")}
 	if err := msDecode(body, is); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
@@ -120,6 +130,9 @@ func HandleDeleteIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")
+	if sc, err := ms.Authorize(user, "indexsets:delete", id); err != nil {
+		return sc, nil, err
+	}
 	if sc, err := ms.DeleteIndexSet(id); err != nil {
 		return sc, nil, err
 	}
@@ -132,7 +145,11 @@ func HandleSetDefaultIndexSet(
 	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
-	is, sc, err := ms.SetDefaultIndexSet(ps.ByName("indexSetID"))
+	id := ps.ByName("indexSetID")
+	if sc, err := ms.Authorize(user, "indexsets:edit", id); err != nil {
+		return sc, nil, err
+	}
+	is, sc, err := ms.SetDefaultIndexSet(id)
 	if err != nil {
 		return sc, nil, err
 	}

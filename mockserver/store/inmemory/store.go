@@ -2,7 +2,6 @@ package inmemory
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -66,7 +65,10 @@ func (store *InMemoryStore) Load() error {
 }
 
 func (store *InMemoryStore) Authorize(user *graylog.User, scope string, args ...string) (bool, error) {
-	perm := fmt.Sprintf("%s:%s", scope, strings.Join(args, ":"))
+	perm := scope
+	if len(args) != 0 {
+		perm += ":" + strings.Join(args, ":")
+	}
 	// check user permissions
 	if user.Permissions != nil {
 		if user.Permissions.HasAny("*", scope, perm) {

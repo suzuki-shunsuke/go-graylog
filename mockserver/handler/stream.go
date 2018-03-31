@@ -34,6 +34,9 @@ func HandleCreateStream(
 	user *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
+	if sc, err := ms.Authorize(user, "streams:create"); err != nil {
+		return sc, nil, err
+	}
 	requiredFields := set.NewStrSet("title", "index_set_id")
 	allowedFields := set.NewStrSet(
 		"rules", "description", "content_pack",
@@ -84,6 +87,9 @@ func HandleGetStream(
 	if id == "enabled" {
 		return HandleGetEnabledStreams(user, ms, w, r, ps)
 	}
+	if sc, err := ms.Authorize(user, "streams:read", id); err != nil {
+		return sc, nil, err
+	}
 	stream, err := ms.GetStream(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -103,6 +109,9 @@ func HandleUpdateStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
+	if sc, err := ms.Authorize(user, "streams:edit", id); err != nil {
+		return sc, nil, err
+	}
 	stream, err := ms.GetStream(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -191,6 +200,9 @@ func HandlePauseStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
+	if sc, err := ms.Authorize(user, "streams:changestate", id); err != nil {
+		return sc, nil, err
+	}
 	ok, err := ms.HasStream(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -210,6 +222,9 @@ func HandleResumeStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("streamID")
+	if sc, err := ms.Authorize(user, "streams:changestate", id); err != nil {
+		return sc, nil, err
+	}
 	ok, err := ms.HasStream(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{

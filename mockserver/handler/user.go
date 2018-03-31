@@ -16,6 +16,9 @@ func HandleCreateUser(
 	u *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
+	if sc, err := ms.Authorize(u, "users:create"); err != nil {
+		return sc, nil, err
+	}
 	requiredFields := set.NewStrSet(
 		"username", "email", "permissions", "full_name", "password")
 	allowedFields := set.NewStrSet(
@@ -68,6 +71,10 @@ func HandleUpdateUser(
 	u *graylog.User, ms *logic.Server,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
+	userName := ps.ByName("username")
+	if sc, err := ms.Authorize(u, "users:edit", userName); err != nil {
+		return sc, nil, err
+	}
 	// required fields is nil
 	acceptedFields := set.NewStrSet(
 		"email", "permissions", "full_name", "password")
@@ -76,7 +83,7 @@ func HandleUpdateUser(
 		return sc, nil, err
 	}
 
-	user := &graylog.User{Username: ps.ByName("username")}
+	user := &graylog.User{Username: userName}
 	if err := msDecode(body, user); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
