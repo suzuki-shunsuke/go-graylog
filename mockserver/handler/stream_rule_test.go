@@ -33,7 +33,7 @@ func TestServerAddStreamRule(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	streams, err := server.GetStreams()
+	streams, _, err := server.GetStreams()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -60,7 +60,7 @@ func TestServerUpdateStreamRule(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	streams, err := server.GetStreams()
+	streams, _, err := server.GetStreams()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -86,7 +86,7 @@ func TestServerDeleteStreamRule(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	streams, err := server.GetStreams()
+	streams, _, err := server.GetStreams()
 	if err != nil {
 		t.Fatal(err)
 	}

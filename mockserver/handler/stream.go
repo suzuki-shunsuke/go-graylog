@@ -18,15 +18,12 @@ func HandleGetStreams(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /streams Get a list of all streams
-	arr, err := ms.GetStreams()
+	arr, sc, err := ms.GetStreams()
 	if err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err,
-		}).Error("ms.StreamList() is failure")
-		return nil, 500, err
+		return nil, sc, err
 	}
 
-	return &graylog.StreamsBody{Streams: arr, Total: len(arr)}, 200, nil
+	return &graylog.StreamsBody{Streams: arr, Total: len(arr)}, sc, nil
 }
 
 // HandleCreateStream
@@ -68,14 +65,11 @@ func HandleGetEnabledStreams(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /streams/enabled Get a list of all enabled streams
-	arr, err := ms.EnabledStreamList()
+	arr, sc, err := ms.EnabledStreamList()
 	if err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err,
-		}).Error("ms.EnabledStreamList() is failure")
-		return nil, 500, err
+		return nil, sc, err
 	}
-	return &graylog.StreamsBody{Streams: arr, Total: len(arr)}, 200, nil
+	return &graylog.StreamsBody{Streams: arr, Total: len(arr)}, sc, nil
 }
 
 // HandleGetStream
@@ -204,20 +198,11 @@ func HandlePauseStream(
 	if sc, err := ms.Authorize(user, "streams:changestate", id); err != nil {
 		return nil, sc, err
 	}
-	ok, err := ms.HasStream(id)
-	if err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err, "id": id,
-		}).Error("ms.HasStream() is failure")
-		return nil, 500, err
-	}
-	if !ok {
-		return nil, 404, fmt.Errorf("no stream found with id <%s>", id)
-	}
-	// TODO pause
-	return nil, 200, nil
+	sc, err := ms.PauseStream(id)
+	return nil, sc, err
 }
 
+// HandleResumeStream
 func HandleResumeStream(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -226,16 +211,6 @@ func HandleResumeStream(
 	if sc, err := ms.Authorize(user, "streams:changestate", id); err != nil {
 		return nil, sc, err
 	}
-	ok, err := ms.HasStream(id)
-	if err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err, "id": id,
-		}).Error("ms.HasStream() is failure")
-		return nil, 500, err
-	}
-	if !ok {
-		return nil, 404, fmt.Errorf("no stream found with id <%s>", id)
-	}
-	// TODO resume
-	return nil, 200, nil
+	sc, err := ms.ResumeStream(id)
+	return nil, sc, err
 }

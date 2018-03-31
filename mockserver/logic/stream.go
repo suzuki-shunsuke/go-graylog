@@ -73,11 +73,45 @@ func (ms *Logic) DeleteStream(id string) (int, error) {
 }
 
 // GetStreams returns a list of all streams.
-func (ms *Logic) GetStreams() ([]graylog.Stream, error) {
-	return ms.store.GetStreams()
+func (ms *Logic) GetStreams() ([]graylog.Stream, int, error) {
+	streams, err := ms.store.GetStreams()
+	if err != nil {
+		return nil, 500, err
+	}
+	return streams, 200, nil
 }
 
 // EnabledStreamList returns all enabled streams.
-func (ms *Logic) EnabledStreamList() ([]graylog.Stream, error) {
-	return ms.store.GetEnabledStreams()
+func (ms *Logic) EnabledStreamList() ([]graylog.Stream, int, error) {
+	streams, err := ms.store.GetEnabledStreams()
+	if err != nil {
+		return nil, 500, err
+	}
+	return streams, 200, nil
+}
+
+// PauseStream pauses a stream.
+func (ms *Logic) PauseStream(id string) (int, error) {
+	ok, err := ms.HasStream(id)
+	if err != nil {
+		return 500, err
+	}
+	if !ok {
+		return 404, fmt.Errorf("no stream found with id <%s>", id)
+	}
+	// TODO pause
+	return 200, nil
+}
+
+// ResumeStream resumes a stream.
+func (ms *Logic) ResumeStream(id string) (int, error) {
+	ok, err := ms.HasStream(id)
+	if err != nil {
+		return 500, err
+	}
+	if !ok {
+		return 404, fmt.Errorf("no stream found with id <%s>", id)
+	}
+	// TODO resume
+	return 200, nil
 }
