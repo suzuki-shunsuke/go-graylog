@@ -5,7 +5,6 @@ import (
 	"net"
 	"net/http/httptest"
 
-	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/handler"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store"
@@ -14,11 +13,9 @@ import (
 
 // Server represents a mock of the Graylog API.
 type Server struct {
-	server        *httptest.Server `json:"-"`
 	*logic.Server `json:"-"`
-	endpoint      string `json:"-"`
-
-	streamRules map[string]map[string]graylog.StreamRule `json:"stream_rules"`
+	server        *httptest.Server `json:"-"`
+	endpoint      string           `json:"-"`
 }
 
 // NewServer returns new Server but doesn't start it.

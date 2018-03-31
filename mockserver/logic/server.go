@@ -2,7 +2,6 @@ package logic
 
 import (
 	"fmt"
-	"net/http/httptest"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -12,14 +11,11 @@ import (
 
 // Server represents a mock of the Graylog API.
 type Server struct {
-	server      *httptest.Server `json:"-"`
-	authEnabled bool             `json:"-"`
-
+	authEnabled bool                                     `json:"-"`
 	streamRules map[string]map[string]graylog.StreamRule `json:"stream_rules"`
 
-	store    store.Store `json:"-"`
-	logger   *log.Logger `json:"-"`
-	dataPath string      `json:"-"`
+	store  store.Store `json:"-"`
+	logger *log.Logger `json:"-"`
 }
 
 func (ms *Server) Logger() *log.Logger {
@@ -60,14 +56,6 @@ func (ms *Server) Save() error {
 // Load reads Mock Server's data from a file.
 func (ms *Server) Load() error {
 	return ms.store.Load()
-}
-
-func (ms *Server) SafeSave() {
-	if err := ms.Save(); err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err, "data_path": ms.dataPath,
-		}).Error("Failed to save data")
-	}
 }
 
 // SetAuth sets whether the authentication and authentication are enabled.

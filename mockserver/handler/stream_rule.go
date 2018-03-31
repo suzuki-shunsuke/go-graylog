@@ -66,7 +66,9 @@ func HandleCreateStreamRule(
 		}).Error("Faield to add rule to mock server")
 		return sc, nil, err
 	}
-	ms.SafeSave()
+	if err := ms.Save(); err != nil {
+		return 500, nil, err
+	}
 	ret := map[string]string{"streamrule_id": rule.ID}
 	return 201, ret, nil
 }
@@ -110,7 +112,9 @@ func HandleUpdateStreamRule(
 		}).Error("Faield to update stream rule")
 		return sc, nil, err
 	}
-	ms.SafeSave()
+	if err := ms.Save(); err != nil {
+		return 500, nil, err
+	}
 	ret := map[string]string{"streamrule_id": rule.ID}
 	return 200, ret, nil
 }
@@ -136,7 +140,9 @@ func HandleDeleteStreamRule(
 		return 404, nil, fmt.Errorf("no stream found with id <%s>", id)
 	}
 	ms.DeleteStream(id)
-	ms.SafeSave()
+	if err := ms.Save(); err != nil {
+		return 500, nil, err
+	}
 	return 204, nil, nil
 }
 

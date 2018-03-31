@@ -168,7 +168,9 @@ func HandleUpdateStream(
 	if sc, err := ms.UpdateStream(stream); err != nil {
 		return sc, nil, err
 	}
-	ms.SafeSave()
+	if err := ms.Save(); err != nil {
+		return 500, nil, err
+	}
 	return 200, stream, nil
 }
 
@@ -190,7 +192,9 @@ func HandleDeleteStream(
 		return 404, nil, fmt.Errorf("no stream found with id <%s>", id)
 	}
 	ms.DeleteStream(id)
-	ms.SafeSave()
+	if err := ms.Save(); err != nil {
+		return 500, nil, err
+	}
 	return 204, nil, nil
 }
 

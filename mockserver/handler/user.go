@@ -40,7 +40,9 @@ func HandleCreateUser(
 		fmt.Println(sc, err)
 		return sc, nil, err
 	}
-	ms.SafeSave()
+	if err := ms.Save(); err != nil {
+		return 500, nil, err
+	}
 	return 201, nil, nil
 }
 
@@ -94,7 +96,9 @@ func HandleUpdateUser(
 	if sc, err := ms.UpdateUser(user); err != nil {
 		return sc, nil, err
 	}
-	ms.SafeSave()
+	if err := ms.Save(); err != nil {
+		return 500, nil, err
+	}
 	return 200, nil, nil
 }
 
@@ -107,6 +111,8 @@ func HandleDeleteUser(
 	if sc, err := ms.DeleteUser(name); err != nil {
 		return sc, nil, err
 	}
-	ms.SafeSave()
+	if err := ms.Save(); err != nil {
+		return 500, nil, err
+	}
 	return 204, nil, nil
 }

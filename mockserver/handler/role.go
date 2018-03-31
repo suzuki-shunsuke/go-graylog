@@ -52,7 +52,9 @@ func HandleUpdateRole(
 	if sc, err := ms.UpdateRole(name, role); err != nil {
 		return sc, nil, err
 	}
-	ms.SafeSave()
+	if err := ms.Save(); err != nil {
+		return 500, nil, err
+	}
 	return 204, role, nil
 }
 
@@ -69,7 +71,9 @@ func HandleDeleteRole(
 	if err != nil {
 		return sc, nil, err
 	}
-	ms.SafeSave()
+	if err := ms.Save(); err != nil {
+		return 500, nil, err
+	}
 	return 204, nil, nil
 }
 
@@ -99,7 +103,9 @@ func HandleCreateRole(
 	if sc, err := ms.AddRole(role); err != nil {
 		return sc, nil, err
 	}
-	ms.SafeSave()
+	if err := ms.Save(); err != nil {
+		return 500, nil, err
+	}
 	return sc, role, nil
 }
 

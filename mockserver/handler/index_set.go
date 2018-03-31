@@ -81,7 +81,9 @@ func HandleCreateIndexSet(
 	if err != nil {
 		return sc, nil, err
 	}
-	ms.SafeSave()
+	if err := ms.Save(); err != nil {
+		return 500, nil, err
+	}
 	return 201, indexSet, nil
 }
 
@@ -120,7 +122,9 @@ func HandleUpdateIndexSet(
 	if sc, err := ms.UpdateIndexSet(is); err != nil {
 		return sc, nil, err
 	}
-	ms.SafeSave()
+	if err := ms.Save(); err != nil {
+		return 500, nil, err
+	}
 	return 200, is, nil
 }
 
@@ -136,7 +140,9 @@ func HandleDeleteIndexSet(
 	if sc, err := ms.DeleteIndexSet(id); err != nil {
 		return sc, nil, err
 	}
-	ms.SafeSave()
+	if err := ms.Save(); err != nil {
+		return 500, nil, err
+	}
 	return 204, nil, nil
 }
 
@@ -153,6 +159,8 @@ func HandleSetDefaultIndexSet(
 	if err != nil {
 		return sc, nil, err
 	}
-	ms.SafeSave()
+	if err := ms.Save(); err != nil {
+		return 500, nil, err
+	}
 	return 200, is, nil
 }
