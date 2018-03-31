@@ -22,8 +22,8 @@ func (ms *Logic) Logger() *log.Logger {
 	return ms.logger
 }
 
-// NewServer returns new Server.
-func NewServer(store store.Store) (*Logic, error) {
+// NewLogic returns new Server.
+func NewLogic(store store.Store) (*Logic, error) {
 	if store == nil {
 		store = inmemory.NewStore("")
 	}

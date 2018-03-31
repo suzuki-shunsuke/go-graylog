@@ -8,7 +8,7 @@ import (
 )
 
 func TestAddInput(t *testing.T) {
-	server, err := logic.NewServer(nil)
+	server, err := logic.NewLogic(nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -31,7 +31,7 @@ func TestAddInput(t *testing.T) {
 }
 
 func TestGetInputs(t *testing.T) {
-	server, err := logic.NewServer(nil)
+	server, err := logic.NewLogic(nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -48,7 +48,7 @@ func TestGetInputs(t *testing.T) {
 }
 
 func TestGetInput(t *testing.T) {
-	server, err := logic.NewServer(nil)
+	server, err := logic.NewLogic(nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -74,7 +74,7 @@ func TestGetInput(t *testing.T) {
 }
 
 func TestUpdateInput(t *testing.T) {
-	server, err := logic.NewServer(nil)
+	server, err := logic.NewLogic(nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -144,7 +144,7 @@ func TestUpdateInput(t *testing.T) {
 }
 
 func TestDeleteInput(t *testing.T) {
-	server, err := logic.NewServer(nil)
+	server, err := logic.NewLogic(nil)
 	if err != nil {
 		t.Fatal(err)
 	}

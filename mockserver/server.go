@@ -24,7 +24,7 @@ func NewServer(addr string, store store.Store) (*Server, error) {
 	if store == nil {
 		store = inmemory.NewStore("")
 	}
-	srv, err := logic.NewServer(store)
+	srv, err := logic.NewLogic(store)
 	if err != nil {
 		return nil, err
 	}

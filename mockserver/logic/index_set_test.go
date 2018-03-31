@@ -9,7 +9,7 @@ import (
 )
 
 func TestAddIndexSet(t *testing.T) {
-	server, err := logic.NewServer(nil)
+	server, err := logic.NewLogic(nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -24,7 +24,7 @@ func TestAddIndexSet(t *testing.T) {
 }
 
 func TestGetIndexSets(t *testing.T) {
-	server, err := logic.NewServer(nil)
+	server, err := logic.NewLogic(nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -41,7 +41,7 @@ func TestGetIndexSets(t *testing.T) {
 }
 
 func TestGetIndexSet(t *testing.T) {
-	server, err := logic.NewServer(nil)
+	server, err := logic.NewLogic(nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -68,7 +68,7 @@ func TestGetIndexSet(t *testing.T) {
 }
 
 func TestUpdateIndexSet(t *testing.T) {
-	server, err := logic.NewServer(nil)
+	server, err := logic.NewLogic(nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -99,7 +99,7 @@ func TestUpdateIndexSet(t *testing.T) {
 }
 
 func TestDeleteIndexSet(t *testing.T) {
-	server, err := logic.NewServer(nil)
+	server, err := logic.NewLogic(nil)
 	if err != nil {
 		t.Fatal(err)
 	}

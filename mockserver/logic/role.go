@@ -29,7 +29,7 @@ func (ms *Logic) GetRole(name string) (*graylog.Role, int, error) {
 	return role, 200, nil
 }
 
-// AddRole adds a new role to the mock server.
+// AddRole adds a new role.
 func (ms *Logic) AddRole(role *graylog.Role) (int, error) {
 	if err := validator.CreateValidator.Struct(role); err != nil {
 		return 400, err
