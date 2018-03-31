@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/handler"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
@@ -34,7 +35,7 @@ func NewServer(addr string, store store.Store) (*Server, error) {
 		Server: srv,
 	}
 
-	server := httptest.NewUnstartedServer(newRouter(srv))
+	server := httptest.NewUnstartedServer(handler.NewRouter(srv))
 	if addr != "" {
 		ln, err := net.Listen("tcp", addr)
 		if err != nil {

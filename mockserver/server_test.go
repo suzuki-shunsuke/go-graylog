@@ -1,9 +1,7 @@
 package mockserver_test
 
 import (
-	"fmt"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"testing"
 
@@ -42,23 +40,6 @@ func TestServerSave(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := server.Load(); err != nil {
-		t.Fatal(err)
-	}
-}
-
-func TestServerHandleNotFound(t *testing.T) {
-	server, _, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	endpoint := fmt.Sprintf("%s/dummy", server.GetEndpoint())
-	req, err := http.NewRequest(http.MethodGet, endpoint, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	hc := &http.Client{}
-	if _, err := hc.Do(req); err != nil {
 		t.Fatal(err)
 	}
 }
