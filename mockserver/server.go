@@ -13,9 +13,9 @@ import (
 
 // Server represents a mock of the Graylog API.
 type Server struct {
-	*logic.Server `json:"-"`
-	server        *httptest.Server `json:"-"`
-	endpoint      string           `json:"-"`
+	*logic.Logic `json:"-"`
+	server       *httptest.Server `json:"-"`
+	endpoint     string           `json:"-"`
 }
 
 // NewServer returns new Server but doesn't start it.
@@ -29,7 +29,7 @@ func NewServer(addr string, store store.Store) (*Server, error) {
 		return nil, err
 	}
 	ms := &Server{
-		Server: srv,
+		Logic: srv,
 	}
 
 	server := httptest.NewUnstartedServer(handler.NewRouter(srv))

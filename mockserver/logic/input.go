@@ -9,13 +9,13 @@ import (
 )
 
 // HasInput
-func (ms *Server) HasInput(id string) (bool, error) {
+func (ms *Logic) HasInput(id string) (bool, error) {
 	return ms.store.HasInput(id)
 }
 
 // GetInput returns an input.
 // If an input is not found, returns an error.
-func (ms *Server) GetInput(id string) (*graylog.Input, int, error) {
+func (ms *Logic) GetInput(id string) (*graylog.Input, int, error) {
 	if id == "" {
 		return nil, 400, fmt.Errorf("input id is empty")
 	}
@@ -31,7 +31,7 @@ func (ms *Server) GetInput(id string) (*graylog.Input, int, error) {
 }
 
 // AddInput adds an input to the mock server.
-func (ms *Server) AddInput(input *graylog.Input) (int, error) {
+func (ms *Logic) AddInput(input *graylog.Input) (int, error) {
 	if err := validator.CreateValidator.Struct(input); err != nil {
 		return 400, err
 	}
@@ -45,7 +45,7 @@ func (ms *Server) AddInput(input *graylog.Input) (int, error) {
 // UpdateInput updates an input at the Server.
 // Required: Title, Type, Configuration
 // Allowed: Global, Node
-func (ms *Server) UpdateInput(input *graylog.Input) (int, error) {
+func (ms *Logic) UpdateInput(input *graylog.Input) (int, error) {
 	if err := validator.UpdateValidator.Struct(input); err != nil {
 		return 400, err
 	}
@@ -56,7 +56,7 @@ func (ms *Server) UpdateInput(input *graylog.Input) (int, error) {
 }
 
 // DeleteInput deletes a input from the mock server.
-func (ms *Server) DeleteInput(id string) (int, error) {
+func (ms *Logic) DeleteInput(id string) (int, error) {
 	ok, err := ms.HasInput(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -74,7 +74,7 @@ func (ms *Server) DeleteInput(id string) (int, error) {
 }
 
 // GetInputs returns a list of inputs.
-func (ms *Server) GetInputs() ([]graylog.Input, int, error) {
+func (ms *Logic) GetInputs() ([]graylog.Input, int, error) {
 	inputs, err := ms.store.GetInputs()
 	if err != nil {
 		return inputs, 500, err

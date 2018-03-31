@@ -5,7 +5,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
-func NewRouter(ms *logic.Server) *httprouter.Router {
+func NewRouter(ms *logic.Logic) *httprouter.Router {
 	router := httprouter.New()
 
 	router.GET("/api/roles/:rolename", wrapHandle(ms, HandleGetRole))

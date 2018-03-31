@@ -10,9 +10,9 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
-type Handler func(user *graylog.User, ms *logic.Server, w http.ResponseWriter, r *http.Request, ps httprouter.Params) (int, interface{}, error)
+type Handler func(user *graylog.User, ms *logic.Logic, w http.ResponseWriter, r *http.Request, ps httprouter.Params) (int, interface{}, error)
 
-func wrapHandle(ms *logic.Server, handler Handler) httprouter.Handle {
+func wrapHandle(ms *logic.Logic, handler Handler) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		ms.Logger().WithFields(log.Fields{
 			"path": r.URL.Path, "method": r.Method,

@@ -12,7 +12,7 @@ import (
 
 // GET /roles/{rolename} Retrieve permissions for a single role
 func HandleGetRole(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -27,7 +27,7 @@ func HandleGetRole(
 
 // PUT /roles/{rolename} Update an existing role
 func HandleUpdateRole(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -60,7 +60,7 @@ func HandleUpdateRole(
 
 // DELETE /roles/{rolename} Remove the named role and dissociate any users from it
 func HandleDeleteRole(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -79,7 +79,7 @@ func HandleDeleteRole(
 
 // POST /roles Create a new role
 func HandleCreateRole(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	if sc, err := ms.Authorize(user, "roles:create"); err != nil {
@@ -111,7 +111,7 @@ func HandleCreateRole(
 
 // GET /roles List all roles
 func HandleGetRoles(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, sc, err := ms.GetRoles()

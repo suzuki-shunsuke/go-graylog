@@ -9,14 +9,14 @@ import (
 )
 
 // HasIndexSet
-func (ms *Server) HasIndexSet(id string) (bool, error) {
+func (ms *Logic) HasIndexSet(id string) (bool, error) {
 	// TODO authorization
 	return ms.store.HasIndexSet(id)
 }
 
 // GetIndexSet returns an index set.
 // If an index set is not found, returns an error.
-func (ms *Server) GetIndexSet(id string) (*graylog.IndexSet, int, error) {
+func (ms *Logic) GetIndexSet(id string) (*graylog.IndexSet, int, error) {
 	if id == "" {
 		return nil, 400, fmt.Errorf("index set id is empty")
 	}
@@ -31,7 +31,7 @@ func (ms *Server) GetIndexSet(id string) (*graylog.IndexSet, int, error) {
 }
 
 // AddIndexSet adds an index set to the Mock Server.
-func (ms *Server) AddIndexSet(is *graylog.IndexSet) (int, error) {
+func (ms *Logic) AddIndexSet(is *graylog.IndexSet) (int, error) {
 	if is == nil {
 		return 400, fmt.Errorf("index set is nil")
 	}
@@ -73,7 +73,7 @@ func (ms *Server) AddIndexSet(is *graylog.IndexSet) (int, error) {
 }
 
 // UpdateIndexSet updates an index set at the Mock Server.
-func (ms *Server) UpdateIndexSet(is *graylog.IndexSet) (int, error) {
+func (ms *Logic) UpdateIndexSet(is *graylog.IndexSet) (int, error) {
 	if is == nil {
 		return 400, fmt.Errorf("index set is nil")
 	}
@@ -108,7 +108,7 @@ func (ms *Server) UpdateIndexSet(is *graylog.IndexSet) (int, error) {
 }
 
 // DeleteIndexSet removes a index set from the Mock Server.
-func (ms *Server) DeleteIndexSet(id string) (int, error) {
+func (ms *Logic) DeleteIndexSet(id string) (int, error) {
 	ok, err := ms.HasIndexSet(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -133,12 +133,12 @@ func (ms *Server) DeleteIndexSet(id string) (int, error) {
 }
 
 // GetIndexSets returns a list of all index sets.
-func (ms *Server) GetIndexSets() ([]graylog.IndexSet, error) {
+func (ms *Logic) GetIndexSets() ([]graylog.IndexSet, error) {
 	return ms.store.GetIndexSets()
 }
 
 // SetDefaultIndexSet sets a default index set
-func (ms *Server) SetDefaultIndexSet(id string) (*graylog.IndexSet, int, error) {
+func (ms *Logic) SetDefaultIndexSet(id string) (*graylog.IndexSet, int, error) {
 	is, sc, err := ms.GetIndexSet(id)
 	if err != nil {
 		return nil, sc, err

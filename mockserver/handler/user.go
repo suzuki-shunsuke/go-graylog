@@ -13,7 +13,7 @@ import (
 
 // POST /users Create a new user account.
 func HandleCreateUser(
-	u *graylog.User, ms *logic.Server,
+	u *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	if sc, err := ms.Authorize(u, "users:create"); err != nil {
@@ -48,7 +48,7 @@ func HandleCreateUser(
 
 // GET /users List all users
 func HandleGetUsers(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	users, sc, err := ms.GetUsers()
@@ -60,7 +60,7 @@ func HandleGetUsers(
 
 // GET /users/{username} Get user details
 func HandleGetUser(
-	u *graylog.User, ms *logic.Server,
+	u *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("username")
@@ -70,7 +70,7 @@ func HandleGetUser(
 
 // PUT /users/{username} Modify user details.
 func HandleUpdateUser(
-	u *graylog.User, ms *logic.Server,
+	u *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	userName := ps.ByName("username")
@@ -104,7 +104,7 @@ func HandleUpdateUser(
 
 // DELETE /users/{username} Removes a user account
 func HandleDeleteUser(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("username")

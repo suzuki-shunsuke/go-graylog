@@ -8,7 +8,7 @@ import (
 )
 
 // RoleMembers returns members of a given role.
-func (ms *Server) RoleMembers(name string) ([]graylog.User, int, error) {
+func (ms *Logic) RoleMembers(name string) ([]graylog.User, int, error) {
 	users := []graylog.User{}
 	us, sc, err := ms.GetUsers()
 	if err != nil {
@@ -29,7 +29,7 @@ func (ms *Server) RoleMembers(name string) ([]graylog.User, int, error) {
 }
 
 // AddUserToRole adds a user to a role.
-func (ms *Server) AddUserToRole(userName, roleName string) (int, error) {
+func (ms *Logic) AddUserToRole(userName, roleName string) (int, error) {
 	ok, sc, err := ms.HasRole(roleName)
 	if err != nil {
 		return sc, err
@@ -51,7 +51,7 @@ func (ms *Server) AddUserToRole(userName, roleName string) (int, error) {
 }
 
 // RemoveUserFromRole removes a user from a role.
-func (ms *Server) RemoveUserFromRole(
+func (ms *Logic) RemoveUserFromRole(
 	userName, roleName string,
 ) (int, error) {
 	ok, sc, err := ms.HasRole(roleName)

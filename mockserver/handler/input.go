@@ -12,7 +12,7 @@ import (
 
 // GET /system/inputs/{inputID} Get information of a single input on this node
 func HandleGetInput(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
@@ -25,7 +25,7 @@ func HandleGetInput(
 
 // PUT /system/inputs/{inputID} Update input on this node
 func HandleUpdateInput(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
@@ -63,7 +63,7 @@ func HandleUpdateInput(
 
 // DELETE /system/inputs/{inputID} Terminate input on this node
 func HandleDeleteInput(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("inputID")
@@ -81,7 +81,7 @@ func HandleDeleteInput(
 
 // POST /system/inputs Launch input on this node
 func HandleCreateInput(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	if sc, err := ms.Authorize(user, "inputs:create"); err != nil {
@@ -115,7 +115,7 @@ func HandleCreateInput(
 
 // GET /system/inputs Get all inputs
 func HandleGetInputs(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, sc, err := ms.GetInputs()

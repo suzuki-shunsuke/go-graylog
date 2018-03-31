@@ -12,7 +12,7 @@ import (
 )
 
 func HandleGetStreamRules(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// GET /streams/{streamid}/rules Get a list of all stream rules
@@ -26,7 +26,7 @@ func HandleGetStreamRules(
 }
 
 func HandleCreateStreamRule(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// POST /streams/{streamid}/rules Create a stream rule
@@ -79,7 +79,7 @@ func HandleCreateStreamRule(
 // value, type, description, inverted, field
 
 func HandleUpdateStreamRule(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// PUT /streams/{streamid}/rules/{streamRuleID} Update a stream rule
@@ -120,7 +120,7 @@ func HandleUpdateStreamRule(
 }
 
 func HandleDeleteStreamRule(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// DELETE /streams/{streamid}/rules/{streamRuleId} Delete a stream rule
@@ -147,7 +147,7 @@ func HandleDeleteStreamRule(
 }
 
 func HandleGetStreamRule(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	// GET /streams/{streamid}/rules/{streamRuleId} Get a single stream rules

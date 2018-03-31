@@ -8,12 +8,12 @@ import (
 )
 
 // HasUser
-func (ms *Server) HasUser(username string) (bool, error) {
+func (ms *Logic) HasUser(username string) (bool, error) {
 	return ms.store.HasUser(username)
 }
 
 // GetUser returns a user.
-func (ms *Server) GetUser(username string) (*graylog.User, int, error) {
+func (ms *Logic) GetUser(username string) (*graylog.User, int, error) {
 	user, err := ms.store.GetUser(username)
 	if err != nil {
 		return user, 500, err
@@ -25,7 +25,7 @@ func (ms *Server) GetUser(username string) (*graylog.User, int, error) {
 }
 
 // GetUsers returns a list of users.
-func (ms *Server) GetUsers() ([]graylog.User, int, error) {
+func (ms *Logic) GetUsers() ([]graylog.User, int, error) {
 	users, err := ms.store.GetUsers()
 	if err != nil {
 		return users, 500, err
@@ -33,7 +33,7 @@ func (ms *Server) GetUsers() ([]graylog.User, int, error) {
 	return users, 200, nil
 }
 
-func (ms *Server) checkUserRoles(roles []string) (int, error) {
+func (ms *Logic) checkUserRoles(roles []string) (int, error) {
 	if len(roles) != 0 {
 		for _, roleName := range roles {
 			ok, sc, err := ms.HasRole(roleName)
@@ -51,7 +51,7 @@ func (ms *Server) checkUserRoles(roles []string) (int, error) {
 }
 
 // AddUser adds a user to the Server.
-func (ms *Server) AddUser(user *graylog.User) (int, error) {
+func (ms *Logic) AddUser(user *graylog.User) (int, error) {
 	// client side validation
 	if err := validator.CreateValidator.Struct(user); err != nil {
 		return 400, err
@@ -86,7 +86,7 @@ func (ms *Server) AddUser(user *graylog.User) (int, error) {
 
 // UpdateUser updates a user of the Server.
 // "email", "permissions", "full_name", "password"
-func (ms *Server) UpdateUser(user *graylog.User) (int, error) {
+func (ms *Logic) UpdateUser(user *graylog.User) (int, error) {
 	// Check updated user exists
 	ok, err := ms.HasUser(user.Username)
 	if err != nil {
@@ -116,7 +116,7 @@ func (ms *Server) UpdateUser(user *graylog.User) (int, error) {
 }
 
 // DeleteUser removes a user from the Server.
-func (ms *Server) DeleteUser(name string) (int, error) {
+func (ms *Logic) DeleteUser(name string) (int, error) {
 	// Check deleted user exists
 	ok, err := ms.HasUser(name)
 	if err != nil {
@@ -134,6 +134,6 @@ func (ms *Server) DeleteUser(name string) (int, error) {
 }
 
 // UserList returns a list of all users.
-func (ms *Server) UserList() ([]graylog.User, error) {
+func (ms *Logic) UserList() ([]graylog.User, error) {
 	return ms.store.GetUsers()
 }

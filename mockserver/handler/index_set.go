@@ -12,7 +12,7 @@ import (
 
 // GET /system/indices/index_sets Get a list of all index sets
 func HandleGetIndexSets(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	arr, err := ms.GetIndexSets()
@@ -29,7 +29,7 @@ func HandleGetIndexSets(
 
 // GET /system/indices/index_sets/{id} Get index set
 func HandleGetIndexSet(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")
@@ -45,7 +45,7 @@ func HandleGetIndexSet(
 
 // POST /system/indices/index_sets Create index set
 func HandleCreateIndexSet(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (int, interface{}, error) {
 	if sc, err := ms.Authorize(user, "indexsets:create"); err != nil {
@@ -89,7 +89,7 @@ func HandleCreateIndexSet(
 
 // PUT /system/indices/index_sets/{id} Update index set
 func HandleUpdateIndexSet(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	is := &graylog.IndexSet{ID: ps.ByName("indexSetID")}
@@ -130,7 +130,7 @@ func HandleUpdateIndexSet(
 
 // DELETE /system/indices/index_sets/{id} Delete index set
 func HandleDeleteIndexSet(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")
@@ -148,7 +148,7 @@ func HandleDeleteIndexSet(
 
 // PUT /system/indices/index_sets/{id}/default Set default index set
 func HandleSetDefaultIndexSet(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")

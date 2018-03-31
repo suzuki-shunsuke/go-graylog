@@ -9,8 +9,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
 )
 
-// Server represents a mock of the Graylog API.
-type Server struct {
+// Logic represents a mock of the Graylog API.
+type Logic struct {
 	authEnabled bool                                     `json:"-"`
 	streamRules map[string]map[string]graylog.StreamRule `json:"stream_rules"`
 
@@ -18,16 +18,16 @@ type Server struct {
 	logger *log.Logger `json:"-"`
 }
 
-func (ms *Server) Logger() *log.Logger {
+func (ms *Logic) Logger() *log.Logger {
 	return ms.logger
 }
 
 // NewServer returns new Server.
-func NewServer(store store.Store) (*Server, error) {
+func NewServer(store store.Store) (*Logic, error) {
 	if store == nil {
 		store = inmemory.NewStore("")
 	}
-	ms := &Server{
+	ms := &Logic{
 		// indexSetStats: map[string]graylog.IndexSetStats{},
 		streamRules: map[string]map[string]graylog.StreamRule{},
 
@@ -44,32 +44,32 @@ func NewServer(store store.Store) (*Server, error) {
 }
 
 // SetStore sets a store to the mock server.
-func (ms *Server) SetStore(store store.Store) {
+func (ms *Logic) SetStore(store store.Store) {
 	ms.store = store
 }
 
 // Save writes Mock Server's data in a file for persistence.
-func (ms *Server) Save() error {
+func (ms *Logic) Save() error {
 	return ms.store.Save()
 }
 
 // Load reads Mock Server's data from a file.
-func (ms *Server) Load() error {
+func (ms *Logic) Load() error {
 	return ms.store.Load()
 }
 
 // SetAuth sets whether the authentication and authentication are enabled.
-func (ms *Server) SetAuth(authEnabled bool) {
+func (ms *Logic) SetAuth(authEnabled bool) {
 	ms.authEnabled = authEnabled
 }
 
 // GetAuth reruns whether the authentication and authentication are enabled.
-func (ms *Server) GetAuth() bool {
+func (ms *Logic) GetAuth() bool {
 	return ms.authEnabled
 }
 
 // Authorize
-func (ms *Server) Authorize(user *graylog.User, scope string, args ...string) (int, error) {
+func (ms *Logic) Authorize(user *graylog.User, scope string, args ...string) (int, error) {
 	if user == nil {
 		return 200, nil
 	}

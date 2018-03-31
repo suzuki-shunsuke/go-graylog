@@ -9,12 +9,12 @@ import (
 )
 
 // HasStreamRule
-func (ms *Server) HasStreamRule(streamID, streamRuleID string) (bool, error) {
+func (ms *Logic) HasStreamRule(streamID, streamRuleID string) (bool, error) {
 	return ms.store.HasStreamRule(streamID, streamRuleID)
 }
 
 // AddStreamRule adds a stream rule to the Server.
-func (ms *Server) AddStreamRule(rule *graylog.StreamRule) (int, error) {
+func (ms *Logic) AddStreamRule(rule *graylog.StreamRule) (int, error) {
 	if err := validator.CreateValidator.Struct(rule); err != nil {
 		return 400, err
 	}
@@ -33,7 +33,7 @@ func (ms *Server) AddStreamRule(rule *graylog.StreamRule) (int, error) {
 }
 
 // UpdateStreamRule updates a stream rule of the Server.
-func (ms *Server) UpdateStreamRule(rule *graylog.StreamRule) (int, error) {
+func (ms *Logic) UpdateStreamRule(rule *graylog.StreamRule) (int, error) {
 	// PUT /streams/{streamid}/rules/{streamRuleID} Update a stream rule
 	if err := validator.UpdateValidator.Struct(rule); err != nil {
 		return 400, err
@@ -52,7 +52,7 @@ func (ms *Server) UpdateStreamRule(rule *graylog.StreamRule) (int, error) {
 }
 
 // DeleteStreamRule deletes a stream rule from the Server.
-func (ms *Server) DeleteStreamRule(streamID, streamRuleID string) (int, error) {
+func (ms *Logic) DeleteStreamRule(streamID, streamRuleID string) (int, error) {
 	ok, err := ms.HasStream(streamID)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -81,7 +81,7 @@ func (ms *Server) DeleteStreamRule(streamID, streamRuleID string) (int, error) {
 }
 
 // GetStreamRules returns a list of all stream rules of a given stream.
-func (ms *Server) GetStreamRules(streamID string) ([]graylog.StreamRule, int, error) {
+func (ms *Logic) GetStreamRules(streamID string) ([]graylog.StreamRule, int, error) {
 	ok, err := ms.HasStream(streamID)
 	if err != nil {
 		return nil, 500, err
@@ -97,7 +97,7 @@ func (ms *Server) GetStreamRules(streamID string) ([]graylog.StreamRule, int, er
 }
 
 // GetStreamRule returns a stream rule.
-func (ms *Server) GetStreamRule(streamID, streamRuleID string) (*graylog.StreamRule, int, error) {
+func (ms *Logic) GetStreamRule(streamID, streamRuleID string) (*graylog.StreamRule, int, error) {
 	ok, err := ms.HasStream(streamID)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{

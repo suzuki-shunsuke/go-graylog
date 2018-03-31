@@ -11,7 +11,7 @@ import (
 
 // GET /system/indices/index_sets/{id}/stats Get index set statistics
 func HandleGetIndexSetStats(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	id := ps.ByName("indexSetID")
@@ -27,7 +27,7 @@ func HandleGetIndexSetStats(
 
 // GET /system/indices/index_sets/stats Get stats of all index sets
 func HandleGetAllIndexSetsStats(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	s, err := ms.GetTotalIndexSetsStats()

@@ -9,17 +9,17 @@ import (
 )
 
 // HasStream
-func (ms *Server) HasStream(id string) (bool, error) {
+func (ms *Logic) HasStream(id string) (bool, error) {
 	return ms.store.HasStream(id)
 }
 
 // GetStream returns a stream.
-func (ms *Server) GetStream(id string) (*graylog.Stream, error) {
+func (ms *Logic) GetStream(id string) (*graylog.Stream, error) {
 	return ms.store.GetStream(id)
 }
 
 // AddStream adds a stream to the Server.
-func (ms *Server) AddStream(stream *graylog.Stream) (int, error) {
+func (ms *Logic) AddStream(stream *graylog.Stream) (int, error) {
 	if err := validator.CreateValidator.Struct(stream); err != nil {
 		return 400, err
 	}
@@ -31,7 +31,7 @@ func (ms *Server) AddStream(stream *graylog.Stream) (int, error) {
 }
 
 // UpdateStream updates a stream at the Server.
-func (ms *Server) UpdateStream(stream *graylog.Stream) (int, error) {
+func (ms *Logic) UpdateStream(stream *graylog.Stream) (int, error) {
 	if stream == nil {
 		return 400, fmt.Errorf("stream is nil")
 	}
@@ -55,7 +55,7 @@ func (ms *Server) UpdateStream(stream *graylog.Stream) (int, error) {
 }
 
 // DeleteStream deletes a stream from the Server.
-func (ms *Server) DeleteStream(id string) (int, error) {
+func (ms *Logic) DeleteStream(id string) (int, error) {
 	ok, err := ms.HasStream(id)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -73,11 +73,11 @@ func (ms *Server) DeleteStream(id string) (int, error) {
 }
 
 // GetStreams returns a list of all streams.
-func (ms *Server) GetStreams() ([]graylog.Stream, error) {
+func (ms *Logic) GetStreams() ([]graylog.Stream, error) {
 	return ms.store.GetStreams()
 }
 
 // EnabledStreamList returns all enabled streams.
-func (ms *Server) EnabledStreamList() ([]graylog.Stream, error) {
+func (ms *Logic) EnabledStreamList() ([]graylog.Stream, error) {
 	return ms.store.GetEnabledStreams()
 }

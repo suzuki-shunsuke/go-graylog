@@ -16,7 +16,7 @@ type membersBody struct {
 
 // GET /roles/{rolename}/members Retrieve the role's members
 func HandleRoleMembers(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	name := ps.ByName("rolename")
@@ -37,7 +37,7 @@ func HandleRoleMembers(
 
 // PUT /roles/{rolename}/members/{username} Add a user to a role
 func HandleAddUserToRole(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	sc, err := ms.AddUserToRole(ps.ByName("username"), ps.ByName("rolename"))
@@ -46,7 +46,7 @@ func HandleAddUserToRole(
 
 // DELETE /roles/{rolename}/members/{username} Remove a user from a role
 func HandleRemoveUserFromRole(
-	user *graylog.User, ms *logic.Server,
+	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (int, interface{}, error) {
 	sc, err := ms.RemoveUserFromRole(ps.ByName("username"), ps.ByName("rolename"))

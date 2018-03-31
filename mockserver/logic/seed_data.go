@@ -5,7 +5,7 @@ import (
 )
 
 // InitData sets an initial data.
-func (ms *Server) InitData() error {
+func (ms *Logic) InitData() error {
 	role := seed.Role()
 	if _, err := ms.AddRole(role); err != nil {
 		return err

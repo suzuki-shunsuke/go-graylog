@@ -8,7 +8,7 @@ import (
 )
 
 // HasRole returns whether the role with given name exists.
-func (ms *Server) HasRole(name string) (bool, int, error) {
+func (ms *Logic) HasRole(name string) (bool, int, error) {
 	ok, err := ms.store.HasRole(name)
 	if err != nil {
 		return false, 500, err
@@ -18,7 +18,7 @@ func (ms *Server) HasRole(name string) (bool, int, error) {
 
 // GetRole returns a Role.
 // If a role is not found, an error is returns.
-func (ms *Server) GetRole(name string) (*graylog.Role, int, error) {
+func (ms *Logic) GetRole(name string) (*graylog.Role, int, error) {
 	role, err := ms.store.GetRole(name)
 	if err != nil {
 		return role, 500, err
@@ -30,7 +30,7 @@ func (ms *Server) GetRole(name string) (*graylog.Role, int, error) {
 }
 
 // AddRole adds a new role to the mock server.
-func (ms *Server) AddRole(role *graylog.Role) (int, error) {
+func (ms *Logic) AddRole(role *graylog.Role) (int, error) {
 	if err := validator.CreateValidator.Struct(role); err != nil {
 		return 400, err
 	}
@@ -48,7 +48,7 @@ func (ms *Server) AddRole(role *graylog.Role) (int, error) {
 }
 
 // UpdateRole updates a role.
-func (ms *Server) UpdateRole(name string, role *graylog.Role) (int, error) {
+func (ms *Logic) UpdateRole(name string, role *graylog.Role) (int, error) {
 	if err := validator.UpdateValidator.Struct(role); err != nil {
 		return 400, err
 	}
@@ -75,7 +75,7 @@ func (ms *Server) UpdateRole(name string, role *graylog.Role) (int, error) {
 }
 
 // DeleteRole deletes a role.
-func (ms *Server) DeleteRole(name string) (int, error) {
+func (ms *Logic) DeleteRole(name string) (int, error) {
 	ok, sc, err := ms.HasRole(name)
 	if err != nil {
 		return sc, err
@@ -90,7 +90,7 @@ func (ms *Server) DeleteRole(name string) (int, error) {
 }
 
 // GetRoles returns a list of roles.
-func (ms *Server) GetRoles() ([]graylog.Role, int, error) {
+func (ms *Logic) GetRoles() ([]graylog.Role, int, error) {
 	roles, err := ms.store.GetRoles()
 	if err != nil {
 		return roles, 500, err
