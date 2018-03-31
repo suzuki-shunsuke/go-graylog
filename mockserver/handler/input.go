@@ -10,33 +10,34 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
-// GET /system/inputs/{inputID} Get information of a single input on this node
+// HandleGetInput
 func HandleGetInput(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// GET /system/inputs/{inputID} Get information of a single input on this node
 	id := ps.ByName("inputID")
 	if sc, err := ms.Authorize(user, "inputs:read", id); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
-	input, sc, err := ms.GetInput(id)
-	return sc, input, err
+	return ms.GetInput(id)
 }
 
-// PUT /system/inputs/{inputID} Update input on this node
+// HandleUpdateInput
 func HandleUpdateInput(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// PUT /system/inputs/{inputID} Update input on this node
 	id := ps.ByName("inputID")
 	if sc, err := ms.Authorize(user, "inputs:edit", id); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	requiredFields := set.NewStrSet("title", "type", "configuration")
 	allowedFields := set.NewStrSet("global", "node")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 
 	input := &graylog.Input{}
@@ -44,7 +45,7 @@ func HandleUpdateInput(
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as Input")
-		return 400, nil, err
+		return nil, 400, err
 	}
 
 	ms.Logger().WithFields(log.Fields{
@@ -53,45 +54,46 @@ func HandleUpdateInput(
 
 	input.ID = id
 	if sc, err := ms.UpdateInput(input); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
-	return 200, input, nil
+	return input, 200, nil
 }
 
 // DELETE /system/inputs/{inputID} Terminate input on this node
 func HandleDeleteInput(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
 	id := ps.ByName("inputID")
 	if sc, err := ms.Authorize(user, "inputs:terminate", id); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if sc, err := ms.DeleteInput(id); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
-	return 204, nil, nil
+	return nil, 204, nil
 }
 
-// POST /system/inputs Launch input on this node
+// HandleCreateInput
 func HandleCreateInput(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// POST /system/inputs Launch input on this node
 	if sc, err := ms.Authorize(user, "inputs:create"); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	requiredFields := set.NewStrSet("title", "type", "configuration")
 	allowedFields := set.NewStrSet("global", "node")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 
 	input := &graylog.Input{}
@@ -99,29 +101,29 @@ func HandleCreateInput(
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as Input")
-		return 400, nil, err
+		return nil, 400, err
 	}
 
 	sc, err = ms.AddInput(input)
 	if err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
 	d := map[string]string{"id": input.ID}
-	return 201, &d, nil
+	return &d, 201, nil
 }
 
 // GET /system/inputs Get all inputs
 func HandleGetInputs(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
 	arr, sc, err := ms.GetInputs()
 	if err != nil {
-		return sc, arr, err
+		return arr, sc, err
 	}
 	inputs := &graylog.InputsBody{Inputs: arr, Total: len(arr)}
-	return sc, inputs, nil
+	return inputs, sc, nil
 }

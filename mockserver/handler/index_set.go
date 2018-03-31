@@ -10,46 +10,48 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
-// GET /system/indices/index_sets Get a list of all index sets
+// HandleGetIndexSets
 func HandleGetIndexSets(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
-) (int, interface{}, error) {
-	arr, err := ms.GetIndexSets()
+) (interface{}, int, error) {
+	// GET /system/indices/index_sets Get a list of all index sets
+	arr, sc, err := ms.GetIndexSets()
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"error": err,
 		}).Error("ms.HasIndexList() is failure")
-		return 500, nil, err
+		return arr, sc, err
 	}
 	indexSets := &graylog.IndexSetsBody{
 		IndexSets: arr, Total: len(arr), Stats: &graylog.IndexSetStats{}}
-	return 200, indexSets, nil
+	return indexSets, sc, nil
 }
 
-// GET /system/indices/index_sets/{id} Get index set
+// HandleGetIndexSet
 func HandleGetIndexSet(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// GET /system/indices/index_sets/{id} Get index set
 	id := ps.ByName("indexSetID")
 	if id == "stats" {
-		return HandleGetAllIndexSetsStats(user, ms, w, r, ps)
+		return HandleGetTotalIndexSetStats(user, ms, w, r, ps)
 	}
 	if sc, err := ms.Authorize(user, "indexsets:read", id); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
-	is, sc, err := ms.GetIndexSet(id)
-	return sc, is, err
+	return ms.GetIndexSet(id)
 }
 
-// POST /system/indices/index_sets Create index set
+// HandleCreateIndexSet
 func HandleCreateIndexSet(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// POST /system/indices/index_sets Create index set
 	if sc, err := ms.Authorize(user, "indexsets:create"); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	requiredFields := set.NewStrSet(
 		"title", "index_prefix", "rotation_strategy_class", "rotation_strategy",
@@ -63,7 +65,7 @@ func HandleCreateIndexSet(
 	body, sc, err := validateRequestBody(
 		r.Body, requiredFields, allowedFields, acceptedFields)
 	if err != nil {
-		return sc, nil, err
+		return body, sc, err
 	}
 
 	indexSet := &graylog.IndexSet{}
@@ -71,7 +73,7 @@ func HandleCreateIndexSet(
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as indexSet")
-		return 400, nil, err
+		return nil, 400, err
 	}
 
 	ms.Logger().WithFields(log.Fields{
@@ -79,22 +81,23 @@ func HandleCreateIndexSet(
 	}).Debug("request body")
 	sc, err = ms.AddIndexSet(indexSet)
 	if err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
-	return 201, indexSet, nil
+	return indexSet, 201, nil
 }
 
-// PUT /system/indices/index_sets/{id} Update index set
+// HandleUpdateIndexSet
 func HandleUpdateIndexSet(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// PUT /system/indices/index_sets/{id} Update index set
 	is := &graylog.IndexSet{ID: ps.ByName("indexSetID")}
 	if sc, err := ms.Authorize(user, "indexsets:edit", is.ID); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 
 	// default can't change (ignored)
@@ -106,61 +109,63 @@ func HandleUpdateIndexSet(
 		"description", "replicas", "index_optimization_disabled", "writable")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, nil, acceptedFields)
 	if err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 
 	if err := msDecode(body, is); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as indexSet")
-		return 400, nil, err
+		return nil, 400, err
 	}
 
 	ms.Logger().WithFields(log.Fields{
 		"body": body, "index_set": is,
 	}).Debug("request body")
 	if sc, err := ms.UpdateIndexSet(is); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
-	return 200, is, nil
+	return is, 200, nil
 }
 
-// DELETE /system/indices/index_sets/{id} Delete index set
+// HandleDeleteIndexSet
 func HandleDeleteIndexSet(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// DELETE /system/indices/index_sets/{id} Delete index set
 	id := ps.ByName("indexSetID")
 	if sc, err := ms.Authorize(user, "indexsets:delete", id); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if sc, err := ms.DeleteIndexSet(id); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
-	return 204, nil, nil
+	return nil, 204, nil
 }
 
-// PUT /system/indices/index_sets/{id}/default Set default index set
+// HandleSetDefaultIndexSet
 func HandleSetDefaultIndexSet(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// PUT /system/indices/index_sets/{id}/default Set default index set
 	id := ps.ByName("indexSetID")
 	if sc, err := ms.Authorize(user, "indexsets:edit", id); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	is, sc, err := ms.SetDefaultIndexSet(id)
 	if err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
-	return 200, is, nil
+	return is, 200, nil
 }

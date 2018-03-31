@@ -11,13 +11,14 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
-// POST /users Create a new user account.
+// HandleCreateUser
 func HandleCreateUser(
 	u *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// POST /users Create a new user account.
 	if sc, err := ms.Authorize(u, "users:create"); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	requiredFields := set.NewStrSet(
 		"username", "email", "permissions", "full_name", "password")
@@ -25,7 +26,7 @@ func HandleCreateUser(
 		"startpage", "timezone", "session_timeout_ms", "roles")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 
 	user := &graylog.User{}
@@ -33,56 +34,59 @@ func HandleCreateUser(
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as User")
-		return 400, nil, err
+		return nil, 400, err
 	}
 
 	if sc, err := ms.AddUser(user); err != nil {
 		fmt.Println(sc, err)
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
-	return 201, nil, nil
+	return nil, 201, nil
 }
 
-// GET /users List all users
+// HandleGetUsers
 func HandleGetUsers(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// GET /users List all users
 	users, sc, err := ms.GetUsers()
 	if err != nil {
-		return sc, users, err
+		return nil, sc, err
 	}
-	return sc, &graylog.UsersBody{Users: users}, nil
+	// TODO authorization
+	return &graylog.UsersBody{Users: users}, sc, nil
 }
 
-// GET /users/{username} Get user details
+// HandleGetUser
 func HandleGetUser(
 	u *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// GET /users/{username} Get user details
 	name := ps.ByName("username")
-	user, sc, err := ms.GetUser(name)
-	return sc, user, err
+	// TODO authorization
+	return ms.GetUser(name)
 }
 
 // PUT /users/{username} Modify user details.
 func HandleUpdateUser(
 	u *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
 	userName := ps.ByName("username")
 	if sc, err := ms.Authorize(u, "users:edit", userName); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	// required fields is nil
 	acceptedFields := set.NewStrSet(
 		"email", "permissions", "full_name", "password")
 	body, sc, err := validateRequestBody(r.Body, nil, nil, acceptedFields)
 	if err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 
 	user := &graylog.User{Username: userName}
@@ -90,29 +94,29 @@ func HandleUpdateUser(
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as User")
-		return 400, nil, err
+		return nil, 400, err
 	}
 
 	if sc, err := ms.UpdateUser(user); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
-	return 200, nil, nil
+	return nil, 200, nil
 }
 
 // DELETE /users/{username} Removes a user account
 func HandleDeleteUser(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
 	name := ps.ByName("username")
 	if sc, err := ms.DeleteUser(name); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
-	return 204, nil, nil
+	return nil, 204, nil
 }

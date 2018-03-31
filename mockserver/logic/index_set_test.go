@@ -28,7 +28,7 @@ func TestGetIndexSets(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	indexSets, err := server.GetIndexSets()
+	indexSets, _, err := server.GetIndexSets()
 	if err != nil {
 		t.Fatal("Failed to GetIndexSets", err)
 	}
@@ -103,7 +103,7 @@ func TestDeleteIndexSet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	indexSets, err := server.GetIndexSets()
+	indexSets, _, err := server.GetIndexSets()
 	if err != nil {
 		t.Fatal(err)
 	}

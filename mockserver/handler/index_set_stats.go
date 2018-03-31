@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -9,30 +8,23 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
-// GET /system/indices/index_sets/{id}/stats Get index set statistics
+// HandleGetIndexSetStats
 func HandleGetIndexSetStats(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// GET /system/indices/index_sets/{id}/stats Get index set statistics
+	// TODO authorization
 	id := ps.ByName("indexSetID")
-	indexSetStats, err := ms.GetIndexSetStats(id)
-	if err != nil {
-		return 500, nil, err
-	}
-	if indexSetStats == nil {
-		return 404, nil, fmt.Errorf("no indexSet found with id %s", id)
-	}
-	return 200, indexSetStats, nil
+	return ms.GetIndexSetStats(id)
 }
 
-// GET /system/indices/index_sets/stats Get stats of all index sets
-func HandleGetAllIndexSetsStats(
+// HandleGetTotalIndexSetStats
+func HandleGetTotalIndexSetStats(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
-	s, err := ms.GetTotalIndexSetsStats()
-	if err != nil {
-		return 500, nil, err
-	}
-	return 200, s, nil
+) (interface{}, int, error) {
+	// GET /system/indices/index_sets/stats Get stats of all index sets
+	// TODO authorization
+	return ms.GetTotalIndexSetStats()
 }

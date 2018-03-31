@@ -222,7 +222,7 @@ func TestDeleteIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSets, err := server.GetIndexSets()
+	indexSets, _, err := server.GetIndexSets()
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -10,7 +10,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
-type Handler func(user *graylog.User, ms *logic.Logic, w http.ResponseWriter, r *http.Request, ps httprouter.Params) (int, interface{}, error)
+type Handler func(user *graylog.User, ms *logic.Logic, w http.ResponseWriter, r *http.Request, ps httprouter.Params) (interface{}, int, error)
 
 func wrapHandle(ms *logic.Logic, handler Handler) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -54,7 +54,7 @@ func wrapHandle(ms *logic.Logic, handler Handler) httprouter.Handle {
 			}).Info("request user name")
 		}
 
-		sc, body, err := handler(user, ms, w, r, ps)
+		body, sc, err := handler(user, ms, w, r, ps)
 		if err != nil {
 			w.WriteHeader(sc)
 

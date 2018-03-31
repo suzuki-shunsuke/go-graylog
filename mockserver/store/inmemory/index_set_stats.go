@@ -15,8 +15,8 @@ func (store *InMemoryStore) GetIndexSetStats(id string) (*graylog.IndexSetStats,
 	return nil, nil
 }
 
-// GetTotalIndexSetsStats returns all index set's statistics.
-func (store *InMemoryStore) GetTotalIndexSetsStats() (*graylog.IndexSetStats, error) {
+// GetTotalIndexSetStats returns all index set's statistics.
+func (store *InMemoryStore) GetTotalIndexSetStats() (*graylog.IndexSetStats, error) {
 	indexSetStats := &graylog.IndexSetStats{}
 	for _, stats := range store.indexSetStats {
 		indexSetStats.Indices += stats.Indices

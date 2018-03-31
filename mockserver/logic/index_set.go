@@ -10,7 +10,6 @@ import (
 
 // HasIndexSet
 func (ms *Logic) HasIndexSet(id string) (bool, error) {
-	// TODO authorization
 	return ms.store.HasIndexSet(id)
 }
 
@@ -133,8 +132,12 @@ func (ms *Logic) DeleteIndexSet(id string) (int, error) {
 }
 
 // GetIndexSets returns a list of all index sets.
-func (ms *Logic) GetIndexSets() ([]graylog.IndexSet, error) {
-	return ms.store.GetIndexSets()
+func (ms *Logic) GetIndexSets() ([]graylog.IndexSet, int, error) {
+	iss, err := ms.store.GetIndexSets()
+	if err != nil {
+		return iss, 500, err
+	}
+	return iss, 200, nil
 }
 
 // SetDefaultIndexSet sets a default index set

@@ -10,35 +10,36 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
-// GET /roles/{rolename} Retrieve permissions for a single role
+// HandleGetRole
 func HandleGetRole(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// GET /roles/{rolename} Retrieve permissions for a single role
 	name := ps.ByName("rolename")
 	ms.Logger().WithFields(log.Fields{
 		"handler": "handleGetRole", "rolename": name}).Info("request start")
 	if sc, err := ms.Authorize(user, "roles:read", name); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
-	role, sc, err := ms.GetRole(name)
-	return sc, role, err
+	return ms.GetRole(name)
 }
 
-// PUT /roles/{rolename} Update an existing role
+// HandleUpdateRole
 func HandleUpdateRole(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// PUT /roles/{rolename} Update an existing role
 	name := ps.ByName("rolename")
 	if sc, err := ms.Authorize(user, "roles:edit", name); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	requiredFields := set.NewStrSet("name", "permissions")
 	allowedFields := set.NewStrSet("description", "read_only")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 
 	role := &graylog.Role{}
@@ -46,50 +47,52 @@ func HandleUpdateRole(
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as Role")
-		return 400, nil, err
+		return nil, 400, err
 	}
 
 	if sc, err := ms.UpdateRole(name, role); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
-	return 204, role, nil
+	return role, 204, nil
 }
 
-// DELETE /roles/{rolename} Remove the named role and dissociate any users from it
+// HandleDeleteRole
 func HandleDeleteRole(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// DELETE /roles/{rolename} Remove the named role and dissociate any users from it
 	name := ps.ByName("rolename")
 	if sc, err := ms.Authorize(user, "roles:delete", name); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	sc, err := ms.DeleteRole(name)
 	if err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
-	return 204, nil, nil
+	return nil, 204, nil
 }
 
-// POST /roles Create a new role
+// HandleCreateRole
 func HandleCreateRole(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// POST /roles Create a new role
 	if sc, err := ms.Authorize(user, "roles:create"); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	requiredFields := set.NewStrSet("name", "permissions")
 	allowedFields := set.NewStrSet("description", "read_only")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 
 	role := &graylog.Role{}
@@ -97,26 +100,27 @@ func HandleCreateRole(
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Warn("Failed to parse request body as Role")
-		return 400, nil, err
+		return nil, 400, err
 	}
 
 	if sc, err := ms.AddRole(role); err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
-	return sc, role, nil
+	return role, sc, nil
 }
 
-// GET /roles List all roles
+// HandleGetRoles
 func HandleGetRoles(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// GET /roles List all roles
 	arr, sc, err := ms.GetRoles()
 	if err != nil {
-		return sc, nil, err
+		return arr, sc, err
 	}
-	return sc, &graylog.RolesBody{Roles: arr, Total: len(arr)}, nil
+	return &graylog.RolesBody{Roles: arr, Total: len(arr)}, sc, nil
 }

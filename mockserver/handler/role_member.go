@@ -14,41 +14,44 @@ type membersBody struct {
 	Users []graylog.User `json:"users"`
 }
 
-// GET /roles/{rolename}/members Retrieve the role's members
+// HandleRoleMembers
 func HandleRoleMembers(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// GET /roles/{rolename}/members Retrieve the role's members
 	name := ps.ByName("rolename")
 	ok, sc, err := ms.HasRole(name)
 	if err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if !ok {
-		return 404, nil, fmt.Errorf("no role found with name %s", name)
+		return nil, 404, fmt.Errorf("no role found with name %s", name)
 	}
 	arr, sc, err := ms.RoleMembers(name)
 	if err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	users := &membersBody{Users: arr, Role: name}
-	return sc, users, nil
+	return users, sc, nil
 }
 
-// PUT /roles/{rolename}/members/{username} Add a user to a role
+// HandleAddUserToRole
 func HandleAddUserToRole(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// PUT /roles/{rolename}/members/{username} Add a user to a role
 	sc, err := ms.AddUserToRole(ps.ByName("username"), ps.ByName("rolename"))
-	return sc, nil, err
+	return nil, sc, err
 }
 
-// DELETE /roles/{rolename}/members/{username} Remove a user from a role
+// HandleRemoveUserFromRole
 func HandleRemoveUserFromRole(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
+	// DELETE /roles/{rolename}/members/{username} Remove a user from a role
 	sc, err := ms.RemoveUserFromRole(ps.ByName("username"), ps.ByName("rolename"))
-	return sc, nil, err
+	return nil, sc, err
 }

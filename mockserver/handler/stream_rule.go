@@ -11,32 +11,33 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
+// HandleGetStreamRules
 func HandleGetStreamRules(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
 	// GET /streams/{streamid}/rules Get a list of all stream rules
 	streamID := ps.ByName("streamID")
 	arr, sc, err := ms.GetStreamRules(streamID)
 	if err != nil {
-		return sc, nil, err
+		return nil, sc, err
 	}
-	body := &graylog.StreamRulesBody{StreamRules: arr, Total: len(arr)}
-	return 200, body, nil
+	return &graylog.StreamRulesBody{StreamRules: arr, Total: len(arr)}, 200, nil
 }
 
+// HandleCreateStreamRule
 func HandleCreateStreamRule(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
 	// POST /streams/{streamid}/rules Create a stream rule
 	streamID := ps.ByName("streamID")
 	ok, err := ms.HasStream(streamID)
 	if err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
 	if !ok {
-		return 404, nil, fmt.Errorf("stream <%s> not found!", streamID)
+		return nil, 404, fmt.Errorf("stream <%s> not found!", streamID)
 	}
 
 	requiredFields := set.NewStrSet("value", "field")
@@ -44,7 +45,7 @@ func HandleCreateStreamRule(
 		"value", "type", "description", "inverted", "field")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if sc != 200 {
-		return sc, nil, err
+		return nil, sc, err
 	}
 
 	rule := &graylog.StreamRule{}
@@ -52,7 +53,7 @@ func HandleCreateStreamRule(
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as StreamRule")
-		return 400, nil, err
+		return nil, 400, err
 	}
 	ms.Logger().WithFields(log.Fields{
 		"body": body, "stream_rule": rule,
@@ -64,13 +65,12 @@ func HandleCreateStreamRule(
 		ms.Logger().WithFields(log.Fields{
 			"error": err, "rule": rule,
 		}).Error("Faield to add rule to mock server")
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
-	ret := map[string]string{"streamrule_id": rule.ID}
-	return 201, ret, nil
+	return map[string]string{"streamrule_id": rule.ID}, 201, nil
 }
 
 // null body 415 {"type": "ApiError", "message": "HTTP 415 Unsupported Media Type"}
@@ -78,10 +78,11 @@ func HandleCreateStreamRule(
 // type 400 {"type": "ApiError", "message": "Unknown stream rule type 0"}
 // value, type, description, inverted, field
 
+// HandleUpdateStreamRule
 func HandleUpdateStreamRule(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
 	// PUT /streams/{streamid}/rules/{streamRuleID} Update a stream rule
 	streamID := ps.ByName("streamID")
 	ruleID := ps.ByName("streamRuleID")
@@ -91,14 +92,14 @@ func HandleUpdateStreamRule(
 		"value", "type", "description", "inverted", "field")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if sc != 200 {
-		return sc, nil, err
+		return nil, sc, err
 	}
 	rule := &graylog.StreamRule{}
 	if err := msDecode(body, rule); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as StreamRule")
-		return 400, nil, err
+		return nil, 400, err
 	}
 	ms.Logger().WithFields(log.Fields{
 		"body": body, "stream_rule": rule,
@@ -110,48 +111,34 @@ func HandleUpdateStreamRule(
 		ms.Logger().WithFields(log.Fields{
 			"error": err, "rule": &rule,
 		}).Error("Faield to update stream rule")
-		return sc, nil, err
+		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
-		return 500, nil, err
+		return nil, 500, err
 	}
-	ret := map[string]string{"streamrule_id": rule.ID}
-	return 200, ret, nil
+	return map[string]string{"streamrule_id": rule.ID}, 200, nil
 }
 
+// HandleDeleteStreamRule
 func HandleDeleteStreamRule(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
 	// DELETE /streams/{streamid}/rules/{streamRuleId} Delete a stream rule
 	streamID := ps.ByName("streamID")
 	id := ps.ByName("streamRuleID")
+	// TODO authorization
 	sc, err := ms.DeleteStreamRule(streamID, id)
-	return sc, nil, err
-	ok, err := ms.HasStream(id)
-	if err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err, "id": id,
-		}).Error("ms.HasStream() is failure")
-		return 500, nil, err
-	}
-
-	if !ok {
-		return 404, nil, fmt.Errorf("no stream found with id <%s>", id)
-	}
-	ms.DeleteStream(id)
-	if err := ms.Save(); err != nil {
-		return 500, nil, err
-	}
-	return 204, nil, nil
+	return nil, sc, err
 }
 
+// HandleGetStreamRule
 func HandleGetStreamRule(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (int, interface{}, error) {
+) (interface{}, int, error) {
 	// GET /streams/{streamid}/rules/{streamRuleId} Get a single stream rules
-	rule, sc, err := ms.GetStreamRule(
+	// TODO authorization
+	return ms.GetStreamRule(
 		ps.ByName("streamID"), ps.ByName("streamRuleID"))
-	return sc, rule, err
 }
