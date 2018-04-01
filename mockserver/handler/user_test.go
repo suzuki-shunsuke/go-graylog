@@ -109,9 +109,9 @@ func TestGetUsers(t *testing.T) {
 	if len(users) != 3 {
 		t.Fatalf("len(users) == %d, wanted 3", len(users))
 	}
-	if users[0].Password != user.Password {
+	if users[0].Password != "" {
 		t.Fatalf(
-			"users[0].Password == %v, wanted %v", users[0].Password, user.Password)
+			"users[0].Password == %s, wanted empty", users[0].Password)
 	}
 }
 
@@ -131,8 +131,8 @@ func TestGetUser(t *testing.T) {
 	if err != nil {
 		t.Fatal("Failed to GetUser", err)
 	}
-	if user.Password != exp.Password {
-		t.Fatalf("user.Password %v, wanted %v", user.Password, exp.Password)
+	if user.Password != "" {
+		t.Fatalf("user.Password = %s, wanted empty", user.Password)
 	}
 	if _, _, err := client.GetUser(""); err == nil {
 		t.Fatal("username should be required.")

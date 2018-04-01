@@ -54,6 +54,10 @@ func HandleGetUsers(
 ) (interface{}, int, error) {
 	// GET /users List all users
 	users, sc, err := ms.GetUsers()
+	for i, u := range users {
+		u.Password = ""
+		users[i] = u
+	}
 	if err != nil {
 		return nil, sc, err
 	}
@@ -69,7 +73,11 @@ func HandleGetUser(
 	// GET /users/{username} Get user details
 	name := ps.ByName("username")
 	// TODO authorization
-	return ms.GetUser(name)
+	user, sc, err := ms.GetUser(name)
+	if user != nil {
+		user.Password = ""
+	}
+	return user, sc, err
 }
 
 // HandleUpdateUser
