@@ -21,9 +21,9 @@ func HandleRoleMembers(
 ) (interface{}, int, error) {
 	// GET /roles/{rolename}/members Retrieve the role's members
 	name := ps.ByName("rolename")
-	ok, sc, err := ms.HasRole(name)
+	ok, err := ms.HasRole(name)
 	if err != nil {
-		return nil, sc, err
+		return nil, 500, err
 	}
 	if !ok {
 		return nil, 404, fmt.Errorf("no role found with name %s", name)

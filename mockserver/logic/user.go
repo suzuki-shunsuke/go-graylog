@@ -36,9 +36,9 @@ func (ms *Logic) GetUsers() ([]graylog.User, int, error) {
 func (ms *Logic) checkUserRoles(roles []string) (int, error) {
 	if len(roles) != 0 {
 		for _, roleName := range roles {
-			ok, sc, err := ms.HasRole(roleName)
+			ok, err := ms.HasRole(roleName)
 			if err != nil {
-				return sc, err
+				return 500, err
 			}
 			if !ok {
 				// unfortunately, graylog 2.4.3-1 returns 500 error

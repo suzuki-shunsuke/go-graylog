@@ -8,12 +8,8 @@ import (
 )
 
 // HasRole returns whether the role with given name exists.
-func (ms *Logic) HasRole(name string) (bool, int, error) {
-	ok, err := ms.store.HasRole(name)
-	if err != nil {
-		return false, 500, err
-	}
-	return ok, 200, nil
+func (ms *Logic) HasRole(name string) (bool, error) {
+	return ms.store.HasRole(name)
 }
 
 // GetRole returns a Role.
@@ -34,9 +30,9 @@ func (ms *Logic) AddRole(role *graylog.Role) (int, error) {
 	if err := validator.CreateValidator.Struct(role); err != nil {
 		return 400, err
 	}
-	ok, sc, err := ms.HasRole(role.Name)
+	ok, err := ms.HasRole(role.Name)
 	if err != nil {
-		return sc, err
+		return 500, err
 	}
 	if ok {
 		return 400, fmt.Errorf("Role %s already exists.", role.Name)
@@ -52,17 +48,17 @@ func (ms *Logic) UpdateRole(name string, role *graylog.Role) (int, error) {
 	if err := validator.UpdateValidator.Struct(role); err != nil {
 		return 400, err
 	}
-	ok, sc, err := ms.HasRole(name)
+	ok, err := ms.HasRole(name)
 	if err != nil {
-		return sc, err
+		return 500, err
 	}
 	if !ok {
 		return 404, fmt.Errorf("No role found with name %s", name)
 	}
 	if name != role.Name {
-		ok, sc, err := ms.HasRole(role.Name)
+		ok, err := ms.HasRole(role.Name)
 		if err != nil {
-			return sc, err
+			return 500, err
 		}
 		if ok {
 			return 400, fmt.Errorf("The role %s has already existed.", role.Name)
@@ -76,9 +72,9 @@ func (ms *Logic) UpdateRole(name string, role *graylog.Role) (int, error) {
 
 // DeleteRole deletes a role.
 func (ms *Logic) DeleteRole(name string) (int, error) {
-	ok, sc, err := ms.HasRole(name)
+	ok, err := ms.HasRole(name)
 	if err != nil {
-		return sc, err
+		return 500, err
 	}
 	if !ok {
 		return 404, fmt.Errorf("No role found with name %s", name)

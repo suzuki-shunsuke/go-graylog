@@ -17,17 +17,16 @@ func TestRoleMembers(t *testing.T) {
 			t.Fatal(err)
 		}
 	})
-	// TOTO check graylog REST API spec
-	// t.Run("name is required", func(t *testing.T) {
-	// 	if _, _, err := lgc.RoleMembers(""); err == nil {
-	// 		t.Fatal("name is required")
-	// 	}
-	// })
-	// t.Run("not found", func(t *testing.T) {
-	// 	if _, _, err := lgc.RoleMembers("h"); err == nil {
-	// 		t.Fatal(`no role with name "h"`)
-	// 	}
-	// })
+	t.Run("name is required", func(t *testing.T) {
+		if _, _, err := lgc.RoleMembers(""); err == nil {
+			t.Fatal("name is required")
+		}
+	})
+	t.Run("not found", func(t *testing.T) {
+		if _, _, err := lgc.RoleMembers("h"); err == nil {
+			t.Fatal(`no role with name "h"`)
+		}
+	})
 }
 
 func TestAddUserToRole(t *testing.T) {

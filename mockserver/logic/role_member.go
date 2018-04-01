@@ -9,6 +9,13 @@ import (
 
 // RoleMembers returns members of a given role.
 func (ms *Logic) RoleMembers(name string) ([]graylog.User, int, error) {
+	ok, err := ms.HasRole(name)
+	if err != nil {
+		return nil, 500, err
+	}
+	if !ok {
+		return nil, 404, fmt.Errorf("no role found with name %s", name)
+	}
 	users := []graylog.User{}
 	us, sc, err := ms.GetUsers()
 	if err != nil {
@@ -30,9 +37,9 @@ func (ms *Logic) RoleMembers(name string) ([]graylog.User, int, error) {
 
 // AddUserToRole adds a user to a role.
 func (ms *Logic) AddUserToRole(userName, roleName string) (int, error) {
-	ok, sc, err := ms.HasRole(roleName)
+	ok, err := ms.HasRole(roleName)
 	if err != nil {
-		return sc, err
+		return 500, err
 	}
 	if !ok {
 		return 404, fmt.Errorf("no role found with name %s", roleName)
@@ -54,9 +61,9 @@ func (ms *Logic) AddUserToRole(userName, roleName string) (int, error) {
 func (ms *Logic) RemoveUserFromRole(
 	userName, roleName string,
 ) (int, error) {
-	ok, sc, err := ms.HasRole(roleName)
+	ok, err := ms.HasRole(roleName)
 	if err != nil {
-		return sc, err
+		return 500, err
 	}
 	if !ok {
 		return 404, fmt.Errorf(`no role found with name "%s"`, roleName)
