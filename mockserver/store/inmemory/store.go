@@ -65,6 +65,9 @@ func (store *InMemoryStore) Load() error {
 }
 
 func (store *InMemoryStore) Authorize(user *graylog.User, scope string, args ...string) (bool, error) {
+	if user == nil {
+		return true, nil
+	}
 	perm := scope
 	if len(args) != 0 {
 		perm += ":" + strings.Join(args, ":")
