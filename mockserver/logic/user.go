@@ -87,6 +87,9 @@ func (ms *Logic) AddUser(user *graylog.User) (int, error) {
 // UpdateUser updates a user of the Server.
 // "email", "permissions", "full_name", "password"
 func (ms *Logic) UpdateUser(user *graylog.User) (int, error) {
+	if user == nil {
+		return 400, fmt.Errorf("user is nil")
+	}
 	// Check updated user exists
 	ok, err := ms.HasUser(user.Username)
 	if err != nil {

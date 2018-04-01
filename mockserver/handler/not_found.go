@@ -8,6 +8,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
+// HandleNotFound
 func HandleNotFound(ms *logic.Logic) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ms.Logger().WithFields(log.Fields{

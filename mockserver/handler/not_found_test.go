@@ -14,7 +14,7 @@ func TestServerHandleNotFound(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	endpoint := fmt.Sprintf("%s/dummy", server.GetEndpoint())
+	endpoint := fmt.Sprintf("%s/dummy", server.Endpoint())
 	req, err := http.NewRequest(http.MethodGet, endpoint, nil)
 	if err != nil {
 		t.Fatal(err)

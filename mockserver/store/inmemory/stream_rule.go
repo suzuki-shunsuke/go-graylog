@@ -46,6 +46,9 @@ func (store *InMemoryStore) GetStreamRules(id string) ([]graylog.StreamRule, err
 
 // AddStreamRule adds a stream rule.
 func (store *InMemoryStore) AddStreamRule(rule *graylog.StreamRule) error {
+	if rule == nil {
+		return fmt.Errorf("rule is nil")
+	}
 	rules, ok := store.streamRules[rule.StreamID]
 	if !ok {
 		rules = map[string]graylog.StreamRule{}
@@ -57,12 +60,12 @@ func (store *InMemoryStore) AddStreamRule(rule *graylog.StreamRule) error {
 
 // UpdateStreamRule updates a stream rule.
 func (store *InMemoryStore) UpdateStreamRule(rule *graylog.StreamRule) error {
+	if rule == nil {
+		return fmt.Errorf("rule is nil")
+	}
 	rules, ok := store.streamRules[rule.StreamID]
 	if !ok {
 		return fmt.Errorf("no stream with id <%s> is found", rule.StreamID)
-	}
-	if _, ok := rules[rule.ID]; !ok {
-		return fmt.Errorf("no stream rule with id <%s> is found", rule.ID)
 	}
 	rules[rule.ID] = *rule
 	store.streamRules[rule.StreamID] = rules

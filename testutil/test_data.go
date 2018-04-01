@@ -119,6 +119,14 @@ func DummyStream() *graylog.Stream {
 	}
 }
 
+func StreamRule() *graylog.StreamRule {
+	return &graylog.StreamRule{
+		Type:  1,
+		Value: "test",
+		Field: "tag",
+	}
+}
+
 func DummyNewStreamRule() *graylog.StreamRule {
 	return &graylog.StreamRule{
 		Type:  1,

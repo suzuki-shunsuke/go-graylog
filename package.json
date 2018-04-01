@@ -6,6 +6,8 @@
     "test": "go test ./... -covermode=atomic",
     "cover-client": "make cover-client",
     "cover-mockserver": "make cover-mockserver",
+    "cover-logic": "make cover-logic",
+    "cover-inmemory": "make cover-inmemory",
     "build": "make build",
     "upload": "make upload",
     "fmt": "git ls-files | grep .go | xargs gofmt -l -s -w"

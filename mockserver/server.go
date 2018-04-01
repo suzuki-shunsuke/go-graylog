@@ -58,7 +58,7 @@ func (ms *Server) Close() {
 	ms.server.Close()
 }
 
-// GetEndpoint returns the endpoint url.
-func (ms *Server) GetEndpoint() string {
+// Endpoint returns the endpoint url.
+func (ms *Server) Endpoint() string {
 	return ms.endpoint
 }

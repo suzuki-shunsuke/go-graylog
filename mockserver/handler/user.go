@@ -72,11 +72,12 @@ func HandleGetUser(
 	return ms.GetUser(name)
 }
 
-// PUT /users/{username} Modify user details.
+// HandleUpdateUser
 func HandleUpdateUser(
 	u *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
+	// PUT /users/{username} Modify user details.
 	userName := ps.ByName("username")
 	if sc, err := ms.Authorize(u, "users:edit", userName); err != nil {
 		return nil, sc, err
@@ -106,12 +107,14 @@ func HandleUpdateUser(
 	return nil, 200, nil
 }
 
-// DELETE /users/{username} Removes a user account
+// HandleDeleteUser
 func HandleDeleteUser(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
+	// DELETE /users/{username} Removes a user account
 	name := ps.ByName("username")
+	// TODO authorization
 	if sc, err := ms.DeleteUser(name); err != nil {
 		return nil, sc, err
 	}

@@ -19,6 +19,9 @@ func (ms *Logic) GetIndexSetStats(id string) (*graylog.IndexSetStats, int, error
 	if err != nil {
 		return nil, 500, err
 	}
+	if stats == nil {
+		return &graylog.IndexSetStats{}, 200, err
+	}
 	return stats, 200, nil
 }
 

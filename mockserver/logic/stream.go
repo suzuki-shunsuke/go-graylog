@@ -14,8 +14,15 @@ func (ms *Logic) HasStream(id string) (bool, error) {
 }
 
 // GetStream returns a stream.
-func (ms *Logic) GetStream(id string) (*graylog.Stream, error) {
-	return ms.store.GetStream(id)
+func (ms *Logic) GetStream(id string) (*graylog.Stream, int, error) {
+	stream, err := ms.store.GetStream(id)
+	if err != nil {
+		return nil, 500, err
+	}
+	if stream == nil {
+		return nil, 404, fmt.Errorf("no stream found with id <%s>", id)
+	}
+	return stream, 200, nil
 }
 
 // AddStream adds a stream to the Server.
@@ -81,8 +88,8 @@ func (ms *Logic) GetStreams() ([]graylog.Stream, int, error) {
 	return streams, 200, nil
 }
 
-// EnabledStreamList returns all enabled streams.
-func (ms *Logic) EnabledStreamList() ([]graylog.Stream, int, error) {
+// GetEnabledStreams returns all enabled streams.
+func (ms *Logic) GetEnabledStreams() ([]graylog.Stream, int, error) {
 	streams, err := ms.store.GetEnabledStreams()
 	if err != nil {
 		return nil, 500, err

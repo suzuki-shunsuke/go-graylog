@@ -29,3 +29,39 @@ func TestRoleMembers(t *testing.T) {
 	// 	}
 	// })
 }
+
+func TestAddUserToRole(t *testing.T) {
+	lgc, err := logic.NewLogic(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Run("user name is required", func(t *testing.T) {
+		if _, err := lgc.AddUserToRole("", "Admin"); err == nil {
+			t.Fatal("user name is required")
+		}
+	})
+	t.Run("role name is required", func(t *testing.T) {
+		if _, err := lgc.AddUserToRole("admin", ""); err == nil {
+			t.Fatal("role name is required")
+		}
+	})
+}
+
+func TestRemoveUserFromRole(t *testing.T) {
+	lgc, err := logic.NewLogic(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Run("user name is required", func(t *testing.T) {
+		if _, err := lgc.RemoveUserFromRole("", "Admin"); err == nil {
+			t.Fatal("user name is required")
+		}
+	})
+	t.Run("role name is required", func(t *testing.T) {
+		if _, err := lgc.RemoveUserFromRole("admin", ""); err == nil {
+			t.Fatal("role name is required")
+		}
+	})
+}

@@ -65,7 +65,7 @@ func HandleGetEnabledStreams(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /streams/enabled Get a list of all enabled streams
-	arr, sc, err := ms.EnabledStreamList()
+	arr, sc, err := ms.GetEnabledStreams()
 	if err != nil {
 		return nil, sc, err
 	}
@@ -85,17 +85,7 @@ func HandleGetStream(
 	if sc, err := ms.Authorize(user, "streams:read", id); err != nil {
 		return nil, sc, err
 	}
-	stream, err := ms.GetStream(id)
-	if err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err, "id": id,
-		}).Error("ms.GetStream() is failure")
-		return nil, 500, err
-	}
-	if stream == nil {
-		return nil, 404, fmt.Errorf("no stream found with id <%s>", id)
-	}
-	return stream, 200, nil
+	return ms.GetStream(id)
 }
 
 // HandleUpdateStream
@@ -108,15 +98,9 @@ func HandleUpdateStream(
 	if sc, err := ms.Authorize(user, "streams:edit", id); err != nil {
 		return nil, sc, err
 	}
-	stream, err := ms.GetStream(id)
+	stream, sc, err := ms.GetStream(id)
 	if err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err, "id": id,
-		}).Error("ms.GetStream() is failure")
-		return nil, 500, err
-	}
-	if stream == nil {
-		return nil, 404, fmt.Errorf("no stream found with id <%s>", id)
+		return nil, sc, err
 	}
 	data := map[string]interface{}{}
 

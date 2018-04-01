@@ -32,7 +32,7 @@ func GetServerAndClient() (*mockserver.Server, *client.Client, error) {
 			return nil, nil, errors.Wrap(err, "Failed to get Mock Server")
 		}
 		server.SetAuth(true)
-		endpoint = server.GetEndpoint()
+		endpoint = server.Endpoint()
 	}
 	client, err := client.NewClient(endpoint, authName, authPass)
 	if err != nil {

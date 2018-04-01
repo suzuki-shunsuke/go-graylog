@@ -20,7 +20,7 @@ func wrapHandle(ms *logic.Logic, handler Handler) httprouter.Handle {
 		w.Header().Set("Content-Type", "application/json")
 		// authentication
 		var user *graylog.User
-		if ms.GetAuth() {
+		if ms.Auth() {
 			authName, authPass, ok := r.BasicAuth()
 			if !ok {
 				ms.Logger().WithFields(log.Fields{

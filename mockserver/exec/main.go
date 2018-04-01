@@ -68,7 +68,7 @@ log-level must be any of debug|info|warn|error|fatal|panic .`, logLevel)
 	server.Start()
 	defer server.Close()
 	server.Logger().Infof(
-		"Start Graylog mock server: %s\nCtrl + C to stop server", server.GetEndpoint())
+		"Start Graylog mock server: %s\nCtrl + C to stop server", server.Endpoint())
 	signal_chan := make(chan os.Signal, 1)
 	signal.Notify(
 		signal_chan, syscall.SIGHUP, syscall.SIGINT,

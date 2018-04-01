@@ -10,6 +10,12 @@ cover-client: coverage
 cover-mockserver: coverage *.go mockserver/*.go
 	go test ./mockserver -coverprofile=coverage/mockserver.txt -covermode=atomic
 	go tool cover -html=coverage/mockserver.txt
+cover-logic: coverage
+	go test ./mockserver/logic -coverprofile=coverage/logic.txt -covermode=atomic
+	go tool cover -html=coverage/logic.txt
+cover-inmemory: coverage
+	go test ./mockserver/store/inmemory -coverprofile=coverage/inmemory.txt -covermode=atomic
+	go tool cover -html=coverage/inmemory.txt
 graylog-mock-server: *.go mockserver/*.go mockserver/exec/main.go
 	go build -o graylog-mock-server mockserver/exec/main.go
 # https://github.com/mitchellh/gox

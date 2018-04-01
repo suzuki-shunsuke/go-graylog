@@ -63,8 +63,8 @@ func (ms *Logic) SetAuth(authEnabled bool) {
 	ms.authEnabled = authEnabled
 }
 
-// GetAuth reruns whether the authentication and authentication are enabled.
-func (ms *Logic) GetAuth() bool {
+// Auth returns whether the authentication and authentication are enabled.
+func (ms *Logic) Auth() bool {
 	return ms.authEnabled
 }
 

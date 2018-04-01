@@ -5,5 +5,5 @@ import (
 )
 
 func NewObjectID() string {
-	return bson.NewObjectId().String()
+	return bson.NewObjectId().Hex()
 }

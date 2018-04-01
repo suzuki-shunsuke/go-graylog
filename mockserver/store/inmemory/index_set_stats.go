@@ -1,8 +1,6 @@
 package inmemory
 
 import (
-	"fmt"
-
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
@@ -27,13 +25,6 @@ func (store *InMemoryStore) GetTotalIndexSetStats() (*graylog.IndexSetStats, err
 }
 
 func (store *InMemoryStore) SetIndexSetStats(id string, stats *graylog.IndexSetStats) error {
-	ok, err := store.HasIndexSet(id)
-	if err != nil {
-		return err
-	}
-	if !ok {
-		return fmt.Errorf("no index set with id <%s> is found", id)
-	}
 	store.indexSetStats[id] = *stats
 	return nil
 }

@@ -62,11 +62,12 @@ func HandleUpdateInput(
 	return input, 200, nil
 }
 
-// DELETE /system/inputs/{inputID} Terminate input on this node
+// HandleDeleteInput
 func HandleDeleteInput(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
+	// DELETE /system/inputs/{inputID} Terminate input on this node
 	id := ps.ByName("inputID")
 	if sc, err := ms.Authorize(user, "inputs:terminate", id); err != nil {
 		return nil, sc, err
@@ -115,11 +116,12 @@ func HandleCreateInput(
 	return &d, 201, nil
 }
 
-// GET /system/inputs Get all inputs
+// HandleGetInputs
 func HandleGetInputs(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
+	// GET /system/inputs Get all inputs
 	arr, sc, err := ms.GetInputs()
 	if err != nil {
 		return arr, sc, err
