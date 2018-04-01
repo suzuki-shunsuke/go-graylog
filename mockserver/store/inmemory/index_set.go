@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/suzuki-shunsuke/go-graylog"
+	st "github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 )
 
 // HasIndexSet
@@ -38,8 +39,14 @@ func (store *InMemoryStore) SetDefaultIndexSetID(id string) error {
 }
 
 // AddIndexSet adds an index set to the store.
-func (store *InMemoryStore) AddIndexSet(indexSet *graylog.IndexSet) error {
-	store.indexSets[indexSet.ID] = *indexSet
+func (store *InMemoryStore) AddIndexSet(is *graylog.IndexSet) error {
+	if is == nil {
+		return fmt.Errorf("index set is nil")
+	}
+	if is.ID == "" {
+		is.ID = st.NewObjectID()
+	}
+	store.indexSets[is.ID] = *is
 	return nil
 }
 

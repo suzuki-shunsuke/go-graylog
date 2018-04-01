@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/suzuki-shunsuke/go-graylog"
+	st "github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 )
 
 // HasStreamRule
@@ -52,6 +53,9 @@ func (store *InMemoryStore) AddStreamRule(rule *graylog.StreamRule) error {
 	rules, ok := store.streamRules[rule.StreamID]
 	if !ok {
 		rules = map[string]graylog.StreamRule{}
+	}
+	if rule.ID == "" {
+		rule.ID = st.NewObjectID()
 	}
 	rules[rule.ID] = *rule
 	store.streamRules[rule.StreamID] = rules

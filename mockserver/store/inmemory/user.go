@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/suzuki-shunsuke/go-graylog"
+	st "github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 )
 
 // HasUser
@@ -35,6 +36,12 @@ func (store *InMemoryStore) GetUsers() ([]graylog.User, error) {
 
 // AddUser adds a user to the InMemoryStore.
 func (store *InMemoryStore) AddUser(user *graylog.User) error {
+	if user == nil {
+		return fmt.Errorf("user is nil")
+	}
+	if user.ID == "" {
+		user.ID = st.NewObjectID()
+	}
 	store.users[user.Username] = *user
 	return nil
 }

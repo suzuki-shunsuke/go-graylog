@@ -1,7 +1,10 @@
 package inmemory
 
 import (
+	"fmt"
+
 	"github.com/suzuki-shunsuke/go-graylog"
+	st "github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 )
 
 // HasStream
@@ -21,6 +24,13 @@ func (store *InMemoryStore) GetStream(id string) (*graylog.Stream, error) {
 
 // AddStream adds a stream to the store.
 func (store *InMemoryStore) AddStream(stream *graylog.Stream) error {
+	if stream == nil {
+		return fmt.Errorf("stream is nil")
+	}
+	if stream.ID == "" {
+		stream.ID = st.NewObjectID()
+	}
+
 	store.streams[stream.ID] = *stream
 	return nil
 }

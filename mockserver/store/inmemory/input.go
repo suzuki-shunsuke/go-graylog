@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/suzuki-shunsuke/go-graylog"
+	st "github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 )
 
 // HasInput
@@ -23,6 +24,12 @@ func (store *InMemoryStore) GetInput(id string) (*graylog.Input, error) {
 
 // AddInput adds an input to the store.
 func (store *InMemoryStore) AddInput(input *graylog.Input) error {
+	if input == nil {
+		return fmt.Errorf("input is nil")
+	}
+	if input.ID == "" {
+		input.ID = st.NewObjectID()
+	}
 	store.inputs[input.ID] = *input
 	return nil
 }

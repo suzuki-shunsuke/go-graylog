@@ -35,7 +35,6 @@ func (ms *Logic) AddInput(input *graylog.Input) (int, error) {
 	if err := validator.CreateValidator.Struct(input); err != nil {
 		return 400, err
 	}
-	input.ID = randStringBytesMaskImprSrc(24)
 	if err := ms.store.AddInput(input); err != nil {
 		return 500, err
 	}

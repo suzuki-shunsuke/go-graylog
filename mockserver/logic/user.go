@@ -74,9 +74,6 @@ func (ms *Logic) AddUser(user *graylog.User) (int, error) {
 		}
 	}
 
-	// generate ID
-	user.ID = randStringBytesMaskImprSrc(24)
-
 	// Add a user
 	if err := ms.store.AddUser(user); err != nil {
 		return 500, err

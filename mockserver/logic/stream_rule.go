@@ -25,7 +25,6 @@ func (ms *Logic) AddStreamRule(rule *graylog.StreamRule) (int, error) {
 	if !ok {
 		return 404, fmt.Errorf("no stream is not found: <%s>", rule.StreamID)
 	}
-	rule.ID = randStringBytesMaskImprSrc(24)
 	if err := ms.store.AddStreamRule(rule); err != nil {
 		return 500, err
 	}

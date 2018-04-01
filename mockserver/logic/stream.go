@@ -30,7 +30,6 @@ func (ms *Logic) AddStream(stream *graylog.Stream) (int, error) {
 	if err := validator.CreateValidator.Struct(stream); err != nil {
 		return 400, err
 	}
-	stream.ID = randStringBytesMaskImprSrc(24)
 	if err := ms.store.AddStream(stream); err != nil {
 		return 500, err
 	}

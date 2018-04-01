@@ -61,9 +61,6 @@ func (ms *Logic) AddIndexSet(is *graylog.IndexSet) (int, error) {
 	if err := validator.CreateValidator.Struct(is); err != nil {
 		return 400, err
 	}
-	if is.ID == "" {
-		is.ID = randStringBytesMaskImprSrc(24)
-	}
 	is.Default = false
 	if err := ms.store.AddIndexSet(is); err != nil {
 		return 500, err
