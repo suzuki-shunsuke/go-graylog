@@ -7,7 +7,7 @@
 [![GitHub tag](https://img.shields.io/github/tag/suzuki-shunsuke/go-graylog.svg)](https://github.com/suzuki-shunsuke/go-graylog/releases)
 [![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://raw.githubusercontent.com/suzuki-shunsuke/go-graylog/master/LICENSE)
 
-Graylog API client and mock server for golang.
+Graylog API client and mock server for golang and terraform provider for Graylog.
 
 ## Example 1 - Create and update a role
 
@@ -19,6 +19,7 @@ import (
 	"os"
 
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-set"
 )
 
 func main() {
@@ -29,7 +30,7 @@ func main() {
 	}
 	params := &graylog.Role{
 		Name: "foo", Description: "description",
-		Permissions: []string{"users:list"}}
+		Permissions: set.NewStrSet("users:list")}
 	role, ei, err := client.CreateRole(params)
 	fmt.Println(role, ei, err)
 
@@ -49,7 +50,7 @@ if err != nil {
 }
 server.Start()
 defer server.Close()
-client, err := NewClient(server.Endpoint, "admin", "password")
+client, err := NewClient(server.Endpoint(), "admin", "password")
 if err != nil {
 	t.Error("Failed to NewClient", err)
 	return
@@ -89,7 +90,7 @@ OPTIONS:
 
 We use [the graylog's official Docker Image](https://hub.docker.com/r/graylog/graylog/) .
 
-The version is `2.4.0-1` .
+The version is `2.4.3-1` .
 
 ## Contribution
 
@@ -97,7 +98,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) .
 
 ## See also
 
-* [terraform-provider-graylog](https://github.com/suzuki-shunsuke/terraform-provider-graylog)
+* [terraform-provider-graylog](https://github.com/suzuki-shunsuke/go-graylog/terraform)
 
 ## License
 
