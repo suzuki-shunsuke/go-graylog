@@ -29,20 +29,17 @@ func NewServer(addr string, store store.Store) (*Server, error) {
 		return nil, err
 	}
 	ms := &Server{
-		Logic: srv,
+		Logic:  srv,
+		server: httptest.NewUnstartedServer(handler.NewRouter(srv)),
 	}
-
-	server := httptest.NewUnstartedServer(handler.NewRouter(srv))
 	if addr != "" {
 		ln, err := net.Listen("tcp", addr)
 		if err != nil {
 			return nil, err
 		}
-		server.Listener = ln
+		ms.server.Listener = ln
 	}
-	u := fmt.Sprintf("http://%s/api", server.Listener.Addr().String())
-	ms.endpoint = u
-	ms.server = server
+	ms.endpoint = fmt.Sprintf("http://%s/api", ms.server.Listener.Addr().String())
 	return ms, nil
 }
 

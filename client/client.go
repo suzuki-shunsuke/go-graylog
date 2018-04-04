@@ -8,7 +8,6 @@ import (
 type Client struct {
 	name      string
 	password  string
-	endpoint  *url.URL
 	Endpoints *Endpoints
 }
 
@@ -27,12 +26,17 @@ func NewClient(endpoint, name, password string) (*Client, error) {
 	}, nil
 }
 
-// GetName returns authentication name.
+// Name returns authentication name.
 func (client *Client) Name() string {
 	return client.name
 }
 
-// GetName returns authentication password.
+// Password returns authentication password.
 func (client *Client) Password() string {
 	return client.password
+}
+
+// Endpoint returns API endpoint.
+func (client *Client) Endpoint() *url.URL {
+	return client.Endpoints.Endpoint
 }

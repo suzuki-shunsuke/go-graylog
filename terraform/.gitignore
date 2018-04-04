@@ -1,0 +1,11 @@
+terraform-provider-graylog
+vendor
+.terraform
+*.log
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfvars
+variables.tf
+node_modules
+coverage.txt
+dist

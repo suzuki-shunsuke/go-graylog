@@ -36,7 +36,9 @@ func GetServerAndClient() (*mockserver.Server, *client.Client, error) {
 	}
 	client, err := client.NewClient(endpoint, authName, authPass)
 	if err != nil {
-		server.Close()
+		if server != nil {
+			server.Close()
+		}
 		return nil, nil, errors.Wrap(err, "NewClient is failure")
 	}
 	if server != nil {
