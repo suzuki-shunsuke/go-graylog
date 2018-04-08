@@ -85,13 +85,13 @@ resource "graylog_role" "test-terraform" {
 		Providers:    testAccProviders,
 		CheckDestroy: testDeleteRole(cl, name),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: roleTf,
 				Check: resource.ComposeTestCheckFunc(
 					testCreateRole(cl, name),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: updateTf,
 				Check: resource.ComposeTestCheckFunc(
 					testUpdateRole(cl, name, description),

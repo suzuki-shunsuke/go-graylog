@@ -111,13 +111,13 @@ func TestAccInput(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testDeleteInput(cl, key),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: string(b),
 				Check: resource.ComposeTestCheckFunc(
 					testCreateInput(cl, key),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: string(ub),
 				Check: resource.ComposeTestCheckFunc(
 					testUpdateInput(cl, key, input.Title),

@@ -134,13 +134,13 @@ func TestAccStream(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testDeleteStream(cl, key),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: string(b),
 				Check: resource.ComposeTestCheckFunc(
 					testCreateStream(cl, server, key),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: string(updateByte),
 				Check: resource.ComposeTestCheckFunc(
 					testUpdateStream(cl, key, stream.Title),

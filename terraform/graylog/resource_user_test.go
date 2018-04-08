@@ -92,13 +92,13 @@ resource "graylog_user" "zoo" {
 		Providers:    testAccProviders,
 		CheckDestroy: testDeleteUser(cl, name),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: userTf,
 				Check: resource.ComposeTestCheckFunc(
 					testCreateUser(cl, name),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: updateTf,
 				Check: resource.ComposeTestCheckFunc(
 					testUpdateUser(cl, name, fullName),

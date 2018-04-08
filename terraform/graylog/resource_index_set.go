@@ -19,69 +19,69 @@ func resourceIndexSet() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			// Required
-			"title": &schema.Schema{
+			"title": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"index_prefix": &schema.Schema{
+			"index_prefix": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"rotation_strategy_class": &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			// type required
-			"rotation_strategy": &schema.Schema{
-				Type:     schema.TypeMap,
-				Required: true,
-			},
-			"retention_strategy_class": &schema.Schema{
+			"rotation_strategy_class": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
 			// type required
-			"retention_strategy": &schema.Schema{
+			"rotation_strategy": {
 				Type:     schema.TypeMap,
 				Required: true,
 			},
-			"creation_date": &schema.Schema{
+			"retention_strategy_class": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"index_analyzer": &schema.Schema{
+			// type required
+			"retention_strategy": {
+				Type:     schema.TypeMap,
+				Required: true,
+			},
+			"creation_date": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"index_analyzer": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
 			// >= 1
-			"shards": &schema.Schema{
+			"shards": {
 				Type:     schema.TypeInt,
 				Required: true,
 			},
 			// >= 1
-			"index_optimization_max_num_segments": &schema.Schema{
+			"index_optimization_max_num_segments": {
 				Type:     schema.TypeInt,
 				Required: true,
 			},
 
 			// Optional
-			"description": &schema.Schema{
+			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"replicas": &schema.Schema{
+			"replicas": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"index_optimization_disabled": &schema.Schema{
+			"index_optimization_disabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"writable": &schema.Schema{
+			"writable": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"default": &schema.Schema{
+			"default": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},

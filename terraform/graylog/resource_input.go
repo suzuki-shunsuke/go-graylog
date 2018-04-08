@@ -19,32 +19,32 @@ func resourceInput() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			// required
-			"title": &schema.Schema{
+			"title": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"configuration": &schema.Schema{
+			"configuration": {
 				Type:     schema.TypeMap,
 				Required: true,
 			},
-			"type": &schema.Schema{
+			"type": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
 
-			"global": &schema.Schema{
+			"global": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"node": &schema.Schema{
+			"node": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"created_at": &schema.Schema{
+			"created_at": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"creator_user_id": &schema.Schema{
+			"creator_user_id": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},

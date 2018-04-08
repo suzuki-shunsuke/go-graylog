@@ -123,13 +123,13 @@ func TestAccIndexSet(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testDeleteIndexSet(cl, server, key),
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: string(b),
 				Check: resource.ComposeTestCheckFunc(
 					testCreateIndexSet(cl, server, key),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: string(ub),
 				Check: resource.ComposeTestCheckFunc(
 					testUpdateIndexSet(cl, key, is.Title),

@@ -7,18 +7,18 @@ import (
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			"web_endpoint_uri": &schema.Schema{
+			"web_endpoint_uri": {
 				Type:        schema.TypeString,
 				Required:    true,
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"GRAYLOG_WEB_ENDPOINT_URI"}, nil),
 			},
-			"auth_name": &schema.Schema{
+			"auth_name": {
 				Type:     schema.TypeString,
 				Required: true,
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{
 					"GRAYLOG_AUTH_NAME"}, nil),
 			},
-			"auth_password": &schema.Schema{
+			"auth_password": {
 				Type:     schema.TypeString,
 				Required: true,
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{

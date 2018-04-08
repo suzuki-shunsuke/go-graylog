@@ -20,53 +20,53 @@ func resourceUser() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			// Required
-			"username": &schema.Schema{
+			"username": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"password": &schema.Schema{
+			"password": {
 				Type:      schema.TypeString,
 				Required:  true,
 				Sensitive: true,
 			},
-			"email": &schema.Schema{
+			"email": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"permissions": &schema.Schema{
+			"permissions": {
 				Type:     schema.TypeList,
 				Required: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			"full_name": &schema.Schema{
+			"full_name": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
 
 			// Optional
-			"roles": &schema.Schema{
+			"roles": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			"user_id": &schema.Schema{
+			"user_id": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Computed: true,
 			},
-			"timezone": &schema.Schema{
+			"timezone": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"session_timeout_ms": &schema.Schema{
+			"session_timeout_ms": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"external": &schema.Schema{
+			"external": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"read_only": &schema.Schema{
+			"read_only": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
@@ -78,7 +78,7 @@ func resourceUser() *schema.Resource {
 			// 	Type:     schema.TypeString,
 			// 	Required: false,
 			// },
-			"client_address": &schema.Schema{
+			"client_address": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},

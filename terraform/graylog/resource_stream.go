@@ -19,48 +19,48 @@ func resourceStream() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			// Required
-			"title": &schema.Schema{
+			"title": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"index_set_id": &schema.Schema{
+			"index_set_id": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
 
 			// Optional
 			// rules
-			"description": &schema.Schema{
+			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
 			// content_pack
-			"matching_type": &schema.Schema{
+			"matching_type": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"remove_matches_from_default_stream": &schema.Schema{
+			"remove_matches_from_default_stream": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
 
 			// attributes
-			"creator_user_id": &schema.Schema{
+			"creator_user_id": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Computed: true,
 			},
 			// outputs
-			"created_at": &schema.Schema{
+			"created_at": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Computed: true,
 			},
-			"disabled": &schema.Schema{
+			"disabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"is_default": &schema.Schema{
+			"is_default": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
