@@ -107,7 +107,7 @@ func TestGetIndexSets(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSets, _, _, err := client.GetIndexSets(0, 0)
+	indexSets, _, _, _, err := client.GetIndexSets(0, 0)
 	if err != nil {
 		t.Fatal("Failed to GetIndexSets", err)
 	}

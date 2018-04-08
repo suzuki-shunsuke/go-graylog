@@ -39,7 +39,7 @@ func TestGetInputs(t *testing.T) {
 		defer server.Close()
 	}
 
-	inputs, _, err := client.GetInputs()
+	inputs, _, _, err := client.GetInputs()
 	if err != nil {
 		t.Fatal(err)
 	}

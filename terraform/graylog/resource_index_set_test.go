@@ -96,20 +96,20 @@ func TestAccIndexSet(t *testing.T) {
 		Writable:                        true,
 		Default:                         false}
 
-	tfConf := &TFConf{
+	tc := &tfConf{
 		Resource: map[string]map[string]interface{}{
 			"graylog_index_set": {"test": is}},
 	}
 
-	b, err := json.Marshal(tfConf)
+	b, err := json.Marshal(tc)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	is.Title = "terraform test index set title updated"
-	tfConf.Resource["graylog_index_set"]["test"] = is
+	tc.Resource["graylog_index_set"]["test"] = is
 
-	ub, err := json.Marshal(tfConf)
+	ub, err := json.Marshal(tc)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -99,7 +99,7 @@ func TestGetRoles(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	roles, _, err := client.GetRoles()
+	roles, _, _, err := client.GetRoles()
 	if err != nil {
 		t.Fatal("Failed to GetRoles", err)
 	}

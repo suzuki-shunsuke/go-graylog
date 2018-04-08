@@ -85,19 +85,19 @@ func TestAccInput(t *testing.T) {
 			RecvBufferSize: 262144,
 		},
 	}
-	tfConf := &TFConf{
+	tc := &tfConf{
 		Resource: map[string]map[string]interface{}{
 			"graylog_input": {"test": input}},
 	}
 
-	b, err := json.Marshal(tfConf)
+	b, err := json.Marshal(tc)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	input.Title = "terraform test input title updated"
-	tfConf.Resource["graylog_input"]["test"] = input
-	ub, err := json.Marshal(tfConf)
+	tc.Resource["graylog_input"]["test"] = input
+	ub, err := json.Marshal(tc)
 	if err != nil {
 		t.Fatal(err)
 	}

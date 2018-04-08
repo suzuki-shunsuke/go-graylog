@@ -1,6 +1,7 @@
 // Run Graylog mock server.
+//
 // Usage
-// $ graylog-mock-server [--port <port number>] [--log-level debug|info|warn|error|fatal|panic] [--data <data-file-path>]
+//   $ graylog-mock-server [--port <port number>] [--log-level debug|info|warn|error|fatal|panic] [--data <data-file-path>]
 package main
 
 import (

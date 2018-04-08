@@ -9,55 +9,9 @@
 
 Graylog API client and mock server for golang and terraform provider for Graylog.
 
-## Example 1 - Create and update a role
+## Example - client and mock server
 
-```golang
-package main
-
-import (
-	"fmt"
-	"os"
-
-	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-set"
-)
-
-func main() {
-	client, err := graylog.NewClient("http://localhost:9000/api", "admin", "admin")
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "Failed to NewClient", err)
-		os.Exit(1)
-	}
-	params := &graylog.Role{
-		Name: "foo", Description: "description",
-		Permissions: set.NewStrSet("users:list")}
-	role, ei, err := client.CreateRole(params)
-	fmt.Println(role, ei, err)
-
-	params.Name = "bar"
-	role, ei, err = client.UpdateRole("foo", params)
-	fmt.Println(role, ei, err)
-}
-```
-
-## Example 2 - Run a mock server in the program
-
-```golang
-server, err := NewServer("")
-if err != nil {
-	t.Error("Failed to Get Mock Server", err)
-	return
-}
-server.Start()
-defer server.Close()
-client, err := NewClient(server.Endpoint(), "admin", "password")
-if err != nil {
-	t.Error("Failed to NewClient", err)
-	return
-}
-params := &Role{Name: "foo", Permissions: []string{"*"}}
-role, ei, err := client.CreateRole(params)
-```
+* http://localhost:6060/pkg/github.com/suzuki-shunsuke/go-graylog/client/#example_Client
 
 ## Mock Server CLI tool
 

@@ -41,7 +41,7 @@ func GetRoleOrCreate(cl *client.Client, name string) (*graylog.Role, error) {
 }
 
 func GetIndexSet(cl *client.Client, server *mockserver.Server, prefix string) (*graylog.IndexSet, func(string), error) {
-	iss, _, _, err := cl.GetIndexSets(0, 0)
+	iss, _, _, _, err := cl.GetIndexSets(0, 0)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -105,18 +105,18 @@ func TestAccStream(t *testing.T) {
 		MatchingType: "AND",
 	}
 
-	tfConf := &TFConf{
+	tc := &tfConf{
 		Resource: map[string]map[string]interface{}{
 			"graylog_stream":    {"test": stream},
 			"graylog_index_set": {"test": indexSet}},
 	}
 
-	b, err := json.Marshal(tfConf)
+	b, err := json.Marshal(tc)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	updateConf := *tfConf
+	updateConf := *tc
 	stream.Title = "terraform test updated"
 	updateConf.Resource["graylog_stream"]["test"] = stream
 

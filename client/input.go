@@ -26,18 +26,18 @@ func (client *Client) CreateInputContext(
 }
 
 // GetInputs returns all inputs.
-func (client *Client) GetInputs() ([]graylog.Input, *ErrorInfo, error) {
+func (client *Client) GetInputs() ([]graylog.Input, int, *ErrorInfo, error) {
 	return client.GetInputsContext(context.Background())
 }
 
 // GetInputsContext returns all inputs with a context.
 func (client *Client) GetInputsContext(ctx context.Context) (
-	[]graylog.Input, *ErrorInfo, error,
+	[]graylog.Input, int, *ErrorInfo, error,
 ) {
 	inputs := &graylog.InputsBody{}
 	ei, err := client.callGet(
 		ctx, client.Endpoints.Inputs, nil, inputs)
-	return inputs.Inputs, ei, err
+	return inputs.Inputs, inputs.Total, ei, err
 }
 
 // GetInput returns a given input.

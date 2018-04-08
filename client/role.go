@@ -24,18 +24,18 @@ func (client *Client) CreateRoleContext(
 }
 
 // GetRoles returns all roles.
-func (client *Client) GetRoles() ([]graylog.Role, *ErrorInfo, error) {
+func (client *Client) GetRoles() ([]graylog.Role, int, *ErrorInfo, error) {
 	return client.GetRolesContext(context.Background())
 }
 
 // GetRolesContext returns all roles with a context.
 func (client *Client) GetRolesContext(ctx context.Context) (
-	[]graylog.Role, *ErrorInfo, error,
+	[]graylog.Role, int, *ErrorInfo, error,
 ) {
 	roles := &graylog.RolesBody{}
 	ei, err := client.callGet(
 		ctx, client.Endpoints.Roles, nil, roles)
-	return roles.Roles, ei, err
+	return roles.Roles, roles.Total, ei, err
 }
 
 // GetRole returns a given role.

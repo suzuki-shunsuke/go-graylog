@@ -4,10 +4,8 @@
 
 * https://github.com/golang/go/wiki/CodeReviewComments
 * [AngularJS Commit Message Format](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#commit-message-format)
-* Format with `go fmt`
-* Limit all lines to a maximum of 79 characters as much as possible
+* Format with `npm run fmt`
 * Write tests and comments
-* Pay attention to the test covarage
 
 ## Steps
 
@@ -38,13 +36,7 @@ $ npm
 ## Test
 
 ```
-$ make test
-```
-
-Confirm coverage at the web browser.
-
-```
-$ make cover
+$ npm t
 ```
 
 ## Commit Message Format
@@ -67,5 +59,17 @@ $ git push origin master --follow-tags
 ## Coding Guide
 
 * https://github.com/golang/go/wiki/CodeReviewComments
-* Format with `go fmt`
-* Limit all lines to a maximum of 79 characters as much as possible
+* Format with `npm run fmt`
+
+## docker-compose.yml
+
+```
+$ cp docker-compose.yml.tmpl docker-compose.yml
+$ docker-compose up -d
+```
+
+## env.sh
+
+```
+$ cp env.sh.tmpl env.sh
+```

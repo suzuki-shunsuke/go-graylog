@@ -15,7 +15,7 @@ func TestGetIndexSets(t *testing.T) {
 		defer server.Close()
 	}
 
-	if _, _, _, err := client.GetIndexSets(0, 0); err != nil {
+	if _, _, _, _, err := client.GetIndexSets(0, 0); err != nil {
 		t.Fatal(err)
 	}
 }

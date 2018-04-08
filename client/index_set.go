@@ -11,18 +11,18 @@ import (
 // GetIndexSets returns a list of all index sets.
 func (client *Client) GetIndexSets(
 	skip, limit int,
-) ([]graylog.IndexSet, *graylog.IndexSetStats, *ErrorInfo, error) {
+) ([]graylog.IndexSet, *graylog.IndexSetStats, int, *ErrorInfo, error) {
 	return client.GetIndexSetsContext(context.Background(), skip, limit)
 }
 
 // GetIndexSetsContext returns a list of all index sets with a context.
 func (client *Client) GetIndexSetsContext(
 	ctx context.Context, skip, limit int,
-) ([]graylog.IndexSet, *graylog.IndexSetStats, *ErrorInfo, error) {
+) ([]graylog.IndexSet, *graylog.IndexSetStats, int, *ErrorInfo, error) {
 	indexSets := &graylog.IndexSetsBody{}
 	ei, err := client.callGet(
 		ctx, client.Endpoints.IndexSets, nil, indexSets)
-	return indexSets.IndexSets, indexSets.Stats, ei, err
+	return indexSets.IndexSets, indexSets.Stats, indexSets.Total, ei, err
 }
 
 // GetIndexSet returns a given index set.

@@ -112,6 +112,6 @@ func getIdFromTfState(tfState *terraform.State, key string) (string, error) {
 	return id, nil
 }
 
-type TFConf struct {
+type tfConf struct {
 	Resource map[string]map[string]interface{} `json:"resource"`
 }
