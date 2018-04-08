@@ -38,6 +38,7 @@ func (ms *Logic) AddStream(stream *graylog.Stream) (int, error) {
 
 // UpdateStream updates a stream at the Server.
 func (ms *Logic) UpdateStream(stream *graylog.Stream) (int, error) {
+	// TODO The default stream cannot be edited.
 	if stream == nil {
 		return 400, fmt.Errorf("stream is nil")
 	}

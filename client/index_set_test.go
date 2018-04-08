@@ -2,30 +2,9 @@ package client_test
 
 import (
 	"testing"
-	"time"
 
-	"github.com/suzuki-shunsuke/go-graylog/mockserver"
-	"github.com/suzuki-shunsuke/go-graylog/test"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
-
-func waitAfterCreateIndexSet(server *mockserver.Server) {
-	// At real graylog API we need to sleep
-	// 404 Index set not found.
-	if server == nil {
-		// time.Sleep(1 * time.Second)
-		time.Sleep(875 * time.Millisecond)
-	}
-}
-
-func waitAfterDeleteIndexSet(server *mockserver.Server) {
-	// At real graylog API we need to sleep
-	// 404 Index set not found.
-	if server == nil {
-		// time.Sleep(1 * time.Second)
-		time.Sleep(935 * time.Millisecond)
-	}
-}
 
 func TestGetIndexSets(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
@@ -50,29 +29,24 @@ func TestGetIndexSet(t *testing.T) {
 		defer server.Close()
 	}
 
-	// success
-	is := testutil.IndexSet("hoge")
-	if _, err := client.CreateIndexSet(is); err != nil {
+	is, f, err := testutil.GetIndexSet(client, server, "hoge")
+	if err != nil {
 		t.Fatal(err)
 	}
-	waitAfterCreateIndexSet(server)
-	id := is.ID
-	// clean
-	defer func(id string) {
-		if _, err := client.DeleteIndexSet(id); err != nil {
-			t.Fatal(err)
-		}
-		waitAfterDeleteIndexSet(server)
-	}(id)
-	r, _, err := client.GetIndexSet(id)
+	if f != nil {
+		defer f(is.ID)
+	}
+
+	// success
+	r, _, err := client.GetIndexSet(is.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if r == nil {
 		t.Fatal("indexSet is nil")
 	}
-	if r.ID != id {
-		t.Fatalf(`indexSet.ID = "%s", wanted "%s"`, r.ID, id)
+	if r.ID != is.ID {
+		t.Fatalf(`indexSet.ID = "%s", wanted "%s"`, r.ID, is.ID)
 	}
 	// id is required
 	if _, _, err := client.GetIndexSet(""); err == nil {
@@ -102,13 +76,13 @@ func TestCreateIndexSet(t *testing.T) {
 	if _, err := client.CreateIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
-	waitAfterCreateIndexSet(server)
+	testutil.WaitAfterCreateIndexSet(server)
 	// clean
 	defer func() {
 		if _, err := client.DeleteIndexSet(is.ID); err != nil {
 			t.Fatal(err)
 		}
-		waitAfterDeleteIndexSet(server)
+		testutil.WaitAfterDeleteIndexSet(server)
 	}()
 }
 
@@ -121,19 +95,13 @@ func TestUpdateIndexSet(t *testing.T) {
 		defer server.Close()
 	}
 
-	is := testutil.IndexSet("hoge")
-	if _, err := client.CreateIndexSet(is); err != nil {
+	is, f, err := testutil.GetIndexSet(client, server, "hoge")
+	if err != nil {
 		t.Fatal(err)
 	}
-	waitAfterCreateIndexSet(server)
-	id := is.ID
-	// clean
-	defer func(id string) {
-		if _, err := client.DeleteIndexSet(id); err != nil {
-			t.Fatal(err)
-		}
-		waitAfterDeleteIndexSet(server)
-	}(id)
+	if f != nil {
+		defer f(is.ID)
+	}
 	// success
 	if _, err := client.UpdateIndexSet(is); err != nil {
 		t.Fatal(err)
@@ -171,8 +139,4 @@ func TestDeleteIndexSet(t *testing.T) {
 	if _, err := client.DeleteIndexSet("h"); err == nil {
 		t.Fatal(`no index set with id "h" is found`)
 	}
-}
-
-func TestSetDefaultIndexSet(t *testing.T) {
-	test.TestSetDefaultIndexSet(t)
 }

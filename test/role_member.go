@@ -11,7 +11,9 @@ func TestGetRoleMembers(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer server.Close()
+	if server != nil {
+		defer server.Close()
+	}
 	users, _, err := client.GetRoleMembers("Admin")
 	if err != nil {
 		t.Fatal("Failed to GetRoleMembers", err)
@@ -32,9 +34,23 @@ func TestAddUserToRole(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer server.Close()
-	if _, err = client.AddUserToRole("admin", "Admin"); err != nil {
-		t.Fatal("Failed to AddUserToRole", err)
+	if server != nil {
+		defer server.Close()
+	}
+	user, err := testutil.GetNonAdminUser(client)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if user == nil {
+		user = testutil.User()
+		user.Username = "foo"
+		if _, err := client.CreateUser(user); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err = client.AddUserToRole(user.Username, "Admin"); err != nil {
+		// Cannot modify local root user, this is a bug.
+		t.Fatal(err)
 	}
 	if _, err = client.AddUserToRole("", "Admin"); err == nil {
 		t.Fatal("user name is required")
@@ -55,20 +71,34 @@ func TestRemoveUserFromRole(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer server.Close()
-	if _, err = client.RemoveUserFromRole("admin", "Admin"); err != nil {
-		t.Fatal("Failed to RemoveUserFromRole", err)
+	if server != nil {
+		defer server.Close()
+	}
+	user, err := testutil.GetNonAdminUser(client)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if user == nil {
+		user = testutil.User()
+		user.Username = "foo"
+		if _, err := client.CreateUser(user); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err = client.RemoveUserFromRole(user.Username, "Admin"); err != nil {
+		// Cannot modify local root user, this is a bug.
+		t.Fatal(err)
 	}
 	if _, err = client.RemoveUserFromRole("", "Admin"); err == nil {
 		t.Fatal("user name is required")
 	}
-	if _, err = client.RemoveUserFromRole("admin", ""); err == nil {
+	if _, err = client.RemoveUserFromRole(user.Username, ""); err == nil {
 		t.Fatal("role name is required")
 	}
 	if _, err = client.RemoveUserFromRole("h", "Admin"); err == nil {
 		t.Fatal(`no user whose name is "h"`)
 	}
-	if _, err = client.RemoveUserFromRole("admin", "h"); err == nil {
+	if _, err = client.RemoveUserFromRole(user.Username, "h"); err == nil {
 		t.Fatal(`no role whose name is "h"`)
 	}
 }

@@ -6,3 +6,5 @@ node_modules
 *.log
 graylog-mock-server
 dist
+docker-compose.yml
+env.sh

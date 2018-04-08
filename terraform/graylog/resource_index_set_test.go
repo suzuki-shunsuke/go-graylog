@@ -10,16 +10,19 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver"
+	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
 func testDeleteIndexSet(
-	cl *client.Client, key string,
+	cl *client.Client, server *mockserver.Server, key string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
 		id, err := getIdFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}
+		testutil.WaitAfterDeleteIndexSet(server)
 		if _, _, err := cl.GetIndexSet(id); err == nil {
 			return fmt.Errorf(`indexSet "%s" must be deleted`, id)
 		}
@@ -28,13 +31,14 @@ func testDeleteIndexSet(
 }
 
 func testCreateIndexSet(
-	cl *client.Client, key string,
+	cl *client.Client, server *mockserver.Server, key string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
 		id, err := getIdFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}
+		testutil.WaitAfterCreateIndexSet(server)
 
 		if _, _, err := cl.GetIndexSet(id); err != nil {
 			return err
@@ -76,19 +80,15 @@ func TestAccIndexSet(t *testing.T) {
 	}
 
 	is := &graylog.IndexSet{
-		Title:                 "terraform test index set title",
-		Description:           "terraform test index set description",
-		IndexPrefix:           "terraform-test",
-		Shards:                4,
-		Replicas:              0,
-		RotationStrategyClass: "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy",
-		RotationStrategy: &graylog.RotationStrategy{
-			Type:            "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig",
-			MaxDocsPerIndex: 20000000},
-		RetentionStrategyClass: "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy",
-		RetentionStrategy: &graylog.RetentionStrategy{
-			Type:               "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig",
-			MaxNumberOfIndices: 20},
+		Title:                           "terraform test index set title",
+		Description:                     "terraform test index set description",
+		IndexPrefix:                     "terraform-test",
+		Shards:                          4,
+		Replicas:                        0,
+		RotationStrategyClass:           graylog.MESSAGE_COUNT_ROTATION_STRATEGY,
+		RotationStrategy:                graylog.NewMessageCountRotationStrategy(0),
+		RetentionStrategyClass:          graylog.DELETION_RETENTION_STRATEGY_CLASS,
+		RetentionStrategy:               graylog.NewDeletionRetentionStrategy(0),
 		CreationDate:                    "2018-02-20T11:37:19.305Z",
 		IndexAnalyzer:                   "standard",
 		IndexOptimizationMaxNumSegments: 1,
@@ -121,12 +121,12 @@ func TestAccIndexSet(t *testing.T) {
 	}
 	resource.Test(t, resource.TestCase{
 		Providers:    testAccProviders,
-		CheckDestroy: testDeleteIndexSet(cl, key),
+		CheckDestroy: testDeleteIndexSet(cl, server, key),
 		Steps: []resource.TestStep{
 			resource.TestStep{
 				Config: string(b),
 				Check: resource.ComposeTestCheckFunc(
-					testCreateIndexSet(cl, key),
+					testCreateIndexSet(cl, server, key),
 				),
 			},
 			resource.TestStep{

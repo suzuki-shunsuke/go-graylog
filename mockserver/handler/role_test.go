@@ -138,29 +138,29 @@ func TestUpdateRole(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	admin, _, err := server.GetRole("Admin")
+	role, err := testutil.GetRoleOrCreate(client, "foo")
 	if err != nil {
 		t.Fatal(err)
 	}
-	admin.Description = "changed!"
-	if _, err := client.UpdateRole(admin.Name, admin); err != nil {
-		t.Fatal("Failed to UpdateRole", err)
+	role.Description += " changed!"
+	if _, err := client.UpdateRole(role.Name, role); err != nil {
+		t.Fatal(err)
 	}
-	if _, err := client.UpdateRole("", admin); err == nil {
+	if _, err := client.UpdateRole("", role); err == nil {
 		t.Fatal("role name is required")
 	}
-	if _, err := client.UpdateRole("h", admin); err == nil {
+	if _, err := client.UpdateRole("h", role); err == nil {
 		t.Fatal(`no role whose name is "h"`)
 	}
 
-	copiedAdmin := *admin
-	admin.Name = ""
-	if _, err := client.UpdateRole(copiedAdmin.Name, admin); err == nil {
+	cRole := *role
+	role.Name = ""
+	if _, err := client.UpdateRole(cRole.Name, role); err == nil {
 		t.Fatal("role name is required")
 	}
-	admin.Name = copiedAdmin.Name
-	admin.Permissions = nil
-	if _, err := client.UpdateRole(copiedAdmin.Name, admin); err == nil {
+	role.Name = cRole.Name
+	role.Permissions = nil
+	if _, err := client.UpdateRole(role.Name, role); err == nil {
 		t.Fatal("role permissions is required")
 	}
 }
@@ -171,7 +171,11 @@ func TestDeleteRole(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	if _, err = client.DeleteRole("Admin"); err != nil {
+	role, err := testutil.GetRoleOrCreate(client, "foo")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = client.DeleteRole(role.Name); err != nil {
 		t.Fatal("Failed to DeleteRole", err)
 	}
 	if _, err = client.DeleteRole(""); err == nil {

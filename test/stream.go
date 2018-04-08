@@ -11,27 +11,15 @@ func TestGetEnabledStreams(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer server.Close()
-	streams, total, _, err := client.GetEnabledStreams()
+	if server != nil {
+		defer server.Close()
+	}
+	_, total, _, err := client.GetEnabledStreams()
 	if err != nil {
 		t.Fatal("Failed to GetStreams", err)
 	}
 	if total != 1 {
 		t.Fatalf("total == %d, wanted %d", total, 1)
-	}
-
-	stream := streams[0]
-
-	stream.Disabled = true
-	if _, err := server.UpdateStream(&stream); err != nil {
-		t.Fatal(err)
-	}
-	streams, total, _, err = client.GetEnabledStreams()
-	if err != nil {
-		t.Fatal("Failed to GetStreams", err)
-	}
-	if total != 0 {
-		t.Fatalf("total == %d, wanted %d", total, 0)
 	}
 }
 
@@ -40,15 +28,21 @@ func TestUpdateStream(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer server.Close()
-	_, stream, err := addDummyStream(server)
+	if server != nil {
+		defer server.Close()
+	}
+
+	stream, f, err := testutil.GetStream(client, server, 2)
 	if err != nil {
 		t.Fatal(err)
+	}
+	if f != nil {
+		defer f(stream.ID)
 	}
 
 	stream.Description = "changed!"
 	if _, err := client.UpdateStream(stream); err != nil {
-		t.Fatal("Failed to UpdateStream", err)
+		t.Fatal(err)
 	}
 	stream.ID = ""
 	if _, err := client.UpdateStream(stream); err == nil {
@@ -68,12 +62,14 @@ func TestPauseStream(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer server.Close()
-	_, stream, err := addDummyStream(server)
+	if server != nil {
+		defer server.Close()
+	}
+	streams, _, _, err := client.GetStreams()
 	if err != nil {
 		t.Fatal(err)
 	}
-
+	stream := streams[0]
 	if _, err = client.PauseStream(stream.ID); err != nil {
 		t.Fatal("Failed to PauseStream", err)
 	}
@@ -91,11 +87,14 @@ func TestResumeStream(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer server.Close()
-	_, stream, err := addDummyStream(server)
+	if server != nil {
+		defer server.Close()
+	}
+	streams, _, _, err := client.GetStreams()
 	if err != nil {
 		t.Fatal(err)
 	}
+	stream := streams[0]
 
 	if _, err = client.ResumeStream(stream.ID); err != nil {
 		t.Fatal("Failed to ResumeStream", err)

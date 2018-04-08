@@ -74,6 +74,7 @@ func (ms *Logic) AddUser(user *graylog.User) (int, error) {
 		}
 	}
 
+	user.SetDefaultValues()
 	// Add a user
 	if err := ms.store.AddUser(user); err != nil {
 		return 500, err
@@ -107,6 +108,7 @@ func (ms *Logic) UpdateUser(user *graylog.User) (int, error) {
 			return sc, err
 		}
 	}
+	user.SetDefaultValues()
 
 	// update
 	if err := ms.store.UpdateUser(user); err != nil {
@@ -125,7 +127,10 @@ func (ms *Logic) DeleteUser(name string) (int, error) {
 	if !ok {
 		return 404, fmt.Errorf(`the user "%s" is not found`, name)
 	}
-
+	if name == "admin" {
+		// graylog spec
+		return 404, fmt.Errorf(`the user "%s" is not found`, name)
+	}
 	// Delete a user
 	if err := ms.store.DeleteUser(name); err != nil {
 		return 500, err

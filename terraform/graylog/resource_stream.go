@@ -98,6 +98,13 @@ func resourceStreamCreate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 	d.SetId(stream.ID)
+	// resume if needed
+	disabled := d.Get("disabled").(bool)
+	if !disabled {
+		if _, err := cl.ResumeStream(stream.ID); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

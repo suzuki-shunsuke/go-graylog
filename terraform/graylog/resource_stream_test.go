@@ -10,6 +10,8 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver"
+	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
 func testDeleteStream(
@@ -28,13 +30,14 @@ func testDeleteStream(
 }
 
 func testCreateStream(
-	cl *client.Client, key string,
+	cl *client.Client, server *mockserver.Server, key string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
 		id, err := getIdFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}
+		testutil.WaitAfterCreateIndexSet(server)
 
 		if _, _, err := cl.GetStream(id); err != nil {
 			return err
@@ -134,7 +137,7 @@ func TestAccStream(t *testing.T) {
 			resource.TestStep{
 				Config: string(b),
 				Check: resource.ComposeTestCheckFunc(
-					testCreateStream(cl, key),
+					testCreateStream(cl, server, key),
 				),
 			},
 			resource.TestStep{

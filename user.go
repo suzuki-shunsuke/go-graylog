@@ -6,21 +6,29 @@ import (
 
 // User represents a user.
 type User struct {
+	// a unique user name used to log in with.
 	// ex. "local:admin"
-	Username    string      `json:"username,omitempty" v-create:"required" v-update:"required"`
+	Username string `json:"username,omitempty" v-create:"required" v-update:"required"`
+	// the contact email address
 	Email       string      `json:"email,omitempty" v-create:"required"`
 	Permissions *set.StrSet `json:"permissions,omitempty" v-create:"required"`
-	FullName    string      `json:"full_name,omitempty" v-create:"required"`
-	Password    string      `json:"password,omitempty" v-create:"required"`
+	// a descriptive name for this account, e.g. the full name.
+	FullName string `json:"full_name,omitempty" v-create:"required"`
+	Password string `json:"password,omitempty" v-create:"required"`
 
 	ID          string       `json:"id,omitempty"`
 	Preferences *Preferences `json:"preferences,omitempty"`
+	// the timezone to use to display times, or leave it as it is to use the system's default.
 	// ex. "UTC"
 	Timezone string `json:"timezone,omitempty"`
+	// Session automatically end after this amount of time, unless they are actively used.
 	// ex. 28800000
 	SessionTimeoutMs int        `json:"session_timeout_ms,omitempty"`
 	External         bool       `json:"external,omitempty"`
 	Startpage        *Startpage `json:"startpage,omitempty"`
+	// Assign the relevant roles to this user to grant them access to the relevant streams and dashboards.
+	// The Reader role grants basic access to the system and will be enabled.
+	// The Admin role grants access to everything in Graylog.
 	// ex. ["Admin"]
 	Roles         *set.StrSet `json:"roles,omitempty"`
 	ReadOnly      bool        `json:"read_only,omitempty"`
@@ -45,4 +53,14 @@ type Startpage struct {
 
 type UsersBody struct {
 	Users []User `json:"users"`
+}
+
+// SetDefaultValues sets default values.
+func (user *User) SetDefaultValues() {
+	if user.SessionTimeoutMs == 0 {
+		user.SessionTimeoutMs = 28800000
+	}
+	if user.Timezone == "" {
+		user.Timezone = "UTC"
+	}
 }

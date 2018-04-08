@@ -61,21 +61,14 @@ func Input() *graylog.Input {
 
 func IndexSet(prefix string) *graylog.IndexSet {
 	return &graylog.IndexSet{
-		Title:                 "Default index set",
-		Description:           "The Graylog default index set",
-		IndexPrefix:           prefix,
-		Shards:                4,
-		Replicas:              0,
-		RotationStrategyClass: "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy",
-		RotationStrategy: &graylog.RotationStrategy{
-			Type:            "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig",
-			MaxDocsPerIndex: 20000000},
-		RetentionStrategyClass: "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy",
-		RetentionStrategy: &graylog.RetentionStrategy{
-			Type:               "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig",
-			MaxNumberOfIndices: 20},
-		CreationDate:                    "2018-02-20T11:37:19.305Z",
-		IndexAnalyzer:                   "standard",
+		Title:                           "Default index set",
+		Description:                     "The Graylog default index set",
+		IndexPrefix:                     prefix,
+		Replicas:                        0,
+		RotationStrategyClass:           graylog.MESSAGE_COUNT_ROTATION_STRATEGY,
+		RotationStrategy:                graylog.NewMessageCountRotationStrategy(0),
+		RetentionStrategyClass:          graylog.DELETION_RETENTION_STRATEGY_CLASS,
+		RetentionStrategy:               graylog.NewDeletionRetentionStrategy(0),
 		IndexOptimizationMaxNumSegments: 1,
 		IndexOptimizationDisabled:       false,
 		Writable:                        true,

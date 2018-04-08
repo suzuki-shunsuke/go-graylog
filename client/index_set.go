@@ -55,6 +55,8 @@ func (client *Client) CreateIndexSetContext(
 	if is == nil {
 		return nil, fmt.Errorf("index set is nil")
 	}
+	is.SetCreateDefaultValues()
+
 	return client.callPost(ctx, client.Endpoints.IndexSets, is, is)
 }
 

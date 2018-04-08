@@ -15,6 +15,7 @@ func (ms *Logic) HasStreamRule(streamID, streamRuleID string) (bool, error) {
 
 // AddStreamRule adds a stream rule to the Server.
 func (ms *Logic) AddStreamRule(rule *graylog.StreamRule) (int, error) {
+	// TODO Cannot add stream rules to the default stream.
 	if err := validator.CreateValidator.Struct(rule); err != nil {
 		return 400, err
 	}

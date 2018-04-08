@@ -31,6 +31,7 @@ func (ms *Logic) GetIndexSet(id string) (*graylog.IndexSet, int, error) {
 
 // AddIndexSet adds an index set to the Mock Server.
 func (ms *Logic) AddIndexSet(is *graylog.IndexSet) (int, error) {
+	// Class org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy not subtype of [simple type, class org.graylog2.plugin.indexer.rotation.RotationStrategyConfig] (through reference chain: org.graylog2.rest.resources.system.indexer.responses.IndexSetSummary["rotation_strategy"])
 	if is == nil {
 		return 400, fmt.Errorf("index set is nil")
 	}
@@ -58,6 +59,7 @@ func (ms *Logic) AddIndexSet(is *graylog.IndexSet) (int, error) {
 		}
 		return 200, nil
 	}
+	is.SetCreateDefaultValues()
 	if err := validator.CreateValidator.Struct(is); err != nil {
 		return 400, err
 	}

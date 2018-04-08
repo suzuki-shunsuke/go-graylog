@@ -45,9 +45,15 @@ func (ms *Logic) AddUserToRole(userName, roleName string) (int, error) {
 		return 404, fmt.Errorf("no role found with name %s", roleName)
 	}
 
+	if userName == "admin" {
+		return 500, fmt.Errorf("cannot modify local root user, this is a bug")
+	}
 	user, sc, err := ms.GetUser(userName)
 	if err != nil {
 		return sc, err
+	}
+	if user == nil {
+		return 404, fmt.Errorf("no user found with name %s", userName)
 	}
 	if user.Roles == nil {
 		user.Roles = set.NewStrSet(roleName)
@@ -69,9 +75,15 @@ func (ms *Logic) RemoveUserFromRole(
 		return 404, fmt.Errorf(`no role found with name "%s"`, roleName)
 	}
 
+	if userName == "admin" {
+		return 500, fmt.Errorf("cannot modify local root user, this is a bug")
+	}
 	user, sc, err := ms.GetUser(userName)
 	if err != nil {
 		return sc, err
+	}
+	if user == nil {
+		return 404, fmt.Errorf("no user found with name %s", userName)
 	}
 	if user.Roles != nil {
 		user.Roles.Remove(roleName)

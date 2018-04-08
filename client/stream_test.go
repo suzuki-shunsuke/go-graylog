@@ -40,13 +40,13 @@ func TestCreateStream(t *testing.T) {
 	if _, err := client.CreateIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
-	waitAfterCreateIndexSet(server)
+	testutil.WaitAfterCreateIndexSet(server)
 	// clean
 	defer func(id string) {
 		if _, err := client.DeleteIndexSet(id); err != nil {
 			t.Fatal(err)
 		}
-		waitAfterDeleteIndexSet(server)
+		testutil.WaitAfterDeleteIndexSet(server)
 	}(is.ID)
 
 	stream := testutil.Stream()
@@ -75,10 +75,10 @@ func TestGetStream(t *testing.T) {
 	if _, err := client.CreateIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
-	waitAfterCreateIndexSet(server)
+	testutil.WaitAfterCreateIndexSet(server)
 	defer func(id string) {
 		client.DeleteIndexSet(id)
-		waitAfterDeleteIndexSet(server)
+		testutil.WaitAfterDeleteIndexSet(server)
 	}(is.ID)
 	stream := testutil.Stream()
 	stream.IndexSetID = is.ID

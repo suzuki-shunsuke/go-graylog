@@ -37,6 +37,9 @@ func (ms *Logic) AddRole(role *graylog.Role) (int, error) {
 	if ok {
 		return 400, fmt.Errorf("Role %s already exists.", role.Name)
 	}
+	if role.Name != "Admin" && role.Name != "Reader" {
+		role.ReadOnly = false
+	}
 	if err := ms.store.AddRole(role); err != nil {
 		return 500, err
 	}
@@ -48,12 +51,9 @@ func (ms *Logic) UpdateRole(name string, role *graylog.Role) (int, error) {
 	if err := validator.UpdateValidator.Struct(role); err != nil {
 		return 400, err
 	}
-	ok, err := ms.HasRole(name)
+	r, sc, err := ms.GetRole(name)
 	if err != nil {
-		return 500, err
-	}
-	if !ok {
-		return 404, fmt.Errorf("No role found with name %s", name)
+		return sc, err
 	}
 	if name != role.Name {
 		ok, err := ms.HasRole(role.Name)
@@ -64,6 +64,12 @@ func (ms *Logic) UpdateRole(name string, role *graylog.Role) (int, error) {
 			return 400, fmt.Errorf("The role %s has already existed.", role.Name)
 		}
 	}
+	if r.ReadOnly {
+		return 400, fmt.Errorf("cannot update read only role %s", role.Name)
+	}
+	if role.Name != "Admin" && role.Name != "Reader" {
+		role.ReadOnly = false
+	}
 	if err := ms.store.UpdateRole(name, role); err != nil {
 		return 500, err
 	}
@@ -72,12 +78,12 @@ func (ms *Logic) UpdateRole(name string, role *graylog.Role) (int, error) {
 
 // DeleteRole deletes a role.
 func (ms *Logic) DeleteRole(name string) (int, error) {
-	ok, err := ms.HasRole(name)
+	role, sc, err := ms.GetRole(name)
 	if err != nil {
-		return 500, err
+		return sc, err
 	}
-	if !ok {
-		return 404, fmt.Errorf("No role found with name %s", name)
+	if role.ReadOnly {
+		return 400, fmt.Errorf("cannot delete read only role %s", name)
 	}
 	if err := ms.store.DeleteRole(name); err != nil {
 		return 500, err
