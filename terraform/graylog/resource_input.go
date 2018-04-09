@@ -43,10 +43,12 @@ func resourceInput() *schema.Resource {
 			"created_at": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Computed: true,
 			},
 			"creator_user_id": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Computed: true,
 			},
 			// "attributes": &schema.Schema{
 			// 	Type:     schema.TypeString,

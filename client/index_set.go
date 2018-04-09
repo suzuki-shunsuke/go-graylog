@@ -3,6 +3,8 @@ package client
 import (
 	"context"
 	"fmt"
+	"net/url"
+	"strconv"
 
 	"github.com/pkg/errors"
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -10,18 +12,24 @@ import (
 
 // GetIndexSets returns a list of all index sets.
 func (client *Client) GetIndexSets(
-	skip, limit int,
+	skip, limit int, stats bool,
 ) ([]graylog.IndexSet, *graylog.IndexSetStats, int, *ErrorInfo, error) {
-	return client.GetIndexSetsContext(context.Background(), skip, limit)
+	return client.GetIndexSetsContext(context.Background(), skip, limit, stats)
 }
 
 // GetIndexSetsContext returns a list of all index sets with a context.
 func (client *Client) GetIndexSetsContext(
-	ctx context.Context, skip, limit int,
+	ctx context.Context, skip, limit int, stats bool,
 ) ([]graylog.IndexSet, *graylog.IndexSetStats, int, *ErrorInfo, error) {
 	indexSets := &graylog.IndexSetsBody{}
+	v := url.Values{
+		"skip":  []string{strconv.Itoa(skip)},
+		"limit": []string{strconv.Itoa(limit)},
+		"stats": []string{strconv.FormatBool(stats)},
+	}
+	u := fmt.Sprintf("%s?%s", client.Endpoints.IndexSets, v.Encode())
 	ei, err := client.callGet(
-		ctx, client.Endpoints.IndexSets, nil, indexSets)
+		ctx, u, nil, indexSets)
 	return indexSets.IndexSets, indexSets.Stats, indexSets.Total, ei, err
 }
 

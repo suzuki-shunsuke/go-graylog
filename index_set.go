@@ -40,7 +40,7 @@ type IndexSet struct {
 	RetentionStrategyClass string             `json:"retention_strategy_class,omitempty" v-create:"required" v-update:"required"`
 	RetentionStrategy      *RetentionStrategy `json:"retention_strategy,omitempty" v-create:"required" v-update:"required"`
 	// ex. "2018-02-20T11:37:19.305Z"
-	CreationDate                    string `json:"creation_date,omitempty" v-update:"required"`
+	CreationDate                    string `json:"creation_date,omitempty"`
 	IndexAnalyzer                   string `json:"index_analyzer,omitempty" v-create:"required" v-update:"required"`
 	Shards                          int    `json:"shards,omitempty" v-create:"required" v-update:"required"`
 	IndexOptimizationMaxNumSegments int    `json:"index_optimization_max_num_segments,omitempty" v-create:"required" v-update:"required"`

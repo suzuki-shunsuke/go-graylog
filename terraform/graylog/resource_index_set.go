@@ -45,10 +45,6 @@ func resourceIndexSet() *schema.Resource {
 				Type:     schema.TypeMap,
 				Required: true,
 			},
-			"creation_date": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
 			"index_analyzer": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -65,6 +61,11 @@ func resourceIndexSet() *schema.Resource {
 			},
 
 			// Optional
+			"creation_date": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
 			"description": {
 				Type:     schema.TypeString,
 				Optional: true,

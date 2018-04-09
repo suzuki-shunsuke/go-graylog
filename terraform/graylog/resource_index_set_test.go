@@ -89,7 +89,6 @@ func TestAccIndexSet(t *testing.T) {
 		RotationStrategy:                graylog.NewMessageCountRotationStrategy(0),
 		RetentionStrategyClass:          graylog.DELETION_RETENTION_STRATEGY_CLASS,
 		RetentionStrategy:               graylog.NewDeletionRetentionStrategy(0),
-		CreationDate:                    "2018-02-20T11:37:19.305Z",
 		IndexAnalyzer:                   "standard",
 		IndexOptimizationMaxNumSegments: 1,
 		IndexOptimizationDisabled:       false,

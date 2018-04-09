@@ -11,7 +11,7 @@ Graylog API client and mock server for golang and terraform provider for Graylog
 
 ## Example - client and mock server
 
-* http://localhost:6060/pkg/github.com/suzuki-shunsuke/go-graylog/client/#example_Client
+* https://godoc.org/github.com/suzuki-shunsuke/go-graylog/client/#example_Client
 
 ## Mock Server CLI tool
 

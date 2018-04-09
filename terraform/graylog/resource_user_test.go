@@ -70,8 +70,6 @@ resource "graylog_user" "zoo" {
   email = "zoo@example.com"
   full_name = "zooull"
   permissions = ["users:read:zoo"]
-	session_timeout_ms = 28800000
-	timezone = "UTC"
 }`, name)
 	fullName := "new full name"
 	updateTf := fmt.Sprintf(`
@@ -81,8 +79,6 @@ resource "graylog_user" "zoo" {
   email = "zoo@example.com"
   full_name = "%s"
   permissions = ["users:read:zoo"]
-	session_timeout_ms = 28800000
-	timezone = "UTC"
 }`, name, fullName)
 	if server != nil {
 		server.Start()

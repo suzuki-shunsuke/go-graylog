@@ -103,7 +103,7 @@ func HandleUpdateIndexSet(
 	// default can't change (ignored)
 	requiredFields := set.NewStrSet(
 		"title", "index_prefix", "rotation_strategy_class", "rotation_strategy",
-		"retention_strategy_class", "retention_strategy", "creation_date",
+		"retention_strategy_class", "retention_strategy",
 		"index_analyzer", "shards", "index_optimization_max_num_segments")
 	acceptedFields := set.NewStrSet(
 		"description", "replicas", "index_optimization_disabled", "writable")

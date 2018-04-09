@@ -15,7 +15,7 @@ func TestSetDefaultIndexSet(t *testing.T) {
 	if server != nil {
 		defer server.Close()
 	}
-	iss, _, _, _, err := client.GetIndexSets(0, 0)
+	iss, _, _, _, err := client.GetIndexSets(0, 0, false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -80,7 +80,7 @@ func TestGetIndexSetStats(t *testing.T) {
 		defer server.Close()
 	}
 
-	iss, _, _, _, err := client.GetIndexSets(0, 0)
+	iss, _, _, _, err := client.GetIndexSets(0, 0, false)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -57,10 +57,12 @@ func resourceUser() *schema.Resource {
 			"timezone": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Computed: true,
 			},
 			"session_timeout_ms": {
 				Type:     schema.TypeInt,
 				Optional: true,
+				Computed: true,
 			},
 			"external": {
 				Type:     schema.TypeBool,
@@ -69,6 +71,7 @@ func resourceUser() *schema.Resource {
 			"read_only": {
 				Type:     schema.TypeBool,
 				Optional: true,
+				Computed: true,
 			},
 			// "session_active": &schema.Schema{
 			// 	Type:     schema.TypeBool,
