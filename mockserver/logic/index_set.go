@@ -131,12 +131,12 @@ func (ms *Logic) DeleteIndexSet(id string) (int, error) {
 }
 
 // GetIndexSets returns a list of all index sets.
-func (ms *Logic) GetIndexSets() ([]graylog.IndexSet, int, error) {
-	iss, err := ms.store.GetIndexSets()
+func (ms *Logic) GetIndexSets(skip, limit int) ([]graylog.IndexSet, int, int, error) {
+	iss, total, err := ms.store.GetIndexSets(skip, limit)
 	if err != nil {
-		return iss, 500, err
+		return iss, total, 500, err
 	}
-	return iss, 200, nil
+	return iss, total, 200, nil
 }
 
 // SetDefaultIndexSet sets a default index set

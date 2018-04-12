@@ -16,16 +16,30 @@ func HandleGetIndexSets(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /system/indices/index_sets Get a list of all index sets
-	arr, sc, err := ms.GetIndexSets()
+	// TODO skip limit stats
+	skip := 0
+	limit := 0
+	stats := false
+	arr, total, sc, err := ms.GetIndexSets(skip, limit)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"error": err,
 		}).Error("ms.HasIndexList() is failure")
 		return arr, sc, err
 	}
-	indexSets := &graylog.IndexSetsBody{
-		IndexSets: arr, Total: len(arr), Stats: &graylog.IndexSetStats{}}
-	return indexSets, sc, nil
+	if stats {
+		// TODO
+		stats, sc, err := ms.GetIndexSetStatsMap()
+		if err != nil {
+			return nil, sc, err
+		}
+		return &graylog.IndexSetsBody{
+			IndexSets: arr, Total: total, Stats: stats}, 200, nil
+	}
+	return &graylog.IndexSetsBody{
+		IndexSets: arr, Total: total,
+		Stats: map[string]graylog.IndexSetStats{},
+	}, sc, nil
 }
 
 // HandleGetIndexSet

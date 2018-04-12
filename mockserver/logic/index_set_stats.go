@@ -1,8 +1,6 @@
 package logic
 
 import (
-	"fmt"
-
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
@@ -34,18 +32,26 @@ func (ms *Logic) GetTotalIndexSetStats() (*graylog.IndexSetStats, int, error) {
 	return stats, 200, nil
 }
 
-// SetIndexSetStats sets an index set stats to a index set.
-func (ms *Logic) SetIndexSetStats(id string, stats *graylog.IndexSetStats) (int, error) {
-	ok, err := ms.HasIndexSet(id)
+func (ms *Logic) GetIndexSetStatsMap() (map[string]graylog.IndexSetStats, int, error) {
+	m, err := ms.store.GetIndexSetStatsMap()
 	if err != nil {
-		return 500, err
+		return m, 500, err
 	}
-	if !ok {
-		return 404, fmt.Errorf("no index set with id <%s> is found", id)
-	}
-
-	if err := ms.store.SetIndexSetStats(id, stats); err != nil {
-		return 500, err
-	}
-	return 200, nil
+	return m, 200, err
 }
+
+// SetIndexSetStats sets an index set stats to a index set.
+// func (ms *Logic) SetIndexSetStats(id string, stats *graylog.IndexSetStats) (int, error) {
+// 	ok, err := ms.HasIndexSet(id)
+// 	if err != nil {
+// 		return 500, err
+// 	}
+// 	if !ok {
+// 		return 404, fmt.Errorf("no index set with id <%s> is found", id)
+// 	}
+//
+// 	if err := ms.store.SetIndexSetStats(id, stats); err != nil {
+// 		return 500, err
+// 	}
+// 	return 200, nil
+// }

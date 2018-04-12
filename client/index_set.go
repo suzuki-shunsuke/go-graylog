@@ -13,14 +13,14 @@ import (
 // GetIndexSets returns a list of all index sets.
 func (client *Client) GetIndexSets(
 	skip, limit int, stats bool,
-) ([]graylog.IndexSet, *graylog.IndexSetStats, int, *ErrorInfo, error) {
+) ([]graylog.IndexSet, map[string]graylog.IndexSetStats, int, *ErrorInfo, error) {
 	return client.GetIndexSetsContext(context.Background(), skip, limit, stats)
 }
 
 // GetIndexSetsContext returns a list of all index sets with a context.
 func (client *Client) GetIndexSetsContext(
 	ctx context.Context, skip, limit int, stats bool,
-) ([]graylog.IndexSet, *graylog.IndexSetStats, int, *ErrorInfo, error) {
+) ([]graylog.IndexSet, map[string]graylog.IndexSetStats, int, *ErrorInfo, error) {
 	indexSets := &graylog.IndexSetsBody{}
 	v := url.Values{
 		"skip":  []string{strconv.Itoa(skip)},

@@ -32,7 +32,7 @@ func TestGetIndexSet(t *testing.T) {
 
 func TestGetIndexSets(t *testing.T) {
 	store := inmemory.NewStore("")
-	iss, err := store.GetIndexSets()
+	iss, _, err := store.GetIndexSets(0, 0)
 	if err != nil {
 		t.Fatal(err)
 	}

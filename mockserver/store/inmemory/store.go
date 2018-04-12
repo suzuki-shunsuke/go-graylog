@@ -11,29 +11,29 @@ import (
 )
 
 type InMemoryStore struct {
-	users             map[string]graylog.User                  `json:"users"`
-	roles             map[string]graylog.Role                  `json:"roles"`
-	inputs            map[string]graylog.Input                 `json:"inputs"`
-	indexSets         map[string]graylog.IndexSet              `json:"index_sets"`
-	defaultIndexSetID string                                   `json:"default_index_set_id"`
-	indexSetStats     map[string]graylog.IndexSetStats         `json:"index_set_stats"`
-	streams           map[string]graylog.Stream                `json:"streams"`
-	streamRules       map[string]map[string]graylog.StreamRule `json:"stream_rules"`
-	dataPath          string                                   `json:"-"`
-	tokens            map[string]string                        `json:"tokens"`
+	users             map[string]graylog.User  `json:"users"`
+	roles             map[string]graylog.Role  `json:"roles"`
+	inputs            map[string]graylog.Input `json:"inputs"`
+	indexSets         []graylog.IndexSet       `json:"index_sets"`
+	defaultIndexSetID string                   `json:"default_index_set_id"`
+	// indexSetStats     map[string]graylog.IndexSetStats         `json:"index_set_stats"`
+	streams     map[string]graylog.Stream                `json:"streams"`
+	streamRules map[string]map[string]graylog.StreamRule `json:"stream_rules"`
+	dataPath    string                                   `json:"-"`
+	tokens      map[string]string                        `json:"tokens"`
 }
 
 func NewStore(dataPath string) store.Store {
 	return &InMemoryStore{
-		roles:         map[string]graylog.Role{},
-		users:         map[string]graylog.User{},
-		inputs:        map[string]graylog.Input{},
-		indexSets:     map[string]graylog.IndexSet{},
-		indexSetStats: map[string]graylog.IndexSetStats{},
-		streams:       map[string]graylog.Stream{},
-		streamRules:   map[string]map[string]graylog.StreamRule{},
-		tokens:        map[string]string{},
-		dataPath:      dataPath,
+		roles:     map[string]graylog.Role{},
+		users:     map[string]graylog.User{},
+		inputs:    map[string]graylog.Input{},
+		indexSets: []graylog.IndexSet{},
+		// indexSetStats: map[string]graylog.IndexSetStats{},
+		streams:     map[string]graylog.Stream{},
+		streamRules: map[string]map[string]graylog.StreamRule{},
+		tokens:      map[string]string{},
+		dataPath:    dataPath,
 	}
 }
 

@@ -1,4 +1,4 @@
-package client_test
+package handler_test
 
 import (
 	"testing"
@@ -24,13 +24,11 @@ func TestGetIndexSetStats(t *testing.T) {
 		if _, err := client.CreateIndexSet(is); err != nil {
 			t.Fatal(err)
 		}
-		testutil.WaitAfterCreateIndexSet(server)
 		// clean
 		defer func(id string) {
 			if _, err := client.DeleteIndexSet(id); err != nil {
 				t.Fatal(err)
 			}
-			testutil.WaitAfterDeleteIndexSet(server)
 		}(is.ID)
 	} else {
 		is = &(iss[0])

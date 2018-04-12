@@ -37,7 +37,7 @@ type Store interface {
 
 	AddIndexSet(indexSet *graylog.IndexSet) error
 	GetIndexSet(id string) (*graylog.IndexSet, error)
-	GetIndexSets() ([]graylog.IndexSet, error)
+	GetIndexSets(skip, limit int) ([]graylog.IndexSet, int, error)
 	UpdateIndexSet(indexSet *graylog.IndexSet) error
 	DeleteIndexSet(id string) error
 	HasIndexSet(id string) (bool, error)
@@ -45,9 +45,10 @@ type Store interface {
 	SetDefaultIndexSetID(id string) error
 	GetDefaultIndexSetID() (string, error)
 
-	SetIndexSetStats(id string, stats *graylog.IndexSetStats) error
+	// SetIndexSetStats(id string, stats *graylog.IndexSetStats) error
 	GetIndexSetStats(id string) (*graylog.IndexSetStats, error)
 	GetTotalIndexSetStats() (*graylog.IndexSetStats, error)
+	GetIndexSetStatsMap() (map[string]graylog.IndexSetStats, error)
 
 	AddStream(stream *graylog.Stream) error
 	GetStream(id string) (*graylog.Stream, error)

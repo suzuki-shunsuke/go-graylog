@@ -6,25 +6,31 @@ import (
 
 // GetIndexSetStats returns an index set stats.
 func (store *InMemoryStore) GetIndexSetStats(id string) (*graylog.IndexSetStats, error) {
-	s, ok := store.indexSetStats[id]
+	// TODO
+	ok, err := store.HasIndexSet(id)
+	if err != nil {
+		return nil, err
+	}
 	if ok {
-		return &s, nil
+		return &graylog.IndexSetStats{}, nil
 	}
 	return nil, nil
 }
 
-// GetTotalIndexSetStats returns all index set's statistics.
-func (store *InMemoryStore) GetTotalIndexSetStats() (*graylog.IndexSetStats, error) {
-	indexSetStats := &graylog.IndexSetStats{}
-	for _, stats := range store.indexSetStats {
-		indexSetStats.Indices += stats.Indices
-		indexSetStats.Documents += stats.Documents
-		indexSetStats.Size += stats.Size
+// GetIndexSetStatsMap returns all of index set stats.
+func (store *InMemoryStore) GetIndexSetStatsMap() (map[string]graylog.IndexSetStats, error) {
+	// TODO
+	m := map[string]graylog.IndexSetStats{}
+	for _, is := range store.indexSets {
+		// TODO
+		m[is.ID] = graylog.IndexSetStats{}
 	}
-	return indexSetStats, nil
+	return m, nil
 }
 
-func (store *InMemoryStore) SetIndexSetStats(id string, stats *graylog.IndexSetStats) error {
-	store.indexSetStats[id] = *stats
-	return nil
+// GetTotalIndexSetStats returns all index set's statistics.
+func (store *InMemoryStore) GetTotalIndexSetStats() (*graylog.IndexSetStats, error) {
+	// TODO
+	indexSetStats := &graylog.IndexSetStats{}
+	return indexSetStats, nil
 }

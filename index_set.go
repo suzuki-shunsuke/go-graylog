@@ -47,11 +47,12 @@ type IndexSet struct {
 
 	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required"`
 
-	Description               string `json:"description,omitempty"`
-	Replicas                  int    `json:"replicas,omitempty"`
-	IndexOptimizationDisabled bool   `json:"index_optimization_disabled,omitempty"`
-	Writable                  bool   `json:"writable,omitempty"`
-	Default                   bool   `json:"default,omitempty"`
+	Description               string         `json:"description,omitempty"`
+	Replicas                  int            `json:"replicas,omitempty"`
+	IndexOptimizationDisabled bool           `json:"index_optimization_disabled,omitempty"`
+	Writable                  bool           `json:"writable,omitempty"`
+	Default                   bool           `json:"default,omitempty"`
+	Stats                     *IndexSetStats `json:"-"`
 }
 
 func (is *IndexSet) SetCreateDefaultValues() {
@@ -100,9 +101,9 @@ type RetentionStrategy struct {
 }
 
 type IndexSetsBody struct {
-	IndexSets []IndexSet     `json:"index_sets"`
-	Stats     *IndexSetStats `json:"stats"`
-	Total     int            `json:"total"`
+	IndexSets []IndexSet               `json:"index_sets"`
+	Stats     map[string]IndexSetStats `json:"stats"`
+	Total     int                      `json:"total"`
 }
 
 // NewMessageCountRotationStrategy returns a new message count based RotationStrategy.

@@ -73,3 +73,10 @@ $ docker-compose up -d
 ```
 $ cp env.sh.tmpl env.sh
 ```
+
+## Develop terraform provider
+
+* https://www.terraform.io/docs/plugins/provider.html 
+* https://www.terraform.io/guides/writing-custom-terraform-providers.html
+* https://godoc.org/github.com/hashicorp/terraform/helper/schema
+* https://godoc.org/github.com/hashicorp/terraform/helper/resource#TestCase
