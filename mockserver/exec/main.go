@@ -14,7 +14,7 @@ import (
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/plain"
 )
 
 const VERSION = "0.1.0"
@@ -47,10 +47,10 @@ func action(dataPath, logLevel string, port int) error {
 	)
 	if port == 0 {
 		server, err = mockserver.NewServer(
-			"", inmemory.NewStore(dataPath))
+			"", plain.NewStore(dataPath))
 	} else {
 		server, err = mockserver.NewServer(
-			fmt.Sprintf(":%d", port), inmemory.NewStore(dataPath))
+			fmt.Sprintf(":%d", port), plain.NewStore(dataPath))
 	}
 	if err != nil {
 		return errors.Wrap(err, "Failed to create a mock server.")

@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/plain"
 )
 
 func TestLogger(t *testing.T) {
@@ -29,7 +29,7 @@ func TestSave(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer os.Remove(tmpfile.Name())
-	lgc.SetStore(inmemory.NewStore(tmpfile.Name()))
+	lgc.SetStore(plain.NewStore(tmpfile.Name()))
 	if err := lgc.Save(); err != nil {
 		t.Fatal(err)
 	}
@@ -46,7 +46,7 @@ func TestLoad(t *testing.T) {
 	if err := lgc.Load(); err != nil {
 		t.Fatal(err)
 	}
-	lgc.SetStore(inmemory.NewStore("hoge"))
+	lgc.SetStore(plain.NewStore("hoge"))
 	if err := lgc.Load(); err != nil {
 		t.Fatal(err)
 	}

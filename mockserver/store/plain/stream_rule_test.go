@@ -1,15 +1,15 @@
-package inmemory_test
+package plain_test
 
 import (
 	"testing"
 
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/plain"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
 func TestHasStreamRule(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	_, err := store.HasStreamRule("", "")
 	if err != nil {
 		t.Fatal(err)
@@ -30,7 +30,7 @@ func TestHasStreamRule(t *testing.T) {
 }
 
 func TestGetStreamRule(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	_, err := store.GetStreamRule("", "")
 	if err != nil {
 		t.Fatal(err)
@@ -55,7 +55,7 @@ func TestGetStreamRule(t *testing.T) {
 }
 
 func TestGetStreamRules(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	_, err := store.GetStreamRules("")
 	if err != nil {
 		t.Fatal(err)
@@ -76,7 +76,7 @@ func TestGetStreamRules(t *testing.T) {
 }
 
 func TestAddStreamRule(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	if err := store.AddStreamRule(nil); err == nil {
 		t.Fatal("rule is nil")
 	}
@@ -86,7 +86,7 @@ func TestAddStreamRule(t *testing.T) {
 }
 
 func TestUpdateStreamRule(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	stream := testutil.Stream()
 	if err := store.AddStream(stream); err != nil {
 		t.Fatal(err)
@@ -109,7 +109,7 @@ func TestUpdateStreamRule(t *testing.T) {
 }
 
 func TestDeleteStreamRule(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	if err := store.DeleteStreamRule("", ""); err != nil {
 		t.Fatal(err)
 	}

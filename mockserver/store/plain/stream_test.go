@@ -1,15 +1,15 @@
-package inmemory_test
+package plain_test
 
 import (
 	"testing"
 
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/plain"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
 func TestHasStream(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	ok, err := store.HasStream("foo")
 	if err != nil {
 		t.Fatal(err)
@@ -20,7 +20,7 @@ func TestHasStream(t *testing.T) {
 }
 
 func TestGetStream(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	is, err := store.GetStream("01")
 	if err != nil {
 		t.Fatal(err)
@@ -31,7 +31,7 @@ func TestGetStream(t *testing.T) {
 }
 
 func TestGetStreams(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	streams, err := store.GetStreams()
 	if err != nil {
 		t.Fatal(err)
@@ -42,7 +42,7 @@ func TestGetStreams(t *testing.T) {
 }
 
 func TestAddStream(t *testing.T) {
-	st := inmemory.NewStore("")
+	st := plain.NewStore("")
 	is := testutil.IndexSet("hoge")
 	is.ID = store.NewObjectID()
 	if err := st.AddIndexSet(is); err != nil {
@@ -64,7 +64,7 @@ func TestAddStream(t *testing.T) {
 }
 
 func TestUpdateStream(t *testing.T) {
-	st := inmemory.NewStore("")
+	st := plain.NewStore("")
 	is := testutil.IndexSet("hoge")
 	is.ID = store.NewObjectID()
 	if err := st.AddIndexSet(is); err != nil {
@@ -90,7 +90,7 @@ func TestUpdateStream(t *testing.T) {
 }
 
 func TestDeleteStream(t *testing.T) {
-	st := inmemory.NewStore("")
+	st := plain.NewStore("")
 	stream := testutil.Stream()
 	stream.ID = store.NewObjectID()
 	if err := st.DeleteStream(stream.ID); err != nil {
@@ -118,7 +118,7 @@ func TestDeleteStream(t *testing.T) {
 }
 
 func TestGetEnabledStreams(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	streams, err := store.GetEnabledStreams()
 	if err != nil {
 		t.Fatal(err)

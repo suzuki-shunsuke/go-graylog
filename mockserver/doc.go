@@ -43,9 +43,9 @@ The mock server has Graylog's resources such as roles.
 By default the mock server's data are temporary, but
 you can persist the data to the json file.
 
-  import "github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
+  import "github.com/suzuki-shunsuke/go-graylog/mockserver/store/plain"
 
-	s := inmemory.NewStore("data.json")
+	s := plain.NewStore("data.json")
 	server.SetStore(s)
   // at first load data
   if err := server.Load() {

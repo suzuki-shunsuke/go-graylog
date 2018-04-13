@@ -1,15 +1,15 @@
-package inmemory_test
+package plain_test
 
 import (
 	"testing"
 
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/plain"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
 func TestHasIndexSet(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	ok, err := store.HasIndexSet("foo")
 	if err != nil {
 		t.Fatal(err)
@@ -20,7 +20,7 @@ func TestHasIndexSet(t *testing.T) {
 }
 
 func TestGetIndexSet(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	is, err := store.GetIndexSet("foo")
 	if err != nil {
 		t.Fatal(err)
@@ -31,7 +31,7 @@ func TestGetIndexSet(t *testing.T) {
 }
 
 func TestGetIndexSets(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	iss, _, err := store.GetIndexSets(0, 0)
 	if err != nil {
 		t.Fatal(err)
@@ -42,7 +42,7 @@ func TestGetIndexSets(t *testing.T) {
 }
 
 func TestAddIndexSet(t *testing.T) {
-	st := inmemory.NewStore("")
+	st := plain.NewStore("")
 	is := testutil.IndexSet("hoge")
 	is.ID = store.NewObjectID()
 	if err := st.AddIndexSet(is); err != nil {
@@ -58,7 +58,7 @@ func TestAddIndexSet(t *testing.T) {
 }
 
 func TestUpdateIndexSet(t *testing.T) {
-	st := inmemory.NewStore("")
+	st := plain.NewStore("")
 	is := testutil.IndexSet("hoge")
 	is.ID = store.NewObjectID()
 	if err := st.AddIndexSet(is); err != nil {
@@ -85,7 +85,7 @@ func TestUpdateIndexSet(t *testing.T) {
 }
 
 func TestDeleteIndexSet(t *testing.T) {
-	st := inmemory.NewStore("")
+	st := plain.NewStore("")
 	if err := st.DeleteIndexSet("foo"); err != nil {
 		t.Fatal(err)
 	}
@@ -107,14 +107,14 @@ func TestDeleteIndexSet(t *testing.T) {
 }
 
 func TestGetDefaultIndexSetID(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	if _, err := store.GetDefaultIndexSetID(); err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestSetDefaultIndexSetID(t *testing.T) {
-	st := inmemory.NewStore("")
+	st := plain.NewStore("")
 	is := testutil.IndexSet("hoge")
 	is.ID = store.NewObjectID()
 	if err := st.AddIndexSet(is); err != nil {
@@ -133,7 +133,7 @@ func TestSetDefaultIndexSetID(t *testing.T) {
 }
 
 func TestIsConflictIndexPrefix(t *testing.T) {
-	st := inmemory.NewStore("")
+	st := plain.NewStore("")
 	is := testutil.IndexSet("hoge")
 	is.ID = store.NewObjectID()
 	if err := st.AddIndexSet(is); err != nil {

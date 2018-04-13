@@ -1,4 +1,4 @@
-package inmemory
+package plain
 
 import (
 	"github.com/suzuki-shunsuke/go-graylog"

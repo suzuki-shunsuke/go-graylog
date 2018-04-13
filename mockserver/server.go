@@ -8,7 +8,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/handler"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/plain"
 )
 
 // Server represents a mock of the Graylog API.
@@ -22,7 +22,7 @@ type Server struct {
 // If addr is an empty string, the free port is assigned automatially.
 func NewServer(addr string, store store.Store) (*Server, error) {
 	if store == nil {
-		store = inmemory.NewStore("")
+		store = plain.NewStore("")
 	}
 	srv, err := logic.NewLogic(store)
 	if err != nil {

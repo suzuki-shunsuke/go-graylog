@@ -1,24 +1,24 @@
-package inmemory_test
+package plain_test
 
 import (
 	"io/ioutil"
 	"os"
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/plain"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 	"github.com/suzuki-shunsuke/go-set"
 )
 
 func TestNewStore(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	if store == nil {
 		t.Fatal("store is nil")
 	}
 }
 
 func TestSave(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	if err := store.Save(); err != nil {
 		t.Fatal(err)
 	}
@@ -27,14 +27,14 @@ func TestSave(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer os.Remove(tmpfile.Name())
-	store = inmemory.NewStore(tmpfile.Name())
+	store = plain.NewStore(tmpfile.Name())
 	if err := store.Save(); err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestLoad(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	if err := store.Load(); err != nil {
 		t.Fatal(err)
 	}
@@ -43,7 +43,7 @@ func TestLoad(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer os.Remove(tmpfile.Name())
-	store = inmemory.NewStore(tmpfile.Name())
+	store = plain.NewStore(tmpfile.Name())
 	if err := store.Save(); err != nil {
 		t.Fatal(err)
 	}
@@ -53,7 +53,7 @@ func TestLoad(t *testing.T) {
 }
 
 func TestAuthorize(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	ok, err := store.Authorize(nil, "users:read")
 	if err != nil {
 		t.Fatal(err)

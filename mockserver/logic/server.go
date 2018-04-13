@@ -6,7 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/plain"
 )
 
 // Logic represents a mock of the Graylog API.
@@ -25,7 +25,7 @@ func (ms *Logic) Logger() *log.Logger {
 // NewLogic returns new Server.
 func NewLogic(store store.Store) (*Logic, error) {
 	if store == nil {
-		store = inmemory.NewStore("")
+		store = plain.NewStore("")
 	}
 	ms := &Logic{
 		// indexSetStats: map[string]graylog.IndexSetStats{},

@@ -1,14 +1,14 @@
-package inmemory_test
+package plain_test
 
 import (
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/plain"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
 func TestHasRole(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	ok, err := store.HasRole("foo")
 	if err != nil {
 		t.Fatal(err)
@@ -19,7 +19,7 @@ func TestHasRole(t *testing.T) {
 }
 
 func TestGetRole(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	role, err := store.GetRole("foo")
 	if err != nil {
 		t.Fatal(err)
@@ -30,7 +30,7 @@ func TestGetRole(t *testing.T) {
 }
 
 func TestGetRoles(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	roles, err := store.GetRoles()
 	if err != nil {
 		t.Fatal(err)
@@ -41,7 +41,7 @@ func TestGetRoles(t *testing.T) {
 }
 
 func TestAddRole(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	role := testutil.Role()
 	if err := store.AddRole(role); err != nil {
 		t.Fatal(err)
@@ -56,7 +56,7 @@ func TestAddRole(t *testing.T) {
 }
 
 func TestUpdateRole(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	role := testutil.Role()
 	if err := store.AddRole(role); err != nil {
 		t.Fatal(err)
@@ -82,7 +82,7 @@ func TestUpdateRole(t *testing.T) {
 }
 
 func TestDeleteRole(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	if err := store.DeleteRole("foo"); err != nil {
 		t.Fatal(err)
 	}

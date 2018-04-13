@@ -1,14 +1,14 @@
-package inmemory_test
+package plain_test
 
 import (
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/plain"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
 func TestHasInput(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	ok, err := store.HasInput("foo")
 	if err != nil {
 		t.Fatal(err)
@@ -19,7 +19,7 @@ func TestHasInput(t *testing.T) {
 }
 
 func TestGetInput(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	input, err := store.GetInput("foo")
 	if err != nil {
 		t.Fatal(err)
@@ -30,7 +30,7 @@ func TestGetInput(t *testing.T) {
 }
 
 func TestGetInputs(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	inputs, err := store.GetInputs()
 	if err != nil {
 		t.Fatal(err)
@@ -41,7 +41,7 @@ func TestGetInputs(t *testing.T) {
 }
 
 func TestAddInput(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	input := testutil.Input()
 	if err := store.AddInput(input); err != nil {
 		t.Fatal(err)
@@ -56,7 +56,7 @@ func TestAddInput(t *testing.T) {
 }
 
 func TestUpdateInput(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	input := testutil.Input()
 	if err := store.AddInput(input); err != nil {
 		t.Fatal(err)
@@ -82,7 +82,7 @@ func TestUpdateInput(t *testing.T) {
 }
 
 func TestDeleteInput(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	if err := store.DeleteInput("foo"); err != nil {
 		t.Fatal(err)
 	}

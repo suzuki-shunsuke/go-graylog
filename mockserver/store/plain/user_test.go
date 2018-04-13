@@ -1,14 +1,14 @@
-package inmemory_test
+package plain_test
 
 import (
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/inmemory"
+	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/plain"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
 func TestHasUser(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	ok, err := store.HasUser("foo")
 	if err != nil {
 		t.Fatal(err)
@@ -19,7 +19,7 @@ func TestHasUser(t *testing.T) {
 }
 
 func TestGetUser(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	user, err := store.GetUser("foo")
 	if err != nil {
 		t.Fatal(err)
@@ -30,7 +30,7 @@ func TestGetUser(t *testing.T) {
 }
 
 func TestGetUsers(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	users, err := store.GetUsers()
 	if err != nil {
 		t.Fatal(err)
@@ -41,7 +41,7 @@ func TestGetUsers(t *testing.T) {
 }
 
 func TestAddUser(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	user := testutil.User()
 	if err := store.AddUser(user); err != nil {
 		t.Fatal(err)
@@ -56,7 +56,7 @@ func TestAddUser(t *testing.T) {
 }
 
 func TestUpdateUser(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	user := testutil.User()
 	if err := store.AddUser(user); err != nil {
 		t.Fatal(err)
@@ -82,7 +82,7 @@ func TestUpdateUser(t *testing.T) {
 }
 
 func TestDeleteUser(t *testing.T) {
-	store := inmemory.NewStore("")
+	store := plain.NewStore("")
 	if err := store.DeleteUser("foo"); err != nil {
 		t.Fatal(err)
 	}
