@@ -25,6 +25,52 @@ func HandleGetRole(
 	return ms.GetRole(name)
 }
 
+// HandleGetRoles
+func HandleGetRoles(
+	user *graylog.User, ms *logic.Logic,
+	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+) (interface{}, int, error) {
+	// GET /roles List all roles
+	arr, sc, err := ms.GetRoles()
+	if err != nil {
+		return arr, sc, err
+	}
+	return &graylog.RolesBody{Roles: arr, Total: len(arr)}, sc, nil
+}
+
+// HandleCreateRole
+func HandleCreateRole(
+	user *graylog.User, ms *logic.Logic,
+	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+) (interface{}, int, error) {
+	// POST /roles Create a new role
+	if sc, err := ms.Authorize(user, "roles:create"); err != nil {
+		return nil, sc, err
+	}
+	requiredFields := set.NewStrSet("name", "permissions")
+	allowedFields := set.NewStrSet("description", "read_only")
+	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	if err != nil {
+		return nil, sc, err
+	}
+
+	role := &graylog.Role{}
+	if err := msDecode(body, &role); err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"body": body, "error": err,
+		}).Warn("Failed to parse request body as Role")
+		return nil, 400, err
+	}
+
+	if sc, err := ms.AddRole(role); err != nil {
+		return nil, sc, err
+	}
+	if err := ms.Save(); err != nil {
+		return nil, 500, err
+	}
+	return role, sc, nil
+}
+
 // HandleUpdateRole
 func HandleUpdateRole(
 	user *graylog.User, ms *logic.Logic,
@@ -77,50 +123,4 @@ func HandleDeleteRole(
 		return nil, 500, err
 	}
 	return nil, 204, nil
-}
-
-// HandleCreateRole
-func HandleCreateRole(
-	user *graylog.User, ms *logic.Logic,
-	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
-) (interface{}, int, error) {
-	// POST /roles Create a new role
-	if sc, err := ms.Authorize(user, "roles:create"); err != nil {
-		return nil, sc, err
-	}
-	requiredFields := set.NewStrSet("name", "permissions")
-	allowedFields := set.NewStrSet("description", "read_only")
-	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
-	if err != nil {
-		return nil, sc, err
-	}
-
-	role := &graylog.Role{}
-	if err := msDecode(body, &role); err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"body": body, "error": err,
-		}).Warn("Failed to parse request body as Role")
-		return nil, 400, err
-	}
-
-	if sc, err := ms.AddRole(role); err != nil {
-		return nil, sc, err
-	}
-	if err := ms.Save(); err != nil {
-		return nil, 500, err
-	}
-	return role, sc, nil
-}
-
-// HandleGetRoles
-func HandleGetRoles(
-	user *graylog.User, ms *logic.Logic,
-	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
-) (interface{}, int, error) {
-	// GET /roles List all roles
-	arr, sc, err := ms.GetRoles()
-	if err != nil {
-		return arr, sc, err
-	}
-	return &graylog.RolesBody{Roles: arr, Total: len(arr)}, sc, nil
 }

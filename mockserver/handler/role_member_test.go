@@ -6,14 +6,14 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/test"
 )
 
-func TestGetRoleMembers(t *testing.T) {
+func TestHandleRoleMembers(t *testing.T) {
 	test.TestGetRoleMembers(t)
 }
 
-func TestAddUserToRole(t *testing.T) {
+func TestHandleAddUserToRole(t *testing.T) {
 	test.TestAddUserToRole(t)
 }
 
-func TestRemoveUserFromRole(t *testing.T) {
+func TestHandleRemoveUserFromRole(t *testing.T) {
 	test.TestRemoveUserFromRole(t)
 }

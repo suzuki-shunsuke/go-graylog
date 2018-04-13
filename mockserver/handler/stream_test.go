@@ -33,120 +33,30 @@ func testUpdateStreamStatusCode(
 	return nil
 }
 
-func TestServerHandleUpdateStream(t *testing.T) {
+func TestGetStream(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	is := testutil.IndexSet("hoge")
-	if _, err := server.AddIndexSet(is); err != nil {
-		t.Fatal(err)
-	}
-	stream := testutil.Stream()
-	stream.IndexSetID = is.ID
-	if _, err := server.AddStream(stream); err != nil {
-		t.Fatal(err)
-	}
-	endpoint := client.Endpoints.Stream(stream.ID)
-
-	body := bytes.NewBuffer([]byte("hoge"))
-	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
-		t.Fatal(err)
-	}
-
-	body = bytes.NewBuffer([]byte(`{"title": 0}`))
-	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
-		t.Fatal(err)
-	}
-
-	body = bytes.NewBuffer([]byte(`{"description": 0}`))
-	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
-		t.Fatal(err)
-	}
-
-	body = bytes.NewBuffer([]byte(`{"matching_type": 0}`))
-	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
-		t.Fatal(err)
-	}
-
-	body = bytes.NewBuffer([]byte(`{"remove_matches_from_default_stream": 0}`))
-	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
-		t.Fatal(err)
-	}
-
-	body = bytes.NewBuffer([]byte(`{"index_set_id": 0}`))
-	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
-		t.Fatal(err)
-	}
-}
-
-func TestServerHandleCreateStream(t *testing.T) {
-	server, client, err := testutil.GetServerAndClient()
+	_, stream, err := addDummyStream(server)
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer server.Close()
-	body := bytes.NewBuffer([]byte("hoge"))
-	req, err := http.NewRequest(
-		http.MethodPost, client.Endpoints.Streams, body)
+
+	act, _, err := client.GetStream(stream.ID)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatal("Failed to GetStream", err)
 	}
-	req.SetBasicAuth(client.Name(), client.Password())
-	hc := &http.Client{}
-	resp, err := hc.Do(req)
-	if err != nil {
-		t.Fatal(err)
+	if act.Title != stream.Title {
+		t.Fatalf("act.Title == %s, wanted %s", act.Title, stream.Title)
 	}
-	if resp.StatusCode != 400 {
-		t.Fatalf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
-	}
-}
-
-func TestServerUpdateStream(t *testing.T) {
-	server, _, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-
-	is := testutil.IndexSet("hoge")
-	if _, err := server.AddIndexSet(is); err != nil {
-		t.Fatal(err)
-	}
-	stream := testutil.Stream()
-	stream.IndexSetID = is.ID
-	if _, err := server.AddStream(stream); err != nil {
-		t.Fatal(err)
-	}
-
-	// nil check
-	if _, err := server.UpdateStream(nil); err == nil {
-		t.Fatal("stream is nil")
-	}
-
-	// validation
-	stream.ID = ""
-	if _, err := server.UpdateStream(stream); err == nil {
+	if _, _, err := client.GetStream(""); err == nil {
 		t.Fatal("id is required")
 	}
-	// id check
-	stream.ID = "h"
-	if _, err := server.UpdateStream(stream); err == nil {
-		t.Fatal("id check")
+	if _, _, err := client.GetStream("h"); err == nil {
+		t.Fatal(`no stream whose id is "h"`)
 	}
-}
-
-func addDummyStream(server *Server) (*graylog.IndexSet, *graylog.Stream, error) {
-	indexSet := testutil.IndexSet("hoge")
-	if _, err := server.AddIndexSet(indexSet); err != nil {
-		return nil, nil, err
-	}
-	stream := testutil.Stream()
-	stream.IndexSetID = indexSet.ID
-	_, err := server.AddStream(stream)
-	return indexSet, stream, err
 }
 
 func TestGetStreams(t *testing.T) {
@@ -167,7 +77,7 @@ func TestGetStreams(t *testing.T) {
 	}
 }
 
-func TestCreateStream(t *testing.T) {
+func TestHandleCreateStream(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -233,32 +143,99 @@ func TestCreateStream(t *testing.T) {
 	if _, err := client.CreateStream(nil); err == nil {
 		t.Fatal("stream is nil")
 	}
+
+	body := bytes.NewBuffer([]byte("hoge"))
+	req, err := http.NewRequest(
+		http.MethodPost, client.Endpoints.Streams, body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth(client.Name(), client.Password())
+	hc := &http.Client{}
+	resp, err := hc.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode != 400 {
+		t.Fatalf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
+	}
 }
 
-func TestGetStream(t *testing.T) {
+func TestServerHandleUpdateStream(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	_, stream, err := addDummyStream(server)
-	if err != nil {
+	is := testutil.IndexSet("hoge")
+	if _, err := server.AddIndexSet(is); err != nil {
+		t.Fatal(err)
+	}
+	stream := testutil.Stream()
+	stream.IndexSetID = is.ID
+	if _, err := server.AddStream(stream); err != nil {
+		t.Fatal(err)
+	}
+	endpoint := client.Endpoints.Stream(stream.ID)
+
+	body := bytes.NewBuffer([]byte("hoge"))
+	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
 		t.Fatal(err)
 	}
 
-	act, _, err := client.GetStream(stream.ID)
-	if err != nil {
-		t.Fatal("Failed to GetStream", err)
+	body = bytes.NewBuffer([]byte(`{"title": 0}`))
+	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
+		t.Fatal(err)
 	}
-	if act.Title != stream.Title {
-		t.Fatalf("act.Title == %s, wanted %s", act.Title, stream.Title)
+
+	body = bytes.NewBuffer([]byte(`{"description": 0}`))
+	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
+		t.Fatal(err)
 	}
-	if _, _, err := client.GetStream(""); err == nil {
+
+	body = bytes.NewBuffer([]byte(`{"matching_type": 0}`))
+	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
+		t.Fatal(err)
+	}
+
+	body = bytes.NewBuffer([]byte(`{"remove_matches_from_default_stream": 0}`))
+	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
+		t.Fatal(err)
+	}
+
+	body = bytes.NewBuffer([]byte(`{"index_set_id": 0}`))
+	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {
+		t.Fatal(err)
+	}
+
+	// nil check
+	if _, err := server.UpdateStream(nil); err == nil {
+		t.Fatal("stream is nil")
+	}
+
+	// validation
+	stream.ID = ""
+	if _, err := server.UpdateStream(stream); err == nil {
 		t.Fatal("id is required")
 	}
-	if _, _, err := client.GetStream("h"); err == nil {
-		t.Fatal(`no stream whose id is "h"`)
+	// id check
+	stream.ID = "h"
+	if _, err := server.UpdateStream(stream); err == nil {
+		t.Fatal("id check")
 	}
+
+	test.TestUpdateStream(t)
+}
+
+func addDummyStream(server *Server) (*graylog.IndexSet, *graylog.Stream, error) {
+	indexSet := testutil.IndexSet("hoge")
+	if _, err := server.AddIndexSet(indexSet); err != nil {
+		return nil, nil, err
+	}
+	stream := testutil.Stream()
+	stream.IndexSetID = indexSet.ID
+	_, err := server.AddStream(stream)
+	return indexSet, stream, err
 }
 
 func TestDeleteStream(t *testing.T) {
@@ -285,10 +262,6 @@ func TestDeleteStream(t *testing.T) {
 
 func TestGetEnabledStreams(t *testing.T) {
 	test.TestGetEnabledStreams(t)
-}
-
-func TestUpdateStream(t *testing.T) {
-	test.TestUpdateStream(t)
 }
 
 func TestPauseStream(t *testing.T) {

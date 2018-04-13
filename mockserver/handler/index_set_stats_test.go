@@ -6,7 +6,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestGetIndexSetStats(t *testing.T) {
+func TestHandleGetIndexSetStats(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)

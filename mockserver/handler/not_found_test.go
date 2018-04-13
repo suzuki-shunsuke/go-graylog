@@ -8,7 +8,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestServerHandleNotFound(t *testing.T) {
+func TestHandleNotFound(t *testing.T) {
 	server, _, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)

@@ -8,100 +8,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestServerHandleCreateInput(t *testing.T) {
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	body := bytes.NewBuffer([]byte("hoge"))
-	req, err := http.NewRequest(
-		http.MethodPost, client.Endpoints.Inputs, body)
-	if err != nil {
-		t.Fatal(err)
-	}
-	req.SetBasicAuth(client.Name(), client.Password())
-	hc := &http.Client{}
-	resp, err := hc.Do(req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if resp.StatusCode != 400 {
-		t.Fatalf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
-	}
-}
-
-func TestServerHandleUpdateInput(t *testing.T) {
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	input := testutil.Input()
-
-	if _, err := server.AddInput(input); err != nil {
-		t.Fatal(err)
-	}
-	body := bytes.NewBuffer([]byte("hoge"))
-	req, err := http.NewRequest(
-		http.MethodPut, client.Endpoints.Input(input.ID), body)
-	if err != nil {
-		t.Fatal(err)
-	}
-	req.SetBasicAuth(client.Name(), client.Password())
-	hc := &http.Client{}
-	resp, err := hc.Do(req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if resp.StatusCode != 400 {
-		t.Fatalf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
-	}
-}
-
-func TestCreateInput(t *testing.T) {
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	input := testutil.Input()
-	if _, err := client.CreateInput(input); err != nil {
-		t.Fatal("Failed to CreateInput", err)
-	}
-	if input.ID == "" {
-		t.Fatal(`client.CreateInput() == ""`)
-	}
-
-	input.ID = ""
-	input.Type = ""
-	if _, err := client.CreateInput(input); err == nil {
-		t.Fatal("input type is required")
-	}
-	if _, err := client.CreateInput(nil); err == nil {
-		t.Fatal("input is nil")
-	}
-}
-
-func TestGetInputs(t *testing.T) {
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	act, _, _, err := client.GetInputs()
-	if err != nil {
-		t.Fatal("Failed to GetInputs", err)
-	}
-	if act == nil {
-		t.Fatal("client.GetInputs() returns nil")
-	}
-	if len(act) != 1 {
-		t.Fatalf("len(act) == %d, wanted 1", len(act))
-	}
-}
-
-func TestGetInput(t *testing.T) {
+func TestHandleGetInput(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -128,7 +35,65 @@ func TestGetInput(t *testing.T) {
 	}
 }
 
-func TestUpdateInput(t *testing.T) {
+func TestHandleGetInputs(t *testing.T) {
+	server, client, err := testutil.GetServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	act, _, _, err := client.GetInputs()
+	if err != nil {
+		t.Fatal("Failed to GetInputs", err)
+	}
+	if act == nil {
+		t.Fatal("client.GetInputs() returns nil")
+	}
+	if len(act) != 1 {
+		t.Fatalf("len(act) == %d, wanted 1", len(act))
+	}
+}
+
+func TestHandleCreateInput(t *testing.T) {
+	server, client, err := testutil.GetServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer server.Close()
+	input := testutil.Input()
+	if _, err := client.CreateInput(input); err != nil {
+		t.Fatal("Failed to CreateInput", err)
+	}
+	if input.ID == "" {
+		t.Fatal(`client.CreateInput() == ""`)
+	}
+
+	input.ID = ""
+	input.Type = ""
+	if _, err := client.CreateInput(input); err == nil {
+		t.Fatal("input type is required")
+	}
+	if _, err := client.CreateInput(nil); err == nil {
+		t.Fatal("input is nil")
+	}
+
+	body := bytes.NewBuffer([]byte("hoge"))
+	req, err := http.NewRequest(
+		http.MethodPost, client.Endpoints.Inputs, body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth(client.Name(), client.Password())
+	hc := &http.Client{}
+	resp, err := hc.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode != 400 {
+		t.Fatalf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
+	}
+}
+
+func TestHandleUpdateInput(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -138,11 +103,12 @@ func TestUpdateInput(t *testing.T) {
 	if _, err := server.AddInput(input); err != nil {
 		t.Fatal(err)
 	}
+	id := input.ID
 	input.Title += " updated"
 	if _, err := client.UpdateInput(input); err != nil {
 		t.Fatal("Failed to UpdateInput", err)
 	}
-	act, _, err := server.GetInput(input.ID)
+	act, _, err := server.GetInput(id)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -163,6 +129,7 @@ func TestUpdateInput(t *testing.T) {
 		t.Fatal(`no input whose id is "h"`)
 	}
 
+	input.ID = id
 	input.Type = ""
 	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input type is required")
@@ -197,9 +164,25 @@ func TestUpdateInput(t *testing.T) {
 	if _, err := client.UpdateInput(nil); err == nil {
 		t.Fatal("input is required")
 	}
+
+	body := bytes.NewBuffer([]byte("hoge"))
+	req, err := http.NewRequest(
+		http.MethodPut, client.Endpoints.Input(id), body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth(client.Name(), client.Password())
+	hc := &http.Client{}
+	resp, err := hc.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode != 400 {
+		t.Fatalf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
+	}
 }
 
-func TestDeleteInput(t *testing.T) {
+func TestHandleDeleteInput(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)

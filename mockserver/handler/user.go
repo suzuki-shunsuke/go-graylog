@@ -11,6 +11,39 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
+// HandleGetUsers
+func HandleGetUsers(
+	user *graylog.User, ms *logic.Logic,
+	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+) (interface{}, int, error) {
+	// GET /users List all users
+	users, sc, err := ms.GetUsers()
+	for i, u := range users {
+		u.Password = ""
+		users[i] = u
+	}
+	if err != nil {
+		return nil, sc, err
+	}
+	// TODO authorization
+	return &graylog.UsersBody{Users: users}, sc, nil
+}
+
+// HandleGetUser
+func HandleGetUser(
+	u *graylog.User, ms *logic.Logic,
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) (interface{}, int, error) {
+	// GET /users/{username} Get user details
+	name := ps.ByName("username")
+	// TODO authorization
+	user, sc, err := ms.GetUser(name)
+	if user != nil {
+		user.Password = ""
+	}
+	return user, sc, err
+}
+
 // HandleCreateUser
 func HandleCreateUser(
 	u *graylog.User, ms *logic.Logic,
@@ -45,39 +78,6 @@ func HandleCreateUser(
 		return nil, 500, err
 	}
 	return nil, 201, nil
-}
-
-// HandleGetUsers
-func HandleGetUsers(
-	user *graylog.User, ms *logic.Logic,
-	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
-) (interface{}, int, error) {
-	// GET /users List all users
-	users, sc, err := ms.GetUsers()
-	for i, u := range users {
-		u.Password = ""
-		users[i] = u
-	}
-	if err != nil {
-		return nil, sc, err
-	}
-	// TODO authorization
-	return &graylog.UsersBody{Users: users}, sc, nil
-}
-
-// HandleGetUser
-func HandleGetUser(
-	u *graylog.User, ms *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (interface{}, int, error) {
-	// GET /users/{username} Get user details
-	name := ps.ByName("username")
-	// TODO authorization
-	user, sc, err := ms.GetUser(name)
-	if user != nil {
-		user.Password = ""
-	}
-	return user, sc, err
 }
 
 // HandleUpdateUser

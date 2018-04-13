@@ -23,6 +23,55 @@ func HandleGetInput(
 	return ms.GetInput(id)
 }
 
+// HandleGetInputs
+func HandleGetInputs(
+	user *graylog.User, ms *logic.Logic,
+	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+) (interface{}, int, error) {
+	// GET /system/inputs Get all inputs
+	arr, sc, err := ms.GetInputs()
+	if err != nil {
+		return arr, sc, err
+	}
+	inputs := &graylog.InputsBody{Inputs: arr, Total: len(arr)}
+	return inputs, sc, nil
+}
+
+// HandleCreateInput
+func HandleCreateInput(
+	user *graylog.User, ms *logic.Logic,
+	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+) (interface{}, int, error) {
+	// POST /system/inputs Launch input on this node
+	if sc, err := ms.Authorize(user, "inputs:create"); err != nil {
+		return nil, sc, err
+	}
+	requiredFields := set.NewStrSet("title", "type", "configuration")
+	allowedFields := set.NewStrSet("global", "node")
+	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	if err != nil {
+		return nil, sc, err
+	}
+
+	input := &graylog.Input{}
+	if err := msDecode(body, input); err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"body": body, "error": err,
+		}).Info("Failed to parse request body as Input")
+		return nil, 400, err
+	}
+
+	sc, err = ms.AddInput(input)
+	if err != nil {
+		return nil, sc, err
+	}
+	if err := ms.Save(); err != nil {
+		return nil, 500, err
+	}
+	d := map[string]string{"id": input.ID}
+	return &d, 201, nil
+}
+
 // HandleUpdateInput
 func HandleUpdateInput(
 	user *graylog.User, ms *logic.Logic,
@@ -79,53 +128,4 @@ func HandleDeleteInput(
 		return nil, 500, err
 	}
 	return nil, 204, nil
-}
-
-// HandleCreateInput
-func HandleCreateInput(
-	user *graylog.User, ms *logic.Logic,
-	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
-) (interface{}, int, error) {
-	// POST /system/inputs Launch input on this node
-	if sc, err := ms.Authorize(user, "inputs:create"); err != nil {
-		return nil, sc, err
-	}
-	requiredFields := set.NewStrSet("title", "type", "configuration")
-	allowedFields := set.NewStrSet("global", "node")
-	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
-	if err != nil {
-		return nil, sc, err
-	}
-
-	input := &graylog.Input{}
-	if err := msDecode(body, input); err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"body": body, "error": err,
-		}).Info("Failed to parse request body as Input")
-		return nil, 400, err
-	}
-
-	sc, err = ms.AddInput(input)
-	if err != nil {
-		return nil, sc, err
-	}
-	if err := ms.Save(); err != nil {
-		return nil, 500, err
-	}
-	d := map[string]string{"id": input.ID}
-	return &d, 201, nil
-}
-
-// HandleGetInputs
-func HandleGetInputs(
-	user *graylog.User, ms *logic.Logic,
-	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
-) (interface{}, int, error) {
-	// GET /system/inputs Get all inputs
-	arr, sc, err := ms.GetInputs()
-	if err != nil {
-		return arr, sc, err
-	}
-	inputs := &graylog.InputsBody{Inputs: arr, Total: len(arr)}
-	return inputs, sc, nil
 }

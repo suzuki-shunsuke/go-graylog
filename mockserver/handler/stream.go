@@ -26,6 +26,22 @@ func HandleGetStreams(
 	return &graylog.StreamsBody{Streams: arr, Total: len(arr)}, sc, nil
 }
 
+// HandleGetStream
+func HandleGetStream(
+	user *graylog.User, ms *logic.Logic,
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) (interface{}, int, error) {
+	// GET /streams/{streamID} Get a single stream
+	id := ps.ByName("streamID")
+	if id == "enabled" {
+		return HandleGetEnabledStreams(user, ms, w, r, ps)
+	}
+	if sc, err := ms.Authorize(user, "streams:read", id); err != nil {
+		return nil, sc, err
+	}
+	return ms.GetStream(id)
+}
+
 // HandleCreateStream
 func HandleCreateStream(
 	user *graylog.User, ms *logic.Logic,
@@ -57,35 +73,6 @@ func HandleCreateStream(
 		return nil, 400, err
 	}
 	return map[string]string{"stream_id": stream.ID}, 201, nil
-}
-
-// HandleGetEnabledStreams
-func HandleGetEnabledStreams(
-	user *graylog.User, ms *logic.Logic,
-	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
-) (interface{}, int, error) {
-	// GET /streams/enabled Get a list of all enabled streams
-	arr, sc, err := ms.GetEnabledStreams()
-	if err != nil {
-		return nil, sc, err
-	}
-	return &graylog.StreamsBody{Streams: arr, Total: len(arr)}, sc, nil
-}
-
-// HandleGetStream
-func HandleGetStream(
-	user *graylog.User, ms *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (interface{}, int, error) {
-	// GET /streams/{streamID} Get a single stream
-	id := ps.ByName("streamID")
-	if id == "enabled" {
-		return HandleGetEnabledStreams(user, ms, w, r, ps)
-	}
-	if sc, err := ms.Authorize(user, "streams:read", id); err != nil {
-		return nil, sc, err
-	}
-	return ms.GetStream(id)
 }
 
 // HandleUpdateStream
@@ -170,6 +157,19 @@ func HandleDeleteStream(
 		return nil, 500, err
 	}
 	return nil, sc, nil
+}
+
+// HandleGetEnabledStreams
+func HandleGetEnabledStreams(
+	user *graylog.User, ms *logic.Logic,
+	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+) (interface{}, int, error) {
+	// GET /streams/enabled Get a list of all enabled streams
+	arr, sc, err := ms.GetEnabledStreams()
+	if err != nil {
+		return nil, sc, err
+	}
+	return &graylog.StreamsBody{Streams: arr, Total: len(arr)}, sc, nil
 }
 
 // HandlePauseStream

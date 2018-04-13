@@ -9,53 +9,62 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
-func TestServerHandleCreateUser(t *testing.T) {
+func TestHandleGetUsers(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	body := bytes.NewBuffer([]byte("hoge"))
-	req, err := http.NewRequest(
-		http.MethodPost, client.Endpoints.Users, body)
-	if err != nil {
+	user := testutil.DummyAdmin()
+	user.Roles = nil
+	user.Username = "foo"
+	if _, err := server.AddUser(user); err != nil {
 		t.Fatal(err)
 	}
-	req.SetBasicAuth(client.Name(), client.Password())
-	hc := &http.Client{}
-	resp, err := hc.Do(req)
+	users, _, err := client.GetUsers()
 	if err != nil {
-		t.Fatal(err)
+		t.Fatal("Failed to GetUsers", err)
 	}
-	if resp.StatusCode != 400 {
-		t.Fatalf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
+	if users == nil {
+		t.Fatal("client.GetUsers() returns nil")
+	}
+	if len(users) != 3 {
+		t.Fatalf("len(users) == %d, wanted 3", len(users))
+	}
+	if users[0].Password != "" {
+		t.Fatalf(
+			"users[0].Password == %s, wanted empty", users[0].Password)
 	}
 }
 
-func TestServerHandleUpdateUser(t *testing.T) {
+func TestHandleGetUser(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	body := bytes.NewBuffer([]byte("hoge"))
-	req, err := http.NewRequest(
-		http.MethodPut, client.Endpoints.User("admin"), body)
-	if err != nil {
+	exp := testutil.DummyAdmin()
+	exp.Roles = nil
+	exp.Username = "foo"
+	if _, err := server.AddUser(exp); err != nil {
 		t.Fatal(err)
 	}
-	req.SetBasicAuth(client.Name(), client.Password())
-	hc := &http.Client{}
-	resp, err := hc.Do(req)
+	user, _, err := client.GetUser(exp.Username)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatal("Failed to GetUser", err)
 	}
-	if resp.StatusCode != 400 {
-		t.Fatalf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
+	if user.Password != "" {
+		t.Fatalf("user.Password = %s, wanted empty", user.Password)
+	}
+	if _, _, err := client.GetUser(""); err == nil {
+		t.Fatal("username should be required.")
+	}
+	if _, _, err := client.GetUser("h"); err == nil {
+		t.Fatal(`no user whoname name is "h"`)
 	}
 }
 
-func TestCreateUser(t *testing.T) {
+func TestHandleCreateUser(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -85,9 +94,25 @@ func TestCreateUser(t *testing.T) {
 	if _, err := client.CreateUser(nil); err == nil {
 		t.Fatal("user is nil")
 	}
+
+	body := bytes.NewBuffer([]byte("hoge"))
+	req, err := http.NewRequest(
+		http.MethodPost, client.Endpoints.Users, body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth(client.Name(), client.Password())
+	hc := &http.Client{}
+	resp, err := hc.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode != 400 {
+		t.Fatalf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
+	}
 }
 
-func TestGetUsers(t *testing.T) {
+func TestHandleUpdateUser(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -95,62 +120,8 @@ func TestGetUsers(t *testing.T) {
 	defer server.Close()
 	user := testutil.DummyAdmin()
 	user.Roles = nil
-	user.Username = "foo"
-	if _, err := server.AddUser(user); err != nil {
-		t.Fatal(err)
-	}
-	users, _, err := client.GetUsers()
-	if err != nil {
-		t.Fatal("Failed to GetUsers", err)
-	}
-	if users == nil {
-		t.Fatal("client.GetUsers() returns nil")
-	}
-	if len(users) != 3 {
-		t.Fatalf("len(users) == %d, wanted 3", len(users))
-	}
-	if users[0].Password != "" {
-		t.Fatalf(
-			"users[0].Password == %s, wanted empty", users[0].Password)
-	}
-}
-
-func TestGetUser(t *testing.T) {
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	exp := testutil.DummyAdmin()
-	exp.Roles = nil
-	exp.Username = "foo"
-	if _, err := server.AddUser(exp); err != nil {
-		t.Fatal(err)
-	}
-	user, _, err := client.GetUser(exp.Username)
-	if err != nil {
-		t.Fatal("Failed to GetUser", err)
-	}
-	if user.Password != "" {
-		t.Fatalf("user.Password = %s, wanted empty", user.Password)
-	}
-	if _, _, err := client.GetUser(""); err == nil {
-		t.Fatal("username should be required.")
-	}
-	if _, _, err := client.GetUser("h"); err == nil {
-		t.Fatal(`no user whoname name is "h"`)
-	}
-}
-
-func TestUpdateUser(t *testing.T) {
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	user := testutil.DummyAdmin()
-	user.Roles = nil
-	user.Username = "foo"
+	userName := "foo"
+	user.Username = userName
 	if _, err := server.AddUser(user); err != nil {
 		t.Fatal(err)
 	}
@@ -169,9 +140,25 @@ func TestUpdateUser(t *testing.T) {
 	if _, err := client.UpdateUser(nil); err == nil {
 		t.Fatal("user is nil")
 	}
+
+	body := bytes.NewBuffer([]byte("hoge"))
+	req, err := http.NewRequest(
+		http.MethodPut, client.Endpoints.User(userName), body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth(client.Name(), client.Password())
+	hc := &http.Client{}
+	resp, err := hc.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode != 400 {
+		t.Fatalf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
+	}
 }
 
-func TestDeleteUser(t *testing.T) {
+func TestHandleDeleteUser(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
