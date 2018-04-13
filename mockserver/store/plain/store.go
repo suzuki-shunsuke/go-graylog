@@ -10,21 +10,20 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 )
 
-type InMemoryStore struct {
-	users             map[string]graylog.User  `json:"users"`
-	roles             map[string]graylog.Role  `json:"roles"`
-	inputs            map[string]graylog.Input `json:"inputs"`
-	indexSets         []graylog.IndexSet       `json:"index_sets"`
-	defaultIndexSetID string                   `json:"default_index_set_id"`
-	// indexSetStats     map[string]graylog.IndexSetStats         `json:"index_set_stats"`
-	streams     map[string]graylog.Stream                `json:"streams"`
-	streamRules map[string]map[string]graylog.StreamRule `json:"stream_rules"`
-	dataPath    string                                   `json:"-"`
-	tokens      map[string]string                        `json:"tokens"`
+type PlainStore struct {
+	users             map[string]graylog.User                  `json:"users"`
+	roles             map[string]graylog.Role                  `json:"roles"`
+	inputs            map[string]graylog.Input                 `json:"inputs"`
+	indexSets         []graylog.IndexSet                       `json:"index_sets"`
+	defaultIndexSetID string                                   `json:"default_index_set_id"`
+	streams           map[string]graylog.Stream                `json:"streams"`
+	streamRules       map[string]map[string]graylog.StreamRule `json:"stream_rules"`
+	dataPath          string                                   `json:"-"`
+	tokens            map[string]string                        `json:"tokens"`
 }
 
 func NewStore(dataPath string) store.Store {
-	return &InMemoryStore{
+	return &PlainStore{
 		roles:     map[string]graylog.Role{},
 		users:     map[string]graylog.User{},
 		inputs:    map[string]graylog.Input{},
@@ -38,7 +37,7 @@ func NewStore(dataPath string) store.Store {
 }
 
 // Save writes Mock Server's data in a file for persistence.
-func (store *InMemoryStore) Save() error {
+func (store *PlainStore) Save() error {
 	if store.dataPath == "" {
 		return nil
 	}
@@ -50,7 +49,7 @@ func (store *InMemoryStore) Save() error {
 }
 
 // Load reads Mock Server's data from a file.
-func (store *InMemoryStore) Load() error {
+func (store *PlainStore) Load() error {
 	if store.dataPath == "" {
 		return nil
 	}
@@ -64,7 +63,7 @@ func (store *InMemoryStore) Load() error {
 	return json.Unmarshal(b, store)
 }
 
-func (store *InMemoryStore) Authorize(user *graylog.User, scope string, args ...string) (bool, error) {
+func (store *PlainStore) Authorize(user *graylog.User, scope string, args ...string) (bool, error) {
 	if user == nil {
 		return true, nil
 	}

@@ -8,14 +8,14 @@ import (
 )
 
 // HasUser
-func (store *InMemoryStore) HasUser(username string) (bool, error) {
+func (store *PlainStore) HasUser(username string) (bool, error) {
 	_, ok := store.users[username]
 	return ok, nil
 }
 
 // GetUser returns a user.
 // If the user is not found, this method returns nil and doesn't raise an error.
-func (store *InMemoryStore) GetUser(username string) (*graylog.User, error) {
+func (store *PlainStore) GetUser(username string) (*graylog.User, error) {
 	s, ok := store.users[username]
 	if ok {
 		return &s, nil
@@ -24,7 +24,7 @@ func (store *InMemoryStore) GetUser(username string) (*graylog.User, error) {
 }
 
 // GetUsers returns users
-func (store *InMemoryStore) GetUsers() ([]graylog.User, error) {
+func (store *PlainStore) GetUsers() ([]graylog.User, error) {
 	arr := make([]graylog.User, len(store.users))
 	i := 0
 	for _, user := range store.users {
@@ -34,8 +34,8 @@ func (store *InMemoryStore) GetUsers() ([]graylog.User, error) {
 	return arr, nil
 }
 
-// AddUser adds a user to the InMemoryStore.
-func (store *InMemoryStore) AddUser(user *graylog.User) error {
+// AddUser adds a user to the PlainStore.
+func (store *PlainStore) AddUser(user *graylog.User) error {
 	if user == nil {
 		return fmt.Errorf("user is nil")
 	}
@@ -46,9 +46,9 @@ func (store *InMemoryStore) AddUser(user *graylog.User) error {
 	return nil
 }
 
-// UpdateUser updates a user of the InMemoryStore.
+// UpdateUser updates a user of the PlainStore.
 // "email", "permissions", "full_name", "password"
-func (store *InMemoryStore) UpdateUser(user *graylog.User) error {
+func (store *PlainStore) UpdateUser(user *graylog.User) error {
 	u, err := store.GetUser(user.Username)
 	if err != nil {
 		return err
@@ -72,15 +72,15 @@ func (store *InMemoryStore) UpdateUser(user *graylog.User) error {
 	return nil
 }
 
-// DeleteUser removes a user from the InMemoryStore.
-func (store *InMemoryStore) DeleteUser(name string) error {
+// DeleteUser removes a user from the PlainStore.
+func (store *PlainStore) DeleteUser(name string) error {
 	delete(store.users, name)
 	return nil
 }
 
 // GetUserByAccessToken returns a user name.
 // If the user is not found, this method returns nil and doesn't raise an error.
-func (store *InMemoryStore) GetUserByAccessToken(token string) (*graylog.User, error) {
+func (store *PlainStore) GetUserByAccessToken(token string) (*graylog.User, error) {
 	userName, ok := store.tokens[token]
 	if !ok {
 		return nil, nil

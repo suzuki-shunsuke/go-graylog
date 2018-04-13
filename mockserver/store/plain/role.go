@@ -5,14 +5,14 @@ import (
 )
 
 // HasRole
-func (store *InMemoryStore) HasRole(name string) (bool, error) {
+func (store *PlainStore) HasRole(name string) (bool, error) {
 	_, ok := store.roles[name]
 	return ok, nil
 }
 
 // GetRole returns a Role.
 // If no role with given name is found, returns nil and not returns an error.
-func (store *InMemoryStore) GetRole(name string) (*graylog.Role, error) {
+func (store *PlainStore) GetRole(name string) (*graylog.Role, error) {
 	s, ok := store.roles[name]
 	if ok {
 		return &s, nil
@@ -21,7 +21,7 @@ func (store *InMemoryStore) GetRole(name string) (*graylog.Role, error) {
 }
 
 // GetRoles returns Roles.
-func (store *InMemoryStore) GetRoles() ([]graylog.Role, error) {
+func (store *PlainStore) GetRoles() ([]graylog.Role, error) {
 	size := len(store.roles)
 	arr := make([]graylog.Role, size)
 	i := 0
@@ -33,20 +33,20 @@ func (store *InMemoryStore) GetRoles() ([]graylog.Role, error) {
 }
 
 // AddRole adds a new role to the store.
-func (store *InMemoryStore) AddRole(role *graylog.Role) error {
+func (store *PlainStore) AddRole(role *graylog.Role) error {
 	store.roles[role.Name] = *role
 	return nil
 }
 
 // UpdateRole updates a role at the store.
-func (store *InMemoryStore) UpdateRole(name string, role *graylog.Role) error {
+func (store *PlainStore) UpdateRole(name string, role *graylog.Role) error {
 	delete(store.roles, name)
 	store.roles[role.Name] = *role
 	return nil
 }
 
 // DeleteRole deletes a role from store.
-func (store *InMemoryStore) DeleteRole(name string) error {
+func (store *PlainStore) DeleteRole(name string) error {
 	delete(store.roles, name)
 	return nil
 }

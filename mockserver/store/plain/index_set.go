@@ -9,7 +9,7 @@ import (
 )
 
 // HasIndexSet
-func (store *InMemoryStore) HasIndexSet(id string) (bool, error) {
+func (store *PlainStore) HasIndexSet(id string) (bool, error) {
 	for _, is := range store.indexSets {
 		if is.ID == id {
 			return true, nil
@@ -19,7 +19,7 @@ func (store *InMemoryStore) HasIndexSet(id string) (bool, error) {
 }
 
 // GetIndexSet returns an index set.
-func (store *InMemoryStore) GetIndexSet(id string) (*graylog.IndexSet, error) {
+func (store *PlainStore) GetIndexSet(id string) (*graylog.IndexSet, error) {
 	for _, is := range store.indexSets {
 		if is.ID == id {
 			is.Default = store.defaultIndexSetID == id
@@ -30,12 +30,12 @@ func (store *InMemoryStore) GetIndexSet(id string) (*graylog.IndexSet, error) {
 }
 
 // GetDefaultIndexSetID returns a default index set id.
-func (store *InMemoryStore) GetDefaultIndexSetID() (string, error) {
+func (store *PlainStore) GetDefaultIndexSetID() (string, error) {
 	return store.defaultIndexSetID, nil
 }
 
 // SetDefaultIndexSetID sets a default index set id.
-func (store *InMemoryStore) SetDefaultIndexSetID(id string) error {
+func (store *PlainStore) SetDefaultIndexSetID(id string) error {
 	is, err := store.GetIndexSet(id)
 	if err != nil {
 		return err
@@ -51,7 +51,7 @@ func (store *InMemoryStore) SetDefaultIndexSetID(id string) error {
 }
 
 // AddIndexSet adds an index set to the store.
-func (store *InMemoryStore) AddIndexSet(is *graylog.IndexSet) error {
+func (store *PlainStore) AddIndexSet(is *graylog.IndexSet) error {
 	if is == nil {
 		return fmt.Errorf("index set is nil")
 	}
@@ -63,7 +63,7 @@ func (store *InMemoryStore) AddIndexSet(is *graylog.IndexSet) error {
 }
 
 // UpdateIndexSet updates an index set at the Mock Server.
-func (store *InMemoryStore) UpdateIndexSet(is *graylog.IndexSet) error {
+func (store *PlainStore) UpdateIndexSet(is *graylog.IndexSet) error {
 	id := is.ID
 	for i, indexSet := range store.indexSets {
 		if indexSet.ID == id {
@@ -75,7 +75,7 @@ func (store *InMemoryStore) UpdateIndexSet(is *graylog.IndexSet) error {
 }
 
 // DeleteIndexSet removes a index set from the Mock Server.
-func (store *InMemoryStore) DeleteIndexSet(id string) error {
+func (store *PlainStore) DeleteIndexSet(id string) error {
 	size := len(store.indexSets)
 	if size == 0 {
 		return nil
@@ -99,7 +99,7 @@ func (store *InMemoryStore) DeleteIndexSet(id string) error {
 }
 
 // GetIndexSets returns a list of all index sets.
-func (store *InMemoryStore) GetIndexSets(skip, limit int) ([]graylog.IndexSet, int, error) {
+func (store *PlainStore) GetIndexSets(skip, limit int) ([]graylog.IndexSet, int, error) {
 	total := len(store.indexSets)
 	size := total
 	if skip < 0 {
@@ -121,7 +121,7 @@ func (store *InMemoryStore) GetIndexSets(skip, limit int) ([]graylog.IndexSet, i
 }
 
 // IsConflictIndexPrefix returns true if indexPrefix would conflict with an existing index set.
-func (store *InMemoryStore) IsConflictIndexPrefix(id, prefix string) (bool, error) {
+func (store *PlainStore) IsConflictIndexPrefix(id, prefix string) (bool, error) {
 	for _, is := range store.indexSets {
 		if id != is.ID && strings.HasPrefix(prefix, is.IndexPrefix) {
 			return true, nil

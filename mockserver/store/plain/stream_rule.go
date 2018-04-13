@@ -8,7 +8,7 @@ import (
 )
 
 // HasStreamRule
-func (store *InMemoryStore) HasStreamRule(streamID, streamRuleID string) (bool, error) {
+func (store *PlainStore) HasStreamRule(streamID, streamRuleID string) (bool, error) {
 	rules, ok := store.streamRules[streamID]
 	if !ok {
 		return false, nil
@@ -18,7 +18,7 @@ func (store *InMemoryStore) HasStreamRule(streamID, streamRuleID string) (bool, 
 }
 
 // GetStreamRule returns a stream rule.
-func (store *InMemoryStore) GetStreamRule(streamID, streamRuleID string) (*graylog.StreamRule, error) {
+func (store *PlainStore) GetStreamRule(streamID, streamRuleID string) (*graylog.StreamRule, error) {
 	rules, ok := store.streamRules[streamID]
 	if !ok {
 		return nil, nil
@@ -31,7 +31,7 @@ func (store *InMemoryStore) GetStreamRule(streamID, streamRuleID string) (*grayl
 }
 
 // GetStreamRules returns stream rules of the given stream.
-func (store *InMemoryStore) GetStreamRules(id string) ([]graylog.StreamRule, error) {
+func (store *PlainStore) GetStreamRules(id string) ([]graylog.StreamRule, error) {
 	rules, ok := store.streamRules[id]
 	if !ok {
 		return nil, nil
@@ -46,7 +46,7 @@ func (store *InMemoryStore) GetStreamRules(id string) ([]graylog.StreamRule, err
 }
 
 // AddStreamRule adds a stream rule.
-func (store *InMemoryStore) AddStreamRule(rule *graylog.StreamRule) error {
+func (store *PlainStore) AddStreamRule(rule *graylog.StreamRule) error {
 	if rule == nil {
 		return fmt.Errorf("rule is nil")
 	}
@@ -63,7 +63,7 @@ func (store *InMemoryStore) AddStreamRule(rule *graylog.StreamRule) error {
 }
 
 // UpdateStreamRule updates a stream rule.
-func (store *InMemoryStore) UpdateStreamRule(rule *graylog.StreamRule) error {
+func (store *PlainStore) UpdateStreamRule(rule *graylog.StreamRule) error {
 	if rule == nil {
 		return fmt.Errorf("rule is nil")
 	}
@@ -77,7 +77,7 @@ func (store *InMemoryStore) UpdateStreamRule(rule *graylog.StreamRule) error {
 }
 
 // DeleteStreamRule deletes a stream rule.
-func (store *InMemoryStore) DeleteStreamRule(streamID, streamRuleID string) error {
+func (store *PlainStore) DeleteStreamRule(streamID, streamRuleID string) error {
 	rules, ok := store.streamRules[streamID]
 	if !ok {
 		return nil

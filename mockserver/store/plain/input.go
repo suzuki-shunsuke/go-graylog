@@ -8,13 +8,13 @@ import (
 )
 
 // HasInput
-func (store *InMemoryStore) HasInput(id string) (bool, error) {
+func (store *PlainStore) HasInput(id string) (bool, error) {
 	_, ok := store.inputs[id]
 	return ok, nil
 }
 
 // GetInput returns an input.
-func (store *InMemoryStore) GetInput(id string) (*graylog.Input, error) {
+func (store *PlainStore) GetInput(id string) (*graylog.Input, error) {
 	s, ok := store.inputs[id]
 	if ok {
 		return &s, nil
@@ -23,7 +23,7 @@ func (store *InMemoryStore) GetInput(id string) (*graylog.Input, error) {
 }
 
 // AddInput adds an input to the store.
-func (store *InMemoryStore) AddInput(input *graylog.Input) error {
+func (store *PlainStore) AddInput(input *graylog.Input) error {
 	if input == nil {
 		return fmt.Errorf("input is nil")
 	}
@@ -34,10 +34,10 @@ func (store *InMemoryStore) AddInput(input *graylog.Input) error {
 	return nil
 }
 
-// UpdateInput updates an input at the InMemoryStore.
+// UpdateInput updates an input at the PlainStore.
 // Required: Title, Type, Configuration
 // Allowed: Global, Node
-func (store *InMemoryStore) UpdateInput(input *graylog.Input) error {
+func (store *PlainStore) UpdateInput(input *graylog.Input) error {
 	u, err := store.GetInput(input.ID)
 	if err != nil {
 		return err
@@ -57,13 +57,13 @@ func (store *InMemoryStore) UpdateInput(input *graylog.Input) error {
 }
 
 // DeleteInput deletes an input from the store.
-func (store *InMemoryStore) DeleteInput(id string) error {
+func (store *PlainStore) DeleteInput(id string) error {
 	delete(store.inputs, id)
 	return nil
 }
 
 // GetInputs returns inputs.
-func (store *InMemoryStore) GetInputs() ([]graylog.Input, error) {
+func (store *PlainStore) GetInputs() ([]graylog.Input, error) {
 	size := len(store.inputs)
 	arr := make([]graylog.Input, size)
 	i := 0

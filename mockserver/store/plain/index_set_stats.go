@@ -5,7 +5,7 @@ import (
 )
 
 // GetIndexSetStats returns an index set stats.
-func (store *InMemoryStore) GetIndexSetStats(id string) (*graylog.IndexSetStats, error) {
+func (store *PlainStore) GetIndexSetStats(id string) (*graylog.IndexSetStats, error) {
 	// TODO
 	ok, err := store.HasIndexSet(id)
 	if err != nil {
@@ -18,7 +18,7 @@ func (store *InMemoryStore) GetIndexSetStats(id string) (*graylog.IndexSetStats,
 }
 
 // GetIndexSetStatsMap returns all of index set stats.
-func (store *InMemoryStore) GetIndexSetStatsMap() (map[string]graylog.IndexSetStats, error) {
+func (store *PlainStore) GetIndexSetStatsMap() (map[string]graylog.IndexSetStats, error) {
 	// TODO
 	m := map[string]graylog.IndexSetStats{}
 	for _, is := range store.indexSets {
@@ -29,7 +29,7 @@ func (store *InMemoryStore) GetIndexSetStatsMap() (map[string]graylog.IndexSetSt
 }
 
 // GetTotalIndexSetStats returns all index set's statistics.
-func (store *InMemoryStore) GetTotalIndexSetStats() (*graylog.IndexSetStats, error) {
+func (store *PlainStore) GetTotalIndexSetStats() (*graylog.IndexSetStats, error) {
 	// TODO
 	indexSetStats := &graylog.IndexSetStats{}
 	return indexSetStats, nil
