@@ -54,39 +54,24 @@ func TestHandleGetIndexSet(t *testing.T) {
 	}
 }
 
-func TestServerHandleUpdateIndexSet(t *testing.T) {
+func TestHandleCreateIndexSet(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer server.Close()
-	indexSet := testutil.IndexSet("hoge")
-	if _, err = server.AddIndexSet(indexSet); err != nil {
+	is := testutil.IndexSet("hoge")
+	if _, err := client.CreateIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
-	body := bytes.NewBuffer([]byte("hoge"))
-	req, err := http.NewRequest(
-		http.MethodPut, client.Endpoints.IndexSet(indexSet.ID), body)
-	if err != nil {
-		t.Fatal(err)
+	if is.ID == "" {
+		t.Fatal("IndexSet's id is empty")
 	}
-	req.SetBasicAuth(client.Name(), client.Password())
-	hc := &http.Client{}
-	resp, err := hc.Do(req)
-	if err != nil {
-		t.Fatal(err)
+	is.ID = ""
+	if _, err := client.CreateIndexSet(is); err == nil {
+		t.Fatal("index prefix should conflict")
 	}
-	if resp.StatusCode != 400 {
-		t.Fatalf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
-	}
-}
 
-func TestServerHandleCreateIndexSet(t *testing.T) {
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
 	body := bytes.NewBuffer([]byte("hoge"))
 	req, err := http.NewRequest(
 		http.MethodPost, client.Endpoints.IndexSets, body)
@@ -104,98 +89,17 @@ func TestServerHandleCreateIndexSet(t *testing.T) {
 	}
 }
 
-func TestServerAddIndexSet(t *testing.T) {
-	server, _, err := testutil.GetServerAndClient()
+func TestHandleUpdateIndexSet(t *testing.T) {
+	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer server.Close()
 	is := testutil.IndexSet("hoge")
-	if _, err := server.AddIndexSet(is); err != nil {
-		t.Fatal(err)
-	}
-	is.ID = ""
-	if _, err := server.AddIndexSet(is); err == nil {
-		t.Fatal("index prefix should conflict")
-	}
-}
-
-func TestServerUpdateIndexSet(t *testing.T) {
-	server, _, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	if _, err := server.UpdateIndexSet(nil); err == nil {
-		t.Fatal("index set is nil")
-	}
-	is := testutil.IndexSet("hoge")
-	if _, err := server.AddIndexSet(is); err != nil {
+	if _, err = server.AddIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
 	id := is.ID
-	is.ID = ""
-	if _, err := server.UpdateIndexSet(is); err == nil {
-		t.Fatal("index set id is required")
-	}
-	is.ID = id
-	is.IndexPrefix = "graylog"
-	if _, err := server.UpdateIndexSet(is); err == nil {
-		t.Fatal("index prefix should be conflict")
-	}
-}
-
-func TestCreateIndexSet(t *testing.T) {
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	exp := testutil.IndexSet("hoge")
-	if _, err := client.CreateIndexSet(exp); err != nil {
-		t.Fatal("Failed to CreateIndexSet", err)
-	}
-	if exp.ID == "" {
-		t.Fatal("IndexSet's id is empty")
-	}
-	exp.IndexPrefix = "fuga"
-	act := *exp
-	exp.Title = ""
-	if _, err := client.CreateIndexSet(exp); err == nil {
-		t.Fatal("title is required")
-	}
-	exp.Title = act.Title
-	exp.IndexPrefix = ""
-	if _, err := client.CreateIndexSet(exp); err == nil {
-		t.Fatal("indexPrefix is required")
-	}
-	exp.IndexPrefix = "fuga"
-	exp.RotationStrategyClass = ""
-	if _, err := client.CreateIndexSet(exp); err == nil {
-		t.Fatal("rotationStrategyClass is required")
-	}
-	exp.RotationStrategyClass = act.RotationStrategyClass
-	exp.RotationStrategy = nil
-	if _, err := client.CreateIndexSet(exp); err == nil {
-		t.Fatal("rotationStrategy is required")
-	}
-	if _, err := client.CreateIndexSet(nil); err == nil {
-		t.Fatal("index set is nil")
-	}
-}
-
-func TestUpdateIndexSet(t *testing.T) {
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer server.Close()
-	is := testutil.IndexSet("fuga")
-	if _, err := server.AddIndexSet(is); err != nil {
-		t.Fatal(err)
-	}
-	is.Description = "changed!"
-
 	if _, err := client.UpdateIndexSet(is); err != nil {
 		t.Fatal("UpdateIndexSet is failure", err)
 	}
@@ -207,16 +111,39 @@ func TestUpdateIndexSet(t *testing.T) {
 	if _, err := client.UpdateIndexSet(is); err == nil {
 		t.Fatal(`no index set whose id is "h"`)
 	}
+	is.ID = id
+	title := is.Title
 	is.Title = ""
 	if _, err := client.UpdateIndexSet(is); err == nil {
 		t.Fatal("title is required")
 	}
+	is.Title = title
+	is.IndexPrefix = "graylog"
+	if _, err := server.UpdateIndexSet(is); err == nil {
+		t.Fatal("index prefix should be conflict")
+	}
 	if _, err := client.UpdateIndexSet(nil); err == nil {
 		t.Fatal("index set is nil")
 	}
+
+	body := bytes.NewBuffer([]byte("hoge"))
+	req, err := http.NewRequest(
+		http.MethodPut, client.Endpoints.IndexSet(id), body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth(client.Name(), client.Password())
+	hc := &http.Client{}
+	resp, err := hc.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode != 400 {
+		t.Fatalf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
+	}
 }
 
-func TestDeleteIndexSet(t *testing.T) {
+func TestHandleDeleteIndexSet(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -245,7 +172,7 @@ func TestDeleteIndexSet(t *testing.T) {
 	}
 }
 
-func TestSetDefaultIndexSet(t *testing.T) {
+func TestHandleSetDefaultIndexSet(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)

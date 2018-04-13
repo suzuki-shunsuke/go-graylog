@@ -18,7 +18,6 @@ func HandleGetIndexSets(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /system/indices/index_sets Get a list of all index sets
-	// TODO skip limit stats is optional
 	skip := 0
 	limit := 0
 	stats := false
