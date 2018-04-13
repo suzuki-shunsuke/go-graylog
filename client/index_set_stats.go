@@ -27,15 +27,15 @@ func (client *Client) GetIndexSetStatsContext(
 	return indexSetStats, ei, err
 }
 
-// GetAllIndexSetsStats returns stats of all Index Sets.
-func (client *Client) GetAllIndexSetsStats() (
+// GetTotalIndexSetsStats returns stats of all Index Sets.
+func (client *Client) GetTotalIndexSetsStats() (
 	*graylog.IndexSetStats, *ErrorInfo, error,
 ) {
-	return client.GetAllIndexSetsStatsContext(context.Background())
+	return client.GetTotalIndexSetsStatsContext(context.Background())
 }
 
-// GetAllIndexSetsStats returns stats of all Index Sets with a context.
-func (client *Client) GetAllIndexSetsStatsContext(
+// GetTotalIndexSetsStats returns stats of all Index Sets with a context.
+func (client *Client) GetTotalIndexSetsStatsContext(
 	ctx context.Context,
 ) (*graylog.IndexSetStats, *ErrorInfo, error) {
 	indexSetStats := &graylog.IndexSetStats{}

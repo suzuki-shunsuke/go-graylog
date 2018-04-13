@@ -45,7 +45,7 @@ func TestHandleGetIndexSetStats(t *testing.T) {
 	// }
 }
 
-func TestGetAllIndexSetsStats(t *testing.T) {
+func TestGetTotalIndexSetsStats(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -61,7 +61,7 @@ func TestGetAllIndexSetsStats(t *testing.T) {
 	if f != nil {
 		defer f(is.ID)
 	}
-	if _, _, err := client.GetAllIndexSetsStats(); err != nil {
+	if _, _, err := client.GetTotalIndexSetsStats(); err != nil {
 		t.Fatal(err)
 	}
 }
