@@ -3,6 +3,7 @@ package client_test
 import (
 	"testing"
 
+	"github.com/satori/go.uuid"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
@@ -30,7 +31,11 @@ func TestGetIndexSet(t *testing.T) {
 		defer server.Close()
 	}
 
-	is, f, err := testutil.GetIndexSet(client, server, "hoge")
+	u, err := uuid.NewV4()
+	if err != nil {
+		t.Fatal(err)
+	}
+	is, f, err := testutil.GetIndexSet(client, server, u.String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -72,7 +77,11 @@ func TestCreateIndexSet(t *testing.T) {
 	if _, err := client.CreateIndexSet(nil); err == nil {
 		t.Fatal("index set is nil")
 	}
-	is := testutil.IndexSet("hoge")
+	u, err := uuid.NewV4()
+	if err != nil {
+		t.Fatal(err)
+	}
+	is := testutil.IndexSet(u.String())
 	// success
 	if _, err := client.CreateIndexSet(is); err != nil {
 		t.Fatal(err)
@@ -96,7 +105,11 @@ func TestUpdateIndexSet(t *testing.T) {
 		defer server.Close()
 	}
 
-	is, f, err := testutil.GetIndexSet(client, server, "hoge")
+	u, err := uuid.NewV4()
+	if err != nil {
+		t.Fatal(err)
+	}
+	is, f, err := testutil.GetIndexSet(client, server, u.String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -163,7 +176,11 @@ func TestSetDefaultIndexSet(t *testing.T) {
 		}
 	}
 	if is == nil {
-		is = testutil.IndexSet("hoge")
+		u, err := uuid.NewV4()
+		if err != nil {
+			t.Fatal(err)
+		}
+		is = testutil.IndexSet(u.String())
 		is.Default = false
 		is.Writable = true
 		if _, err := client.CreateIndexSet(is); err != nil {
@@ -198,10 +215,7 @@ func TestSetDefaultIndexSet(t *testing.T) {
 
 	is.Writable = false
 
-	if _, err := client.UpdateIndexSet(is); err != nil {
-		t.Fatal(err)
-	}
-	if _, _, err := client.SetDefaultIndexSet(is.ID); err == nil {
+	if _, err := client.UpdateIndexSet(is); err == nil {
 		t.Fatal("Default index set must be writable.")
 	}
 }

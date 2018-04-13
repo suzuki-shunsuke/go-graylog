@@ -3,6 +3,7 @@ package client_test
 import (
 	"testing"
 
+	"github.com/satori/go.uuid"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
@@ -19,7 +20,11 @@ func TestGetIndexSetStats(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	is := testutil.IndexSet("hoge")
+	u, err := uuid.NewV4()
+	if err != nil {
+		t.Fatal(err)
+	}
+	is := testutil.IndexSet(u.String())
 	if len(iss) == 0 {
 		if _, err := client.CreateIndexSet(is); err != nil {
 			t.Fatal(err)
@@ -56,7 +61,11 @@ func TestGetTotalIndexSetsStats(t *testing.T) {
 		defer server.Close()
 	}
 
-	is, f, err := testutil.GetIndexSet(client, server, "hoge")
+	u, err := uuid.NewV4()
+	if err != nil {
+		t.Fatal(err)
+	}
+	is, f, err := testutil.GetIndexSet(client, server, u.String())
 	if err != nil {
 		t.Fatal(err)
 	}

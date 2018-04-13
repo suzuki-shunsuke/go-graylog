@@ -9,3 +9,4 @@ variables.tf
 node_modules
 coverage.txt
 dist
+main.tf

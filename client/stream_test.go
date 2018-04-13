@@ -4,6 +4,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/satori/go.uuid"
 	"github.com/suzuki-shunsuke/go-graylog/test"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
@@ -36,7 +37,11 @@ func TestCreateStream(t *testing.T) {
 		t.Fatal("stream is nil")
 	}
 	// success
-	is := testutil.IndexSet("hoge")
+	u, err := uuid.NewV4()
+	if err != nil {
+		t.Fatal(err)
+	}
+	is := testutil.IndexSet(u.String())
 	if _, err := client.CreateIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
@@ -71,7 +76,11 @@ func TestGetStream(t *testing.T) {
 		defer server.Close()
 	}
 
-	is := testutil.IndexSet("hoge")
+	u, err := uuid.NewV4()
+	if err != nil {
+		t.Fatal(err)
+	}
+	is := testutil.IndexSet(u.String())
 	if _, err := client.CreateIndexSet(is); err != nil {
 		t.Fatal(err)
 	}
