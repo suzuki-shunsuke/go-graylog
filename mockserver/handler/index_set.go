@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
@@ -16,10 +18,55 @@ func HandleGetIndexSets(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /system/indices/index_sets Get a list of all index sets
-	// TODO skip limit stats
+	// TODO skip limit stats is optional
 	skip := 0
 	limit := 0
 	stats := false
+	query := r.URL.Query()
+	s, ok := query["skip"]
+	var err error
+	if ok && len(s) > 0 {
+		skip, err = strconv.Atoi(s[0])
+		if err != nil {
+			ms.Logger().WithFields(log.Fields{
+				"error":      err,
+				"param_name": "skip",
+				"value":      s[0],
+			}).Warn("failed to convert string to integer")
+			// Unfortunately, graylog returns 404
+			// https://github.com/Graylog2/graylog2-server/issues/4721
+			return nil, 404, fmt.Errorf("HTTP 404 Not Found")
+		}
+	}
+	l, ok := query["limit"]
+	if ok && len(l) > 0 {
+		limit, err = strconv.Atoi(l[0])
+		if err != nil {
+			ms.Logger().WithFields(log.Fields{
+				"error":      err,
+				"param_name": "limit",
+				"value":      l[0],
+			}).Warn("failed to convert string to integer")
+			// Unfortunately, graylog returns 404
+			// https://github.com/Graylog2/graylog2-server/issues/4721
+			return nil, 404, fmt.Errorf("HTTP 404 Not Found")
+		}
+	}
+	st, ok := query["stats"]
+	if ok && len(st) > 0 {
+		stats, err = strconv.ParseBool(st[0])
+		if err != nil {
+			ms.Logger().WithFields(log.Fields{
+				"error":      err,
+				"param_name": "stats",
+				"value":      st[0],
+			}).Warn("failed to convert string to bool")
+			// Unfortunately, graylog ignores invalid stats parameter
+			// TODO send issue
+			stats = false
+		}
+	}
+
 	arr, total, sc, err := ms.GetIndexSets(skip, limit)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
@@ -28,7 +75,6 @@ func HandleGetIndexSets(
 		return arr, sc, err
 	}
 	if stats {
-		// TODO
 		stats, sc, err := ms.GetIndexSetStatsMap()
 		if err != nil {
 			return nil, sc, err
