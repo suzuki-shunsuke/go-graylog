@@ -228,10 +228,7 @@ func TestHandleSetDefaultIndexSet(t *testing.T) {
 
 	is.Writable = false
 
-	if _, err := client.UpdateIndexSet(is); err != nil {
-		t.Fatal(err)
-	}
-	if _, _, err := client.SetDefaultIndexSet(is.ID); err == nil {
+	if _, err := client.UpdateIndexSet(is); err == nil {
 		t.Fatal("Default index set must be writable.")
 	}
 }

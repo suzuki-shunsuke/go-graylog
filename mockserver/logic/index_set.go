@@ -13,6 +13,15 @@ func (ms *Logic) HasIndexSet(id string) (bool, error) {
 	return ms.store.HasIndexSet(id)
 }
 
+// GetIndexSets returns a list of all index sets.
+func (ms *Logic) GetIndexSets(skip, limit int) ([]graylog.IndexSet, int, int, error) {
+	iss, total, err := ms.store.GetIndexSets(skip, limit)
+	if err != nil {
+		return iss, total, 500, err
+	}
+	return iss, total, 200, nil
+}
+
 // GetIndexSet returns an index set.
 // If an index set is not found, returns an error.
 func (ms *Logic) GetIndexSet(id string) (*graylog.IndexSet, int, error) {
@@ -98,6 +107,14 @@ func (ms *Logic) UpdateIndexSet(is *graylog.IndexSet) (int, error) {
 			`index prefix "%s" would conflict with an existing index set`,
 			is.IndexPrefix)
 	}
+	defID, err := ms.store.GetDefaultIndexSetID()
+	if err != nil {
+		return 500, err
+	}
+	is.Default = defID == is.ID
+	if is.Default && !is.Writable {
+		return 409, fmt.Errorf("default index set must be writable")
+	}
 
 	if err := ms.store.UpdateIndexSet(is); err != nil {
 		return 500, err
@@ -128,15 +145,6 @@ func (ms *Logic) DeleteIndexSet(id string) (int, error) {
 		return 500, err
 	}
 	return 200, nil
-}
-
-// GetIndexSets returns a list of all index sets.
-func (ms *Logic) GetIndexSets(skip, limit int) ([]graylog.IndexSet, int, int, error) {
-	iss, total, err := ms.store.GetIndexSets(skip, limit)
-	if err != nil {
-		return iss, total, 500, err
-	}
-	return iss, total, 200, nil
 }
 
 // SetDefaultIndexSet sets a default index set
