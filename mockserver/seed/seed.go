@@ -18,7 +18,7 @@ func User() *graylog.User {
 		Username:    "admin",
 		Email:       "hoge@example.com",
 		FullName:    "Administrator",
-		Password:    "password",
+		Password:    "admin",
 		Permissions: set.NewStrSet("*"),
 	}
 }

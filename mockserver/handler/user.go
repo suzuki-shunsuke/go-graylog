@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -71,7 +70,6 @@ func HandleCreateUser(
 	}
 
 	if sc, err := ms.AddUser(user); err != nil {
-		fmt.Println(sc, err)
 		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {

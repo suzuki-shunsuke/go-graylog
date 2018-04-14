@@ -25,10 +25,15 @@ func (ms *Logic) Authenticate(name, password string) (*graylog.User, int, error)
 		}
 		return user, 200, nil
 	}
-	// TODO authentication
 	user, err := ms.store.GetUser(name)
 	if err != nil {
-		return user, 500, err
+		return nil, 500, err
+	}
+	if user == nil {
+		return nil, 401, fmt.Errorf("authentication failure")
+	}
+	if user.Password != encryptPassword(password) {
+		return nil, 401, fmt.Errorf("authentication failure")
 	}
 	return user, 200, nil
 }

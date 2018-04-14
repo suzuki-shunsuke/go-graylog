@@ -1,11 +1,16 @@
 package logic
 
 import (
+	"crypto/md5"
 	"fmt"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/validator"
 )
+
+func encryptPassword(password string) string {
+	return fmt.Sprintf("%x", md5.Sum([]byte(password)))
+}
 
 // HasUser
 func (ms *Logic) HasUser(username string) (bool, error) {
@@ -75,6 +80,7 @@ func (ms *Logic) AddUser(user *graylog.User) (int, error) {
 	}
 
 	user.SetDefaultValues()
+	user.Password = encryptPassword(user.Password)
 	// Add a user
 	if err := ms.store.AddUser(user); err != nil {
 		return 500, err
@@ -109,6 +115,7 @@ func (ms *Logic) UpdateUser(user *graylog.User) (int, error) {
 		}
 	}
 	user.SetDefaultValues()
+	user.Password = encryptPassword(user.Password)
 
 	// update
 	if err := ms.store.UpdateUser(user); err != nil {
