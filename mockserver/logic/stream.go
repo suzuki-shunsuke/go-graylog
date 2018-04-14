@@ -15,6 +15,10 @@ func (ms *Logic) HasStream(id string) (bool, error) {
 
 // GetStream returns a stream.
 func (ms *Logic) GetStream(id string) (*graylog.Stream, int, error) {
+	if err := ValidateObjectID(id); err != nil {
+		// unfortunately graylog returns not 400 but 404.
+		return nil, 404, err
+	}
 	stream, err := ms.store.GetStream(id)
 	if err != nil {
 		return nil, 500, err

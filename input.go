@@ -172,7 +172,7 @@ type Input struct {
 	Configuration *InputConfiguration `json:"configuration,omitempty" v-create:"required" v-update:"required"`
 
 	// ex. "5a90d5c2c006c60001efc368"
-	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required"`
+	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required,objectid"`
 
 	// Should this input start on all nodes
 	Global bool `json:"global,omitempty"`

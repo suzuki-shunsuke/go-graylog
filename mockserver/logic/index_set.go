@@ -28,6 +28,10 @@ func (ms *Logic) GetIndexSet(id string) (*graylog.IndexSet, int, error) {
 	if id == "" {
 		return nil, 400, fmt.Errorf("index set id is empty")
 	}
+	if err := ValidateObjectID(id); err != nil {
+		// unfortunately graylog returns not 400 but 404.
+		return nil, 404, err
+	}
 	is, err := ms.store.GetIndexSet(id)
 	if err != nil {
 		return is, 500, err

@@ -13,7 +13,7 @@ type Stream struct {
 	IndexSetID string `json:"index_set_id,omitempty" v-create:"required"`
 
 	// ex. "5a94abdac006c60001f04fc1"
-	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required"`
+	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required,objectid"`
 	// ex. "2018-02-20T11:37:19.371Z"
 	CreatedAt string `json:"created_at,omitempty" v-create:"isdefault"`
 	// ex. local:admin

@@ -45,7 +45,7 @@ type IndexSet struct {
 	Shards                          int    `json:"shards,omitempty" v-create:"required" v-update:"required"`
 	IndexOptimizationMaxNumSegments int    `json:"index_optimization_max_num_segments,omitempty" v-create:"required" v-update:"required"`
 
-	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required"`
+	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required,objectid"`
 
 	Description               string         `json:"description,omitempty"`
 	Replicas                  int            `json:"replicas,omitempty"`

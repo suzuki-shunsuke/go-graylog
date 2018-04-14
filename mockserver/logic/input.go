@@ -19,7 +19,10 @@ func (ms *Logic) GetInput(id string) (*graylog.Input, int, error) {
 	if id == "" {
 		return nil, 400, fmt.Errorf("input id is empty")
 	}
-	// TODO id validation
+	if err := ValidateObjectID(id); err != nil {
+		// unfortunately graylog returns not 400 but 404.
+		return nil, 404, err
+	}
 	input, err := ms.store.GetInput(id)
 	if err != nil {
 		return input, 500, err

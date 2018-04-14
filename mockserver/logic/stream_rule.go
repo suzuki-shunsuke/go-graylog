@@ -82,6 +82,10 @@ func (ms *Logic) DeleteStreamRule(streamID, streamRuleID string) (int, error) {
 
 // GetStreamRules returns a list of all stream rules of a given stream.
 func (ms *Logic) GetStreamRules(streamID string) ([]graylog.StreamRule, int, error) {
+	if err := ValidateObjectID(streamID); err != nil {
+		// unfortunately graylog returns not 400 but 404.
+		return nil, 404, err
+	}
 	ok, err := ms.HasStream(streamID)
 	if err != nil {
 		return nil, 500, err
