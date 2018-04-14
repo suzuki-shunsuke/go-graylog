@@ -7,27 +7,16 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestGetStreamRules(t *testing.T) {
+func TestHandleGetStreamRules(t *testing.T) {
 	test.TestGetStreamRules(t)
 }
 
-func TestCreateStreamRule(t *testing.T) {
-	test.TestCreateStreamRule(t)
-}
-
-func TestUpdateStreamRule(t *testing.T) {
-	test.TestUpdateStreamRule(t)
-}
-
-func TestDeleteStreamRule(t *testing.T) {
-	test.TestDeleteStreamRule(t)
-}
-
-func TestGetStreamRule(t *testing.T) {
+func TestHandleGetStreamRule(t *testing.T) {
 	test.TestGetStreamRule(t)
 }
 
-func TestServerAddStreamRule(t *testing.T) {
+func TestHandleCreateStreamRule(t *testing.T) {
+	test.TestCreateStreamRule(t)
 	server, _, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -54,7 +43,8 @@ func TestServerAddStreamRule(t *testing.T) {
 	}
 }
 
-func TestServerUpdateStreamRule(t *testing.T) {
+func TestHandleUpdateStreamRule(t *testing.T) {
+	test.TestUpdateStreamRule(t)
 	server, _, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -80,7 +70,8 @@ func TestServerUpdateStreamRule(t *testing.T) {
 	}
 }
 
-func TestServerDeleteStreamRule(t *testing.T) {
+func TestHandleDeleteStreamRule(t *testing.T) {
+	test.TestDeleteStreamRule(t)
 	server, _, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
