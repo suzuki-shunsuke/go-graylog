@@ -32,7 +32,7 @@ func TestGetStream(t *testing.T) {
 
 func TestGetStreams(t *testing.T) {
 	store := plain.NewStore("")
-	streams, err := store.GetStreams()
+	streams, _, err := store.GetStreams()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -119,7 +119,7 @@ func TestDeleteStream(t *testing.T) {
 
 func TestGetEnabledStreams(t *testing.T) {
 	store := plain.NewStore("")
-	streams, err := store.GetEnabledStreams()
+	streams, _, err := store.GetEnabledStreams()
 	if err != nil {
 		t.Fatal(err)
 	}

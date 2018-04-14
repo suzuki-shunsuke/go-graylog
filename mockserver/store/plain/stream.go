@@ -48,18 +48,19 @@ func (store *PlainStore) DeleteStream(id string) error {
 }
 
 // GetStreams returns a list of all streams.
-func (store *PlainStore) GetStreams() ([]graylog.Stream, error) {
-	arr := make([]graylog.Stream, len(store.streams))
+func (store *PlainStore) GetStreams() ([]graylog.Stream, int, error) {
+	total := len(store.streams)
+	arr := make([]graylog.Stream, total)
 	i := 0
 	for _, index := range store.streams {
 		arr[i] = index
 		i++
 	}
-	return arr, nil
+	return arr, total, nil
 }
 
 // GetEnabledStreams returns all enabled streams.
-func (store *PlainStore) GetEnabledStreams() ([]graylog.Stream, error) {
+func (store *PlainStore) GetEnabledStreams() ([]graylog.Stream, int, error) {
 	arr := []graylog.Stream{}
 	for _, index := range store.streams {
 		if index.Disabled {
@@ -67,5 +68,5 @@ func (store *PlainStore) GetEnabledStreams() ([]graylog.Stream, error) {
 		}
 		arr = append(arr, index)
 	}
-	return arr, nil
+	return arr, len(arr), nil
 }

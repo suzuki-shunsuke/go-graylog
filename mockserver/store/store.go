@@ -52,8 +52,8 @@ type Store interface {
 
 	AddStream(stream *graylog.Stream) error
 	GetStream(id string) (*graylog.Stream, error)
-	GetStreams() ([]graylog.Stream, error)
-	GetEnabledStreams() ([]graylog.Stream, error)
+	GetStreams() ([]graylog.Stream, int, error)
+	GetEnabledStreams() ([]graylog.Stream, int, error)
 	UpdateStream(stream *graylog.Stream) error
 	DeleteStream(id string) error
 	HasStream(id string) (bool, error)

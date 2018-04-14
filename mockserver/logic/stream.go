@@ -42,22 +42,21 @@ func (ms *Logic) AddStream(stream *graylog.Stream) (int, error) {
 
 // UpdateStream updates a stream at the Server.
 func (ms *Logic) UpdateStream(stream *graylog.Stream) (int, error) {
-	// TODO The default stream cannot be edited.
 	if stream == nil {
 		return 400, fmt.Errorf("stream is nil")
 	}
 	if err := validator.UpdateValidator.Struct(stream); err != nil {
 		return 400, err
 	}
-	ok, err := ms.HasStream(stream.ID)
+	s, sc, err := ms.GetStream(stream.ID)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"error": err, "id": stream.ID,
-		}).Error("ms.HasStream() is failure")
-		return 500, err
+		}).Error("failed to get a stream")
+		return sc, err
 	}
-	if !ok {
-		return 404, fmt.Errorf("no stream found with id <%s>", stream.ID)
+	if s.IsDefault {
+		return 400, fmt.Errorf("the default stream cannot be edited")
 	}
 	if err := ms.store.UpdateStream(stream); err != nil {
 		return 500, err
@@ -84,21 +83,21 @@ func (ms *Logic) DeleteStream(id string) (int, error) {
 }
 
 // GetStreams returns a list of all streams.
-func (ms *Logic) GetStreams() ([]graylog.Stream, int, error) {
-	streams, err := ms.store.GetStreams()
+func (ms *Logic) GetStreams() ([]graylog.Stream, int, int, error) {
+	streams, total, err := ms.store.GetStreams()
 	if err != nil {
-		return nil, 500, err
+		return nil, 0, 500, err
 	}
-	return streams, 200, nil
+	return streams, total, 200, nil
 }
 
 // GetEnabledStreams returns all enabled streams.
-func (ms *Logic) GetEnabledStreams() ([]graylog.Stream, int, error) {
-	streams, err := ms.store.GetEnabledStreams()
+func (ms *Logic) GetEnabledStreams() ([]graylog.Stream, int, int, error) {
+	streams, total, err := ms.store.GetEnabledStreams()
 	if err != nil {
-		return nil, 500, err
+		return nil, 0, 500, err
 	}
-	return streams, 200, nil
+	return streams, total, 200, nil
 }
 
 // PauseStream pauses a stream.

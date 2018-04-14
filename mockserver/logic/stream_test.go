@@ -32,7 +32,7 @@ func TestGetStreams(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if _, _, err := lgc.GetStreams(); err != nil {
+	if _, _, _, err := lgc.GetStreams(); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -43,7 +43,7 @@ func TestGetEnabledStreams(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if _, _, err := lgc.GetEnabledStreams(); err != nil {
+	if _, _, _, err := lgc.GetEnabledStreams(); err != nil {
 		t.Fatal(err)
 	}
 }

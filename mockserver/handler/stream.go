@@ -18,12 +18,12 @@ func HandleGetStreams(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /streams Get a list of all streams
-	arr, sc, err := ms.GetStreams()
+	arr, total, sc, err := ms.GetStreams()
 	if err != nil {
 		return nil, sc, err
 	}
 
-	return &graylog.StreamsBody{Streams: arr, Total: len(arr)}, sc, nil
+	return &graylog.StreamsBody{Streams: arr, Total: total}, sc, nil
 }
 
 // HandleGetStream
@@ -165,11 +165,11 @@ func HandleGetEnabledStreams(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /streams/enabled Get a list of all enabled streams
-	arr, sc, err := ms.GetEnabledStreams()
+	arr, total, sc, err := ms.GetEnabledStreams()
 	if err != nil {
 		return nil, sc, err
 	}
-	return &graylog.StreamsBody{Streams: arr, Total: len(arr)}, sc, nil
+	return &graylog.StreamsBody{Streams: arr, Total: total}, sc, nil
 }
 
 // HandlePauseStream
