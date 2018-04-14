@@ -31,7 +31,7 @@ func TestGetInput(t *testing.T) {
 
 func TestGetInputs(t *testing.T) {
 	store := plain.NewStore("")
-	inputs, err := store.GetInputs()
+	inputs, _, err := store.GetInputs()
 	if err != nil {
 		t.Fatal(err)
 	}

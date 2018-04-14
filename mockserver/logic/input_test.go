@@ -35,7 +35,7 @@ func TestGetInputs(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	act, _, err := server.GetInputs()
+	act, _, _, err := server.GetInputs()
 	if err != nil {
 		t.Fatal("Failed to GetInputs", err)
 	}

@@ -63,7 +63,7 @@ func (store *PlainStore) DeleteInput(id string) error {
 }
 
 // GetInputs returns inputs.
-func (store *PlainStore) GetInputs() ([]graylog.Input, error) {
+func (store *PlainStore) GetInputs() ([]graylog.Input, int, error) {
 	size := len(store.inputs)
 	arr := make([]graylog.Input, size)
 	i := 0
@@ -71,5 +71,5 @@ func (store *PlainStore) GetInputs() ([]graylog.Input, error) {
 		arr[i] = input
 		i++
 	}
-	return arr, nil
+	return arr, size, nil
 }

@@ -76,10 +76,10 @@ func (ms *Logic) DeleteInput(id string) (int, error) {
 }
 
 // GetInputs returns a list of inputs.
-func (ms *Logic) GetInputs() ([]graylog.Input, int, error) {
-	inputs, err := ms.store.GetInputs()
+func (ms *Logic) GetInputs() ([]graylog.Input, int, int, error) {
+	inputs, total, err := ms.store.GetInputs()
 	if err != nil {
-		return inputs, 500, err
+		return nil, 0, 500, err
 	}
-	return inputs, 200, nil
+	return inputs, total, 200, nil
 }

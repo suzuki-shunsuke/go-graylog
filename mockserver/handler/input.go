@@ -29,11 +29,11 @@ func HandleGetInputs(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /system/inputs Get all inputs
-	arr, sc, err := ms.GetInputs()
+	arr, total, sc, err := ms.GetInputs()
 	if err != nil {
 		return arr, sc, err
 	}
-	inputs := &graylog.InputsBody{Inputs: arr, Total: len(arr)}
+	inputs := &graylog.InputsBody{Inputs: arr, Total: total}
 	return inputs, sc, nil
 }
 
