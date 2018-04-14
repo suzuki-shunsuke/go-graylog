@@ -56,7 +56,7 @@ func TestGetStreamRule(t *testing.T) {
 
 func TestGetStreamRules(t *testing.T) {
 	store := plain.NewStore("")
-	_, err := store.GetStreamRules("")
+	_, _, err := store.GetStreamRules("")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -69,7 +69,7 @@ func TestGetStreamRules(t *testing.T) {
 	if err := store.AddStreamRule(rule); err != nil {
 		t.Fatal(err)
 	}
-	_, err = store.GetStreamRules(stream.ID)
+	_, _, err = store.GetStreamRules(stream.ID)
 	if err != nil {
 		t.Fatal(err)
 	}

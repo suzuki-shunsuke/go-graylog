@@ -111,10 +111,10 @@ func TestGetStreamRules(t *testing.T) {
 	if _, err := lgc.AddStreamRule(rule); err != nil {
 		t.Fatal(err)
 	}
-	if _, _, err := lgc.GetStreamRules(""); err == nil {
+	if _, _, _, err := lgc.GetStreamRules(""); err == nil {
 		t.Fatal("stream id is required")
 	}
-	if _, _, err := lgc.GetStreamRules(rule.StreamID); err != nil {
+	if _, _, _, err := lgc.GetStreamRules(rule.StreamID); err != nil {
 		t.Fatal(err)
 	}
 }

@@ -59,7 +59,7 @@ type Store interface {
 	HasStream(id string) (bool, error)
 
 	AddStreamRule(rule *graylog.StreamRule) error
-	GetStreamRules(id string) ([]graylog.StreamRule, error)
+	GetStreamRules(id string) ([]graylog.StreamRule, int, error)
 	GetStreamRule(streamID, streamRuleID string) (*graylog.StreamRule, error)
 	UpdateStreamRule(rule *graylog.StreamRule) error
 	DeleteStreamRule(streamID, streamRuleID string) error

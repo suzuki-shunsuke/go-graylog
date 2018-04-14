@@ -31,18 +31,19 @@ func (store *PlainStore) GetStreamRule(streamID, streamRuleID string) (*graylog.
 }
 
 // GetStreamRules returns stream rules of the given stream.
-func (store *PlainStore) GetStreamRules(id string) ([]graylog.StreamRule, error) {
+func (store *PlainStore) GetStreamRules(id string) ([]graylog.StreamRule, int, error) {
 	rules, ok := store.streamRules[id]
 	if !ok {
-		return nil, nil
+		return nil, 0, nil
 	}
-	arr := make([]graylog.StreamRule, len(rules))
+	size := len(rules)
+	arr := make([]graylog.StreamRule, size)
 	i := 0
 	for _, rule := range rules {
 		arr[i] = rule
 		i++
 	}
-	return arr, nil
+	return arr, size, nil
 }
 
 // AddStreamRule adds a stream rule.

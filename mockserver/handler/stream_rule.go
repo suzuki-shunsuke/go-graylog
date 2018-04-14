@@ -18,11 +18,11 @@ func HandleGetStreamRules(
 ) (interface{}, int, error) {
 	// GET /streams/{streamid}/rules Get a list of all stream rules
 	streamID := ps.ByName("streamID")
-	arr, sc, err := ms.GetStreamRules(streamID)
+	arr, total, sc, err := ms.GetStreamRules(streamID)
 	if err != nil {
 		return nil, sc, err
 	}
-	return &graylog.StreamRulesBody{StreamRules: arr, Total: len(arr)}, 200, nil
+	return &graylog.StreamRulesBody{StreamRules: arr, Total: total}, 200, nil
 }
 
 // HandleCreateStreamRule
