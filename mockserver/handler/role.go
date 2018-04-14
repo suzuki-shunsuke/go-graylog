@@ -31,11 +31,11 @@ func HandleGetRoles(
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /roles List all roles
-	arr, sc, err := ms.GetRoles()
+	arr, total, sc, err := ms.GetRoles()
 	if err != nil {
 		return arr, sc, err
 	}
-	return &graylog.RolesBody{Roles: arr, Total: len(arr)}, sc, nil
+	return &graylog.RolesBody{Roles: arr, Total: total}, sc, nil
 }
 
 // HandleCreateRole

@@ -31,7 +31,7 @@ func TestGetRole(t *testing.T) {
 
 func TestGetRoles(t *testing.T) {
 	store := plain.NewStore("")
-	roles, err := store.GetRoles()
+	roles, _, err := store.GetRoles()
 	if err != nil {
 		t.Fatal(err)
 	}

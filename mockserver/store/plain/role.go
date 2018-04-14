@@ -21,7 +21,7 @@ func (store *PlainStore) GetRole(name string) (*graylog.Role, error) {
 }
 
 // GetRoles returns Roles.
-func (store *PlainStore) GetRoles() ([]graylog.Role, error) {
+func (store *PlainStore) GetRoles() ([]graylog.Role, int, error) {
 	size := len(store.roles)
 	arr := make([]graylog.Role, size)
 	i := 0
@@ -29,7 +29,7 @@ func (store *PlainStore) GetRoles() ([]graylog.Role, error) {
 		arr[i] = role
 		i++
 	}
-	return arr, nil
+	return arr, size, nil
 }
 
 // AddRole adds a new role to the store.

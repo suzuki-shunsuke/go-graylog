@@ -15,7 +15,7 @@ type Store interface {
 	// GetRole returns a role.
 	// If no role with given name is found, returns nil and not returns an error.
 	GetRole(name string) (*graylog.Role, error)
-	GetRoles() ([]graylog.Role, error)
+	GetRoles() ([]graylog.Role, int, error)
 	UpdateRole(name string, role *graylog.Role) error
 	DeleteRole(name string) error
 	HasRole(name string) (bool, error)

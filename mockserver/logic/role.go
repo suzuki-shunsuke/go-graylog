@@ -92,10 +92,10 @@ func (ms *Logic) DeleteRole(name string) (int, error) {
 }
 
 // GetRoles returns a list of roles.
-func (ms *Logic) GetRoles() ([]graylog.Role, int, error) {
-	roles, err := ms.store.GetRoles()
+func (ms *Logic) GetRoles() ([]graylog.Role, int, int, error) {
+	roles, total, err := ms.store.GetRoles()
 	if err != nil {
-		return roles, 500, err
+		return nil, 0, 500, err
 	}
-	return roles, 200, nil
+	return roles, total, 200, nil
 }

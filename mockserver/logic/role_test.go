@@ -32,7 +32,7 @@ func TestGetRoles(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	roles, _, err := lgc.GetRoles()
+	roles, _, _, err := lgc.GetRoles()
 	if err != nil {
 		t.Fatal(err)
 	}
