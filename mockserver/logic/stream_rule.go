@@ -15,17 +15,21 @@ func (ms *Logic) HasStreamRule(streamID, streamRuleID string) (bool, error) {
 
 // AddStreamRule adds a stream rule to the Server.
 func (ms *Logic) AddStreamRule(rule *graylog.StreamRule) (int, error) {
-	// TODO Cannot add stream rules to the default stream.
 	if err := validator.CreateValidator.Struct(rule); err != nil {
 		return 400, err
 	}
-	ok, err := ms.HasStream(rule.StreamID)
+
+	s, sc, err := ms.GetStream(rule.StreamID)
 	if err != nil {
-		return 500, err
+		ms.Logger().WithFields(log.Fields{
+			"error": err, "id": rule.StreamID, "sc": sc,
+		}).Warn("failed to get a stream")
+		return sc, err
 	}
-	if !ok {
-		return 404, fmt.Errorf("no stream is not found: <%s>", rule.StreamID)
+	if s.IsDefault {
+		return 400, fmt.Errorf("cannot add stream rules to the default stream")
 	}
+
 	if err := ms.store.AddStreamRule(rule); err != nil {
 		return 500, err
 	}
