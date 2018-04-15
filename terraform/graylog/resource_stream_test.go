@@ -1,14 +1,13 @@
 package graylog
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/satori/go.uuid"
 	"github.com/suzuki-shunsuke/go-graylog/client"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
@@ -79,51 +78,39 @@ func TestAccStream(t *testing.T) {
 		"graylog": testAccProvider,
 	}
 
-	indexSet := &graylog.IndexSet{
-		Title:                 "terraform test index set title",
-		Description:           "terraform test index set description",
-		IndexPrefix:           "terraform-test",
-		Shards:                4,
-		Replicas:              0,
-		RotationStrategyClass: "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy",
-		RotationStrategy: &graylog.RotationStrategy{
-			Type:            "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig",
-			MaxDocsPerIndex: 20000000},
-		RetentionStrategyClass: "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy",
-		RetentionStrategy: &graylog.RetentionStrategy{
-			Type:               "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig",
-			MaxNumberOfIndices: 20},
-		CreationDate:                    "2018-02-20T11:37:19.305Z",
-		IndexAnalyzer:                   "standard",
-		IndexOptimizationMaxNumSegments: 1,
-		IndexOptimizationDisabled:       false,
-		Writable:                        true,
-		Default:                         false}
-	stream := &graylog.Stream{
-		Title:        "terraform test",
-		IndexSetID:   "${graylog_index_set.test.id}",
-		MatchingType: "AND",
-	}
-
-	tc := &tfConf{
-		Resource: map[string]map[string]interface{}{
-			"graylog_stream":    {"test": stream},
-			"graylog_index_set": {"test": indexSet}},
-	}
-
-	b, err := json.Marshal(tc)
+	u, err := uuid.NewV4()
 	if err != nil {
 		t.Fatal(err)
 	}
+	prefix := u.String()
+	roleTf := `
+resource "graylog_index_set" "test" {
+  title = "terraform test index set"
+	description = "terraform test index set description"
+	index_prefix = "%s"
+	shards = 4
+	replicas = 0
+  rotation_strategy_class = "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy"
+  rotation_strategy = {
+    type = "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig"
+  }
+  retention_strategy_class = "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy"
+  retention_strategy = {
+    type = "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig"
+  }
+  index_analyzer = "standard"
+  shards = 4
+	writable = true
+  index_optimization_max_num_segments = 1
+}
 
-	updateConf := *tc
-	stream.Title = "terraform test updated"
-	updateConf.Resource["graylog_stream"]["test"] = stream
-
-	updateByte, err := json.Marshal(updateConf)
-	if err != nil {
-		t.Fatal(err)
-	}
+resource "graylog_stream" "test" {
+  title = "%s"
+	index_set_id = "${graylog_index_set.test.id}"
+	matching_type = "AND"
+}`
+	createTitle := "terraform stream test"
+	updateTitle := "terraform stream test updated"
 
 	key := "graylog_stream.test"
 	if server != nil {
@@ -135,15 +122,15 @@ func TestAccStream(t *testing.T) {
 		CheckDestroy: testDeleteStream(cl, key),
 		Steps: []resource.TestStep{
 			{
-				Config: string(b),
+				Config: fmt.Sprintf(roleTf, prefix, createTitle),
 				Check: resource.ComposeTestCheckFunc(
 					testCreateStream(cl, server, key),
 				),
 			},
 			{
-				Config: string(updateByte),
+				Config: fmt.Sprintf(roleTf, prefix, updateTitle),
 				Check: resource.ComposeTestCheckFunc(
-					testUpdateStream(cl, key, stream.Title),
+					testUpdateStream(cl, key, updateTitle),
 				),
 			},
 		},
