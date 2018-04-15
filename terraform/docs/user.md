@@ -21,22 +21,24 @@ name | type | etc
 username | string |
 password | string | sensitive
 email | string |
+permissions | []string |
+full_name | string |
 
 ### Optional Argument
 
 name | default | type | etc
 --- | --- | --- | ---
-full_name | "" | string |
 roles | [] | []string |
-user_id | "" | string | computed
-timezone | "" | string |
-session_timeout_ms | | int |
-external | | bool |
-read_only | | bool |
-client_address | | string | `0.0.0.0`
+timezone | "" | string | computed
+session_timeout_ms | | int | computed
 
 ## Attributes Reference
 
 name | type | etc
 --- | --- | ---
-user_id | string |
+user_id | string | computed
+client_address | | string | computed
+external | bool | computed
+read_only | bool | computed
+session_active | bool | computed
+last_activity | string | computed

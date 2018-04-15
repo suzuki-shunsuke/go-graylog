@@ -49,11 +49,6 @@ func resourceUser() *schema.Resource {
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			"user_id": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-			},
 			"timezone": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -64,26 +59,36 @@ func resourceUser() *schema.Resource {
 				Optional: true,
 				Computed: true,
 			},
+
+			"user_id": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
 			"external": {
 				Type:     schema.TypeBool,
 				Optional: true,
+				Computed: true,
 			},
 			"read_only": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Computed: true,
 			},
-			// "session_active": &schema.Schema{
-			// 	Type:     schema.TypeBool,
-			// 	Optional: true,
-			// },
-			// "last_activity": &schema.Schema{
-			// 	Type:     schema.TypeString,
-			// 	Required: false,
-			// },
 			"client_address": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Computed: true,
+			},
+			"session_active": &schema.Schema{
+				Type:     schema.TypeBool,
+				Optional: true,
+				Computed: true,
+			},
+			"last_activity": &schema.Schema{
+				Type:     schema.TypeString,
+				Required: false,
+				Computed: true,
 			},
 		},
 	}
@@ -101,9 +106,9 @@ func newUser(d *schema.ResourceData) *graylog.User {
 		Timezone:         d.Get("timezone").(string),
 		SessionTimeoutMs: d.Get("session_timeout_ms").(int),
 		External:         d.Get("external").(bool),
-		ReadOnly:         d.Get("read_only").(bool),
 		ClientAddress:    d.Get("client_address").(string),
 		Password:         d.Get("password").(string),
+		ReadOnly:         d.Get("read_only").(bool),
 		// SessionActive:    d.Get("session_active").(bool),
 	}
 }
