@@ -14,7 +14,6 @@ resource "graylog_index_set" "test-index-set" {
   retention_strategy = {
     type = "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig"
   }
-  creation_date = "2018-02-20T11:37:29.305Z"
   index_analyzer = "standard"
   shards = 4
   index_optimization_max_num_segments = 1
@@ -35,7 +34,6 @@ rotation_strategy.type | string |
 retention_strategy_class | string |
 retention_strategy | map[string] |
 retention_strategy.type | string |
-creation_date | string |
 index_analyzer | string |
 shards | int |
 index_optimization_max_num_segments | int |
@@ -49,6 +47,7 @@ replicas | 0 | int |
 index_optimization_disabled | | bool |
 writable | | bool |
 default | | bool |
+creation_date | computed | string |
 
 ## Attributes Reference
 

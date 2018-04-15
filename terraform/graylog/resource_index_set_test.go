@@ -1,14 +1,13 @@
 package graylog
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/satori/go.uuid"
 	"github.com/suzuki-shunsuke/go-graylog/client"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
@@ -79,40 +78,32 @@ func TestAccIndexSet(t *testing.T) {
 		"graylog": testAccProvider,
 	}
 
-	is := &graylog.IndexSet{
-		Title:                           "terraform test index set title",
-		Description:                     "terraform test index set description",
-		IndexPrefix:                     "terraform-test",
-		Shards:                          4,
-		Replicas:                        0,
-		RotationStrategyClass:           graylog.MESSAGE_COUNT_ROTATION_STRATEGY,
-		RotationStrategy:                graylog.NewMessageCountRotationStrategy(0),
-		RetentionStrategyClass:          graylog.DELETION_RETENTION_STRATEGY_CLASS,
-		RetentionStrategy:               graylog.NewDeletionRetentionStrategy(0),
-		IndexAnalyzer:                   "standard",
-		IndexOptimizationMaxNumSegments: 1,
-		IndexOptimizationDisabled:       false,
-		Writable:                        true,
-		Default:                         false}
-
-	tc := &tfConf{
-		Resource: map[string]map[string]interface{}{
-			"graylog_index_set": {"test": is}},
-	}
-
-	b, err := json.Marshal(tc)
+	u, err := uuid.NewV4()
 	if err != nil {
 		t.Fatal(err)
 	}
+	prefix := u.String()
+	roleTf := `
+resource "graylog_index_set" "test" {
+  title = "%s"
+	description = "terraform test index set description"
+	index_prefix = "%s"
+	shards = 4
+	replicas = 0
+  rotation_strategy_class = "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy"
+  rotation_strategy = {
+    type = "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig"
+  }
+  retention_strategy_class = "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy"
+  retention_strategy = {
+    type = "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig"
+  }
+  index_analyzer = "standard"
+  shards = 4
+  index_optimization_max_num_segments = 1
+}`
 
-	is.Title = "terraform test index set title updated"
-	tc.Resource["graylog_index_set"]["test"] = is
-
-	ub, err := json.Marshal(tc)
-	if err != nil {
-		t.Fatal(err)
-	}
-
+	updateTitle := "terraform test index set title updated"
 	key := "graylog_index_set.test"
 	if server != nil {
 		server.Start()
@@ -123,15 +114,15 @@ func TestAccIndexSet(t *testing.T) {
 		CheckDestroy: testDeleteIndexSet(cl, server, key),
 		Steps: []resource.TestStep{
 			{
-				Config: string(b),
+				Config: fmt.Sprintf(roleTf, "terraform test index set title", prefix),
 				Check: resource.ComposeTestCheckFunc(
 					testCreateIndexSet(cl, server, key),
 				),
 			},
 			{
-				Config: string(ub),
+				Config: fmt.Sprintf(roleTf, updateTitle, prefix),
 				Check: resource.ComposeTestCheckFunc(
-					testUpdateIndexSet(cl, key, is.Title),
+					testUpdateIndexSet(cl, key, updateTitle),
 				),
 			},
 		},
