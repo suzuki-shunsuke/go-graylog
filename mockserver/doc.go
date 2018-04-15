@@ -4,7 +4,7 @@ Package mockserver provides Graylog API mock server.
 The mock server provides the following two type of APIs: REST API and Server object's method.
 
   // a port number is automatically chosen
-  server, err := mockserver.NewServer("")
+  server, err := mockserver.NewServer("", nil)
   if err != nil {
   	t.Error("Failed to Get Mock Server", err)
   	return
@@ -13,7 +13,7 @@ The mock server provides the following two type of APIs: REST API and Server obj
 
 You can specify the port number.
 
-  server, err := mockserver.NewServer(":8000")
+  server, err := mockserver.NewServer(":8000", nil)
 
 The server has not started yet, so start it.
 

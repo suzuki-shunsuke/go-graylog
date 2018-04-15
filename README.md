@@ -8,7 +8,7 @@
 [![GitHub tag](https://img.shields.io/github/tag/suzuki-shunsuke/go-graylog.svg)](https://github.com/suzuki-shunsuke/go-graylog/releases)
 [![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://raw.githubusercontent.com/suzuki-shunsuke/go-graylog/master/LICENSE)
 
-Graylog API client and mock server for golang and terraform provider for Graylog.
+[Graylog](https://www.graylog.org/) API client and mock server for golang and terraform provider for Graylog.
 
 ## Example - client and mock server
 
@@ -36,14 +36,9 @@ OPTIONS:
    --version, -v      print the version
 ```
 
-## Graylog REST API's Reference
-
-* http://docs.graylog.org/en/2.4/pages/configuration/rest_api.html
-* http://docs.graylog.org/en/2.4/pages/users_and_roles/permission_system.html
-
 ## Supported Graylog version
 
-We use [the graylog's official Docker Image](https://hub.docker.com/r/graylog/graylog/) .
+We use [the graylog's official Docker Image](https://hub.docker.com/r/graylog/graylog/) for development.
 
 The version is `2.4.3-1` .
 
@@ -54,6 +49,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) .
 ## See also
 
 * [terraform-provider-graylog](https://github.com/suzuki-shunsuke/go-graylog/terraform)
+* http://docs.graylog.org/en/2.4/pages/configuration/rest_api.html
+* http://docs.graylog.org/en/2.4/pages/users_and_roles/permission_system.html
 
 ## License
 

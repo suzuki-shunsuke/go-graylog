@@ -15,7 +15,7 @@ For example, create a role.
 	role := &graylog.Role{Name: "foo", Permissions: set.NewStrSet("*")}
 	_, err := cl.CreateRole(role)
 
-In addition the conventional error object, our API returns "ErrorInfo" object. This object has http.Response object and Graylog API's error message.
+In addition the conventional error object, client API returns "ErrorInfo" object. This object has http.Response object and Graylog API's error message.
 
   ei, err := cl.CreateRole(role)
   if err != nil {

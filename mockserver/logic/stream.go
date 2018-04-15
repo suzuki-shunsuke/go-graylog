@@ -34,6 +34,17 @@ func (ms *Logic) AddStream(stream *graylog.Stream) (int, error) {
 	if err := validator.CreateValidator.Struct(stream); err != nil {
 		return 400, err
 	}
+	// check index set existence
+	is, sc, err := ms.GetIndexSet(stream.IndexSetID)
+	if err != nil {
+		LogWE(sc, ms.Logger().WithFields(log.Fields{
+			"error": err, "index_set_id": stream.IndexSetID, "status_code": sc,
+		}), "failed to get an index set")
+		return sc, err
+	}
+	if !is.Writable {
+		return 400, fmt.Errorf("assigned index set must be writable")
+	}
 	if err := ms.store.AddStream(stream); err != nil {
 		return 500, err
 	}
@@ -50,13 +61,26 @@ func (ms *Logic) UpdateStream(stream *graylog.Stream) (int, error) {
 	}
 	s, sc, err := ms.GetStream(stream.ID)
 	if err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err, "id": stream.ID,
-		}).Error("failed to get a stream")
+		LogWE(sc, ms.Logger().WithFields(log.Fields{
+			"error": err, "id": stream.ID, "status_code": sc,
+		}), "failed to get a stream")
 		return sc, err
 	}
 	if s.IsDefault {
 		return 400, fmt.Errorf("the default stream cannot be edited")
+	}
+	// check index set existence
+	if stream.IndexSetID != "" {
+		is, sc, err := ms.GetIndexSet(stream.IndexSetID)
+		if err != nil {
+			LogWE(sc, ms.Logger().WithFields(log.Fields{
+				"error": err, "index_set_id": stream.IndexSetID, "status_code": sc,
+			}), "failed to get an index set")
+			return sc, err
+		}
+		if !is.Writable {
+			return 400, fmt.Errorf("assigned index set must be writable")
+		}
 	}
 	if err := ms.store.UpdateStream(stream); err != nil {
 		return 500, err

@@ -68,9 +68,9 @@ func HandleGetIndexSets(
 
 	arr, total, sc, err := ms.GetIndexSets(skip, limit)
 	if err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err,
-		}).Error("ms.HasIndexList() is failure")
+		logic.LogWE(sc, ms.Logger().WithFields(log.Fields{
+			"error": err, "skip": skip, "limit": limit, "status_code": sc,
+		}), "failed to get index sets")
 		return arr, sc, err
 	}
 	if stats {

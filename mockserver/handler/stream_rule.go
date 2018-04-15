@@ -62,9 +62,9 @@ func HandleCreateStreamRule(
 	rule.StreamID = streamID
 	sc, err = ms.AddStreamRule(rule)
 	if err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err, "rule": rule,
-		}).Error("Faield to add rule to mock server")
+		logic.LogWE(sc, ms.Logger().WithFields(log.Fields{
+			"error": err, "rule": rule, "status_code": sc,
+		}), "Faield to add rule to mock server")
 		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
@@ -108,9 +108,9 @@ func HandleUpdateStreamRule(
 	rule.StreamID = streamID
 	rule.ID = ruleID
 	if sc, err := ms.UpdateStreamRule(rule); err != nil {
-		ms.Logger().WithFields(log.Fields{
-			"error": err, "rule": &rule,
-		}).Error("Faield to update stream rule")
+		logic.LogWE(sc, ms.Logger().WithFields(log.Fields{
+			"error": err, "rule": &rule, "status_code": sc,
+		}), "faield to update stream rule")
 		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
