@@ -3,11 +3,10 @@
 https://github.com/suzuki-shunsuke/terraform-provider-graylog/blob/master/resource_role.go
 
 ```
-resource "graylog_role" "Admin" {
-  name = "Admin"
-  description = "Grants all permissions for Graylog administrators (built-in)"
+resource "graylog_role" "foo" {
+  name = "foo"
+  description = "user foo"
   permissions = ["*"]
-  read_only = true
 }
 ```
 
@@ -25,8 +24,9 @@ permissions | []string |
 name | default | type | description
 --- | --- | --- | ---
 description | "" | string |
-read_only | false | bool |
 
 ## Attributes Reference
 
-Nothing.
+name | type | etc
+--- | --- | ---
+read_only | bool | computed

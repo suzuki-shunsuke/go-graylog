@@ -66,7 +66,6 @@ resource "graylog_role" "test-terraform" {
   name = "test terraform name"
   description = "test terraform description"
   permissions = ["*"]
-  read_only = false
 }`
 	description := "test terraform description updated"
 	updateTf := fmt.Sprintf(`
@@ -74,7 +73,6 @@ resource "graylog_role" "test-terraform" {
   name = "test terraform name"
   description = "%s"
   permissions = ["*"]
-  read_only = false
 }`, description)
 	name := "test terraform name"
 	if server != nil {
