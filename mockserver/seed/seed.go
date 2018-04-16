@@ -34,14 +34,17 @@ func Nobody() *graylog.User {
 }
 
 func Input() *graylog.Input {
+	ba := "0.0.0.0"
+	port := 514
+	rbs := 262144
 	return &graylog.Input{
 		Title: "test",
 		Type:  "org.graylog2.inputs.gelf.tcp.GELFTCPInput",
 		Node:  "2ad6b340-3e5f-4a96-ae81-040cfb8b6024",
 		Configuration: &graylog.InputConfiguration{
-			BindAddress:    "0.0.0.0",
-			Port:           514,
-			RecvBufferSize: 262144,
+			BindAddress:    &ba,
+			Port:           &port,
+			RecvBufferSize: &rbs,
 		}}
 }
 

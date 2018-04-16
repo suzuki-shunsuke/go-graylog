@@ -1,51 +1,42 @@
 package graylog
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
 )
 
-func testDeleteInput(
-	cl *client.Client, key string,
-) resource.TestCheckFunc {
+var (
+	terraformTestInputID string
+)
+
+func testDeleteInput(cl *client.Client, key string) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		id, err := getIdFromTfState(tfState, key)
-		if err != nil {
-			return err
-		}
-		if _, _, err := cl.GetInput(id); err == nil {
-			return fmt.Errorf(`input "%s" must be deleted`, id)
+		if _, _, err := cl.GetInput(terraformTestInputID); err == nil {
+			return fmt.Errorf(`input "%s" must be deleted`, terraformTestInputID)
 		}
 		return nil
 	}
 }
 
-func testCreateInput(
-	cl *client.Client, key string,
-) resource.TestCheckFunc {
+func testCreateInput(cl *client.Client, key string) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
 		id, err := getIdFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}
+		terraformTestInputID = id
 
-		if _, _, err := cl.GetInput(id); err != nil {
-			return err
-		}
-		return nil
+		_, _, err = cl.GetInput(id)
+		return err
 	}
 }
 
-func testUpdateInput(
-	cl *client.Client, key, title string,
-) resource.TestCheckFunc {
+func testUpdateInput(cl *client.Client, key, title string) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
 		id, err := getIdFromTfState(tfState, key)
 		if err != nil {
@@ -76,31 +67,18 @@ func TestAccInput(t *testing.T) {
 		"graylog": testAccProvider,
 	}
 
-	input := &graylog.Input{
-		Title: "terraform test input title",
-		Type:  "org.graylog2.inputs.syslog.udp.SyslogUDPInput",
-		Configuration: &graylog.InputConfiguration{
-			BindAddress:    "0.0.0.0",
-			Port:           514,
-			RecvBufferSize: 262144,
-		},
-	}
-	tc := &tfConf{
-		Resource: map[string]map[string]interface{}{
-			"graylog_input": {"test": input}},
-	}
-
-	b, err := json.Marshal(tc)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	input.Title = "terraform test input title updated"
-	tc.Resource["graylog_input"]["test"] = input
-	ub, err := json.Marshal(tc)
-	if err != nil {
-		t.Fatal(err)
-	}
+	roleTf := `
+resource "graylog_input" "test" {
+  title = "%s"
+  type = "org.graylog2.inputs.syslog.udp.SyslogUDPInput"
+  configuration = {
+    bind_address = "0.0.0.0"
+    port = 514
+    recv_buffer_size = 262144
+  }
+}`
+	createTitle := "terraform test input title"
+	updateTitle := "terraform test input title updated"
 
 	key := "graylog_input.test"
 	if server != nil {
@@ -112,16 +90,12 @@ func TestAccInput(t *testing.T) {
 		CheckDestroy: testDeleteInput(cl, key),
 		Steps: []resource.TestStep{
 			{
-				Config: string(b),
-				Check: resource.ComposeTestCheckFunc(
-					testCreateInput(cl, key),
-				),
+				Config: fmt.Sprintf(roleTf, createTitle),
+				Check:  testCreateInput(cl, key),
 			},
 			{
-				Config: string(ub),
-				Check: resource.ComposeTestCheckFunc(
-					testUpdateInput(cl, key, input.Title),
-				),
+				Config: fmt.Sprintf(roleTf, updateTitle),
+				Check:  testUpdateInput(cl, key, updateTitle),
 			},
 		},
 	})

@@ -21,8 +21,11 @@ resource "graylog_input" "test" {
 name | type | description
 --- | --- | ---
 title | string |
-configuration | map[string] |
 type | string |
+configuration | map[string] |
+configuration.bind_address | string |
+configuration.port | int |
+configuration.recv_buffer_size | int |
 
 ### Optional Argument
 
@@ -35,4 +38,6 @@ node | "" | string |
 
 name | type | etc
 --- | --- | ---
-input_id | string |
+input_id | string | computed
+created_at | string | computed
+creator_user_id | string | computed

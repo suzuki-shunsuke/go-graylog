@@ -78,6 +78,8 @@ func (client *Client) UpdateInputContext(
 
 	copiedInput := *input
 	copiedInput.ID = ""
+	copiedInput.CreatedAt = ""
+	copiedInput.CreatorUserID = ""
 	return client.callPut(ctx, client.Endpoints.Input(input.ID), &copiedInput, input)
 }
 

@@ -5,9 +5,14 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store"
+)
+
+var (
+	mutex sync.RWMutex
 )
 
 type PlainStore struct {

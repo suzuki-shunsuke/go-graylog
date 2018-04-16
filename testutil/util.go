@@ -108,8 +108,7 @@ func WaitAfterCreateIndexSet(server *mockserver.Server) {
 	// At real graylog API we need to sleep
 	// 404 Index set not found.
 	if server == nil {
-		// time.Sleep(1 * time.Second)
-		time.Sleep(875 * time.Millisecond)
+		time.Sleep(1 * time.Second)
 	}
 }
 
@@ -117,8 +116,7 @@ func WaitAfterDeleteIndexSet(server *mockserver.Server) {
 	// At real graylog API we need to sleep
 	// 404 Index set not found.
 	if server == nil {
-		// time.Sleep(1 * time.Second)
-		time.Sleep(935 * time.Millisecond)
+		time.Sleep(1 * time.Second)
 	}
 }
 

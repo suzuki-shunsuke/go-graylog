@@ -1,12 +1,34 @@
 package graylog
 
 import (
+	"encoding/json"
+
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
+	"github.com/suzuki-shunsuke/go-graylog/util"
 )
 
 func resourceInput() *schema.Resource {
+	cfgSchema := map[string]*schema.Schema{}
+	for _, s := range graylog.InputConfigurationStrFields {
+		cfgSchema[s] = &schema.Schema{
+			Type:     schema.TypeString,
+			Optional: true,
+		}
+	}
+	for _, s := range graylog.InputConfigurationIntFields {
+		cfgSchema[s] = &schema.Schema{
+			Type:     schema.TypeInt,
+			Optional: true,
+		}
+	}
+	for _, s := range graylog.InputConfigurationBoolFields {
+		cfgSchema[s] = &schema.Schema{
+			Type:     schema.TypeBool,
+			Optional: true,
+		}
+	}
 	return &schema.Resource{
 		Create: resourceInputCreate,
 		Read:   resourceInputRead,
@@ -23,13 +45,18 @@ func resourceInput() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"configuration": {
-				Type:     schema.TypeMap,
-				Required: true,
-			},
 			"type": {
 				Type:     schema.TypeString,
 				Required: true,
+			},
+			"configuration": {
+				Type:     schema.TypeList,
+				Required: true,
+				Elem: &schema.Resource{
+					Schema: cfgSchema,
+				},
+				MaxItems: 1,
+				MinItems: 1,
 			},
 
 			"global": {
@@ -40,6 +67,7 @@ func resourceInput() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+
 			"created_at": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -50,10 +78,6 @@ func resourceInput() *schema.Resource {
 				Optional: true,
 				Computed: true,
 			},
-			// "attributes": &schema.Schema{
-			// 	Type:     schema.TypeString,
-			// 	Optional: true,
-			// },
 			// "context_pack": &schema.Schema{
 			// 	Type:     schema.TypeString,
 			// 	Optional: true,
@@ -67,34 +91,22 @@ func resourceInput() *schema.Resource {
 }
 
 func newInput(d *schema.ResourceData) (*graylog.Input, error) {
-	cfg := d.Get("configuration").(map[string]interface{})
+	cfg := d.Get("configuration").([]interface{})[0].(map[string]interface{})
 	config := &graylog.InputConfiguration{}
-
-	bindAddress, err := getString(cfg, "bind_address", true)
-	if err != nil {
+	if err := util.MSDecode(cfg, config); err != nil {
 		return nil, err
 	}
-	config.BindAddress = bindAddress
-
-	port, err := getStrInt(cfg, "port", true)
-	if err != nil {
-		return nil, err
-	}
-	config.Port = port
-
-	recvBufferSize, err := getStrInt(cfg, "recv_buffer_size", true)
-	if err != nil {
-		return nil, err
-	}
-	config.RecvBufferSize = recvBufferSize
+	global := d.Get("global").(bool)
 
 	return &graylog.Input{
 		Title:         d.Get("title").(string),
 		Type:          d.Get("type").(string),
-		Global:        d.Get("global").(bool),
+		Global:        &global,
 		Node:          d.Get("node").(string),
 		ID:            d.Id(),
 		Configuration: config,
+		CreatorUserID: d.Get("creator_user_id").(string),
+		CreatedAt:     d.Get("created_at").(string),
 	}, nil
 }
 
@@ -124,13 +136,30 @@ func resourceInputRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	input, _, err := cl.GetInput(d.Id())
+	input, ei, err := cl.GetInput(d.Id())
 	if err != nil {
+		if ei != nil && ei.Response != nil && ei.Response.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return err
+	}
+	if input.Configuration != nil {
+		b, err := json.Marshal(input.Configuration)
+		if err != nil {
+			return err
+		}
+		dest := map[string]interface{}{}
+		if err := json.Unmarshal(b, &dest); err != nil {
+			return err
+		}
+		d.Set("configuration", dest)
 	}
 	d.Set("title", input.Title)
 	d.Set("type", input.Type)
 	d.Set("node", input.Node)
+	d.Set("creator_user_id", input.CreatorUserID)
+	d.Set("created_at", input.CreatedAt)
 	return nil
 }
 

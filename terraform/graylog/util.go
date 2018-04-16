@@ -31,6 +31,23 @@ func getStrInt(cfg map[string]interface{}, key string, required bool) (int, erro
 	return i, nil
 }
 
+func getInt(
+	cfg map[string]interface{}, key string, required bool,
+) (int, error) {
+	val, ok := cfg[key]
+	if !ok {
+		if required {
+			return 0, fmt.Errorf("%s is required", key)
+		}
+		return 0, nil
+	}
+	v, ok := val.(int)
+	if !ok {
+		return 0, fmt.Errorf("%s must be int: %v", key, val)
+	}
+	return v, nil
+}
+
 func getString(
 	cfg map[string]interface{}, key string, required bool,
 ) (string, error) {
@@ -44,6 +61,23 @@ func getString(
 	v, ok := val.(string)
 	if !ok {
 		return "", fmt.Errorf("%s must be string: %v", key, val)
+	}
+	return v, nil
+}
+
+func getBool(
+	cfg map[string]interface{}, key string, required bool,
+) (bool, error) {
+	val, ok := cfg[key]
+	if !ok {
+		if required {
+			return false, fmt.Errorf("%s is required", key)
+		}
+		return false, nil
+	}
+	v, ok := val.(bool)
+	if !ok {
+		return false, fmt.Errorf("%s must be bool: %v", key, val)
 	}
 	return v, nil
 }

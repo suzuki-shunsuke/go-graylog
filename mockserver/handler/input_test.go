@@ -146,17 +146,17 @@ func TestHandleUpdateInput(t *testing.T) {
 	}
 
 	input.Title = act.Title
-	input.Configuration.BindAddress = ""
+	input.Configuration.BindAddress = nil
 	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input bind_address is required")
 	}
-	input.Configuration.BindAddress = "0.0.0.0"
-	input.Configuration.Port = 0
+	input.Configuration.BindAddress = act.Configuration.BindAddress
+	input.Configuration.Port = nil
 	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input port is required")
 	}
-	input.Configuration.Port = 514
-	input.Configuration.RecvBufferSize = 0
+	input.Configuration.Port = act.Configuration.Port
+	input.Configuration.RecvBufferSize = nil
 	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input recv_buffer_size is required")
 	}

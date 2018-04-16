@@ -2,6 +2,7 @@ package plain
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 	st "github.com/suzuki-shunsuke/go-graylog/mockserver/store"
@@ -30,35 +31,47 @@ func (store *PlainStore) AddInput(input *graylog.Input) error {
 	if input.ID == "" {
 		input.ID = st.NewObjectID()
 	}
+	input.CreatedAt = time.Now().Format("2006-01-02T15:04:05.000Z")
+
+	mutex.Lock()
 	store.inputs[input.ID] = *input
+	mutex.Unlock()
 	return nil
 }
 
 // UpdateInput updates an input at the PlainStore.
 // Required: Title, Type, Configuration
 // Allowed: Global, Node
-func (store *PlainStore) UpdateInput(input *graylog.Input) error {
+func (store *PlainStore) UpdateInput(input *graylog.Input) (*graylog.Input, error) {
 	u, err := store.GetInput(input.ID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if u == nil {
-		return fmt.Errorf("the input <%s> is not found", input.ID)
+		return nil, fmt.Errorf("the input <%s> is not found", input.ID)
 	}
 	u.Title = input.Title
 	u.Type = input.Type
-	u.Configuration = &(*(input.Configuration))
+	u.Configuration = input.Configuration
 
-	u.Global = input.Global
-	u.Node = input.Node
+	if input.Global != nil {
+		u.Global = input.Global
+	}
+	if input.Node != "" {
+		u.Node = input.Node
+	}
 
+	mutex.Lock()
 	store.inputs[u.ID] = *u
-	return nil
+	mutex.Unlock()
+	return u, nil
 }
 
 // DeleteInput deletes an input from the store.
 func (store *PlainStore) DeleteInput(id string) error {
+	mutex.Lock()
 	delete(store.inputs, id)
+	mutex.Unlock()
 	return nil
 }
 

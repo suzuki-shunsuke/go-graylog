@@ -193,12 +193,12 @@ func resourceIndexSetUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	indexSet, err := newIndexSet(d)
+	is, err := newIndexSet(d)
 	if err != nil {
 		return err
 	}
 
-	if _, err = cl.UpdateIndexSet(indexSet); err != nil {
+	if _, err = cl.UpdateIndexSet(is); err != nil {
 		return err
 	}
 	return nil

@@ -354,8 +354,8 @@
 [[projects]]
   name = "github.com/suzuki-shunsuke/go-set"
   packages = ["."]
-  revision = "2314a3776b21ed4250e7d84fb526dcb8319e5974"
-  version = "v2.3.1"
+  revision = "8193d543c32a1e7779167a533bb48c4bc82b42b9"
+  version = "v2.3.2"
 
 [[projects]]
   name = "github.com/ulikunitz/xz"

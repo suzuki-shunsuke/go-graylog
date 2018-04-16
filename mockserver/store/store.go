@@ -31,7 +31,7 @@ type Store interface {
 	AddInput(input *graylog.Input) error
 	GetInput(id string) (*graylog.Input, error)
 	GetInputs() ([]graylog.Input, int, error)
-	UpdateInput(input *graylog.Input) error
+	UpdateInput(input *graylog.Input) (*graylog.Input, error)
 	DeleteInput(id string) error
 	HasInput(id string) (bool, error)
 
