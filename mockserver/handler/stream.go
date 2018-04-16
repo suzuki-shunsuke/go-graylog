@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
+	"github.com/suzuki-shunsuke/go-graylog/util"
 	"github.com/suzuki-shunsuke/go-set"
 )
 
@@ -61,7 +62,7 @@ func HandleCreateStream(
 	}
 
 	stream := &graylog.Stream{}
-	if err := msDecode(body, stream); err != nil {
+	if err := util.MSDecode(body, stream); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as stream")

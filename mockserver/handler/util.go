@@ -6,21 +6,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/mitchellh/mapstructure"
 	"github.com/suzuki-shunsuke/go-set"
 )
-
-func msDecode(input, output interface{}) error {
-	config := &mapstructure.DecoderConfig{
-		Metadata: nil, Result: output, TagName: "json",
-		DecodeHook: set.MapstructureDecodeHookFromListToStrSet,
-	}
-	decoder, err := mapstructure.NewDecoder(config)
-	if err != nil {
-		return err
-	}
-	return decoder.Decode(input)
-}
 
 func validateRequestBody(
 	b io.Reader, requiredFields, allowedFields, acceptedFields *set.StrSet,

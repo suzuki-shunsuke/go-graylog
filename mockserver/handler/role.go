@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
+	"github.com/suzuki-shunsuke/go-graylog/util"
 	"github.com/suzuki-shunsuke/go-set"
 )
 
@@ -55,7 +56,7 @@ func HandleCreateRole(
 	}
 
 	role := &graylog.Role{}
-	if err := msDecode(body, &role); err != nil {
+	if err := util.MSDecode(body, &role); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Warn("Failed to parse request body as Role")
@@ -89,7 +90,7 @@ func HandleUpdateRole(
 	}
 
 	role := &graylog.Role{}
-	if err := msDecode(body, role); err != nil {
+	if err := util.MSDecode(body, role); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as Role")

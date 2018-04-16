@@ -8,6 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
+	"github.com/suzuki-shunsuke/go-graylog/util"
 	"github.com/suzuki-shunsuke/go-set"
 )
 
@@ -49,7 +50,7 @@ func HandleCreateStreamRule(
 	}
 
 	rule := &graylog.StreamRule{}
-	if err := msDecode(body, rule); err != nil {
+	if err := util.MSDecode(body, rule); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as StreamRule")
@@ -95,7 +96,7 @@ func HandleUpdateStreamRule(
 		return nil, sc, err
 	}
 	rule := &graylog.StreamRule{}
-	if err := msDecode(body, rule); err != nil {
+	if err := util.MSDecode(body, rule); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as StreamRule")

@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
+	"github.com/suzuki-shunsuke/go-graylog/util"
 	"github.com/suzuki-shunsuke/go-set"
 )
 
@@ -54,7 +55,7 @@ func HandleCreateInput(
 	}
 
 	input := &graylog.Input{}
-	if err := msDecode(body, input); err != nil {
+	if err := util.MSDecode(body, input); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as Input")
@@ -90,7 +91,7 @@ func HandleUpdateInput(
 	}
 
 	input := &graylog.Input{}
-	if err := msDecode(body, input); err != nil {
+	if err := util.MSDecode(body, input); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as Input")

@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
+	"github.com/suzuki-shunsuke/go-graylog/util"
 	"github.com/suzuki-shunsuke/go-set"
 )
 
@@ -128,7 +129,7 @@ func HandleCreateIndexSet(
 	}
 
 	indexSet := &graylog.IndexSet{}
-	if err := msDecode(body, indexSet); err != nil {
+	if err := util.MSDecode(body, indexSet); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as indexSet")
@@ -171,7 +172,7 @@ func HandleUpdateIndexSet(
 		return nil, sc, err
 	}
 
-	if err := msDecode(body, is); err != nil {
+	if err := util.MSDecode(body, is); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as indexSet")
