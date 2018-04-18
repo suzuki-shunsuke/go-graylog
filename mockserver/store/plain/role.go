@@ -1,6 +1,8 @@
 package plain
 
 import (
+	"fmt"
+
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
@@ -50,6 +52,13 @@ func (store *PlainStore) AddRole(role *graylog.Role) error {
 func (store *PlainStore) UpdateRole(name string, role *graylog.Role) error {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
+	s, ok := store.roles[name]
+	if !ok {
+		return fmt.Errorf(`no role with name "%s"`, name)
+	}
+	if role.Description == "" {
+		role.Description = s.Description
+	}
 	delete(store.roles, name)
 	store.roles[role.Name] = *role
 	return nil
