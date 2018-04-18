@@ -22,7 +22,7 @@ name | type | description
 --- | --- | ---
 title | string |
 type | string |
-configuration | map[string] |
+configuration | |
 
 ### Optional Argument
 

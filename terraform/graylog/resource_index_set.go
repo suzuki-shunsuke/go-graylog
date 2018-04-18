@@ -1,9 +1,12 @@
 package graylog
 
 import (
+	"encoding/json"
+
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
+	"github.com/suzuki-shunsuke/go-graylog/util"
 )
 
 func resourceIndexSet() *schema.Resource {
@@ -33,8 +36,30 @@ func resourceIndexSet() *schema.Resource {
 			},
 			// type required
 			"rotation_strategy": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Required: true,
+				MaxItems: 1,
+				MinItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"type": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"max_docs_per_index": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"max_size": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"rotation_period": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+					},
+				},
 			},
 			"retention_strategy_class": {
 				Type:     schema.TypeString,
@@ -42,8 +67,22 @@ func resourceIndexSet() *schema.Resource {
 			},
 			// type required
 			"retention_strategy": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Required: true,
+				MaxItems: 1,
+				MinItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"type": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"max_number_of_indices": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+					},
+				},
 			},
 			"index_analyzer": {
 				Type:     schema.TypeString,
@@ -94,32 +133,14 @@ func newIndexSet(d *schema.ResourceData) (*graylog.IndexSet, error) {
 	rotationStrategy := &graylog.RotationStrategy{}
 	retentionStrategy := &graylog.RetentionStrategy{}
 
-	ros := d.Get("rotation_strategy").(map[string]interface{})
-	res := d.Get("retention_strategy").(map[string]interface{})
-
-	rosType, err := getString(ros, "type", true)
-	if err != nil {
+	ros := d.Get("rotation_strategy").([]interface{})[0].(map[string]interface{})
+	res := d.Get("retention_strategy").([]interface{})[0].(map[string]interface{})
+	if err := util.MSDecode(ros, rotationStrategy); err != nil {
 		return nil, err
 	}
-	rotationStrategy.Type = rosType
-
-	maxDocsPerIndex, err := getStrInt(ros, "max_docs_per_index", false)
-	if err != nil {
+	if err := util.MSDecode(res, retentionStrategy); err != nil {
 		return nil, err
 	}
-	rotationStrategy.MaxDocsPerIndex = maxDocsPerIndex
-
-	resType, err := getString(res, "type", true)
-	if err != nil {
-		return nil, err
-	}
-	retentionStrategy.Type = resType
-
-	maxNumberOfIndices, err := getStrInt(ros, "max_number_of_indices", false)
-	if err != nil {
-		return nil, err
-	}
-	retentionStrategy.MaxNumberOfIndices = maxNumberOfIndices
 
 	return &graylog.IndexSet{
 		ID:                              d.Id(),
@@ -166,23 +187,46 @@ func resourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	indexSet, _, err := cl.GetIndexSet(d.Id())
+	is, _, err := cl.GetIndexSet(d.Id())
 	if err != nil {
 		return err
 	}
-	d.Set("title", indexSet.Title)
-	d.Set("description", indexSet.Description)
-	d.Set("shards", indexSet.Shards)
-	d.Set("replicas", indexSet.Replicas)
-	d.Set("rotation_strategy_class", indexSet.RotationStrategyClass)
-	d.Set("retention_strategy_class", indexSet.RetentionStrategyClass)
-	d.Set("index_analyzer", indexSet.IndexAnalyzer)
+	if is.RotationStrategy != nil {
+		b, err := json.Marshal(is.RotationStrategy)
+		if err != nil {
+			return err
+		}
+		dest := map[string]interface{}{}
+		if err := json.Unmarshal(b, &dest); err != nil {
+			return err
+		}
+		d.Set("rotation_strategy", dest)
+	}
+	if is.RetentionStrategy != nil {
+		b, err := json.Marshal(is.RetentionStrategy)
+		if err != nil {
+			return err
+		}
+		dest := map[string]interface{}{}
+		if err := json.Unmarshal(b, &dest); err != nil {
+			return err
+		}
+		d.Set("retention_strategy", dest)
+	}
+
+	d.Set("title", is.Title)
+	d.Set("description", is.Description)
+	d.Set("shards", is.Shards)
+	d.Set("replicas", is.Replicas)
+	d.Set("rotation_strategy_class", is.RotationStrategyClass)
+	d.Set("retention_strategy_class", is.RetentionStrategyClass)
+	d.Set("index_analyzer", is.IndexAnalyzer)
 	d.Set(
 		"index_optimization_max_num_segments",
-		indexSet.IndexOptimizationMaxNumSegments)
-	d.Set("index_optimization_disabled", indexSet.IndexOptimizationDisabled)
-	d.Set("writable", indexSet.Writable)
-	d.Set("default", indexSet.Default)
+		is.IndexOptimizationMaxNumSegments)
+	d.Set("index_optimization_disabled", is.IndexOptimizationDisabled)
+	d.Set("writable", is.Writable)
+	d.Set("default", is.Default)
 	return nil
 }
 

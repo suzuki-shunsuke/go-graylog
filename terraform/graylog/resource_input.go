@@ -7,6 +7,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
 	"github.com/suzuki-shunsuke/go-graylog/util"
+	"github.com/suzuki-shunsuke/go-ptr"
 )
 
 func resourceInput() *schema.Resource {
@@ -96,12 +97,10 @@ func newInput(d *schema.ResourceData) (*graylog.Input, error) {
 	if err := util.MSDecode(cfg, config); err != nil {
 		return nil, err
 	}
-	global := d.Get("global").(bool)
-
 	return &graylog.Input{
 		Title:         d.Get("title").(string),
 		Type:          d.Get("type").(string),
-		Global:        &global,
+		Global:        ptr.PBool(d.Get("global").(bool)),
 		Node:          d.Get("node").(string),
 		ID:            d.Id(),
 		Configuration: config,

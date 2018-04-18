@@ -352,6 +352,12 @@
   version = "v1.0.4"
 
 [[projects]]
+  name = "github.com/suzuki-shunsuke/go-ptr"
+  packages = ["."]
+  revision = "974e4afeaf714a288594b077987a10416b15a03c"
+  version = "v0.1.0"
+
+[[projects]]
   name = "github.com/suzuki-shunsuke/go-set"
   packages = ["."]
   revision = "8193d543c32a1e7779167a533bb48c4bc82b42b9"
@@ -501,6 +507,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4506353a6d8f1ddcbef7c3b464f333d0e40475c8d6a7aaa0ea227cf2996e4c4d"
+  inputs-digest = "c696b953d655211dce044b97c16561108aa2dc0d2b8e85e638b180a9ddfe69e5"
   solver-name = "gps-cdcl"
   solver-version = 1
