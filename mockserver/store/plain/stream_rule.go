@@ -9,6 +9,8 @@ import (
 
 // HasStreamRule
 func (store *PlainStore) HasStreamRule(streamID, streamRuleID string) (bool, error) {
+	store.imutex.RLock()
+	defer store.imutex.RUnlock()
 	rules, ok := store.streamRules[streamID]
 	if !ok {
 		return false, nil
@@ -19,6 +21,8 @@ func (store *PlainStore) HasStreamRule(streamID, streamRuleID string) (bool, err
 
 // GetStreamRule returns a stream rule.
 func (store *PlainStore) GetStreamRule(streamID, streamRuleID string) (*graylog.StreamRule, error) {
+	store.imutex.RLock()
+	defer store.imutex.RUnlock()
 	rules, ok := store.streamRules[streamID]
 	if !ok {
 		return nil, nil
@@ -32,6 +36,8 @@ func (store *PlainStore) GetStreamRule(streamID, streamRuleID string) (*graylog.
 
 // GetStreamRules returns stream rules of the given stream.
 func (store *PlainStore) GetStreamRules(id string) ([]graylog.StreamRule, int, error) {
+	store.imutex.RLock()
+	defer store.imutex.RUnlock()
 	rules, ok := store.streamRules[id]
 	if !ok {
 		return nil, 0, nil
@@ -51,6 +57,8 @@ func (store *PlainStore) AddStreamRule(rule *graylog.StreamRule) error {
 	if rule == nil {
 		return fmt.Errorf("rule is nil")
 	}
+	store.imutex.Lock()
+	defer store.imutex.Unlock()
 	rules, ok := store.streamRules[rule.StreamID]
 	if !ok {
 		rules = map[string]graylog.StreamRule{}
@@ -68,6 +76,8 @@ func (store *PlainStore) UpdateStreamRule(rule *graylog.StreamRule) error {
 	if rule == nil {
 		return fmt.Errorf("rule is nil")
 	}
+	store.imutex.Lock()
+	defer store.imutex.Unlock()
 	rules, ok := store.streamRules[rule.StreamID]
 	if !ok {
 		return fmt.Errorf("no stream with id <%s> is found", rule.StreamID)
@@ -79,6 +89,8 @@ func (store *PlainStore) UpdateStreamRule(rule *graylog.StreamRule) error {
 
 // DeleteStreamRule deletes a stream rule.
 func (store *PlainStore) DeleteStreamRule(streamID, streamRuleID string) error {
+	store.imutex.Lock()
+	defer store.imutex.Unlock()
 	rules, ok := store.streamRules[streamID]
 	if !ok {
 		return nil

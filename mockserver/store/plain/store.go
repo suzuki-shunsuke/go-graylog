@@ -11,10 +11,6 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 )
 
-var (
-	mutex sync.RWMutex
-)
-
 type PlainStore struct {
 	users             map[string]graylog.User                  `json:"users"`
 	roles             map[string]graylog.Role                  `json:"roles"`
@@ -25,15 +21,56 @@ type PlainStore struct {
 	streamRules       map[string]map[string]graylog.StreamRule `json:"stream_rules"`
 	dataPath          string                                   `json:"-"`
 	tokens            map[string]string                        `json:"tokens"`
+	imutex            sync.RWMutex
+}
+
+type plainStore struct {
+	Users             map[string]graylog.User                  `json:"users"`
+	Roles             map[string]graylog.Role                  `json:"roles"`
+	Inputs            map[string]graylog.Input                 `json:"inputs"`
+	IndexSets         []graylog.IndexSet                       `json:"index_sets"`
+	DefaultIndexSetID string                                   `json:"default_index_set_id"`
+	Streams           map[string]graylog.Stream                `json:"streams"`
+	StreamRules       map[string]map[string]graylog.StreamRule `json:"stream_rules"`
+	Tokens            map[string]string                        `json:"tokens"`
+}
+
+func (store *PlainStore) MarshalJSON() ([]byte, error) {
+	data := map[string]interface{}{
+		"users":                store.users,
+		"roles":                store.roles,
+		"inputs":               store.inputs,
+		"index_sets":           store.indexSets,
+		"default_index_set_id": store.defaultIndexSetID,
+		"streams":              store.streams,
+		"stream_rules":         store.streamRules,
+		"tokens":               store.tokens,
+	}
+	return json.Marshal(data)
+}
+
+func (store *PlainStore) UnmarshalJSON(b []byte) error {
+	s := &plainStore{}
+	if err := json.Unmarshal(b, s); err != nil {
+		return err
+	}
+	store.users = s.Users
+	store.roles = s.Roles
+	store.inputs = s.Inputs
+	store.indexSets = s.IndexSets
+	store.defaultIndexSetID = s.DefaultIndexSetID
+	store.streams = s.Streams
+	store.streamRules = s.StreamRules
+	store.tokens = s.Tokens
+	return nil
 }
 
 func NewStore(dataPath string) store.Store {
 	return &PlainStore{
-		roles:     map[string]graylog.Role{},
-		users:     map[string]graylog.User{},
-		inputs:    map[string]graylog.Input{},
-		indexSets: []graylog.IndexSet{},
-		// indexSetStats: map[string]graylog.IndexSetStats{},
+		roles:       map[string]graylog.Role{},
+		users:       map[string]graylog.User{},
+		inputs:      map[string]graylog.Input{},
+		indexSets:   []graylog.IndexSet{},
 		streams:     map[string]graylog.Stream{},
 		streamRules: map[string]map[string]graylog.StreamRule{},
 		tokens:      map[string]string{},
@@ -43,6 +80,8 @@ func NewStore(dataPath string) store.Store {
 
 // Save writes Mock Server's data in a file for persistence.
 func (store *PlainStore) Save() error {
+	store.imutex.RLock()
+	defer store.imutex.RUnlock()
 	if store.dataPath == "" {
 		return nil
 	}
@@ -55,6 +94,8 @@ func (store *PlainStore) Save() error {
 
 // Load reads Mock Server's data from a file.
 func (store *PlainStore) Load() error {
+	store.imutex.Lock()
+	defer store.imutex.Unlock()
 	if store.dataPath == "" {
 		return nil
 	}

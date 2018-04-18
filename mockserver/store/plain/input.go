@@ -10,12 +10,16 @@ import (
 
 // HasInput
 func (store *PlainStore) HasInput(id string) (bool, error) {
+	store.imutex.RLock()
+	defer store.imutex.RUnlock()
 	_, ok := store.inputs[id]
 	return ok, nil
 }
 
 // GetInput returns an input.
 func (store *PlainStore) GetInput(id string) (*graylog.Input, error) {
+	store.imutex.RLock()
+	defer store.imutex.RUnlock()
 	s, ok := store.inputs[id]
 	if ok {
 		return &s, nil
@@ -33,9 +37,9 @@ func (store *PlainStore) AddInput(input *graylog.Input) error {
 	}
 	input.CreatedAt = time.Now().Format("2006-01-02T15:04:05.000Z")
 
-	mutex.Lock()
+	store.imutex.Lock()
+	defer store.imutex.Unlock()
 	store.inputs[input.ID] = *input
-	mutex.Unlock()
 	return nil
 }
 
@@ -43,11 +47,10 @@ func (store *PlainStore) AddInput(input *graylog.Input) error {
 // Required: Title, Type, Configuration
 // Allowed: Global, Node
 func (store *PlainStore) UpdateInput(input *graylog.Input) (*graylog.Input, error) {
-	u, err := store.GetInput(input.ID)
-	if err != nil {
-		return nil, err
-	}
-	if u == nil {
+	store.imutex.Lock()
+	defer store.imutex.Unlock()
+	u, ok := store.inputs[input.ID]
+	if !ok {
 		return nil, fmt.Errorf("the input <%s> is not found", input.ID)
 	}
 	u.Title = input.Title
@@ -60,23 +63,22 @@ func (store *PlainStore) UpdateInput(input *graylog.Input) (*graylog.Input, erro
 	if input.Node != "" {
 		u.Node = input.Node
 	}
-
-	mutex.Lock()
-	store.inputs[u.ID] = *u
-	mutex.Unlock()
-	return u, nil
+	store.inputs[u.ID] = u
+	return &u, nil
 }
 
 // DeleteInput deletes an input from the store.
 func (store *PlainStore) DeleteInput(id string) error {
-	mutex.Lock()
+	store.imutex.Lock()
+	defer store.imutex.Unlock()
 	delete(store.inputs, id)
-	mutex.Unlock()
 	return nil
 }
 
 // GetInputs returns inputs.
 func (store *PlainStore) GetInputs() ([]graylog.Input, int, error) {
+	store.imutex.RLock()
+	defer store.imutex.RUnlock()
 	size := len(store.inputs)
 	arr := make([]graylog.Input, size)
 	i := 0

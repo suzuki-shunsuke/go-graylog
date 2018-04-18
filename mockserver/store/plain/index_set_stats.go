@@ -20,6 +20,8 @@ func (store *PlainStore) GetIndexSetStats(id string) (*graylog.IndexSetStats, er
 // GetIndexSetStatsMap returns all of index set stats.
 func (store *PlainStore) GetIndexSetStatsMap() (map[string]graylog.IndexSetStats, error) {
 	m := map[string]graylog.IndexSetStats{}
+	store.imutex.RLock()
+	defer store.imutex.RUnlock()
 	for _, is := range store.indexSets {
 		// TODO returns correct index set stats
 		m[is.ID] = graylog.IndexSetStats{}
