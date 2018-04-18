@@ -42,7 +42,7 @@ func (ms *Logic) AddStream(stream *graylog.Stream) (int, error) {
 		}), "failed to get an index set")
 		return sc, err
 	}
-	if !is.Writable {
+	if is.Writable == nil || !(*is.Writable) {
 		return 400, fmt.Errorf("assigned index set must be writable")
 	}
 	if err := ms.store.AddStream(stream); err != nil {
@@ -78,7 +78,7 @@ func (ms *Logic) UpdateStream(stream *graylog.Stream) (int, error) {
 			}), "failed to get an index set")
 			return sc, err
 		}
-		if !is.Writable {
+		if is.Writable == nil || !(*is.Writable) {
 			return 400, fmt.Errorf("assigned index set must be writable")
 		}
 	}

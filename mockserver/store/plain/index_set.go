@@ -49,7 +49,7 @@ func (store *PlainStore) SetDefaultIndexSetID(id string) error {
 	if is == nil {
 		return fmt.Errorf("no index set with id <%s> is not found", id)
 	}
-	if !is.Writable {
+	if is.Writable == nil || !(*is.Writable) {
 		return fmt.Errorf("default index set must be writable")
 	}
 	store.imutex.Lock()
@@ -79,6 +79,19 @@ func (store *PlainStore) UpdateIndexSet(is *graylog.IndexSet) error {
 	defer store.imutex.Unlock()
 	for i, indexSet := range store.indexSets {
 		if indexSet.ID == id {
+			orig := store.indexSets[i]
+			if is.Description == "" {
+				is.Description = orig.Description
+			}
+			if is.Replicas == nil {
+				is.Replicas = orig.Replicas
+			}
+			if is.IndexOptimizationDisabled == nil {
+				is.IndexOptimizationDisabled = orig.IndexOptimizationDisabled
+			}
+			if is.Writable == nil {
+				is.Writable = orig.Writable
+			}
 			store.indexSets[i] = *is
 			return nil
 		}

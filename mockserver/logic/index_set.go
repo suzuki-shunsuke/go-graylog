@@ -116,7 +116,7 @@ func (ms *Logic) UpdateIndexSet(is *graylog.IndexSet) (int, error) {
 		return 500, err
 	}
 	is.Default = defID == is.ID
-	if is.Default && !is.Writable {
+	if is.Default && (is.Writable == nil || !(*is.Writable)) {
 		return 409, fmt.Errorf("default index set must be writable")
 	}
 
@@ -160,7 +160,7 @@ func (ms *Logic) SetDefaultIndexSet(id string) (*graylog.IndexSet, int, error) {
 	if is == nil {
 		return nil, 404, fmt.Errorf("no indexSet found with id <%s>", id)
 	}
-	if !is.Writable {
+	if is.Writable == nil || !(*is.Writable) {
 		return nil, 409, fmt.Errorf("default index set must be writable")
 	}
 	if err := ms.store.SetDefaultIndexSetID(id); err != nil {

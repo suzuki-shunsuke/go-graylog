@@ -48,9 +48,9 @@ type IndexSet struct {
 	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required,objectid"`
 
 	Description               string         `json:"description,omitempty"`
-	Replicas                  int            `json:"replicas,omitempty"`
-	IndexOptimizationDisabled bool           `json:"index_optimization_disabled,omitempty"`
-	Writable                  bool           `json:"writable,omitempty"`
+	Replicas                  *int           `json:"replicas,omitempty"`
+	IndexOptimizationDisabled *bool          `json:"index_optimization_disabled,omitempty"`
+	Writable                  *bool          `json:"writable,omitempty"`
 	Default                   bool           `json:"default,omitempty"`
 	Stats                     *IndexSetStats `json:"-"`
 }

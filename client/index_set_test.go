@@ -6,6 +6,7 @@ import (
 	"github.com/satori/go.uuid"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
+	"github.com/suzuki-shunsuke/go-ptr"
 )
 
 func TestGetIndexSets(t *testing.T) {
@@ -182,7 +183,7 @@ func TestSetDefaultIndexSet(t *testing.T) {
 		}
 		is = testutil.IndexSet(u.String())
 		is.Default = false
-		is.Writable = true
+		is.Writable = ptr.PBool(true)
 		if _, err := client.CreateIndexSet(is); err != nil {
 			t.Fatal(err)
 		}
@@ -213,7 +214,7 @@ func TestSetDefaultIndexSet(t *testing.T) {
 		t.Fatal(`no index set whose id is "h"`)
 	}
 
-	is.Writable = false
+	is.Writable = ptr.PBool(false)
 
 	if _, err := client.UpdateIndexSet(is); err == nil {
 		t.Fatal("Default index set must be writable.")

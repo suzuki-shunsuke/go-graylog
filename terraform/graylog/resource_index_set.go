@@ -7,6 +7,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
 	"github.com/suzuki-shunsuke/go-graylog/util"
+	"github.com/suzuki-shunsuke/go-ptr"
 )
 
 func resourceIndexSet() *schema.Resource {
@@ -148,15 +149,15 @@ func newIndexSet(d *schema.ResourceData) (*graylog.IndexSet, error) {
 		IndexPrefix:                     d.Get("index_prefix").(string),
 		Description:                     d.Get("description").(string),
 		Shards:                          d.Get("shards").(int),
-		Replicas:                        d.Get("replicas").(int),
+		Replicas:                        ptr.PInt(d.Get("replicas").(int)),
 		RotationStrategyClass:           d.Get("rotation_strategy_class").(string),
 		RotationStrategy:                rotationStrategy,
 		RetentionStrategyClass:          d.Get("retention_strategy_class").(string),
 		RetentionStrategy:               retentionStrategy,
 		IndexAnalyzer:                   d.Get("index_analyzer").(string),
 		IndexOptimizationMaxNumSegments: d.Get("index_optimization_max_num_segments").(int),
-		IndexOptimizationDisabled:       d.Get("index_optimization_disabled").(bool),
-		Writable:                        d.Get("writable").(bool),
+		IndexOptimizationDisabled:       ptr.PBool(d.Get("index_optimization_disabled").(bool)),
+		Writable:                        ptr.PBool(d.Get("writable").(bool)),
 		Default:                         d.Get("default").(bool),
 		CreationDate:                    d.Get("creation_date").(string),
 	}, nil

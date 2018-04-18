@@ -2,6 +2,7 @@ package seed
 
 import (
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-ptr"
 	"github.com/suzuki-shunsuke/go-set"
 )
 
@@ -54,7 +55,7 @@ func IndexSet() *graylog.IndexSet {
 		Description:           "The Graylog default index set",
 		IndexPrefix:           "graylog",
 		Shards:                4,
-		Replicas:              0,
+		Replicas:              ptr.PInt(0),
 		RotationStrategyClass: "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy",
 		RotationStrategy: &graylog.RotationStrategy{
 			Type:            "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig",
@@ -66,8 +67,8 @@ func IndexSet() *graylog.IndexSet {
 		CreationDate:                    "2018-02-20T11:37:19.305Z",
 		IndexAnalyzer:                   "standard",
 		IndexOptimizationMaxNumSegments: 1,
-		IndexOptimizationDisabled:       false,
-		Writable:                        true,
+		IndexOptimizationDisabled:       ptr.PBool(false),
+		Writable:                        ptr.PBool(true),
 		Default:                         true}
 }
 
