@@ -175,7 +175,7 @@ func HandleUpdateIndexSet(
 	if err := util.MSDecode(body, is); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
-		}).Info("Failed to parse request body as indexSet")
+		}).Warn("Failed to parse request body as indexSet")
 		return nil, 400, err
 	}
 

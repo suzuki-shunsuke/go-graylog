@@ -82,6 +82,19 @@ func (store *PlainStore) UpdateStreamRule(rule *graylog.StreamRule) error {
 	if !ok {
 		return fmt.Errorf("no stream with id <%s> is found", rule.StreamID)
 	}
+	orig, ok := rules[rule.ID]
+	if !ok {
+		return fmt.Errorf("no stream rule with id <%s> is found", rule.ID)
+	}
+	if rule.Description == "" {
+		rule.Description = orig.Description
+	}
+	if rule.Type == 0 {
+		rule.Type = orig.Type
+	}
+	if rule.Inverted == nil {
+		rule.Inverted = orig.Inverted
+	}
 	rules[rule.ID] = *rule
 	store.streamRules[rule.StreamID] = rules
 	return nil

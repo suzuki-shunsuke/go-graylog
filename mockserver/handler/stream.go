@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -82,57 +80,28 @@ func HandleUpdateStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// PUT /streams/{streamID} Update a stream
-	id := ps.ByName("streamID")
-	if sc, err := ms.Authorize(user, "streams:edit", id); err != nil {
+	stream := &graylog.Stream{ID: ps.ByName("streamID")}
+	if sc, err := ms.Authorize(user, "streams:edit", stream.ID); err != nil {
 		return nil, sc, err
 	}
-	stream, sc, err := ms.GetStream(id)
+
+	// requiredFields is nothing
+	optionalFields := set.NewStrSet(
+		"title", "index_set_id", "description", "outputs", "matching_type",
+		"rules", "alert_conditions", "alert_receivers",
+		"remove_matches_from_default_stream")
+	body, sc, err := validateRequestBody(r.Body, nil, nil, optionalFields)
 	if err != nil {
 		return nil, sc, err
 	}
-	data := map[string]interface{}{}
 
-	dec := json.NewDecoder(r.Body)
-	if err := dec.Decode(&data); err != nil {
+	if err := util.MSDecode(body, stream); err != nil {
+		ms.Logger().WithFields(log.Fields{
+			"body": body, "error": err,
+		}).Warn("Failed to parse request body as stream")
 		return nil, 400, err
 	}
-	if title, ok := data["title"]; ok {
-		t, ok := title.(string)
-		if !ok {
-			return nil, 400, fmt.Errorf("title must be string")
-		}
-		stream.Title = t
-	}
-	if description, ok := data["description"]; ok {
-		d, ok := description.(string)
-		if !ok {
-			return nil, 400, fmt.Errorf("description must be string")
-		}
-		stream.Description = d
-	}
-	// TODO outputs
-	if matchingType, ok := data["matching_type"]; ok {
-		m, ok := matchingType.(string)
-		if !ok {
-			return nil, 400, fmt.Errorf("matching_type must be string")
-		}
-		stream.MatchingType = m
-	}
-	if removeMathcesFromDefaultStream, ok := data["remove_matches_from_default_stream"]; ok {
-		m, ok := removeMathcesFromDefaultStream.(bool)
-		if !ok {
-			return nil, 400, fmt.Errorf("remove_matches_from_default_stream must be bool")
-		}
-		stream.RemoveMatchesFromDefaultStream = m
-	}
-	if indexSetID, ok := data["index_set_id"]; ok {
-		m, ok := indexSetID.(string)
-		if !ok {
-			return nil, 400, fmt.Errorf("index_set_id must be string")
-		}
-		stream.IndexSetID = m
-	}
-	stream.ID = id
+
 	if sc, err := ms.UpdateStream(stream); err != nil {
 		return nil, sc, err
 	}

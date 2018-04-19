@@ -45,6 +45,38 @@ func (store *PlainStore) AddStream(stream *graylog.Stream) error {
 func (store *PlainStore) UpdateStream(stream *graylog.Stream) error {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
+	orig, ok := store.streams[stream.ID]
+	if !ok {
+		return fmt.Errorf("the stream <%s> is not found", stream.ID)
+	}
+	stream.CreatorUserID = orig.CreatorUserID
+	stream.CreatedAt = orig.CreatedAt
+	stream.Disabled = orig.Disabled
+	stream.IsDefault = orig.IsDefault
+	if stream.Title == "" {
+		stream.Title = orig.Title
+	}
+	if stream.IndexSetID == "" {
+		stream.IndexSetID = orig.IndexSetID
+	}
+	if stream.Description == "" {
+		stream.Description = orig.Description
+	}
+	if stream.Outputs == nil {
+		stream.Description = orig.Description
+	}
+	if stream.MatchingType == "" {
+		stream.MatchingType = orig.MatchingType
+	}
+	if stream.Rules == nil {
+		stream.Rules = orig.Rules
+	}
+	if stream.AlertConditions == nil {
+		stream.AlertConditions = orig.AlertConditions
+	}
+	if stream.AlertReceivers == nil {
+		stream.AlertReceivers = orig.AlertReceivers
+	}
 	store.streams[stream.ID] = *stream
 	return nil
 }

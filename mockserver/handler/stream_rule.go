@@ -89,8 +89,7 @@ func HandleUpdateStreamRule(
 	ruleID := ps.ByName("streamRuleID")
 
 	requiredFields := set.NewStrSet("value", "field")
-	allowedFields := set.NewStrSet(
-		"value", "type", "description", "inverted", "field")
+	allowedFields := set.NewStrSet("type", "description", "inverted")
 	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
 	if sc != 200 {
 		return nil, sc, err

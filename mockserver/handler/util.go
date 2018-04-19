@@ -9,8 +9,9 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
+// validateRequestBody validates a request body and converts it into a map.
 func validateRequestBody(
-	b io.Reader, requiredFields, allowedFields, acceptedFields *set.StrSet,
+	b io.Reader, requiredFields, allowedFields, optionalFields *set.StrSet,
 ) (
 	map[string]interface{}, int, error,
 ) {
@@ -49,10 +50,10 @@ func validateRequestBody(
 			}
 		}
 	}
-	if acceptedFields != nil && acceptedFields.Len() != 0 {
-		acceptedFields.AddSets(requiredFields, allowedFields)
+	if optionalFields != nil && optionalFields.Len() != 0 {
+		optionalFields.AddSets(requiredFields, allowedFields)
 		for k := range body {
-			if !acceptedFields.Has(k) {
+			if !optionalFields.Has(k) {
 				delete(body, k)
 			}
 		}

@@ -9,7 +9,7 @@ type StreamRule struct {
 	StreamID    string `json:"stream_id,omitempty" v-create:"required" v-update:"required,objectid"`
 	Description string `json:"description,omitempty"`
 	Type        int    `json:"type,omitempty"`
-	Inverted    bool   `json:"inverted,omitempty"`
+	Inverted    *bool  `json:"inverted,omitempty"`
 	Value       string `json:"value,omitempty" v-create:"required" v-update:"required"`
 }
 
