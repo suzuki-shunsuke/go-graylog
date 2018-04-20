@@ -50,8 +50,9 @@ func HandleCreateRole(
 	}
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
-			Required: set.NewStrSet("name", "permissions"),
-			Optional: set.NewStrSet("description", "read_only"),
+			Required:     set.NewStrSet("name", "permissions"),
+			Optional:     set.NewStrSet("description", "read_only"),
+			ExtForbidden: true,
 		})
 	if err != nil {
 		return nil, sc, err
@@ -86,8 +87,9 @@ func HandleUpdateRole(
 	}
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
-			Required: set.NewStrSet("name", "permissions"),
-			Optional: set.NewStrSet("description", "read_only"),
+			Required:     set.NewStrSet("name", "permissions"),
+			Optional:     set.NewStrSet("description", "read_only"),
+			ExtForbidden: true,
 		})
 	if err != nil {
 		return nil, sc, err

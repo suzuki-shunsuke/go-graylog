@@ -52,8 +52,9 @@ func HandleCreateStream(
 	}
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
-			Required: set.NewStrSet("title", "index_set_id"),
-			Optional: set.NewStrSet("rules", "description", "content_pack", "matching_type", "remove_matches_from_default_stream"),
+			Required:     set.NewStrSet("title", "index_set_id"),
+			Optional:     set.NewStrSet("rules", "description", "content_pack", "matching_type", "remove_matches_from_default_stream"),
+			ExtForbidden: true,
 		})
 	if err != nil {
 		return nil, sc, err
@@ -85,13 +86,14 @@ func HandleUpdateStream(
 		return nil, sc, err
 	}
 
-	// requiredFields is nothing
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
+			Required: nil,
 			Optional: set.NewStrSet(
 				"title", "index_set_id", "description", "outputs", "matching_type",
 				"rules", "alert_conditions", "alert_receivers",
 				"remove_matches_from_default_stream"),
+			ExtForbidden: false,
 		})
 	if err != nil {
 		return nil, sc, err

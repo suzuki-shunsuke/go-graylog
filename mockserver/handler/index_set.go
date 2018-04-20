@@ -113,8 +113,9 @@ func HandleCreateIndexSet(
 				"title", "index_prefix", "rotation_strategy_class", "rotation_strategy",
 				"retention_strategy_class", "retention_strategy", "creation_date",
 				"index_analyzer", "shards", "index_optimization_max_num_segments"),
-			Optional: set.NewStrSet("description", "replicas", "index_optimization_disabled", "writable"),
-			Ignored:  set.NewStrSet("default"),
+			Optional:     set.NewStrSet("description", "replicas", "index_optimization_disabled", "writable"),
+			Ignored:      set.NewStrSet("default"),
+			ExtForbidden: true,
 		})
 	if err != nil {
 		return body, sc, err
@@ -159,7 +160,7 @@ func HandleUpdateIndexSet(
 				"retention_strategy_class", "retention_strategy",
 				"index_analyzer", "shards", "index_optimization_max_num_segments"),
 			Optional: set.NewStrSet("description", "replicas", "index_optimization_disabled", "writable"),
-			Ignored:  set.NewStrSet("default"),
+			Ignored:  set.NewStrSet("default", "creation_date"),
 		})
 	if err != nil {
 		return nil, sc, err

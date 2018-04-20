@@ -43,8 +43,9 @@ func HandleCreateStreamRule(
 
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
-			Required: set.NewStrSet("value", "field"),
-			Optional: set.NewStrSet("type", "description", "inverted"),
+			Required:     set.NewStrSet("value", "field"),
+			Optional:     set.NewStrSet("type", "description", "inverted"),
+			ExtForbidden: true,
 		})
 	if sc != 200 {
 		return nil, sc, err
@@ -91,8 +92,9 @@ func HandleUpdateStreamRule(
 
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
-			Required: set.NewStrSet("value", "field"),
-			Optional: set.NewStrSet("type", "description", "inverted"),
+			Required:     set.NewStrSet("value", "field"),
+			Optional:     set.NewStrSet("type", "description", "inverted"),
+			ExtForbidden: true,
 		})
 	if sc != 200 {
 		return nil, sc, err

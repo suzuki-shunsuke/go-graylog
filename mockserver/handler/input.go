@@ -49,8 +49,9 @@ func HandleCreateInput(
 	}
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
-			Required: set.NewStrSet("title", "type", "configuration"),
-			Optional: set.NewStrSet("global", "node"),
+			Required:     set.NewStrSet("title", "type", "configuration"),
+			Optional:     set.NewStrSet("global", "node"),
+			ExtForbidden: true,
 		})
 	if err != nil {
 		return nil, sc, err
@@ -87,8 +88,9 @@ func HandleUpdateInput(
 	}
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
-			Required: set.NewStrSet("title", "type", "configuration"),
-			Optional: set.NewStrSet("global", "node"),
+			Required:     set.NewStrSet("title", "type", "configuration"),
+			Optional:     set.NewStrSet("global", "node"),
+			ExtForbidden: true,
 		})
 	if err != nil {
 		return nil, sc, err
