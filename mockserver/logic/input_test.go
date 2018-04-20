@@ -83,8 +83,7 @@ func TestUpdateInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	input.Title += " updated"
-	u, _, err := server.UpdateInput(input)
-	if err != nil {
+	if _, err := server.UpdateInput(input); err != nil {
 		t.Fatal(err)
 	}
 	act, _, err := server.GetInput(input.ID)
@@ -94,52 +93,52 @@ func TestUpdateInput(t *testing.T) {
 	if act == nil {
 		t.Fatal("input is not found")
 	}
-	if act.Title != u.Title {
+	if act.Title != input.Title {
 		t.Fatalf(`UpdateInput title "%s" != "%s"`, act.Title, input.Title)
 	}
 
 	input.ID = ""
-	if _, _, err := server.UpdateInput(input); err == nil {
+	if _, err := server.UpdateInput(input); err == nil {
 		t.Fatal("input id is required")
 	}
 
 	input.ID = "h"
-	if _, _, err := server.UpdateInput(input); err == nil {
+	if _, err := server.UpdateInput(input); err == nil {
 		t.Fatal(`no input whose id is "h"`)
 	}
 
 	input.Type = ""
-	if _, _, err := server.UpdateInput(input); err == nil {
+	if _, err := server.UpdateInput(input); err == nil {
 		t.Fatal("input type is required")
 	}
 	input.Type = act.Type
 	input.Configuration = nil
-	if _, _, err := server.UpdateInput(input); err == nil {
+	if _, err := server.UpdateInput(input); err == nil {
 		t.Fatal("input configuration is required")
 	}
 	input.Configuration = act.Configuration
 	input.Title = ""
-	if _, _, err := server.UpdateInput(input); err == nil {
+	if _, err := server.UpdateInput(input); err == nil {
 		t.Fatal("input title is required")
 	}
 
 	input.Title = act.Title
 	input.Configuration.BindAddress = nil
-	if _, _, err := server.UpdateInput(input); err == nil {
+	if _, err := server.UpdateInput(input); err == nil {
 		t.Fatal("input bind_address is required")
 	}
 	input.Configuration.BindAddress = act.Configuration.BindAddress
 	input.Configuration.Port = nil
-	if _, _, err := server.UpdateInput(input); err == nil {
+	if _, err := server.UpdateInput(input); err == nil {
 		t.Fatal("input port is required")
 	}
 	input.Configuration.Port = act.Configuration.Port
 	input.Configuration.RecvBufferSize = nil
-	if _, _, err := server.UpdateInput(input); err == nil {
+	if _, err := server.UpdateInput(input); err == nil {
 		t.Fatal("input recv_buffer_size is required")
 	}
 
-	if _, _, err := server.UpdateInput(nil); err == nil {
+	if _, err := server.UpdateInput(nil); err == nil {
 		t.Fatal("input is required")
 	}
 }

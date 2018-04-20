@@ -69,15 +69,14 @@ func TestUpdateInput(t *testing.T) {
 		t.Fatal("input is nil")
 	}
 	input.Title += " changed"
-	u, err := store.UpdateInput(input)
-	if err != nil {
+	if err := store.UpdateInput(input); err != nil {
 		t.Fatal(err)
 	}
 	r, err = store.GetInput(input.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if u.Title != r.Title {
+	if input.Title != r.Title {
 		t.Fatalf(`input.Title = "%s", wanted "%s"`, r.Title, input.Title)
 	}
 }

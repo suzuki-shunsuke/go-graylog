@@ -107,14 +107,14 @@ func HandleUpdateInput(
 	}).Debug("request body")
 
 	input.ID = id
-	u, sc, err := ms.UpdateInput(input)
+	sc, err = ms.UpdateInput(input)
 	if err != nil {
 		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
 		return nil, 500, err
 	}
-	return u, 200, nil
+	return input, 200, nil
 }
 
 // HandleDeleteInput

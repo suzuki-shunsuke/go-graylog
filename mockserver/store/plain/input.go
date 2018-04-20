@@ -46,25 +46,24 @@ func (store *PlainStore) AddInput(input *graylog.Input) error {
 // UpdateInput updates an input at the PlainStore.
 // Required: Title, Type, Configuration
 // Allowed: Global, Node
-func (store *PlainStore) UpdateInput(input *graylog.Input) (*graylog.Input, error) {
+func (store *PlainStore) UpdateInput(input *graylog.Input) error {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
 	u, ok := store.inputs[input.ID]
 	if !ok {
-		return nil, fmt.Errorf("the input <%s> is not found", input.ID)
+		return fmt.Errorf("the input <%s> is not found", input.ID)
 	}
-	u.Title = input.Title
-	u.Type = input.Type
-	u.Configuration = input.Configuration
+	if input.Global == nil {
+		input.Global = u.Global
+	}
+	if input.Node == "" {
+		input.Node = u.Node
+	}
+	input.CreatedAt = u.CreatedAt
+	input.CreatorUserID = u.CreatorUserID
 
-	if input.Global != nil {
-		u.Global = input.Global
-	}
-	if input.Node != "" {
-		u.Node = input.Node
-	}
-	store.inputs[u.ID] = u
-	return &u, nil
+	store.inputs[input.ID] = *input
+	return nil
 }
 
 // DeleteInput deletes an input from the store.
