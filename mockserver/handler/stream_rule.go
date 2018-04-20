@@ -41,10 +41,11 @@ func HandleCreateStreamRule(
 		return nil, 404, fmt.Errorf("stream <%s> not found!", streamID)
 	}
 
-	requiredFields := set.NewStrSet("value", "field")
-	allowedFields := set.NewStrSet(
-		"value", "type", "description", "inverted", "field")
-	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	body, sc, err := validateRequestBody(
+		r.Body, &validateReqBodyPrms{
+			Required: set.NewStrSet("value", "field"),
+			Optional: set.NewStrSet("type", "description", "inverted"),
+		})
 	if sc != 200 {
 		return nil, sc, err
 	}
@@ -88,9 +89,11 @@ func HandleUpdateStreamRule(
 	streamID := ps.ByName("streamID")
 	ruleID := ps.ByName("streamRuleID")
 
-	requiredFields := set.NewStrSet("value", "field")
-	allowedFields := set.NewStrSet("type", "description", "inverted")
-	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	body, sc, err := validateRequestBody(
+		r.Body, &validateReqBodyPrms{
+			Required: set.NewStrSet("value", "field"),
+			Optional: set.NewStrSet("type", "description", "inverted"),
+		})
 	if sc != 200 {
 		return nil, sc, err
 	}

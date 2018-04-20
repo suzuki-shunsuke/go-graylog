@@ -50,11 +50,11 @@ func HandleCreateStream(
 	if sc, err := ms.Authorize(user, "streams:create"); err != nil {
 		return nil, sc, err
 	}
-	requiredFields := set.NewStrSet("title", "index_set_id")
-	allowedFields := set.NewStrSet(
-		"rules", "description", "content_pack",
-		"matching_type", "remove_matches_from_default_stream")
-	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	body, sc, err := validateRequestBody(
+		r.Body, &validateReqBodyPrms{
+			Required: set.NewStrSet("title", "index_set_id"),
+			Optional: set.NewStrSet("rules", "description", "content_pack", "matching_type", "remove_matches_from_default_stream"),
+		})
 	if err != nil {
 		return nil, sc, err
 	}
@@ -86,11 +86,13 @@ func HandleUpdateStream(
 	}
 
 	// requiredFields is nothing
-	optionalFields := set.NewStrSet(
-		"title", "index_set_id", "description", "outputs", "matching_type",
-		"rules", "alert_conditions", "alert_receivers",
-		"remove_matches_from_default_stream")
-	body, sc, err := validateRequestBody(r.Body, nil, nil, optionalFields)
+	body, sc, err := validateRequestBody(
+		r.Body, &validateReqBodyPrms{
+			Optional: set.NewStrSet(
+				"title", "index_set_id", "description", "outputs", "matching_type",
+				"rules", "alert_conditions", "alert_receivers",
+				"remove_matches_from_default_stream"),
+		})
 	if err != nil {
 		return nil, sc, err
 	}

@@ -47,9 +47,11 @@ func HandleCreateInput(
 	if sc, err := ms.Authorize(user, "inputs:create"); err != nil {
 		return nil, sc, err
 	}
-	requiredFields := set.NewStrSet("title", "type", "configuration")
-	allowedFields := set.NewStrSet("global", "node")
-	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	body, sc, err := validateRequestBody(
+		r.Body, &validateReqBodyPrms{
+			Required: set.NewStrSet("title", "type", "configuration"),
+			Optional: set.NewStrSet("global", "node"),
+		})
 	if err != nil {
 		return nil, sc, err
 	}
@@ -83,9 +85,11 @@ func HandleUpdateInput(
 	if sc, err := ms.Authorize(user, "inputs:edit", id); err != nil {
 		return nil, sc, err
 	}
-	requiredFields := set.NewStrSet("title", "type", "configuration")
-	allowedFields := set.NewStrSet("global", "node")
-	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	body, sc, err := validateRequestBody(
+		r.Body, &validateReqBodyPrms{
+			Required: set.NewStrSet("title", "type", "configuration"),
+			Optional: set.NewStrSet("global", "node"),
+		})
 	if err != nil {
 		return nil, sc, err
 	}

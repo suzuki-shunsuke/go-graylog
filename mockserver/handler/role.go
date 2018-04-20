@@ -48,9 +48,11 @@ func HandleCreateRole(
 	if sc, err := ms.Authorize(user, "roles:create"); err != nil {
 		return nil, sc, err
 	}
-	requiredFields := set.NewStrSet("name", "permissions")
-	allowedFields := set.NewStrSet("description", "read_only")
-	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	body, sc, err := validateRequestBody(
+		r.Body, &validateReqBodyPrms{
+			Required: set.NewStrSet("name", "permissions"),
+			Optional: set.NewStrSet("description", "read_only"),
+		})
 	if err != nil {
 		return nil, sc, err
 	}
@@ -82,9 +84,11 @@ func HandleUpdateRole(
 	if sc, err := ms.Authorize(user, "roles:edit", name); err != nil {
 		return nil, sc, err
 	}
-	requiredFields := set.NewStrSet("name", "permissions")
-	allowedFields := set.NewStrSet("description", "read_only")
-	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	body, sc, err := validateRequestBody(
+		r.Body, &validateReqBodyPrms{
+			Required: set.NewStrSet("name", "permissions"),
+			Optional: set.NewStrSet("description", "read_only"),
+		})
 	if err != nil {
 		return nil, sc, err
 	}

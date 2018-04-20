@@ -29,9 +29,7 @@ func HandleGetIndexSets(
 		skip, err = strconv.Atoi(s[0])
 		if err != nil {
 			ms.Logger().WithFields(log.Fields{
-				"error":      err,
-				"param_name": "skip",
-				"value":      s[0],
+				"error": err, "param_name": "skip", "value": s[0],
 			}).Warn("failed to convert string to integer")
 			// Unfortunately, graylog returns 404
 			// https://github.com/Graylog2/graylog2-server/issues/4721
@@ -43,9 +41,7 @@ func HandleGetIndexSets(
 		limit, err = strconv.Atoi(l[0])
 		if err != nil {
 			ms.Logger().WithFields(log.Fields{
-				"error":      err,
-				"param_name": "limit",
-				"value":      l[0],
+				"error": err, "param_name": "limit", "value": l[0],
 			}).Warn("failed to convert string to integer")
 			// Unfortunately, graylog returns 404
 			// https://github.com/Graylog2/graylog2-server/issues/4721
@@ -57,9 +53,7 @@ func HandleGetIndexSets(
 		stats, err = strconv.ParseBool(st[0])
 		if err != nil {
 			ms.Logger().WithFields(log.Fields{
-				"error":      err,
-				"param_name": "stats",
-				"value":      st[0],
+				"error": err, "param_name": "stats", "value": st[0],
 			}).Warn("failed to convert string to bool")
 			// Unfortunately, graylog ignores invalid stats parameter
 			// TODO send issue
@@ -113,17 +107,15 @@ func HandleCreateIndexSet(
 	if sc, err := ms.Authorize(user, "indexsets:create"); err != nil {
 		return nil, sc, err
 	}
-	requiredFields := set.NewStrSet(
-		"title", "index_prefix", "rotation_strategy_class", "rotation_strategy",
-		"retention_strategy_class", "retention_strategy", "creation_date",
-		"index_analyzer", "shards", "index_optimization_max_num_segments")
-	allowedFields := set.NewStrSet(
-		"description", "replicas", "index_optimization_disabled",
-		"writable", "default")
-	acceptedFields := set.NewStrSet(
-		"description", "replicas", "index_optimization_disabled", "writable")
 	body, sc, err := validateRequestBody(
-		r.Body, requiredFields, allowedFields, acceptedFields)
+		r.Body, &validateReqBodyPrms{
+			Required: set.NewStrSet(
+				"title", "index_prefix", "rotation_strategy_class", "rotation_strategy",
+				"retention_strategy_class", "retention_strategy", "creation_date",
+				"index_analyzer", "shards", "index_optimization_max_num_segments"),
+			Optional: set.NewStrSet("description", "replicas", "index_optimization_disabled", "writable"),
+			Ignored:  set.NewStrSet("default"),
+		})
 	if err != nil {
 		return body, sc, err
 	}
@@ -160,14 +152,15 @@ func HandleUpdateIndexSet(
 		return nil, sc, err
 	}
 
-	// default can't change (ignored)
-	requiredFields := set.NewStrSet(
-		"title", "index_prefix", "rotation_strategy_class", "rotation_strategy",
-		"retention_strategy_class", "retention_strategy",
-		"index_analyzer", "shards", "index_optimization_max_num_segments")
-	acceptedFields := set.NewStrSet(
-		"description", "replicas", "index_optimization_disabled", "writable")
-	body, sc, err := validateRequestBody(r.Body, requiredFields, nil, acceptedFields)
+	body, sc, err := validateRequestBody(
+		r.Body, &validateReqBodyPrms{
+			Required: set.NewStrSet(
+				"title", "index_prefix", "rotation_strategy_class", "rotation_strategy",
+				"retention_strategy_class", "retention_strategy",
+				"index_analyzer", "shards", "index_optimization_max_num_segments"),
+			Optional: set.NewStrSet("description", "replicas", "index_optimization_disabled", "writable"),
+			Ignored:  set.NewStrSet("default"),
+		})
 	if err != nil {
 		return nil, sc, err
 	}

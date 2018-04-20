@@ -53,11 +53,11 @@ func HandleCreateUser(
 	if sc, err := ms.Authorize(u, "users:create"); err != nil {
 		return nil, sc, err
 	}
-	requiredFields := set.NewStrSet(
-		"username", "email", "permissions", "full_name", "password")
-	allowedFields := set.NewStrSet(
-		"startpage", "timezone", "session_timeout_ms", "roles")
-	body, sc, err := validateRequestBody(r.Body, requiredFields, allowedFields, nil)
+	body, sc, err := validateRequestBody(
+		r.Body, &validateReqBodyPrms{
+			Required: set.NewStrSet("username", "email", "permissions", "full_name", "password"),
+			Optional: set.NewStrSet("startpage", "timezone", "session_timeout_ms", "roles"),
+		})
 	if err != nil {
 		return nil, sc, err
 	}
@@ -89,10 +89,10 @@ func HandleUpdateUser(
 	if sc, err := ms.Authorize(u, "users:edit", userName); err != nil {
 		return nil, sc, err
 	}
-	// required fields is nil
-	acceptedFields := set.NewStrSet(
-		"email", "permissions", "full_name", "password")
-	body, sc, err := validateRequestBody(r.Body, nil, nil, acceptedFields)
+	body, sc, err := validateRequestBody(
+		r.Body, &validateReqBodyPrms{
+			Optional: set.NewStrSet("email", "permissions", "full_name", "password"),
+		})
 	if err != nil {
 		return nil, sc, err
 	}
