@@ -10,7 +10,8 @@
     "cover-inmemory": "make cover-inmemory",
     "build": "make build",
     "upload": "make upload",
-    "fmt": "git ls-files | grep .go | xargs gofmt -l -s -w"
+    "fmt": "git ls-files | grep .go | xargs gofmt -l -s -w",
+    "commitlint-travis": "commitlint-travis"
   },
   "devDependencies": {
     "@commitlint/cli": "^6.1.3",

@@ -1,11 +1,14 @@
 ---
 language: go
-
 go:
   - 1.x
-
+before_install:
+  - node -v
+  - npm -v
+install:
+  - npm install
 script:
-  - commitlint-travis
-  - go test -coverprofile=coverage.txt -covermode=atomic ./...
+  - npm run commitlint-travis
+  - bash codecov-test.sh
 after_success:
   - bash codecov.sh
