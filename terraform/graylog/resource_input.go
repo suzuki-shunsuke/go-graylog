@@ -12,19 +12,19 @@ import (
 
 func resourceInput() *schema.Resource {
 	cfgSchema := map[string]*schema.Schema{}
-	for _, s := range graylog.InputConfigurationStrFields {
+	for _, s := range graylog.InputAttributesStrFields {
 		cfgSchema[s] = &schema.Schema{
 			Type:     schema.TypeString,
 			Optional: true,
 		}
 	}
-	for _, s := range graylog.InputConfigurationIntFields {
+	for _, s := range graylog.InputAttributesIntFields {
 		cfgSchema[s] = &schema.Schema{
 			Type:     schema.TypeInt,
 			Optional: true,
 		}
 	}
-	for _, s := range graylog.InputConfigurationBoolFields {
+	for _, s := range graylog.InputAttributesBoolFields {
 		cfgSchema[s] = &schema.Schema{
 			Type:     schema.TypeBool,
 			Optional: true,
@@ -50,7 +50,7 @@ func resourceInput() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"configuration": {
+			"attributes": {
 				Type:     schema.TypeList,
 				Required: true,
 				Elem: &schema.Resource{
@@ -92,8 +92,8 @@ func resourceInput() *schema.Resource {
 }
 
 func newInput(d *schema.ResourceData) (*graylog.Input, error) {
-	cfg := d.Get("configuration").([]interface{})[0].(map[string]interface{})
-	config := &graylog.InputConfiguration{}
+	cfg := d.Get("attributes").([]interface{})[0].(map[string]interface{})
+	config := &graylog.InputAttributes{}
 	if err := util.MSDecode(cfg, config); err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ func newInput(d *schema.ResourceData) (*graylog.Input, error) {
 		Global:        ptr.PBool(d.Get("global").(bool)),
 		Node:          d.Get("node").(string),
 		ID:            d.Id(),
-		Configuration: config,
+		Attributes:    config,
 		CreatorUserID: d.Get("creator_user_id").(string),
 		CreatedAt:     d.Get("created_at").(string),
 	}, nil
@@ -143,8 +143,8 @@ func resourceInputRead(d *schema.ResourceData, m interface{}) error {
 		}
 		return err
 	}
-	if input.Configuration != nil {
-		b, err := json.Marshal(input.Configuration)
+	if input.Attributes != nil {
+		b, err := json.Marshal(input.Attributes)
 		if err != nil {
 			return err
 		}
@@ -152,7 +152,7 @@ func resourceInputRead(d *schema.ResourceData, m interface{}) error {
 		if err := json.Unmarshal(b, &dest); err != nil {
 			return err
 		}
-		d.Set("configuration", dest)
+		d.Set("attributes", dest)
 	}
 	d.Set("title", input.Title)
 	d.Set("type", input.Type)

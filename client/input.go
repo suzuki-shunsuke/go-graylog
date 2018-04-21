@@ -22,7 +22,22 @@ func (client *Client) CreateInputContext(
 	if input == nil {
 		return nil, fmt.Errorf("input is nil")
 	}
-	return client.callPost(ctx, client.Endpoints.Inputs, input, input)
+	if input.ID != "" {
+		return nil, fmt.Errorf("input id should be empty")
+	}
+	// change attributes to configuration
+	// https://github.com/Graylog2/graylog2-server/issues/3480
+	d := map[string]interface{}{
+		"title":         input.Title,
+		"type":          input.Type,
+		"configuration": input.Attributes,
+		"global":        input.Global,
+	}
+	if input.Node != "" {
+		d["node"] = input.Node
+	}
+
+	return client.callPost(ctx, client.Endpoints.Inputs, &d, input)
 }
 
 // GetInputs returns all inputs.
@@ -75,12 +90,18 @@ func (client *Client) UpdateInputContext(
 	if input.ID == "" {
 		return nil, errors.New("id is empty")
 	}
-
-	copiedInput := *input
-	copiedInput.ID = ""
-	copiedInput.CreatedAt = ""
-	copiedInput.CreatorUserID = ""
-	return client.callPut(ctx, client.Endpoints.Input(input.ID), &copiedInput, input)
+	// change attributes to configuration
+	// https://github.com/Graylog2/graylog2-server/issues/3480
+	d := map[string]interface{}{
+		"title":         input.Title,
+		"type":          input.Type,
+		"configuration": input.Attributes,
+		"global":        input.Global,
+	}
+	if input.Node != "" {
+		d["node"] = input.Node
+	}
+	return client.callPut(ctx, client.Endpoints.Input(input.ID), &d, input)
 }
 
 // DeleteInput deletes an given input.

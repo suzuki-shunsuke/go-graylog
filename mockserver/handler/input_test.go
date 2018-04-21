@@ -135,28 +135,28 @@ func TestHandleUpdateInput(t *testing.T) {
 		t.Fatal("input type is required")
 	}
 	input.Type = act.Type
-	input.Configuration = nil
+	input.Attributes = nil
 	if _, err := client.UpdateInput(input); err == nil {
-		t.Fatal("input configuration is required")
+		t.Fatal("input attributes is required")
 	}
-	input.Configuration = act.Configuration
+	input.Attributes = act.Attributes
 	input.Title = ""
 	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input title is required")
 	}
 
 	input.Title = act.Title
-	input.Configuration.BindAddress = nil
+	input.Attributes.BindAddress = nil
 	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input bind_address is required")
 	}
-	input.Configuration.BindAddress = act.Configuration.BindAddress
-	input.Configuration.Port = nil
+	input.Attributes.BindAddress = act.Attributes.BindAddress
+	input.Attributes.Port = nil
 	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input port is required")
 	}
-	input.Configuration.Port = act.Configuration.Port
-	input.Configuration.RecvBufferSize = nil
+	input.Attributes.Port = act.Attributes.Port
+	input.Attributes.RecvBufferSize = nil
 	if _, err := client.UpdateInput(input); err == nil {
 		t.Fatal("input recv_buffer_size is required")
 	}

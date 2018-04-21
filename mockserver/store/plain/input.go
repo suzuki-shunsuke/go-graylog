@@ -44,7 +44,7 @@ func (store *PlainStore) AddInput(input *graylog.Input) error {
 }
 
 // UpdateInput updates an input at the PlainStore.
-// Required: Title, Type, Configuration
+// Required: Title, Type, Attributes
 // Allowed: Global, Node
 func (store *PlainStore) UpdateInput(input *graylog.Input) error {
 	store.imutex.Lock()

@@ -10,21 +10,21 @@ const (
 
 var (
 	// when update these fields variables, update also terraform graylog_input resource's document.
-	InputConfigurationIntFields []string = []string{
+	InputAttributesIntFields []string = []string{
 		"port", "recv_buffer_size", "heartbeat", "prefetch", "broker_port",
 		"parallel_queues", "fetch_wait_max", "fetch_min_bytes", "threads",
 		"max_message_size", "decompress_size_limit", "idle_writer_timeout",
 		"max_chunk_size", "interval"}
 	// when update these fields variables, update also terraform graylog_input resource's document.
-	InputConfigurationBoolFields []string = []string{
+	InputAttributesBoolFields []string = []string{
 		"throttling_allowed", "tls_enable", "tcp_keepalive", "exchange_bind", "tls", "requeue_invalid_messages", "use_full_names", "use_null_delimiter", "enable_cors", "force_rdns", "store_full_message", "expand_structured_data", "allow_override_date"}
 	// when update these fields variables, update also terraform graylog_input resource's document.
-	InputConfigurationStrFields []string = []string{
+	InputAttributesStrFields []string = []string{
 		"bind_address", "aws_region", "aws_assume_role_arn", "aws_access_key", "kinesis_stream_name", "aws_secret_key", "aws_sqs_region", "aws_s3_region", "aws_sqs_queue_name", "override_source", "tls_key_file", "tls_key_password", "tls_client_auth_cert_file", "tls_client_auth", "tls_cert_file", "timezone", "broker_vhost", "broker_username", "locale", "broker_password", "exchange", "routing_key", "broker_hostname", "queue", "topic_filter", "offset_reset", "zookeeper", "headers", "path", "target_url", "source", "timeunit", "netflow9_definitions_path"}
 )
 
-// InputConfiguration represents Input's configuration.
-type InputConfiguration struct {
+// InputAttributes represents Input's configuration.
+type InputAttributes struct {
 	// ex. 0.0.0.0
 	BindAddress *string `json:"bind_address,omitempty" v-create:"required" v-update:"required"`
 	Port        *int    `json:"port,omitempty" v-create:"required" v-update:"required"`
@@ -182,9 +182,10 @@ type InputConfiguration struct {
 type Input struct {
 	// required
 	// Select a name of your new input that describes it.
-	Title         string              `json:"title,omitempty" v-create:"required" v-update:"required"`
-	Type          string              `json:"type,omitempty" v-create:"required" v-update:"required"`
-	Configuration *InputConfiguration `json:"configuration,omitempty" v-create:"required" v-update:"required"`
+	Title string `json:"title,omitempty" v-create:"required" v-update:"required"`
+	Type  string `json:"type,omitempty" v-create:"required" v-update:"required"`
+	// https://github.com/Graylog2/graylog2-server/issues/3480
+	Attributes *InputAttributes `json:"attributes,omitempty" v-create:"required" v-update:"required"`
 
 	// ex. "5a90d5c2c006c60001efc368"
 	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required,objectid"`

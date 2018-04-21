@@ -2,7 +2,7 @@
   "version": "0.1.0",
   "scripts": {
     "release": "standard-version",
-    "commitmsg": "validate-commit-msg",
+    "commitmsg": "commitlint -e $GIT_PARAMS",
     "test": "bash test.sh",
     "cover-client": "make cover-client",
     "cover-mockserver": "make cover-mockserver",
@@ -13,8 +13,11 @@
     "fmt": "git ls-files | grep .go | xargs gofmt -l -s -w"
   },
   "devDependencies": {
+    "@commitlint/cli": "^6.1.3",
+    "@commitlint/config-conventional": "^6.1.3",
+    "@commitlint/travis-cli": "^6.1.3",
+    "gitlog": "^3.1.2",
     "husky": "^0.14.3",
-    "standard-version": "^4.3.0",
-    "validate-commit-msg": "^2.14.0"
+    "standard-version": "^4.3.0"
   }
 }

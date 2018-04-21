@@ -45,7 +45,7 @@ func (ms *Logic) AddInput(input *graylog.Input) (int, error) {
 }
 
 // UpdateInput updates an input at the Server.
-// Required: Title, Type, Configuration
+// Required: Title, Type, Attributes
 // Allowed: Global, Node
 func (ms *Logic) UpdateInput(input *graylog.Input) (int, error) {
 	if err := validator.UpdateValidator.Struct(input); err != nil {

@@ -5,6 +5,7 @@ go:
   - 1.x
 
 script:
+  - commitlint-travis
   - go test -coverprofile=coverage.txt -covermode=atomic ./...
 after_success:
   - bash codecov.sh

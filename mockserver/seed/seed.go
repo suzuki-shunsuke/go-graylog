@@ -42,7 +42,7 @@ func Input() *graylog.Input {
 		Title: "test",
 		Type:  "org.graylog2.inputs.gelf.tcp.GELFTCPInput",
 		Node:  "2ad6b340-3e5f-4a96-ae81-040cfb8b6024",
-		Configuration: &graylog.InputConfiguration{
+		Attributes: &graylog.InputAttributes{
 			BindAddress:    &ba,
 			Port:           &port,
 			RecvBufferSize: &rbs,

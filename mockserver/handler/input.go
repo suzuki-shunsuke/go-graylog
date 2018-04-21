@@ -56,6 +56,10 @@ func HandleCreateInput(
 	if err != nil {
 		return nil, sc, err
 	}
+	// change configuration to attributes
+	// https://github.com/Graylog2/graylog2-server/issues/3480
+	body["attributes"] = body["configuration"]
+	delete(body, "configuration")
 
 	input := &graylog.Input{}
 	if err := util.MSDecode(body, input); err != nil {
@@ -95,6 +99,10 @@ func HandleUpdateInput(
 	if err != nil {
 		return nil, sc, err
 	}
+	// change configuration to attributes
+	// https://github.com/Graylog2/graylog2-server/issues/3480
+	body["attributes"] = body["configuration"]
+	delete(body, "configuration")
 
 	input := &graylog.Input{}
 	if err := util.MSDecode(body, input); err != nil {
