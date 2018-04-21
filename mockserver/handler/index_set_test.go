@@ -101,29 +101,30 @@ func TestHandleUpdateIndexSet(t *testing.T) {
 		t.Fatal(err)
 	}
 	id := is.ID
-	if _, err := client.UpdateIndexSet(is); err != nil {
-		t.Fatal("UpdateIndexSet is failure", err)
+	prms := is.NewUpdateParams()
+	if _, _, err := client.UpdateIndexSet(prms); err != nil {
+		t.Fatal(err)
 	}
-	is.ID = ""
-	if _, err := client.UpdateIndexSet(is); err == nil {
+	prms.ID = ""
+	if _, _, err := client.UpdateIndexSet(prms); err == nil {
 		t.Fatal("index set id is required")
 	}
-	is.ID = "h"
-	if _, err := client.UpdateIndexSet(is); err == nil {
+	prms.ID = "h"
+	if _, _, err := client.UpdateIndexSet(prms); err == nil {
 		t.Fatal(`no index set whose id is "h"`)
 	}
-	is.ID = id
-	title := is.Title
-	is.Title = ""
-	if _, err := client.UpdateIndexSet(is); err == nil {
+	prms.ID = id
+	title := prms.Title
+	prms.Title = ""
+	if _, _, err := client.UpdateIndexSet(prms); err == nil {
 		t.Fatal("title is required")
 	}
-	is.Title = title
-	is.IndexPrefix = "graylog"
-	if _, err := server.UpdateIndexSet(is); err == nil {
+	prms.Title = title
+	prms.IndexPrefix = "graylog"
+	if _, _, err := server.UpdateIndexSet(prms); err == nil {
 		t.Fatal("index prefix should be conflict")
 	}
-	if _, err := client.UpdateIndexSet(nil); err == nil {
+	if _, _, err := client.UpdateIndexSet(nil); err == nil {
 		t.Fatal("index set is nil")
 	}
 
@@ -196,7 +197,7 @@ func TestHandleSetDefaultIndexSet(t *testing.T) {
 	if is == nil {
 		is = testutil.IndexSet("hoge")
 		is.Default = false
-		is.Writable = ptr.PBool(true)
+		is.Writable = true
 		if _, err := client.CreateIndexSet(is); err != nil {
 			t.Fatal(err)
 		}
@@ -227,9 +228,9 @@ func TestHandleSetDefaultIndexSet(t *testing.T) {
 		t.Fatal(`no index set whose id is "h"`)
 	}
 
-	is.Writable = ptr.PBool(false)
-
-	if _, err := client.UpdateIndexSet(is); err == nil {
+	prms := is.NewUpdateParams()
+	prms.Writable = ptr.PBool(false)
+	if _, _, err := client.UpdateIndexSet(prms); err == nil {
 		t.Fatal("Default index set must be writable.")
 	}
 }

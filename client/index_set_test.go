@@ -118,21 +118,22 @@ func TestUpdateIndexSet(t *testing.T) {
 		defer f(is.ID)
 	}
 	// success
-	if _, err := client.UpdateIndexSet(is); err != nil {
+	if _, _, err := client.UpdateIndexSet(is.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
 	// id required
-	is.ID = ""
-	if _, err := client.UpdateIndexSet(is); err == nil {
+	prms := is.NewUpdateParams()
+	prms.ID = ""
+	if _, _, err := client.UpdateIndexSet(prms); err == nil {
 		t.Fatal("index set id is required")
 	}
 	// nil check
-	if _, err := client.UpdateIndexSet(nil); err == nil {
+	if _, _, err := client.UpdateIndexSet(nil); err == nil {
 		t.Fatal("index set is required")
 	}
 	// invalid id
-	is.ID = "h"
-	if _, err := client.UpdateIndexSet(is); err == nil {
+	prms.ID = "h"
+	if _, _, err := client.UpdateIndexSet(prms); err == nil {
 		t.Fatal("index set should no be found")
 	}
 }
@@ -183,7 +184,7 @@ func TestSetDefaultIndexSet(t *testing.T) {
 		}
 		is = testutil.IndexSet(u.String())
 		is.Default = false
-		is.Writable = ptr.PBool(true)
+		is.Writable = true
 		if _, err := client.CreateIndexSet(is); err != nil {
 			t.Fatal(err)
 		}
@@ -214,9 +215,10 @@ func TestSetDefaultIndexSet(t *testing.T) {
 		t.Fatal(`no index set whose id is "h"`)
 	}
 
-	is.Writable = ptr.PBool(false)
+	prms := is.NewUpdateParams()
+	prms.Writable = ptr.PBool(false)
 
-	if _, err := client.UpdateIndexSet(is); err == nil {
+	if _, _, err := client.UpdateIndexSet(prms); err == nil {
 		t.Fatal("Default index set must be writable.")
 	}
 }

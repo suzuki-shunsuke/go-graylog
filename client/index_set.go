@@ -69,23 +69,25 @@ func (client *Client) CreateIndexSetContext(
 }
 
 // UpdateIndexSet updates a given Index Set.
-func (client *Client) UpdateIndexSet(is *graylog.IndexSet) (*ErrorInfo, error) {
+func (client *Client) UpdateIndexSet(is *graylog.IndexSetUpdateParams) (*graylog.IndexSet, *ErrorInfo, error) {
 	return client.UpdateIndexSetContext(context.Background(), is)
 }
 
 // UpdateIndexSetContext updates a given Index Set with a context.
 func (client *Client) UpdateIndexSetContext(
-	ctx context.Context, is *graylog.IndexSet,
-) (*ErrorInfo, error) {
-	if is == nil {
-		return nil, fmt.Errorf("index set is nil")
+	ctx context.Context, prms *graylog.IndexSetUpdateParams,
+) (*graylog.IndexSet, *ErrorInfo, error) {
+	if prms == nil {
+		return nil, nil, fmt.Errorf("index set is nil")
 	}
-	if is.ID == "" {
-		return nil, errors.New("id is empty")
+	if prms.ID == "" {
+		return nil, nil, errors.New("id is empty")
 	}
-	copiedIndexSet := *is
-	copiedIndexSet.ID = ""
-	return client.callPut(ctx, client.Endpoints.IndexSet(is.ID), &copiedIndexSet, is)
+	a := *prms
+	a.ID = ""
+	is := &graylog.IndexSet{}
+	ei, err := client.callPut(ctx, client.Endpoints.IndexSet(prms.ID), &a, is)
+	return is, ei, err
 }
 
 // DeleteIndexSet deletes a given Index Set.

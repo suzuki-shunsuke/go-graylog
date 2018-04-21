@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"github.com/suzuki-shunsuke/go-ptr"
 	"time"
 )
 
@@ -30,29 +31,69 @@ const (
 // http://docs.graylog.org/en/2.4/pages/configuration/index_model.html#index-set-configuration
 type IndexSet struct {
 	// required
-	Title string `json:"title,omitempty" v-create:"required" v-update:"required"`
+	Title string `json:"title,omitempty" v-create:"required"`
 	// ^[a-z0-9][a-z0-9_+-]*$
-	IndexPrefix string `json:"index_prefix,omitempty" v-create:"required,indexprefixregexp" v-update:"required,indexprefixregexp"`
+	IndexPrefix string `json:"index_prefix,omitempty" v-create:"required,indexprefixregexp"`
 	// ex. "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy"
-	RotationStrategyClass string            `json:"rotation_strategy_class,omitempty" v-create:"required" v-update:"required"`
-	RotationStrategy      *RotationStrategy `json:"rotation_strategy,omitempty" v-create:"required" v-update:"required"`
+	RotationStrategyClass string            `json:"rotation_strategy_class,omitempty" v-create:"required"`
+	RotationStrategy      *RotationStrategy `json:"rotation_strategy,omitempty" v-create:"required"`
 	// ex. "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy"
-	RetentionStrategyClass string             `json:"retention_strategy_class,omitempty" v-create:"required" v-update:"required"`
-	RetentionStrategy      *RetentionStrategy `json:"retention_strategy,omitempty" v-create:"required" v-update:"required"`
+	RetentionStrategyClass string             `json:"retention_strategy_class,omitempty" v-create:"required"`
+	RetentionStrategy      *RetentionStrategy `json:"retention_strategy,omitempty" v-create:"required"`
 	// ex. "2018-02-20T11:37:19.305Z"
 	CreationDate                    string `json:"creation_date,omitempty"`
-	IndexAnalyzer                   string `json:"index_analyzer,omitempty" v-create:"required" v-update:"required"`
-	Shards                          int    `json:"shards,omitempty" v-create:"required" v-update:"required"`
-	IndexOptimizationMaxNumSegments int    `json:"index_optimization_max_num_segments,omitempty" v-create:"required" v-update:"required"`
+	IndexAnalyzer                   string `json:"index_analyzer,omitempty" v-create:"required"`
+	Shards                          int    `json:"shards,omitempty" v-create:"required"`
+	IndexOptimizationMaxNumSegments int    `json:"index_optimization_max_num_segments,omitempty" v-create:"required"`
 
-	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required,objectid"`
+	ID string `json:"id,omitempty" v-create:"isdefault"`
 
 	Description               string         `json:"description,omitempty"`
-	Replicas                  *int           `json:"replicas,omitempty"`
-	IndexOptimizationDisabled *bool          `json:"index_optimization_disabled,omitempty"`
-	Writable                  *bool          `json:"writable,omitempty"`
+	Replicas                  int            `json:"replicas,omitempty"`
+	IndexOptimizationDisabled bool           `json:"index_optimization_disabled,omitempty"`
+	Writable                  bool           `json:"writable,omitempty"`
 	Default                   bool           `json:"default,omitempty"`
 	Stats                     *IndexSetStats `json:"-"`
+}
+
+func (is *IndexSet) NewUpdateParams() *IndexSetUpdateParams {
+	return &IndexSetUpdateParams{
+		Title:                  is.Title,
+		IndexPrefix:            is.IndexPrefix,
+		RotationStrategyClass:  is.RotationStrategyClass,
+		RotationStrategy:       is.RotationStrategy,
+		RetentionStrategyClass: is.RetentionStrategyClass,
+		RetentionStrategy:      is.RetentionStrategy,
+		IndexAnalyzer:          is.IndexAnalyzer,
+		Shards:                 is.Shards,
+		IndexOptimizationMaxNumSegments: is.IndexOptimizationMaxNumSegments,
+		ID: is.ID,
+
+		Description:               ptr.PStr(is.Description),
+		Replicas:                  ptr.PInt(is.Replicas),
+		IndexOptimizationDisabled: ptr.PBool(is.IndexOptimizationDisabled),
+		Writable:                  ptr.PBool(is.Writable),
+	}
+}
+
+// IndexSetUpdateParams represents a Graylog's Index Set Update API's parameter.
+// http://docs.graylog.org/en/2.4/pages/configuration/index_model.html#index-set-configuration
+type IndexSetUpdateParams struct {
+	Title                           string             `json:"title" v-update:"required"`
+	IndexPrefix                     string             `json:"index_prefix" v-update:"required,indexprefixregexp"`
+	RotationStrategyClass           string             `json:"rotation_strategy_class" v-update:"required"`
+	RotationStrategy                *RotationStrategy  `json:"rotation_strategy" v-update:"required"`
+	RetentionStrategyClass          string             `json:"retention_strategy_class" v-update:"required"`
+	RetentionStrategy               *RetentionStrategy `json:"retention_strategy" v-update:"required"`
+	IndexAnalyzer                   string             `json:"index_analyzer" v-update:"required"`
+	Shards                          int                `json:"shards" v-update:"required"`
+	IndexOptimizationMaxNumSegments int                `json:"index_optimization_max_num_segments" v-update:"required"`
+	ID                              string             `json:"id" v-update:"required,objectid"`
+
+	Description               *string `json:"description,omitempty"`
+	Replicas                  *int    `json:"replicas,omitempty"`
+	IndexOptimizationDisabled *bool   `json:"index_optimization_disabled,omitempty"`
+	Writable                  *bool   `json:"writable,omitempty"`
 }
 
 func (is *IndexSet) SetCreateDefaultValues() {

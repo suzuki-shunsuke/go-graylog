@@ -58,20 +58,6 @@ func (ms *Logic) AddIndexSet(is *graylog.IndexSet) (int, error) {
 			`index prefix "%s" would conflict with an existing index set`,
 			is.IndexPrefix)
 	}
-	ok, err = ms.HasIndexSet(is.ID)
-	if err != nil {
-		return 500, err
-	}
-	if ok {
-		// update
-		if err := validator.UpdateValidator.Struct(is); err != nil {
-			return 400, err
-		}
-		if err := ms.store.UpdateIndexSet(is); err != nil {
-			return 500, err
-		}
-		return 200, nil
-	}
 	is.SetCreateDefaultValues()
 	if err := validator.CreateValidator.Struct(is); err != nil {
 		return 400, err
@@ -84,46 +70,46 @@ func (ms *Logic) AddIndexSet(is *graylog.IndexSet) (int, error) {
 }
 
 // UpdateIndexSet updates an index set at the Mock Server.
-func (ms *Logic) UpdateIndexSet(is *graylog.IndexSet) (int, error) {
-	if is == nil {
-		return 400, fmt.Errorf("index set is nil")
+func (ms *Logic) UpdateIndexSet(prms *graylog.IndexSetUpdateParams) (*graylog.IndexSet, int, error) {
+	if prms == nil {
+		return nil, 400, fmt.Errorf("index set is nil")
 	}
-	if err := validator.UpdateValidator.Struct(is); err != nil {
-		return 400, err
+	if err := validator.UpdateValidator.Struct(prms); err != nil {
+		return nil, 400, err
 	}
-	ok, err := ms.HasIndexSet(is.ID)
+	ok, err := ms.HasIndexSet(prms.ID)
 	if err != nil {
 		ms.Logger().WithFields(log.Fields{
-			"error": err, "id": is.ID,
+			"error": err, "id": prms.ID,
 		}).Error("ms.HasIndexSet() is failure")
-		return 500, err
+		return nil, 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("no indexSet found with id <%s>", is.ID)
+		return nil, 404, fmt.Errorf("no indexSet found with id <%s>", prms.ID)
 	}
 	// indexPrefix unique check
-	ok, err = ms.store.IsConflictIndexPrefix(is.ID, is.IndexPrefix)
+	ok, err = ms.store.IsConflictIndexPrefix(prms.ID, prms.IndexPrefix)
 	if err != nil {
-		return 500, err
+		return nil, 500, err
 	}
 	if ok {
-		return 400, fmt.Errorf(
+		return nil, 400, fmt.Errorf(
 			`index prefix "%s" would conflict with an existing index set`,
-			is.IndexPrefix)
+			prms.IndexPrefix)
 	}
 	defID, err := ms.store.GetDefaultIndexSetID()
 	if err != nil {
-		return 500, err
+		return nil, 500, err
 	}
-	is.Default = defID == is.ID
-	if is.Default && (is.Writable == nil || !(*is.Writable)) {
-		return 409, fmt.Errorf("default index set must be writable")
+	if defID == prms.ID && prms.Writable != nil && !(*prms.Writable) {
+		return nil, 409, fmt.Errorf("default index set must be writable")
 	}
 
-	if err := ms.store.UpdateIndexSet(is); err != nil {
-		return 500, err
+	is, err := ms.store.UpdateIndexSet(prms)
+	if err != nil {
+		return nil, 500, err
 	}
-	return 200, nil
+	return is, 200, nil
 }
 
 // DeleteIndexSet removes a index set from the Mock Server.
@@ -160,7 +146,7 @@ func (ms *Logic) SetDefaultIndexSet(id string) (*graylog.IndexSet, int, error) {
 	if is == nil {
 		return nil, 404, fmt.Errorf("no indexSet found with id <%s>", id)
 	}
-	if is.Writable == nil || !(*is.Writable) {
+	if !is.Writable {
 		return nil, 409, fmt.Errorf("default index set must be writable")
 	}
 	if err := ms.store.SetDefaultIndexSetID(id); err != nil {

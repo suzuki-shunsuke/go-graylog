@@ -49,7 +49,7 @@ func (store *PlainStore) SetDefaultIndexSetID(id string) error {
 	if is == nil {
 		return fmt.Errorf("no index set with id <%s> is not found", id)
 	}
-	if is.Writable == nil || !(*is.Writable) {
+	if !is.Writable {
 		return fmt.Errorf("default index set must be writable")
 	}
 	store.imutex.Lock()
@@ -73,30 +73,38 @@ func (store *PlainStore) AddIndexSet(is *graylog.IndexSet) error {
 }
 
 // UpdateIndexSet updates an index set at the Mock Server.
-func (store *PlainStore) UpdateIndexSet(is *graylog.IndexSet) error {
-	id := is.ID
+func (store *PlainStore) UpdateIndexSet(prms *graylog.IndexSetUpdateParams) (*graylog.IndexSet, error) {
+	id := prms.ID
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
-	for i, indexSet := range store.indexSets {
-		if indexSet.ID == id {
-			orig := store.indexSets[i]
-			if is.Description == "" {
-				is.Description = orig.Description
-			}
-			if is.Replicas == nil {
-				is.Replicas = orig.Replicas
-			}
-			if is.IndexOptimizationDisabled == nil {
-				is.IndexOptimizationDisabled = orig.IndexOptimizationDisabled
-			}
-			if is.Writable == nil {
-				is.Writable = orig.Writable
-			}
-			store.indexSets[i] = *is
-			return nil
+	for i, is := range store.indexSets {
+		if is.ID != id {
+			continue
 		}
+		is.Title = prms.Title
+		is.IndexPrefix = prms.IndexPrefix
+		is.RotationStrategyClass = prms.RotationStrategyClass
+		is.RotationStrategy = prms.RotationStrategy
+		is.RetentionStrategy = prms.RetentionStrategy
+		is.IndexAnalyzer = prms.IndexAnalyzer
+		is.Shards = prms.Shards
+		is.IndexOptimizationMaxNumSegments = prms.IndexOptimizationMaxNumSegments
+		if prms.Description != nil {
+			is.Description = *prms.Description
+		}
+		if prms.Replicas != nil {
+			is.Replicas = *prms.Replicas
+		}
+		if prms.IndexOptimizationDisabled != nil {
+			is.IndexOptimizationDisabled = *prms.IndexOptimizationDisabled
+		}
+		if prms.Writable != nil {
+			is.Writable = *prms.Writable
+		}
+		store.indexSets[i] = is
+		return &is, nil
 	}
-	return fmt.Errorf("no index set with id <%s>", id)
+	return nil, fmt.Errorf("no index set with id <%s>", id)
 }
 
 // DeleteIndexSet removes a index set from the Mock Server.

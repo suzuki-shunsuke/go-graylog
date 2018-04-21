@@ -72,7 +72,7 @@ func TestUpdateIndexSet(t *testing.T) {
 		t.Fatal("is is nil")
 	}
 	is.Title += " changed"
-	if err := st.UpdateIndexSet(is); err != nil {
+	if _, err := st.UpdateIndexSet(is.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
 	r, err = st.GetIndexSet(is.ID)

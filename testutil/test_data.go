@@ -2,7 +2,6 @@ package testutil
 
 import (
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-ptr"
 	"github.com/suzuki-shunsuke/go-set"
 )
 
@@ -68,14 +67,14 @@ func IndexSet(prefix string) *graylog.IndexSet {
 		Title:                           "Default index set",
 		Description:                     "The Graylog default index set",
 		IndexPrefix:                     prefix,
-		Replicas:                        ptr.PInt(0),
+		Replicas:                        0,
 		RotationStrategyClass:           graylog.MESSAGE_COUNT_ROTATION_STRATEGY,
 		RotationStrategy:                graylog.NewMessageCountRotationStrategy(0),
 		RetentionStrategyClass:          graylog.DELETION_RETENTION_STRATEGY_CLASS,
 		RetentionStrategy:               graylog.NewDeletionRetentionStrategy(0),
 		IndexOptimizationMaxNumSegments: 1,
-		IndexOptimizationDisabled:       ptr.PBool(false),
-		Writable:                        ptr.PBool(true),
+		IndexOptimizationDisabled:       false,
+		Writable:                        true,
 		Default:                         true}
 }
 

@@ -28,17 +28,17 @@ type Store interface {
 	HasUser(username string) (bool, error)
 	GetUserByAccessToken(token string) (*graylog.User, error)
 
-	AddInput(input *graylog.Input) error
+	AddInput(*graylog.Input) error
 	GetInput(id string) (*graylog.Input, error)
 	GetInputs() ([]graylog.Input, int, error)
-	UpdateInput(input *graylog.Input) error
+	UpdateInput(*graylog.Input) error
 	DeleteInput(id string) error
 	HasInput(id string) (bool, error)
 
-	AddIndexSet(indexSet *graylog.IndexSet) error
+	AddIndexSet(*graylog.IndexSet) error
 	GetIndexSet(id string) (*graylog.IndexSet, error)
 	GetIndexSets(skip, limit int) ([]graylog.IndexSet, int, error)
-	UpdateIndexSet(indexSet *graylog.IndexSet) error
+	UpdateIndexSet(*graylog.IndexSetUpdateParams) (*graylog.IndexSet, error)
 	DeleteIndexSet(id string) error
 	HasIndexSet(id string) (bool, error)
 	IsConflictIndexPrefix(id, indexPrefix string) (bool, error)

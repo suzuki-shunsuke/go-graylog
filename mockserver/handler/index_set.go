@@ -121,8 +121,8 @@ func HandleCreateIndexSet(
 		return body, sc, err
 	}
 
-	indexSet := &graylog.IndexSet{}
-	if err := util.MSDecode(body, indexSet); err != nil {
+	is := &graylog.IndexSet{}
+	if err := util.MSDecode(body, is); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as indexSet")
@@ -130,16 +130,26 @@ func HandleCreateIndexSet(
 	}
 
 	ms.Logger().WithFields(log.Fields{
-		"body": body, "index_set": indexSet,
+		"body": body, "index_set": is,
 	}).Debug("request body")
-	sc, err = ms.AddIndexSet(indexSet)
+	if is.ID == "" {
+		sc, err = ms.AddIndexSet(is)
+		if err != nil {
+			return nil, sc, err
+		}
+		if err := ms.Save(); err != nil {
+			return nil, 500, err
+		}
+		return is, 201, nil
+	}
+	is, sc, err = ms.UpdateIndexSet(is.NewUpdateParams())
 	if err != nil {
 		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
 		return nil, 500, err
 	}
-	return indexSet, 201, nil
+	return is, 200, nil
 }
 
 // HandleUpdateIndexSet
@@ -148,8 +158,9 @@ func HandleUpdateIndexSet(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// PUT /system/indices/index_sets/{id} Update index set
-	is := &graylog.IndexSet{ID: ps.ByName("indexSetID")}
-	if sc, err := ms.Authorize(user, "indexsets:edit", is.ID); err != nil {
+	id := ps.ByName("indexSetID")
+	prms := &graylog.IndexSetUpdateParams{}
+	if sc, err := ms.Authorize(user, "indexsets:edit", id); err != nil {
 		return nil, sc, err
 	}
 
@@ -166,17 +177,18 @@ func HandleUpdateIndexSet(
 		return nil, sc, err
 	}
 
-	if err := util.MSDecode(body, is); err != nil {
+	if err := util.MSDecode(body, prms); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
-		}).Warn("Failed to parse request body as indexSet")
+		}).Warn("Failed to parse request body as indexSetUpdateParams")
 		return nil, 400, err
 	}
-
+	prms.ID = id
 	ms.Logger().WithFields(log.Fields{
-		"body": body, "index_set": is,
+		"body": body, "index_set": prms,
 	}).Debug("request body")
-	if sc, err := ms.UpdateIndexSet(is); err != nil {
+	is, sc, err := ms.UpdateIndexSet(prms)
+	if err != nil {
 		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
