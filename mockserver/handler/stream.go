@@ -70,9 +70,9 @@ func HandleCreateStream(
 
 	sc, err = ms.AddStream(stream)
 	if err != nil {
-		return nil, 400, err
+		return nil, sc, err
 	}
-	return map[string]string{"stream_id": stream.ID}, 201, nil
+	return map[string]string{"stream_id": stream.ID}, sc, nil
 }
 
 // HandleUpdateStream

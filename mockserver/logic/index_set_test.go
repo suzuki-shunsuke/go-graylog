@@ -59,12 +59,10 @@ func TestGetIndexSet(t *testing.T) {
 	if !reflect.DeepEqual(*act, *is) {
 		t.Fatalf("server.GetIndexSet() == %v, wanted %v", act, is)
 	}
-	is, _, err = server.GetIndexSet("")
-	if err == nil {
+	if _, _, err = server.GetIndexSet(""); err == nil {
 		t.Fatal("index set id is empty")
 	}
-	is, _, err = server.GetIndexSet("h")
-	if err == nil {
+	if _, _, err = server.GetIndexSet("h"); err == nil {
 		t.Fatal("no index set <h> is found")
 	}
 }
