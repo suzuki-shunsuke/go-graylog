@@ -8,38 +8,6 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
-// CreateInput creates an input.
-func (client *Client) CreateInput(input *graylog.Input) (
-	ei *ErrorInfo, err error,
-) {
-	return client.CreateInputContext(context.Background(), input)
-}
-
-// CreateInputContext creates an input with a context.
-func (client *Client) CreateInputContext(
-	ctx context.Context, input *graylog.Input,
-) (ei *ErrorInfo, err error) {
-	if input == nil {
-		return nil, fmt.Errorf("input is nil")
-	}
-	if input.ID != "" {
-		return nil, fmt.Errorf("input id should be empty")
-	}
-	// change attributes to configuration
-	// https://github.com/Graylog2/graylog2-server/issues/3480
-	d := map[string]interface{}{
-		"title":         input.Title,
-		"type":          input.Type,
-		"configuration": input.Attributes,
-		"global":        input.Global,
-	}
-	if input.Node != "" {
-		d["node"] = input.Node
-	}
-
-	return client.callPost(ctx, client.Endpoints.Inputs, &d, input)
-}
-
 // GetInputs returns all inputs.
 func (client *Client) GetInputs() ([]graylog.Input, int, *ErrorInfo, error) {
 	return client.GetInputsContext(context.Background())
@@ -71,6 +39,38 @@ func (client *Client) GetInputContext(
 	ei, err := client.callGet(
 		ctx, client.Endpoints.Input(id), nil, input)
 	return input, ei, err
+}
+
+// CreateInput creates an input.
+func (client *Client) CreateInput(input *graylog.Input) (
+	ei *ErrorInfo, err error,
+) {
+	return client.CreateInputContext(context.Background(), input)
+}
+
+// CreateInputContext creates an input with a context.
+func (client *Client) CreateInputContext(
+	ctx context.Context, input *graylog.Input,
+) (ei *ErrorInfo, err error) {
+	if input == nil {
+		return nil, fmt.Errorf("input is nil")
+	}
+	if input.ID != "" {
+		return nil, fmt.Errorf("input id should be empty")
+	}
+	// change attributes to configuration
+	// https://github.com/Graylog2/graylog2-server/issues/3480
+	d := map[string]interface{}{
+		"title":         input.Title,
+		"type":          input.Type,
+		"configuration": input.Attributes,
+		"global":        input.Global,
+	}
+	if input.Node != "" {
+		d["node"] = input.Node
+	}
+
+	return client.callPost(ctx, client.Endpoints.Inputs, &d, input)
 }
 
 // UpdateInput updates an given input.

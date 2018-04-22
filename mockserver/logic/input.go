@@ -48,6 +48,9 @@ func (ms *Logic) AddInput(input *graylog.Input) (int, error) {
 // Required: Title, Type, Attributes
 // Allowed: Global, Node
 func (ms *Logic) UpdateInput(input *graylog.Input) (int, error) {
+	if input == nil {
+		return 400, fmt.Errorf("input is nil")
+	}
 	if err := validator.UpdateValidator.Struct(input); err != nil {
 		return 400, err
 	}

@@ -20,7 +20,7 @@ func TestHandleGetInput(t *testing.T) {
 	}
 	act, _, err := client.GetInput(input.ID)
 	if err != nil {
-		t.Fatal("Failed to GetInput", err)
+		t.Fatal(err)
 	}
 	if input.Node != act.Node {
 		t.Fatalf("Node == %s, wanted %s", act.Node, input.Node)
@@ -43,7 +43,7 @@ func TestHandleGetInputs(t *testing.T) {
 	defer server.Close()
 	act, _, _, err := client.GetInputs()
 	if err != nil {
-		t.Fatal("Failed to GetInputs", err)
+		t.Fatal(err)
 	}
 	if act == nil {
 		t.Fatal("client.GetInputs() returns nil")
@@ -61,7 +61,7 @@ func TestHandleCreateInput(t *testing.T) {
 	defer server.Close()
 	input := testutil.Input()
 	if _, err := client.CreateInput(input); err != nil {
-		t.Fatal("Failed to CreateInput", err)
+		t.Fatal(err)
 	}
 	if input.ID == "" {
 		t.Fatal(`client.CreateInput() == ""`)
@@ -106,7 +106,7 @@ func TestHandleUpdateInput(t *testing.T) {
 	id := input.ID
 	input.Title += " updated"
 	if _, err := client.UpdateInput(input); err != nil {
-		t.Fatal("Failed to UpdateInput", err)
+		t.Fatal(err)
 	}
 	act, _, err := server.GetInput(id)
 	if err != nil {
@@ -146,20 +146,6 @@ func TestHandleUpdateInput(t *testing.T) {
 	}
 
 	input.Title = act.Title
-	input.Attributes.BindAddress = nil
-	if _, err := client.UpdateInput(input); err == nil {
-		t.Fatal("input bind_address is required")
-	}
-	input.Attributes.BindAddress = act.Attributes.BindAddress
-	input.Attributes.Port = nil
-	if _, err := client.UpdateInput(input); err == nil {
-		t.Fatal("input port is required")
-	}
-	input.Attributes.Port = act.Attributes.Port
-	input.Attributes.RecvBufferSize = nil
-	if _, err := client.UpdateInput(input); err == nil {
-		t.Fatal("input recv_buffer_size is required")
-	}
 
 	if _, err := client.UpdateInput(nil); err == nil {
 		t.Fatal("input is required")

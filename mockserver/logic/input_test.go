@@ -3,6 +3,7 @@ package logic_test
 import (
 	"testing"
 
+	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
@@ -123,21 +124,18 @@ func TestUpdateInput(t *testing.T) {
 	}
 
 	input.Title = act.Title
-	input.Attributes.BindAddress = nil
-	if _, err := server.UpdateInput(input); err == nil {
-		t.Fatal("input bind_address is required")
+	switch input.Type {
+	case graylog.INPUT_TYPE_BEATS:
+		attrs, ok := input.Attributes.(*graylog.InputBeatsAttrs)
+		if !ok {
+			t.Fatal("input.Attributes's type assertion is failure")
+		}
+		attrs.BindAddress = ""
+		input.Attributes = attrs
+		if _, err := server.UpdateInput(input); err == nil {
+			t.Fatal("input bind_address is required")
+		}
 	}
-	input.Attributes.BindAddress = act.Attributes.BindAddress
-	input.Attributes.Port = nil
-	if _, err := server.UpdateInput(input); err == nil {
-		t.Fatal("input port is required")
-	}
-	input.Attributes.Port = act.Attributes.Port
-	input.Attributes.RecvBufferSize = nil
-	if _, err := server.UpdateInput(input); err == nil {
-		t.Fatal("input recv_buffer_size is required")
-	}
-
 	if _, err := server.UpdateInput(nil); err == nil {
 		t.Fatal("input is required")
 	}

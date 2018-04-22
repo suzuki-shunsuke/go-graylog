@@ -3,32 +3,9 @@ package client_test
 import (
 	"testing"
 
+	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
-
-func TestCreateInput(t *testing.T) {
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
-
-	// nil check
-	if _, err := client.CreateInput(nil); err == nil {
-		t.Fatal("input is nil")
-	}
-	input := testutil.Input()
-	if _, err := client.CreateInput(input); err != nil {
-		t.Fatal(err)
-	}
-	defer client.DeleteInput(input.ID)
-	// error check
-	if _, err := client.CreateInput(input); err == nil {
-		t.Fatal("input id should be empty")
-	}
-}
 
 func TestGetInputs(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
@@ -83,6 +60,34 @@ func TestGetInput(t *testing.T) {
 	}
 }
 
+func TestCreateInput(t *testing.T) {
+	server, client, err := testutil.GetServerAndClient()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if server != nil {
+		defer server.Close()
+	}
+
+	// nil check
+	if _, err := client.CreateInput(nil); err == nil {
+		t.Fatal("input is nil")
+	}
+	input := testutil.Input()
+	if _, err := client.CreateInput(input); err != nil {
+		t.Fatal(err)
+	}
+	defer client.DeleteInput(input.ID)
+	attrs := input.Attributes.(*graylog.InputBeatsAttrs)
+	if attrs.BindAddress == "" {
+		t.Fatal(`attrs.BindAddress == ""`)
+	}
+	// error check
+	if _, err := client.CreateInput(input); err == nil {
+		t.Fatal("input id should be empty")
+	}
+}
+
 func TestUpdateInput(t *testing.T) {
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -97,6 +102,10 @@ func TestUpdateInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer client.DeleteInput(input.ID)
+	attrs := input.Attributes.(*graylog.InputBeatsAttrs)
+	if attrs.BindAddress == "" {
+		t.Fatal(`attrs.BindAddress == ""`)
+	}
 	if _, err := client.UpdateInput(input); err != nil {
 		t.Fatal(err)
 	}

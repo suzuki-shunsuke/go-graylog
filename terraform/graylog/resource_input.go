@@ -6,7 +6,6 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
-	"github.com/suzuki-shunsuke/go-graylog/util"
 	"github.com/suzuki-shunsuke/go-ptr"
 )
 
@@ -92,21 +91,21 @@ func resourceInput() *schema.Resource {
 }
 
 func newInput(d *schema.ResourceData) (*graylog.Input, error) {
-	cfg := d.Get("attributes").([]interface{})[0].(map[string]interface{})
-	config := &graylog.InputAttributes{}
-	if err := util.MSDecode(cfg, config); err != nil {
-		return nil, err
-	}
-	return &graylog.Input{
+	data := &graylog.InputData{
 		Title:         d.Get("title").(string),
 		Type:          d.Get("type").(string),
 		Global:        ptr.PBool(d.Get("global").(bool)),
 		Node:          d.Get("node").(string),
 		ID:            d.Id(),
-		Attributes:    config,
 		CreatorUserID: d.Get("creator_user_id").(string),
 		CreatedAt:     d.Get("created_at").(string),
-	}, nil
+		Attributes:    d.Get("attributes").([]interface{})[0].(map[string]interface{}),
+	}
+	input := &graylog.Input{}
+	if err := data.ToInput(input); err != nil {
+		return nil, err
+	}
+	return input, nil
 }
 
 func resourceInputCreate(d *schema.ResourceData, m interface{}) error {

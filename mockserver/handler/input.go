@@ -60,12 +60,15 @@ func HandleCreateInput(
 	// https://github.com/Graylog2/graylog2-server/issues/3480
 	body["attributes"] = body["configuration"]
 	delete(body, "configuration")
-
-	input := &graylog.Input{}
-	if err := util.MSDecode(body, input); err != nil {
+	d := &graylog.InputData{}
+	if err := util.MSDecode(body, d); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
-		}).Info("Failed to parse request body as Input")
+		}).Info("Failed to parse request body as InputData")
+		return nil, 400, err
+	}
+	input := &graylog.Input{}
+	if err := d.ToInput(input); err != nil {
 		return nil, 400, err
 	}
 
@@ -76,8 +79,7 @@ func HandleCreateInput(
 	if err := ms.Save(); err != nil {
 		return nil, 500, err
 	}
-	d := map[string]string{"id": input.ID}
-	return &d, 201, nil
+	return &map[string]string{"id": input.ID}, 201, nil
 }
 
 // HandleUpdateInput
@@ -103,12 +105,15 @@ func HandleUpdateInput(
 	// https://github.com/Graylog2/graylog2-server/issues/3480
 	body["attributes"] = body["configuration"]
 	delete(body, "configuration")
-
-	input := &graylog.Input{}
-	if err := util.MSDecode(body, input); err != nil {
+	d := &graylog.InputData{}
+	if err := util.MSDecode(body, d); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
-		}).Info("Failed to parse request body as Input")
+		}).Info("Failed to parse request body as InputData")
+		return nil, 400, err
+	}
+	input := &graylog.Input{}
+	if err := d.ToInput(input); err != nil {
 		return nil, 400, err
 	}
 
