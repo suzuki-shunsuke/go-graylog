@@ -126,15 +126,15 @@ func TestHandleUpdateUser(t *testing.T) {
 		t.Fatal(err)
 	}
 	user.FullName = "changed!"
-	if _, err := client.UpdateUser(user); err != nil {
-		t.Fatal("Failed to UpdateUser", err)
+	if _, err := client.UpdateUser(user.NewUpdateParams()); err != nil {
+		t.Fatal(err)
 	}
 	user.Username = ""
-	if _, err := client.UpdateUser(user); err == nil {
+	if _, err := client.UpdateUser(user.NewUpdateParams()); err == nil {
 		t.Fatal("username should be required.")
 	}
 	user.Username = "h"
-	if _, err := client.UpdateUser(user); err == nil {
+	if _, err := client.UpdateUser(user.NewUpdateParams()); err == nil {
 		t.Fatal(`no user with name is "h"`)
 	}
 	if _, err := client.UpdateUser(nil); err == nil {

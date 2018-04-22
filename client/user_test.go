@@ -114,18 +114,18 @@ func TestUpdateUser(t *testing.T) {
 
 	user := testutil.User()
 	client.DeleteUser(user.Username)
-	if _, err := client.UpdateUser(user); err == nil {
+	if _, err := client.UpdateUser(user.NewUpdateParams()); err == nil {
 		t.Fatal("user should be deleted")
 	}
 	if _, err := client.CreateUser(user); err != nil {
 		t.Fatal(err)
 	}
 	defer client.DeleteUser(user.Username)
-	if _, err := client.UpdateUser(user); err != nil {
+	if _, err := client.UpdateUser(user.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
 	user.Username = ""
-	if _, err := client.UpdateUser(user); err == nil {
+	if _, err := client.UpdateUser(user.NewUpdateParams()); err == nil {
 		t.Fatal("user name is required")
 	}
 	if _, err := client.UpdateUser(nil); err == nil {

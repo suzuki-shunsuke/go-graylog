@@ -6,6 +6,7 @@ import (
 
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/validator"
+	"github.com/suzuki-shunsuke/go-ptr"
 )
 
 func encryptPassword(password string) string {
@@ -90,35 +91,36 @@ func (ms *Logic) AddUser(user *graylog.User) (int, error) {
 
 // UpdateUser updates a user of the Server.
 // "email", "permissions", "full_name", "password"
-func (ms *Logic) UpdateUser(user *graylog.User) (int, error) {
-	if user == nil {
+func (ms *Logic) UpdateUser(prms *graylog.UserUpdateParams) (int, error) {
+	if prms == nil {
 		return 400, fmt.Errorf("user is nil")
 	}
 	// Check updated user exists
-	ok, err := ms.HasUser(user.Username)
+	ok, err := ms.HasUser(prms.Username)
 	if err != nil {
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf(`the user "%s" is not found`, user.Username)
+		return 404, fmt.Errorf(`the user "%s" is not found`, prms.Username)
 	}
 
 	// client side validation
-	if err := validator.UpdateValidator.Struct(user); err != nil {
+	if err := validator.UpdateValidator.Struct(prms); err != nil {
 		return 400, err
 	}
 
 	// check role exists
-	if user.Roles != nil {
-		if sc, err := ms.checkUserRoles(user.Roles.ToList()); err != nil {
+	if prms.Roles != nil {
+		if sc, err := ms.checkUserRoles(prms.Roles.ToList()); err != nil {
 			return sc, err
 		}
 	}
-	user.SetDefaultValues()
-	user.Password = encryptPassword(user.Password)
+	if prms.Password != nil {
+		prms.Password = ptr.PStr(encryptPassword(*prms.Password))
+	}
 
 	// update
-	if err := ms.store.UpdateUser(user); err != nil {
+	if err := ms.store.UpdateUser(prms); err != nil {
 		return 500, err
 	}
 	return 200, nil

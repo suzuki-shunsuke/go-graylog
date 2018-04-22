@@ -55,21 +55,21 @@ func (client *Client) GetUserContext(
 }
 
 // UpdateUser updates a given user.
-func (client *Client) UpdateUser(user *graylog.User) (*ErrorInfo, error) {
-	return client.UpdateUserContext(context.Background(), user)
+func (client *Client) UpdateUser(prms *graylog.UserUpdateParams) (*ErrorInfo, error) {
+	return client.UpdateUserContext(context.Background(), prms)
 }
 
 // UpdateUserContext updates a given user with a context.
 func (client *Client) UpdateUserContext(
-	ctx context.Context, user *graylog.User,
+	ctx context.Context, prms *graylog.UserUpdateParams,
 ) (*ErrorInfo, error) {
-	if user == nil {
+	if prms == nil {
 		return nil, fmt.Errorf("user is nil")
 	}
-	if user.Username == "" {
+	if prms.Username == "" {
 		return nil, errors.New("name is empty")
 	}
-	return client.callPut(ctx, client.Endpoints.User(user.Username), user, nil)
+	return client.callPut(ctx, client.Endpoints.User(prms.Username), prms, nil)
 }
 
 // DeleteUser deletes a given user.

@@ -60,7 +60,7 @@ func (ms *Logic) AddUserToRole(userName, roleName string) (int, error) {
 	} else {
 		user.Roles.Add(roleName)
 	}
-	return ms.UpdateUser(user)
+	return ms.UpdateUser(user.NewUpdateParams())
 }
 
 // RemoveUserFromRole removes a user from a role.
@@ -88,5 +88,5 @@ func (ms *Logic) RemoveUserFromRole(
 	if user.Roles != nil {
 		user.Roles.Remove(roleName)
 	}
-	return ms.UpdateUser(user)
+	return ms.UpdateUser(user.NewUpdateParams())
 }

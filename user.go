@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"github.com/suzuki-shunsuke/go-ptr"
 	"github.com/suzuki-shunsuke/go-set"
 )
 
@@ -37,6 +38,33 @@ type User struct {
 	LastActivity string `json:"last_activity,omitempty"`
 	// ex. "192.168.192.1"
 	ClientAddress string `json:"client_address,omitempty"`
+}
+
+// UserUpdateParams represents a user update API's parameter.
+type UserUpdateParams struct {
+	Username         string      `json:"username,omitempty" v-update:"required"`
+	Email            *string     `json:"email,omitempty"`
+	FullName         *string     `json:"full_name,omitempty"`
+	Password         *string     `json:"password,omitempty"`
+	Timezone         *string     `json:"timezone,omitempty"`
+	SessionTimeoutMs *int        `json:"session_timeout_ms,omitempty"`
+	Permissions      *set.StrSet `json:"permissions,omitempty"`
+	Startpage        *Startpage  `json:"startpage,omitempty"`
+	Roles            *set.StrSet `json:"roles,omitempty"`
+}
+
+func (user *User) NewUpdateParams() *UserUpdateParams {
+	return &UserUpdateParams{
+		Username:         user.Username,
+		Email:            ptr.PStr(user.Email),
+		FullName:         ptr.PStr(user.FullName),
+		Password:         nil,
+		Timezone:         ptr.PStr(user.Timezone),
+		SessionTimeoutMs: ptr.PInt(user.SessionTimeoutMs),
+		Permissions:      user.Permissions,
+		Startpage:        user.Startpage,
+		Roles:            user.Roles,
+	}
 }
 
 // Preferences represents user's preferences.

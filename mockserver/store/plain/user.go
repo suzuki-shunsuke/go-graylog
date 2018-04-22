@@ -56,30 +56,42 @@ func (store *PlainStore) AddUser(user *graylog.User) error {
 
 // UpdateUser updates a user of the PlainStore.
 // "email", "permissions", "full_name", "password"
-func (store *PlainStore) UpdateUser(user *graylog.User) error {
-	if user == nil {
+func (store *PlainStore) UpdateUser(prms *graylog.UserUpdateParams) error {
+	if prms == nil {
 		return fmt.Errorf("user is nil")
 	}
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
-	u, ok := store.users[user.Username]
+	user, ok := store.users[prms.Username]
 	if !ok {
-		return fmt.Errorf(`the user "%s" is not found`, user.Username)
+		return fmt.Errorf(`the user "%s" is not found`, prms.Username)
 	}
 
-	if user.Email != "" {
-		u.Email = user.Email
+	if prms.Email != nil {
+		user.Email = *prms.Email
 	}
-	if user.Permissions != nil {
-		u.Permissions = user.Permissions
+	if prms.FullName != nil {
+		user.FullName = *prms.FullName
 	}
-	if user.FullName != "" {
-		u.FullName = user.FullName
+	if prms.Password != nil {
+		user.Password = *prms.Password
 	}
-	if user.Password != "" {
-		u.Password = user.Password
+	if prms.Timezone != nil {
+		user.Timezone = *prms.Timezone
 	}
-	store.users[u.Username] = u
+	if prms.SessionTimeoutMs != nil {
+		user.SessionTimeoutMs = *prms.SessionTimeoutMs
+	}
+	if prms.Permissions != nil {
+		user.Permissions = prms.Permissions
+	}
+	if prms.Startpage != nil {
+		user.Startpage = prms.Startpage
+	}
+	if prms.Roles != nil {
+		user.Roles = prms.Roles
+	}
+	store.users[user.Username] = user
 	return nil
 }
 

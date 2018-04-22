@@ -69,7 +69,7 @@ func TestUpdateUser(t *testing.T) {
 		t.Fatal("user is nil")
 	}
 	user.FullName += " changed"
-	if err := store.UpdateUser(user); err != nil {
+	if err := store.UpdateUser(user.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
 	r, err = store.GetUser(user.Username)

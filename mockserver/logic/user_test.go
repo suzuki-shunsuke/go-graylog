@@ -98,13 +98,13 @@ func TestUpdateUser(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Run("basic", func(t *testing.T) {
-		if _, err := lgc.UpdateUser(user); err != nil {
+		if _, err := lgc.UpdateUser(user.NewUpdateParams()); err != nil {
 			t.Fatal(err)
 		}
 	})
 	t.Run("username is required", func(t *testing.T) {
 		user.Username = ""
-		if _, err := lgc.UpdateUser(user); err == nil {
+		if _, err := lgc.UpdateUser(user.NewUpdateParams()); err == nil {
 			t.Fatal("user.Username is required")
 		}
 	})
@@ -114,7 +114,7 @@ func TestUpdateUser(t *testing.T) {
 	t.Run("check role", func(t *testing.T) {
 		user.Username = name
 		user.Roles = set.NewStrSet("aa")
-		if _, err := lgc.UpdateUser(user); err == nil {
+		if _, err := lgc.UpdateUser(user.NewUpdateParams()); err == nil {
 			t.Fatal("unexisting role")
 		}
 	})

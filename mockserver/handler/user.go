@@ -91,21 +91,22 @@ func HandleUpdateUser(
 	}
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
-			Optional: set.NewStrSet("email", "permissions", "full_name", "password"),
+			Optional:     set.NewStrSet("email", "permissions", "full_name", "password", "timezone", "session_timeout_ms", "start_page", "roles"),
+			Ignored:      set.NewStrSet("id", "preferences", "external", "read_only", "session_active", "last_activity", "client_address"),
+			ExtForbidden: false,
 		})
 	if err != nil {
 		return nil, sc, err
 	}
 
-	user := &graylog.User{Username: userName}
-	if err := util.MSDecode(body, user); err != nil {
+	prms := &graylog.UserUpdateParams{Username: userName}
+	if err := util.MSDecode(body, prms); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
-		}).Info("Failed to parse request body as User")
+		}).Info("Failed to parse request body as UserUpdateParams")
 		return nil, 400, err
 	}
-
-	if sc, err := ms.UpdateUser(user); err != nil {
+	if sc, err := ms.UpdateUser(prms); err != nil {
 		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {

@@ -11,7 +11,7 @@ type Store interface {
 	Load() error
 	Authorize(user *graylog.User, scope string, args ...string) (bool, error)
 
-	AddRole(role *graylog.Role) error
+	AddRole(*graylog.Role) error
 	// GetRole returns a role.
 	// If no role with given name is found, returns nil and not returns an error.
 	GetRole(name string) (*graylog.Role, error)
@@ -23,7 +23,7 @@ type Store interface {
 	AddUser(user *graylog.User) error
 	GetUser(username string) (*graylog.User, error)
 	GetUsers() ([]graylog.User, error)
-	UpdateUser(user *graylog.User) error
+	UpdateUser(*graylog.UserUpdateParams) error
 	DeleteUser(name string) error
 	HasUser(username string) (bool, error)
 	GetUserByAccessToken(token string) (*graylog.User, error)
@@ -50,18 +50,18 @@ type Store interface {
 	GetTotalIndexSetStats() (*graylog.IndexSetStats, error)
 	GetIndexSetStatsMap() (map[string]graylog.IndexSetStats, error)
 
-	AddStream(stream *graylog.Stream) error
+	AddStream(*graylog.Stream) error
 	GetStream(id string) (*graylog.Stream, error)
 	GetStreams() ([]graylog.Stream, int, error)
 	GetEnabledStreams() ([]graylog.Stream, int, error)
-	UpdateStream(stream *graylog.Stream) error
+	UpdateStream(*graylog.Stream) error
 	DeleteStream(id string) error
 	HasStream(id string) (bool, error)
 
-	AddStreamRule(rule *graylog.StreamRule) error
+	AddStreamRule(*graylog.StreamRule) error
 	GetStreamRules(id string) ([]graylog.StreamRule, int, error)
 	GetStreamRule(streamID, streamRuleID string) (*graylog.StreamRule, error)
-	UpdateStreamRule(rule *graylog.StreamRule) error
+	UpdateStreamRule(*graylog.StreamRule) error
 	DeleteStreamRule(streamID, streamRuleID string) error
 	HasStreamRule(streamID, streamRuleID string) (bool, error)
 }
