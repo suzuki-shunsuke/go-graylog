@@ -17,7 +17,7 @@ func testDeleteIndexSet(
 	cl *client.Client, server *mockserver.Server, key string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		id, err := getIdFromTfState(tfState, key)
+		id, err := getIDFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}
@@ -33,7 +33,7 @@ func testCreateIndexSet(
 	cl *client.Client, server *mockserver.Server, key string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		id, err := getIdFromTfState(tfState, key)
+		id, err := getIDFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}
@@ -50,7 +50,7 @@ func testUpdateIndexSet(
 	cl *client.Client, key, title string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		id, err := getIdFromTfState(tfState, key)
+		id, err := getIDFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}

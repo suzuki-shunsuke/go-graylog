@@ -1,5 +1,6 @@
 package graylog
 
+// Config represents terraform provider's configuration.
 type Config struct {
 	Endpoint     string
 	AuthName     string

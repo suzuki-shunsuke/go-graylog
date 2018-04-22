@@ -17,7 +17,7 @@ func testDeleteStream(
 	cl *client.Client, key string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		id, err := getIdFromTfState(tfState, key)
+		id, err := getIDFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}
@@ -32,7 +32,7 @@ func testCreateStream(
 	cl *client.Client, server *mockserver.Server, key string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		id, err := getIdFromTfState(tfState, key)
+		id, err := getIDFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}
@@ -49,7 +49,7 @@ func testUpdateStream(
 	cl *client.Client, key, title string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		id, err := getIdFromTfState(tfState, key)
+		id, err := getIDFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}

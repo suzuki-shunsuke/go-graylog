@@ -25,7 +25,7 @@ func testDeleteInput(cl *client.Client, key string) resource.TestCheckFunc {
 
 func testCreateInput(cl *client.Client, key string) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		id, err := getIdFromTfState(tfState, key)
+		id, err := getIDFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}
@@ -38,7 +38,7 @@ func testCreateInput(cl *client.Client, key string) resource.TestCheckFunc {
 
 func testUpdateInput(cl *client.Client, key, title string) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		id, err := getIdFromTfState(tfState, key)
+		id, err := getIDFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}
