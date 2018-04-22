@@ -8,7 +8,7 @@ import (
 )
 
 // HasStreamRule
-func (store *PlainStore) HasStreamRule(streamID, streamRuleID string) (bool, error) {
+func (store *Store) HasStreamRule(streamID, streamRuleID string) (bool, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	rules, ok := store.streamRules[streamID]
@@ -20,7 +20,7 @@ func (store *PlainStore) HasStreamRule(streamID, streamRuleID string) (bool, err
 }
 
 // GetStreamRule returns a stream rule.
-func (store *PlainStore) GetStreamRule(streamID, streamRuleID string) (*graylog.StreamRule, error) {
+func (store *Store) GetStreamRule(streamID, streamRuleID string) (*graylog.StreamRule, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	rules, ok := store.streamRules[streamID]
@@ -35,7 +35,7 @@ func (store *PlainStore) GetStreamRule(streamID, streamRuleID string) (*graylog.
 }
 
 // GetStreamRules returns stream rules of the given stream.
-func (store *PlainStore) GetStreamRules(id string) ([]graylog.StreamRule, int, error) {
+func (store *Store) GetStreamRules(id string) ([]graylog.StreamRule, int, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	rules, ok := store.streamRules[id]
@@ -53,7 +53,7 @@ func (store *PlainStore) GetStreamRules(id string) ([]graylog.StreamRule, int, e
 }
 
 // AddStreamRule adds a stream rule.
-func (store *PlainStore) AddStreamRule(rule *graylog.StreamRule) error {
+func (store *Store) AddStreamRule(rule *graylog.StreamRule) error {
 	if rule == nil {
 		return fmt.Errorf("rule is nil")
 	}
@@ -72,7 +72,7 @@ func (store *PlainStore) AddStreamRule(rule *graylog.StreamRule) error {
 }
 
 // UpdateStreamRule updates a stream rule.
-func (store *PlainStore) UpdateStreamRule(rule *graylog.StreamRule) error {
+func (store *Store) UpdateStreamRule(rule *graylog.StreamRule) error {
 	if rule == nil {
 		return fmt.Errorf("rule is nil")
 	}
@@ -101,7 +101,7 @@ func (store *PlainStore) UpdateStreamRule(rule *graylog.StreamRule) error {
 }
 
 // DeleteStreamRule deletes a stream rule.
-func (store *PlainStore) DeleteStreamRule(streamID, streamRuleID string) error {
+func (store *Store) DeleteStreamRule(streamID, streamRuleID string) error {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
 	rules, ok := store.streamRules[streamID]

@@ -9,7 +9,7 @@ import (
 )
 
 // HasInput
-func (store *PlainStore) HasInput(id string) (bool, error) {
+func (store *Store) HasInput(id string) (bool, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	_, ok := store.inputs[id]
@@ -17,7 +17,7 @@ func (store *PlainStore) HasInput(id string) (bool, error) {
 }
 
 // GetInput returns an input.
-func (store *PlainStore) GetInput(id string) (*graylog.Input, error) {
+func (store *Store) GetInput(id string) (*graylog.Input, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	s, ok := store.inputs[id]
@@ -28,7 +28,7 @@ func (store *PlainStore) GetInput(id string) (*graylog.Input, error) {
 }
 
 // AddInput adds an input to the store.
-func (store *PlainStore) AddInput(input *graylog.Input) error {
+func (store *Store) AddInput(input *graylog.Input) error {
 	if input == nil {
 		return fmt.Errorf("input is nil")
 	}
@@ -43,10 +43,10 @@ func (store *PlainStore) AddInput(input *graylog.Input) error {
 	return nil
 }
 
-// UpdateInput updates an input at the PlainStore.
+// UpdateInput updates an input at the Store.
 // Required: Title, Type, Attributes
 // Allowed: Global, Node
-func (store *PlainStore) UpdateInput(prms *graylog.InputUpdateParams) (*graylog.Input, error) {
+func (store *Store) UpdateInput(prms *graylog.InputUpdateParams) (*graylog.Input, error) {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
 	input, ok := store.inputs[prms.ID]
@@ -67,7 +67,7 @@ func (store *PlainStore) UpdateInput(prms *graylog.InputUpdateParams) (*graylog.
 }
 
 // DeleteInput deletes an input from the store.
-func (store *PlainStore) DeleteInput(id string) error {
+func (store *Store) DeleteInput(id string) error {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
 	delete(store.inputs, id)
@@ -75,7 +75,7 @@ func (store *PlainStore) DeleteInput(id string) error {
 }
 
 // GetInputs returns inputs.
-func (store *PlainStore) GetInputs() ([]graylog.Input, int, error) {
+func (store *Store) GetInputs() ([]graylog.Input, int, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	size := len(store.inputs)

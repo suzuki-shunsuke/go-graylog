@@ -9,7 +9,7 @@ import (
 )
 
 // HasIndexSet
-func (store *PlainStore) HasIndexSet(id string) (bool, error) {
+func (store *Store) HasIndexSet(id string) (bool, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	for _, is := range store.indexSets {
@@ -21,7 +21,7 @@ func (store *PlainStore) HasIndexSet(id string) (bool, error) {
 }
 
 // GetIndexSet returns an index set.
-func (store *PlainStore) GetIndexSet(id string) (*graylog.IndexSet, error) {
+func (store *Store) GetIndexSet(id string) (*graylog.IndexSet, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	for _, is := range store.indexSets {
@@ -34,14 +34,14 @@ func (store *PlainStore) GetIndexSet(id string) (*graylog.IndexSet, error) {
 }
 
 // GetDefaultIndexSetID returns a default index set id.
-func (store *PlainStore) GetDefaultIndexSetID() (string, error) {
+func (store *Store) GetDefaultIndexSetID() (string, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	return store.defaultIndexSetID, nil
 }
 
 // SetDefaultIndexSetID sets a default index set id.
-func (store *PlainStore) SetDefaultIndexSetID(id string) error {
+func (store *Store) SetDefaultIndexSetID(id string) error {
 	is, err := store.GetIndexSet(id)
 	if err != nil {
 		return err
@@ -59,7 +59,7 @@ func (store *PlainStore) SetDefaultIndexSetID(id string) error {
 }
 
 // AddIndexSet adds an index set to the store.
-func (store *PlainStore) AddIndexSet(is *graylog.IndexSet) error {
+func (store *Store) AddIndexSet(is *graylog.IndexSet) error {
 	if is == nil {
 		return fmt.Errorf("index set is nil")
 	}
@@ -73,7 +73,7 @@ func (store *PlainStore) AddIndexSet(is *graylog.IndexSet) error {
 }
 
 // UpdateIndexSet updates an index set at the Mock Server.
-func (store *PlainStore) UpdateIndexSet(prms *graylog.IndexSetUpdateParams) (*graylog.IndexSet, error) {
+func (store *Store) UpdateIndexSet(prms *graylog.IndexSetUpdateParams) (*graylog.IndexSet, error) {
 	id := prms.ID
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
@@ -108,7 +108,7 @@ func (store *PlainStore) UpdateIndexSet(prms *graylog.IndexSetUpdateParams) (*gr
 }
 
 // DeleteIndexSet removes a index set from the Mock Server.
-func (store *PlainStore) DeleteIndexSet(id string) error {
+func (store *Store) DeleteIndexSet(id string) error {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
 	size := len(store.indexSets)
@@ -134,7 +134,7 @@ func (store *PlainStore) DeleteIndexSet(id string) error {
 }
 
 // GetIndexSets returns a list of all index sets.
-func (store *PlainStore) GetIndexSets(skip, limit int) ([]graylog.IndexSet, int, error) {
+func (store *Store) GetIndexSets(skip, limit int) ([]graylog.IndexSet, int, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	total := len(store.indexSets)
@@ -158,7 +158,7 @@ func (store *PlainStore) GetIndexSets(skip, limit int) ([]graylog.IndexSet, int,
 }
 
 // IsConflictIndexPrefix returns true if indexPrefix would conflict with an existing index set.
-func (store *PlainStore) IsConflictIndexPrefix(id, prefix string) (bool, error) {
+func (store *Store) IsConflictIndexPrefix(id, prefix string) (bool, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	for _, is := range store.indexSets {

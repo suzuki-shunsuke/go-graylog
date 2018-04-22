@@ -11,7 +11,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 )
 
-type PlainStore struct {
+// Store
+type Store struct {
 	users             map[string]graylog.User
 	roles             map[string]graylog.Role
 	inputs            map[string]graylog.Input
@@ -35,7 +36,7 @@ type plainStore struct {
 	Tokens            map[string]string                        `json:"tokens"`
 }
 
-func (store *PlainStore) MarshalJSON() ([]byte, error) {
+func (store *Store) MarshalJSON() ([]byte, error) {
 	data := map[string]interface{}{
 		"users":                store.users,
 		"roles":                store.roles,
@@ -49,7 +50,7 @@ func (store *PlainStore) MarshalJSON() ([]byte, error) {
 	return json.Marshal(data)
 }
 
-func (store *PlainStore) UnmarshalJSON(b []byte) error {
+func (store *Store) UnmarshalJSON(b []byte) error {
 	s := &plainStore{}
 	if err := json.Unmarshal(b, s); err != nil {
 		return err
@@ -66,7 +67,7 @@ func (store *PlainStore) UnmarshalJSON(b []byte) error {
 }
 
 func NewStore(dataPath string) store.Store {
-	return &PlainStore{
+	return &Store{
 		roles:       map[string]graylog.Role{},
 		users:       map[string]graylog.User{},
 		inputs:      map[string]graylog.Input{},
@@ -79,7 +80,7 @@ func NewStore(dataPath string) store.Store {
 }
 
 // Save writes Mock Server's data in a file for persistence.
-func (store *PlainStore) Save() error {
+func (store *Store) Save() error {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	if store.dataPath == "" {
@@ -93,7 +94,7 @@ func (store *PlainStore) Save() error {
 }
 
 // Load reads Mock Server's data from a file.
-func (store *PlainStore) Load() error {
+func (store *Store) Load() error {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
 	if store.dataPath == "" {
@@ -109,7 +110,7 @@ func (store *PlainStore) Load() error {
 	return json.Unmarshal(b, store)
 }
 
-func (store *PlainStore) Authorize(user *graylog.User, scope string, args ...string) (bool, error) {
+func (store *Store) Authorize(user *graylog.User, scope string, args ...string) (bool, error) {
 	if user == nil {
 		return true, nil
 	}

@@ -5,7 +5,7 @@ import (
 )
 
 // GetIndexSetStats returns an index set stats.
-func (store *PlainStore) GetIndexSetStats(id string) (*graylog.IndexSetStats, error) {
+func (store *Store) GetIndexSetStats(id string) (*graylog.IndexSetStats, error) {
 	ok, err := store.HasIndexSet(id)
 	if err != nil {
 		return nil, err
@@ -18,7 +18,7 @@ func (store *PlainStore) GetIndexSetStats(id string) (*graylog.IndexSetStats, er
 }
 
 // GetIndexSetStatsMap returns all of index set stats.
-func (store *PlainStore) GetIndexSetStatsMap() (map[string]graylog.IndexSetStats, error) {
+func (store *Store) GetIndexSetStatsMap() (map[string]graylog.IndexSetStats, error) {
 	m := map[string]graylog.IndexSetStats{}
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
@@ -30,7 +30,7 @@ func (store *PlainStore) GetIndexSetStatsMap() (map[string]graylog.IndexSetStats
 }
 
 // GetTotalIndexSetStats returns all index set's statistics.
-func (store *PlainStore) GetTotalIndexSetStats() (*graylog.IndexSetStats, error) {
+func (store *Store) GetTotalIndexSetStats() (*graylog.IndexSetStats, error) {
 	// TODO returns correct index set stats
 	indexSetStats := &graylog.IndexSetStats{}
 	return indexSetStats, nil

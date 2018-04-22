@@ -7,7 +7,7 @@ import (
 )
 
 // HasRole
-func (store *PlainStore) HasRole(name string) (bool, error) {
+func (store *Store) HasRole(name string) (bool, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	_, ok := store.roles[name]
@@ -16,7 +16,7 @@ func (store *PlainStore) HasRole(name string) (bool, error) {
 
 // GetRole returns a Role.
 // If no role with given name is found, returns nil and not returns an error.
-func (store *PlainStore) GetRole(name string) (*graylog.Role, error) {
+func (store *Store) GetRole(name string) (*graylog.Role, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	s, ok := store.roles[name]
@@ -27,7 +27,7 @@ func (store *PlainStore) GetRole(name string) (*graylog.Role, error) {
 }
 
 // GetRoles returns Roles.
-func (store *PlainStore) GetRoles() ([]graylog.Role, int, error) {
+func (store *Store) GetRoles() ([]graylog.Role, int, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	size := len(store.roles)
@@ -41,7 +41,7 @@ func (store *PlainStore) GetRoles() ([]graylog.Role, int, error) {
 }
 
 // AddRole adds a new role to the store.
-func (store *PlainStore) AddRole(role *graylog.Role) error {
+func (store *Store) AddRole(role *graylog.Role) error {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
 	store.roles[role.Name] = *role
@@ -49,7 +49,7 @@ func (store *PlainStore) AddRole(role *graylog.Role) error {
 }
 
 // UpdateRole updates a role at the store.
-func (store *PlainStore) UpdateRole(name string, prms *graylog.RoleUpdateParams) (*graylog.Role, error) {
+func (store *Store) UpdateRole(name string, prms *graylog.RoleUpdateParams) (*graylog.Role, error) {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
 	role, ok := store.roles[name]
@@ -67,7 +67,7 @@ func (store *PlainStore) UpdateRole(name string, prms *graylog.RoleUpdateParams)
 }
 
 // DeleteRole deletes a role from store.
-func (store *PlainStore) DeleteRole(name string) error {
+func (store *Store) DeleteRole(name string) error {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
 	delete(store.roles, name)

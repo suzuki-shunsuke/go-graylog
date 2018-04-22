@@ -8,7 +8,7 @@ import (
 )
 
 // HasStream
-func (store *PlainStore) HasStream(id string) (bool, error) {
+func (store *Store) HasStream(id string) (bool, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	_, ok := store.streams[id]
@@ -16,7 +16,7 @@ func (store *PlainStore) HasStream(id string) (bool, error) {
 }
 
 // GetStream returns a stream.
-func (store *PlainStore) GetStream(id string) (*graylog.Stream, error) {
+func (store *Store) GetStream(id string) (*graylog.Stream, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	s, ok := store.streams[id]
@@ -27,7 +27,7 @@ func (store *PlainStore) GetStream(id string) (*graylog.Stream, error) {
 }
 
 // AddStream adds a stream to the store.
-func (store *PlainStore) AddStream(stream *graylog.Stream) error {
+func (store *Store) AddStream(stream *graylog.Stream) error {
 	if stream == nil {
 		return fmt.Errorf("stream is nil")
 	}
@@ -42,7 +42,7 @@ func (store *PlainStore) AddStream(stream *graylog.Stream) error {
 }
 
 // UpdateStream updates a stream at the store.
-func (store *PlainStore) UpdateStream(stream *graylog.Stream) error {
+func (store *Store) UpdateStream(stream *graylog.Stream) error {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
 	orig, ok := store.streams[stream.ID]
@@ -82,7 +82,7 @@ func (store *PlainStore) UpdateStream(stream *graylog.Stream) error {
 }
 
 // DeleteStream removes a stream from the store.
-func (store *PlainStore) DeleteStream(id string) error {
+func (store *Store) DeleteStream(id string) error {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
 	delete(store.streams, id)
@@ -90,7 +90,7 @@ func (store *PlainStore) DeleteStream(id string) error {
 }
 
 // GetStreams returns a list of all streams.
-func (store *PlainStore) GetStreams() ([]graylog.Stream, int, error) {
+func (store *Store) GetStreams() ([]graylog.Stream, int, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	total := len(store.streams)
@@ -104,7 +104,7 @@ func (store *PlainStore) GetStreams() ([]graylog.Stream, int, error) {
 }
 
 // GetEnabledStreams returns all enabled streams.
-func (store *PlainStore) GetEnabledStreams() ([]graylog.Stream, int, error) {
+func (store *Store) GetEnabledStreams() ([]graylog.Stream, int, error) {
 	arr := []graylog.Stream{}
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()

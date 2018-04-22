@@ -8,7 +8,7 @@ import (
 )
 
 // HasUser
-func (store *PlainStore) HasUser(username string) (bool, error) {
+func (store *Store) HasUser(username string) (bool, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	_, ok := store.users[username]
@@ -17,7 +17,7 @@ func (store *PlainStore) HasUser(username string) (bool, error) {
 
 // GetUser returns a user.
 // If the user is not found, this method returns nil and doesn't raise an error.
-func (store *PlainStore) GetUser(username string) (*graylog.User, error) {
+func (store *Store) GetUser(username string) (*graylog.User, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	s, ok := store.users[username]
@@ -28,7 +28,7 @@ func (store *PlainStore) GetUser(username string) (*graylog.User, error) {
 }
 
 // GetUsers returns users
-func (store *PlainStore) GetUsers() ([]graylog.User, error) {
+func (store *Store) GetUsers() ([]graylog.User, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	arr := make([]graylog.User, len(store.users))
@@ -40,8 +40,8 @@ func (store *PlainStore) GetUsers() ([]graylog.User, error) {
 	return arr, nil
 }
 
-// AddUser adds a user to the PlainStore.
-func (store *PlainStore) AddUser(user *graylog.User) error {
+// AddUser adds a user to the Store.
+func (store *Store) AddUser(user *graylog.User) error {
 	if user == nil {
 		return fmt.Errorf("user is nil")
 	}
@@ -54,9 +54,9 @@ func (store *PlainStore) AddUser(user *graylog.User) error {
 	return nil
 }
 
-// UpdateUser updates a user of the PlainStore.
+// UpdateUser updates a user of the Store.
 // "email", "permissions", "full_name", "password"
-func (store *PlainStore) UpdateUser(prms *graylog.UserUpdateParams) error {
+func (store *Store) UpdateUser(prms *graylog.UserUpdateParams) error {
 	if prms == nil {
 		return fmt.Errorf("user is nil")
 	}
@@ -95,8 +95,8 @@ func (store *PlainStore) UpdateUser(prms *graylog.UserUpdateParams) error {
 	return nil
 }
 
-// DeleteUser removes a user from the PlainStore.
-func (store *PlainStore) DeleteUser(name string) error {
+// DeleteUser removes a user from the Store.
+func (store *Store) DeleteUser(name string) error {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
 	delete(store.users, name)
@@ -105,7 +105,7 @@ func (store *PlainStore) DeleteUser(name string) error {
 
 // GetUserByAccessToken returns a user name.
 // If the user is not found, this method returns nil and doesn't raise an error.
-func (store *PlainStore) GetUserByAccessToken(token string) (*graylog.User, error) {
+func (store *Store) GetUserByAccessToken(token string) (*graylog.User, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()
 	username, ok := store.tokens[token]
