@@ -1,9 +1,11 @@
 package graylog
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs *InputBeatsAttrs) InputType() string {
 	return InputTypeBeats
 }
 
+// InputBeatsAttrs
 type InputBeatsAttrs struct {
 	BindAddress           string `json:"bind_address,omitempty" v-create:"required" v-update:"required"`
 	Port                  int    `json:"port,omitempty" v-create:"required" v-update:"required"`

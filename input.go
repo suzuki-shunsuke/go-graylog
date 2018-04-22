@@ -34,19 +34,19 @@ const (
 )
 
 var (
-	// when update these fields variables, update also terraform graylog_input resource's document.
-	InputAttributesIntFields []string = []string{
+	// When update these fields variables, update also terraform graylog_input resource's document.
+	InputAttributesIntFields = []string{
 		"port", "recv_buffer_size", "heartbeat", "prefetch", "broker_port",
 		"parallel_queues", "fetch_wait_max", "fetch_min_bytes", "threads",
 		"max_message_size", "decompress_size_limit", "idle_writer_timeout",
 		"max_chunk_size", "interval"}
-	// when update these fields variables, update also terraform graylog_input resource's document.
-	InputAttributesBoolFields []string = []string{
+	// When update these fields variables, update also terraform graylog_input resource's document.
+	InputAttributesBoolFields = []string{
 		"throttling_allowed", "tls_enable", "tcp_keepalive", "exchange_bind", "tls", "requeue_invalid_messages", "use_full_names", "use_null_delimiter", "enable_cors", "force_rdns", "store_full_message", "expand_structured_data", "allow_override_date"}
-	// when update these fields variables, update also terraform graylog_input resource's document.
-	InputAttributesStrFields []string = []string{
+	// When update these fields variables, update also terraform graylog_input resource's document.
+	InputAttributesStrFields = []string{
 		"bind_address", "aws_region", "aws_assume_role_arn", "aws_access_key", "kinesis_stream_name", "aws_secret_key", "aws_sqs_region", "aws_s3_region", "aws_sqs_queue_name", "override_source", "tls_key_file", "tls_key_password", "tls_client_auth_cert_file", "tls_client_auth", "tls_cert_file", "timezone", "broker_vhost", "broker_username", "locale", "broker_password", "exchange", "routing_key", "broker_hostname", "queue", "topic_filter", "offset_reset", "zookeeper", "headers", "path", "target_url", "source", "timeunit", "netflow9_definitions_path"}
-	inputAttrsList []InputAttributes = []InputAttributes{
+	inputAttrsList = []InputAttributes{
 		&InputCloudTrailAttrs{},
 		&InputAWSFlowLogsAttrs{},
 		&InputAWSLogsAttrs{},
@@ -69,7 +69,7 @@ var (
 		&InputSyslogTCPAttrs{},
 		&InputSyslogUDPAttrs{},
 	}
-	inputAttrsMap map[string]InputAttributes = map[string]InputAttributes{}
+	inputAttrsMap = map[string]InputAttributes{}
 )
 
 func init() {
@@ -97,6 +97,7 @@ type InputUnknownAttrs struct {
 	Data      map[string]interface{}
 }
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs InputUnknownAttrs) InputType() string {
 	return attrs.inputType
 }
@@ -133,6 +134,7 @@ type Input struct {
 	// StaticFields `json:"static_fields,omitempty"`
 }
 
+// NewUpdateParams converts Input to InputUpdateParams.
 func (input *Input) NewUpdateParams() *InputUpdateParams {
 	return &InputUpdateParams{
 		ID:         input.ID,
@@ -249,6 +251,8 @@ func (input *Input) UnmarshalJSON(b []byte) error {
 	return d.ToInput(input)
 }
 
+// InputsBody represents Get Inputs API's response body.
+// Basically users don't use this struct, but this struct is public because some sub packages use this struct.
 type InputsBody struct {
 	Inputs []Input `json:"inputs"`
 	Total  int     `json:"total"`

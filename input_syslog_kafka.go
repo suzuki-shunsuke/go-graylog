@@ -1,9 +1,11 @@
 package graylog
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs *InputSyslogKafkaAttrs) InputType() string {
 	return InputTypeSyslogKafka
 }
 
+// InputSyslogKafkaAttrs
 type InputSyslogKafkaAttrs struct {
 	ForceRDNS            bool   `json:"force_rdns,omitempty"`
 	StoreFullMessage     bool   `json:"store_full_message,omitempty"`

@@ -1,9 +1,11 @@
 package graylog
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs *InputAWSFlowLogsAttrs) InputType() string {
 	return InputTypeAWSFlowLogs
 }
 
+// InputAWSFlowLogsAttrs
 type InputAWSFlowLogsAttrs struct {
 	AWSRegion         string `json:"aws_region,omitempty"`
 	AWSAssumeRoleArn  string `json:"aws_assume_role_arn,omitempty"`

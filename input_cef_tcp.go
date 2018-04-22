@@ -1,9 +1,11 @@
 package graylog
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs *InputCEFTCPAttrs) InputType() string {
 	return InputTypeCEFTCP
 }
 
+// InputCEFTCPAttrs
 type InputCEFTCPAttrs struct {
 	MaxMessageSize        int    `json:"max_message_size,omitempty"`
 	Timezone              string `json:"timezone,omitempty"`

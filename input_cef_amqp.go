@@ -1,9 +1,11 @@
 package graylog
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs *InputCEFAMQPAttrs) InputType() string {
 	return InputTypeCEFAMQP
 }
 
+// InputCEFAMQPAttrs
 type InputCEFAMQPAttrs struct {
 	Heartbeat              int    `json:"heartbeat,omitempty"`
 	Exchange               string `json:"exchange,omitempty"`

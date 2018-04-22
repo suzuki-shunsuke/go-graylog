@@ -1,9 +1,11 @@
 package graylog
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs *InputRawAMQPAttrs) InputType() string {
 	return InputTypeRawAMQP
 }
 
+// InputRawAMQPAttrs
 type InputRawAMQPAttrs struct {
 	ParallelQueues         int    `json:"parallel_queues,omitempty"`
 	Exchange               string `json:"exchange,omitempty"`

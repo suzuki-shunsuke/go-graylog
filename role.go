@@ -14,6 +14,7 @@ type Role struct {
 	ReadOnly    bool        `json:"read_only,omitempty"`
 }
 
+// RoleUpdateParams represents Update Role API's parameteres.
 type RoleUpdateParams struct {
 	Name        string  `json:"name,omitempty" v-create:"required" v-update:"required"`
 	Description *string `json:"description,omitempty"`
@@ -21,6 +22,7 @@ type RoleUpdateParams struct {
 	Permissions *set.StrSet `json:"permissions,omitempty" v-create:"required" v-update:"required"`
 }
 
+// NewUpdateParams returns Update Role API's parameteres.
 func (role *Role) NewUpdateParams() *RoleUpdateParams {
 	return &RoleUpdateParams{
 		Name:        role.Name,
@@ -29,6 +31,8 @@ func (role *Role) NewUpdateParams() *RoleUpdateParams {
 	}
 }
 
+// RolesBody represents Get Roles API's response body.
+// Basically users don't use this struct, but this struct is public because some sub packages use this struct.
 type RolesBody struct {
 	Roles []Role `json:"roles"`
 	Total int    `json:"total"`

@@ -1,9 +1,11 @@
 package graylog
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs *InputCEFKafkaAttrs) InputType() string {
 	return InputTypeCEFKafka
 }
 
+// InputCEFKafkaAttrs
 type InputCEFKafkaAttrs struct {
 	ThrottlingAllowed bool   `json:"throttling_allowed,omitempty"`
 	Locale            string `json:"locale,omitempty"`

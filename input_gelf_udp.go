@@ -1,9 +1,11 @@
 package graylog
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs *InputGELFUDPAttrs) InputType() string {
 	return InputTypeGELFUDP
 }
 
+// InputGELFUDPAttrs
 type InputGELFUDPAttrs struct {
 	DecompressSizeLimit int    `json:"decompress_size_limit,omitempty"`
 	OverrideSource      string `json:"override_source,omitempty"`

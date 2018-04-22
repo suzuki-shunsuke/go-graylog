@@ -1,9 +1,11 @@
 package graylog
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs *InputGELFHTTPAttrs) InputType() string {
 	return InputTypeGELFHTTP
 }
 
+// InputGELFHTTPAttrs
 type InputGELFHTTPAttrs struct {
 	IdleWriterTimeOut     int    `json:"idle_writer_timeout,omitempty"`
 	RecvBufferSize        int    `json:"recv_buffer_size,omitempty" v-create:"required" v-update:"required"`

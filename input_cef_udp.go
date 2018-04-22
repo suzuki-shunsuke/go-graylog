@@ -1,9 +1,11 @@
 package graylog
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs *InputCEFUDPAttrs) InputType() string {
 	return InputTypeCEFUDP
 }
 
+// InputCEFUDPAttrs
 type InputCEFUDPAttrs struct {
 	Locale         string `json:"locale,omitempty"`
 	UseFullNames   bool   `json:"use_full_names,omitempty"`

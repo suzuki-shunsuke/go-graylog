@@ -1,9 +1,11 @@
 package graylog
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs *InputGELFAMQPAttrs) InputType() string {
 	return InputTypeGELFAMQP
 }
 
+// InputGELFAMQPAttrs
 type InputGELFAMQPAttrs struct {
 	ExchangeBind           bool   `json:"exchange_bind,omitempty"`
 	Prefetch               int    `json:"prefetch,omitempty"`

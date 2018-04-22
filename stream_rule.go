@@ -13,6 +13,8 @@ type StreamRule struct {
 	Value       string `json:"value,omitempty" v-create:"required" v-update:"required"`
 }
 
+// StreamRulesBody represents Get stream rules API's response body.
+// Basically users don't use this struct, but this struct is public because some sub packages use this struct.
 type StreamRulesBody struct {
 	Total       int          `json:"total"`
 	StreamRules []StreamRule `json:"stream_rules"`

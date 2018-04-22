@@ -1,9 +1,11 @@
 package graylog
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs *InputCloudTrailAttrs) InputType() string {
 	return InputTypeAWSCloudTrail
 }
 
+// InputCloudTrailAttrs
 type InputCloudTrailAttrs struct {
 	CreatorUserID     string `json:"creator_user_id,omitempty" v-create:"isdefault"`
 	AWSAssumeRoleArn  string `json:"aws_assume_role_arn,omitempty"`

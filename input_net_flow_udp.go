@@ -1,9 +1,11 @@
 package graylog
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs *InputNetFlowUDPAttrs) InputType() string {
 	return InputTypeNetFlowUDP
 }
 
+// InputNetFlowUDPAttrs
 type InputNetFlowUDPAttrs struct {
 	NetFlow9DefinitionsPath string `json:"netflow9_definitions_path,omitempty"`
 	OverrideSource          string `json:"override_source,omitempty"`

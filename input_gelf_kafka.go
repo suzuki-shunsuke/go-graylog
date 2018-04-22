@@ -1,9 +1,11 @@
 package graylog
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs *InputGELFKafkaAttrs) InputType() string {
 	return InputTypeGELFKafka
 }
 
+// InputGELFKafkaAttrs
 type InputGELFKafkaAttrs struct {
 	OverrideSource      string `json:"override_source,omitempty"`
 	DecompressSizeLimit int    `json:"decompress_size_limit,omitempty"`

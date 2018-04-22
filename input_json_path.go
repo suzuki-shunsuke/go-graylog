@@ -1,9 +1,11 @@
 package graylog
 
+// InputType is the implementation of the InputAttributes interface.
 func (attrs *InputJSONPathAttrs) InputType() string {
 	return InputTypeJSONPath
 }
 
+// InputJSONPathAttrs
 type InputJSONPathAttrs struct {
 	ThrottlingAllowed bool   `json:"throttling_allowed,omitempty"`
 	OverrideSource    string `json:"override_source,omitempty"`

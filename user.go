@@ -53,6 +53,7 @@ type UserUpdateParams struct {
 	Roles            *set.StrSet `json:"roles,omitempty"`
 }
 
+// NewUpdateParams returns Update User API's parameters.
 func (user *User) NewUpdateParams() *UserUpdateParams {
 	return &UserUpdateParams{
 		Username:         user.Username,
@@ -79,6 +80,8 @@ type Startpage struct {
 	ID   string `json:"id,omitempty"`
 }
 
+// UsersBody represents Get Users API's response body.
+// Basically users don't use this struct, but this struct is public because some sub packages use this struct.
 type UsersBody struct {
 	Users []User `json:"users"`
 }
