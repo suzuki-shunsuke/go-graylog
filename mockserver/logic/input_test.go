@@ -125,7 +125,7 @@ func TestUpdateInput(t *testing.T) {
 
 	input.Title = act.Title
 	switch input.Type {
-	case graylog.INPUT_TYPE_BEATS:
+	case graylog.InputTypeBeats:
 		attrs, ok := input.Attributes.(*graylog.InputBeatsAttrs)
 		if !ok {
 			t.Fatal("input.Attributes's type assertion is failure")

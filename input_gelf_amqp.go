@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputGELFAMQPAttrs) InputType() string {
-	return INPUT_TYPE_GELF_AMQP
+	return InputTypeGELFAMQP
 }
 
 type InputGELFAMQPAttrs struct {

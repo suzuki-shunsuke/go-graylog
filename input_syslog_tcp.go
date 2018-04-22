@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputSyslogTCPAttrs) InputType() string {
-	return INPUT_TYPE_SYSLOG_TCP
+	return InputTypeSyslogTCP
 }
 
 type InputSyslogTCPAttrs struct {

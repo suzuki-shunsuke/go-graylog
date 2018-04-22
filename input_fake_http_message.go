@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputFakeHTTPMessageAttrs) InputType() string {
-	return INPUT_TYPE_FAKE_HTTP_MESSAGE
+	return InputTypeFakeHTTPMessage
 }
 
 type InputFakeHTTPMessageAttrs struct {

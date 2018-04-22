@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputJSONPathAttrs) InputType() string {
-	return INPUT_TYPE_JSON_PATH
+	return InputTypeJSONPath
 }
 
 type InputJSONPathAttrs struct {

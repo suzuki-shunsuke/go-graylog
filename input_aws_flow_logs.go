@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputAWSFlowLogsAttrs) InputType() string {
-	return INPUT_TYPE_AWS_FLOW_LOGS
+	return InputTypeAWSFlowLogs
 }
 
 type InputAWSFlowLogsAttrs struct {

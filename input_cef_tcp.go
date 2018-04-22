@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputCEFTCPAttrs) InputType() string {
-	return INPUT_TYPE_CEF_TCP
+	return InputTypeCEFTCP
 }
 
 type InputCEFTCPAttrs struct {

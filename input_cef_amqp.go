@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputCEFAMQPAttrs) InputType() string {
-	return INPUT_TYPE_CEF_AMQP
+	return InputTypeCEFAMQP
 }
 
 type InputCEFAMQPAttrs struct {

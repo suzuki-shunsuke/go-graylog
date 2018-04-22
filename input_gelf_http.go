@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputGELFHTTPAttrs) InputType() string {
-	return INPUT_TYPE_GELF_HTTP
+	return InputTypeGELFHTTP
 }
 
 type InputGELFHTTPAttrs struct {

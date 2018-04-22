@@ -7,24 +7,22 @@ import (
 
 const (
 	// rotation_strategy_class
-	MESSAGE_COUNT_ROTATION_STRATEGY string = "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy"
-	SIZE_BASED_ROTATION_STRATEGY    string = "org.graylog2.indexer.rotation.strategies.SizeBasedRotationStrategy"
-	TIME_BASED_ROTATION_STRATEGY    string = "org.graylog2.indexer.rotation.strategies.TimeBasedRotationStrategy"
+	MessageCountRotationStrategy string = "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy"
+	SizeBasedRotationStrategy    string = "org.graylog2.indexer.rotation.strategies.SizeBasedRotationStrategy"
+	TimeBasedRotationStrategy    string = "org.graylog2.indexer.rotation.strategies.TimeBasedRotationStrategy"
 	// rotation_strategy.type
-	MESSAGE_COUNT_ROTATION_STRATEGY_CONFIG string = "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig"
-	SIZE_BASED_ROTATION_STRATEGY_CONFIG    string = "org.graylog2.indexer.rotation.strategies.SizeBasedRotationStrategyConfig"
-	TIME_BASED_ROTATION_STRATEGY_CONFIG    string = "org.graylog2.indexer.rotation.strategies.TimeBasedRotationStrategyConfig"
-
+	MessageCountRotationStrategyConfig string = "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig"
+	SizeBasedRotationStrategyConfig    string = "org.graylog2.indexer.rotation.strategies.SizeBasedRotationStrategyConfig"
+	TimeBasedRotationStrategyConfig    string = "org.graylog2.indexer.rotation.strategies.TimeBasedRotationStrategyConfig"
 	// retention_strategy_class
-	DELETION_RETENTION_STRATEGY_CLASS string = "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy"
-	CLOSING_RETENTION_STRATEGY_CLASS  string = "org.graylog2.indexer.retention.strategies.ClosingRetentionStrategy"
-	NOOP_RETENTION_STRATEGY_CLASS     string = "org.graylog2.indexer.retention.strategies.NoopRetentionStrategy"
+	DeletionRetentionStrategy string = "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy"
+	ClosingRetentionStrategy  string = "org.graylog2.indexer.retention.strategies.ClosingRetentionStrategy"
+	NoopRetentionStrategy     string = "org.graylog2.indexer.retention.strategies.NoopRetentionStrategy"
 	// retention_strategy_class.type
-	DELETION_RETENTION_STRATEGY_CONFIG string = "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig"
-	CLOSING_RETENTION_STRATEGY_CONFIG  string = "org.graylog2.indexer.retention.strategies.ClosingRetentionStrategyConfig"
-	NOOP_RETENTION_STRATEGY_CONFIG     string = "org.graylog2.indexer.retention.strategies.NoopRetentionStrategyConfig"
-
-	CREATION_DATE_FORMAT string = "2006-01-02T15:04:05.000Z"
+	DeletionRetentionStrategyConfig string = "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig"
+	ClosingRetentionStrategyConfig  string = "org.graylog2.indexer.retention.strategies.ClosingRetentionStrategyConfig"
+	NoopRetentionStrategyConfig     string = "org.graylog2.indexer.retention.strategies.NoopRetentionStrategyConfig"
+	CreationDateFormat              string = "2006-01-02T15:04:05.000Z"
 )
 
 // IndexSet represents a Graylog's Index Set.
@@ -110,12 +108,12 @@ func (is *IndexSet) SetCreateDefaultValues() {
 
 // CreationTime returns a creation date converted to time.Time.
 func (is *IndexSet) CreationTime() (time.Time, error) {
-	return time.Parse(CREATION_DATE_FORMAT, is.CreationDate)
+	return time.Parse(CreationDateFormat, is.CreationDate)
 }
 
 // SetCreationTime sets a creation date with time.Time.
 func (is *IndexSet) SetCreationTime(t time.Time) {
-	is.CreationDate = t.Format(CREATION_DATE_FORMAT)
+	is.CreationDate = t.Format(CreationDateFormat)
 }
 
 // RotationStrategy represents a Graylog's Index Set Rotation Strategy.
@@ -153,7 +151,7 @@ func NewMessageCountRotationStrategy(count int) *RotationStrategy {
 		count = 20000000
 	}
 	return &RotationStrategy{
-		Type:            MESSAGE_COUNT_ROTATION_STRATEGY_CONFIG,
+		Type:            MessageCountRotationStrategyConfig,
 		MaxDocsPerIndex: count,
 	}
 }
@@ -164,7 +162,7 @@ func NewSizeBasedRotationStrategy(size int) *RotationStrategy {
 		size = 1073741824
 	}
 	return &RotationStrategy{
-		Type:    SIZE_BASED_ROTATION_STRATEGY_CONFIG,
+		Type:    SizeBasedRotationStrategyConfig,
 		MaxSize: size,
 	}
 }
@@ -175,7 +173,7 @@ func NewTimeBasedRotationStrategy(period string) *RotationStrategy {
 		period = "P1D"
 	}
 	return &RotationStrategy{
-		Type:           TIME_BASED_ROTATION_STRATEGY_CONFIG,
+		Type:           TimeBasedRotationStrategyConfig,
 		RotationPeriod: period,
 	}
 }
@@ -186,7 +184,7 @@ func NewDeletionRetentionStrategy(num int) *RetentionStrategy {
 		num = 20
 	}
 	return &RetentionStrategy{
-		Type:               DELETION_RETENTION_STRATEGY_CONFIG,
+		Type:               DeletionRetentionStrategyConfig,
 		MaxNumberOfIndices: num,
 	}
 }
@@ -197,7 +195,7 @@ func NewClosingRetentionStrategy(num int) *RetentionStrategy {
 		num = 20
 	}
 	return &RetentionStrategy{
-		Type:               CLOSING_RETENTION_STRATEGY_CONFIG,
+		Type:               ClosingRetentionStrategyConfig,
 		MaxNumberOfIndices: num,
 	}
 }
@@ -208,7 +206,7 @@ func NewNoopRetentionStrategy(num int) *RetentionStrategy {
 		num = 20
 	}
 	return &RetentionStrategy{
-		Type:               NOOP_RETENTION_STRATEGY_CONFIG,
+		Type:               NoopRetentionStrategyConfig,
 		MaxNumberOfIndices: num,
 	}
 }

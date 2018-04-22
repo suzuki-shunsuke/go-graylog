@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputSyslogUDPAttrs) InputType() string {
-	return INPUT_TYPE_SYSLOG_UDP
+	return InputTypeSyslogUDP
 }
 
 type InputSyslogUDPAttrs struct {

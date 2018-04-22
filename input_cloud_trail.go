@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputCloudTrailAttrs) InputType() string {
-	return INPUT_TYPE_AWS_CLOUD_TRAIL_INPUT
+	return InputTypeAWSCloudTrail
 }
 
 type InputCloudTrailAttrs struct {

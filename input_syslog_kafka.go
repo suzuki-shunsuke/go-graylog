@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputSyslogKafkaAttrs) InputType() string {
-	return INPUT_TYPE_SYSLOG_KAFKA
+	return InputTypeSyslogKafka
 }
 
 type InputSyslogKafkaAttrs struct {

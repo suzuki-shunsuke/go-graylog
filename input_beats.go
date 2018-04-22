@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputBeatsAttrs) InputType() string {
-	return INPUT_TYPE_BEATS
+	return InputTypeBeats
 }
 
 type InputBeatsAttrs struct {

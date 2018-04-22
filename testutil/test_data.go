@@ -50,7 +50,7 @@ func DummyAdmin() *graylog.User {
 func Input() *graylog.Input {
 	return &graylog.Input{
 		Title: "test",
-		Type:  graylog.INPUT_TYPE_BEATS,
+		Type:  graylog.InputTypeBeats,
 		Node:  "2ad6b340-3e5f-4a96-ae81-040cfb8b6024",
 		Attributes: &graylog.InputBeatsAttrs{
 			BindAddress:    "0.0.0.0",
@@ -65,9 +65,9 @@ func IndexSet(prefix string) *graylog.IndexSet {
 		Description:                     "The Graylog default index set",
 		IndexPrefix:                     prefix,
 		Replicas:                        0,
-		RotationStrategyClass:           graylog.MESSAGE_COUNT_ROTATION_STRATEGY,
+		RotationStrategyClass:           graylog.MessageCountRotationStrategy,
 		RotationStrategy:                graylog.NewMessageCountRotationStrategy(0),
-		RetentionStrategyClass:          graylog.DELETION_RETENTION_STRATEGY_CLASS,
+		RetentionStrategyClass:          graylog.DeletionRetentionStrategy,
 		RetentionStrategy:               graylog.NewDeletionRetentionStrategy(0),
 		IndexOptimizationMaxNumSegments: 1,
 		IndexOptimizationDisabled:       false,

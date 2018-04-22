@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputCEFKafkaAttrs) InputType() string {
-	return INPUT_TYPE_CEF_KAFKA
+	return InputTypeCEFKafka
 }
 
 type InputCEFKafkaAttrs struct {

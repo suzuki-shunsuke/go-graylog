@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputGELFKafkaAttrs) InputType() string {
-	return INPUT_TYPE_GELF_KAFKA
+	return InputTypeGELFKafka
 }
 
 type InputGELFKafkaAttrs struct {

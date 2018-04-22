@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputRawAMQPAttrs) InputType() string {
-	return INPUT_TYPE_RAW_AMQP
+	return InputTypeRawAMQP
 }
 
 type InputRawAMQPAttrs struct {

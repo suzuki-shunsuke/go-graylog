@@ -1,7 +1,7 @@
 package graylog
 
 func (attrs *InputNetFlowUDPAttrs) InputType() string {
-	return INPUT_TYPE_NET_FLOW_UDP
+	return InputTypeNetFlowUDP
 }
 
 type InputNetFlowUDPAttrs struct {
