@@ -25,6 +25,24 @@ func (client *Client) GetStreamsContext(
 	return streamsBody.Streams, streamsBody.Total, ei, err
 }
 
+// GetStream returns a given stream.
+func (client *Client) GetStream(id string) (*graylog.Stream, *ErrorInfo, error) {
+	return client.GetStreamContext(context.Background(), id)
+}
+
+// GetStreamContext returns a given stream with a context.
+func (client *Client) GetStreamContext(
+	ctx context.Context, id string,
+) (*graylog.Stream, *ErrorInfo, error) {
+	if id == "" {
+		return nil, nil, errors.New("id is empty")
+	}
+	stream := &graylog.Stream{}
+	ei, err := client.callGet(
+		ctx, client.Endpoints.Stream(id), nil, stream)
+	return stream, ei, err
+}
+
 // CreateStream creates a stream.
 func (client *Client) CreateStream(stream *graylog.Stream) (*ErrorInfo, error) {
 	return client.CreateStreamContext(context.Background(), stream)
@@ -64,24 +82,6 @@ func (client *Client) GetEnabledStreamsContext(
 	ei, err = client.callGet(
 		ctx, client.Endpoints.EnabledStreams, nil, streamsBody)
 	return streamsBody.Streams, streamsBody.Total, ei, err
-}
-
-// GetStream returns a given stream.
-func (client *Client) GetStream(id string) (*graylog.Stream, *ErrorInfo, error) {
-	return client.GetStreamContext(context.Background(), id)
-}
-
-// GetStream returns a given stream with a context.
-func (client *Client) GetStreamContext(
-	ctx context.Context, id string,
-) (*graylog.Stream, *ErrorInfo, error) {
-	if id == "" {
-		return nil, nil, errors.New("id is empty")
-	}
-	stream := &graylog.Stream{}
-	ei, err := client.callGet(
-		ctx, client.Endpoints.Stream(id), nil, stream)
-	return stream, ei, err
 }
 
 // UpdateStream updates a stream.

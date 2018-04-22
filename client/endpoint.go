@@ -17,6 +17,7 @@ type Endpoints struct {
 	EnabledStreams string
 }
 
+// NewEndpoints returns a new Endpoints.
 func NewEndpoints(endpoint string) (*Endpoints, error) {
 	base, err := url.Parse(endpoint)
 	if err != nil {
@@ -48,7 +49,7 @@ func (endpoint *Endpoints) IndexSetsStats() string {
 	return fmt.Sprintf("%s/stats", endpoint.IndexSets)
 }
 
-// IndexSetsStats returns an IndexSet stats API's endpoint url.
+// IndexSetStats returns an IndexSet stats API's endpoint url.
 func (endpoint *Endpoints) IndexSetStats(id string) string {
 	return fmt.Sprintf("%s/%s/stats", endpoint.IndexSets, id)
 }
@@ -63,12 +64,12 @@ func (endpoint *Endpoints) Input(id string) string {
 	return fmt.Sprintf("%s/%s", endpoint.Inputs, id)
 }
 
-// Input returns a User API's endpoint url.
+// User returns a User API's endpoint url.
 func (endpoint *Endpoints) User(name string) string {
 	return fmt.Sprintf("%s/%s", endpoint.Users, name)
 }
 
-// Input returns a Role API's endpoint url.
+// Role returns a Role API's endpoint url.
 func (endpoint *Endpoints) Role(name string) string {
 	return fmt.Sprintf("%s/%s", endpoint.Roles, name)
 }

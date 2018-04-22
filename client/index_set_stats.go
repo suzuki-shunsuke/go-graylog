@@ -34,7 +34,7 @@ func (client *Client) GetTotalIndexSetsStats() (
 	return client.GetTotalIndexSetsStatsContext(context.Background())
 }
 
-// GetTotalIndexSetsStats returns stats of all Index Sets with a context.
+// GetTotalIndexSetsStatsContext returns stats of all Index Sets with a context.
 func (client *Client) GetTotalIndexSetsStatsContext(
 	ctx context.Context,
 ) (*graylog.IndexSetStats, *ErrorInfo, error) {
