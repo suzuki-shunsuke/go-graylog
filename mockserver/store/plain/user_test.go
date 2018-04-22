@@ -35,7 +35,7 @@ func TestGetUsers(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if users != nil && len(users) != 0 {
+	if len(users) != 0 {
 		t.Fatal("users should be nil or empty array")
 	}
 }

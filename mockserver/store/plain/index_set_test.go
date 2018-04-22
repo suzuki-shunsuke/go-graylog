@@ -36,7 +36,7 @@ func TestGetIndexSets(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if iss != nil && len(iss) != 0 {
+	if len(iss) != 0 {
 		t.Fatal("iss should be nil or empty array")
 	}
 }

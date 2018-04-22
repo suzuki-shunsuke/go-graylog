@@ -35,7 +35,7 @@ func TestGetInputs(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if inputs != nil && len(inputs) != 0 {
+	if len(inputs) != 0 {
 		t.Fatal("inputs should be nil or empty array")
 	}
 }

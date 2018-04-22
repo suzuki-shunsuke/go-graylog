@@ -36,7 +36,7 @@ func TestGetStreams(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if streams != nil && len(streams) != 0 {
+	if len(streams) != 0 {
 		t.Fatal("streams should be nil or empty array")
 	}
 }
@@ -123,7 +123,7 @@ func TestGetEnabledStreams(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if streams != nil && len(streams) != 0 {
+	if len(streams) != 0 {
 		t.Fatal("streams should be nil or empty array")
 	}
 }

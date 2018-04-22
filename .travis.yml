@@ -12,6 +12,7 @@ script:
   - (! git ls-files | grep .go | xargs gofmt -s -d | grep '^')
   - go vet $(go list ./... | grep -v /vendor/)
   - golint client terraform/... mockserver mockserver/store validator
+  - (! gosimple ./... | grep '^')
   - bash codecov-test.sh
 after_success:
   - bash codecov.sh
