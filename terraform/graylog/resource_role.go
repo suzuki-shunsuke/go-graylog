@@ -95,7 +95,7 @@ func resourceRoleUpdate(d *schema.ResourceData, m interface{}) error {
 	}
 	role := newRole(d)
 	role.Name = newName
-	if _, err := cl.UpdateRole(oldName, role); err != nil {
+	if _, _, err := cl.UpdateRole(oldName, role.NewUpdateParams()); err != nil {
 		return err
 	}
 	return nil

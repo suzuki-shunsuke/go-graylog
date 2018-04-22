@@ -51,7 +51,8 @@ func HandleCreateRole(
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
 			Required:     set.NewStrSet("name", "permissions"),
-			Optional:     set.NewStrSet("description", "read_only"),
+			Optional:     set.NewStrSet("description"),
+			Ignored:      set.NewStrSet("read_only"),
 			ExtForbidden: true,
 		})
 	if err != nil {
@@ -88,22 +89,24 @@ func HandleUpdateRole(
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
 			Required:     set.NewStrSet("name", "permissions"),
-			Optional:     set.NewStrSet("description", "read_only"),
+			Optional:     set.NewStrSet("description"),
+			Ignored:      set.NewStrSet("read_only"),
 			ExtForbidden: true,
 		})
 	if err != nil {
 		return nil, sc, err
 	}
 
-	role := &graylog.Role{}
-	if err := util.MSDecode(body, role); err != nil {
+	prms := &graylog.RoleUpdateParams{}
+	if err := util.MSDecode(body, prms); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as Role")
 		return nil, 400, err
 	}
 
-	if sc, err := ms.UpdateRole(name, role); err != nil {
+	role, sc, err := ms.UpdateRole(name, prms)
+	if err != nil {
 		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {

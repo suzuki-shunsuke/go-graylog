@@ -108,7 +108,7 @@ func TestAuthorize(t *testing.T) {
 		t.Fatal("not allowed")
 	}
 	adminRole.Permissions = nil
-	if err := store.UpdateRole(adminRole.Name, adminRole); err != nil {
+	if _, err := store.UpdateRole(adminRole.Name, adminRole.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
 	ok, err = store.Authorize(admin, "users:read", "foo")

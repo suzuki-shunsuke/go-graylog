@@ -77,35 +77,35 @@ func TestUpdateRole(t *testing.T) {
 
 	t.Run("basic", func(t *testing.T) {
 		role.Description += " changed!"
-		if _, err := lgc.UpdateRole(name, role); err != nil {
+		if _, _, err := lgc.UpdateRole(name, role.NewUpdateParams()); err != nil {
 			t.Fatal(err)
 		}
 	})
 	t.Run("name is required", func(t *testing.T) {
-		if _, err := lgc.UpdateRole("", role); err == nil {
+		if _, _, err := lgc.UpdateRole("", role.NewUpdateParams()); err == nil {
 			t.Fatal("name is required")
 		}
 	})
 	t.Run("name is required", func(t *testing.T) {
 		role.Name = ""
-		if _, err := lgc.UpdateRole(name, role); err == nil {
+		if _, _, err := lgc.UpdateRole(name, role.NewUpdateParams()); err == nil {
 			t.Fatal("name is required")
 		}
 	})
 	t.Run("not found", func(t *testing.T) {
 		role.Name = name
-		if _, err := lgc.UpdateRole("h", role); err == nil {
+		if _, _, err := lgc.UpdateRole("h", role.NewUpdateParams()); err == nil {
 			t.Fatal("not found")
 		}
 	})
 	t.Run("permissions is required", func(t *testing.T) {
 		role.Permissions = nil
-		if _, err := lgc.UpdateRole(name, role); err == nil {
+		if _, _, err := lgc.UpdateRole(name, role.NewUpdateParams()); err == nil {
 			t.Fatal("permissions is required")
 		}
 	})
 	t.Run("nil", func(t *testing.T) {
-		if _, err := lgc.UpdateRole(name, nil); err == nil {
+		if _, _, err := lgc.UpdateRole(name, nil); err == nil {
 			t.Fatal("role is nil")
 		}
 	})

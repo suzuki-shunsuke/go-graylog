@@ -99,22 +99,22 @@ func TestUpdateRole(t *testing.T) {
 
 	role := testutil.Role()
 	client.DeleteRole(role.Name)
-	if _, err := client.UpdateRole(role.Name, role); err == nil {
+	if _, _, err := client.UpdateRole(role.Name, role.NewUpdateParams()); err == nil {
 		t.Fatal("role should be deleted")
 	}
 	if _, err := client.CreateRole(role); err != nil {
 		t.Fatal(err)
 	}
 	defer client.DeleteRole(role.Name)
-	if _, err := client.UpdateRole(role.Name, role); err != nil {
+	if _, _, err := client.UpdateRole(role.Name, role.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := client.UpdateRole("", role); err == nil {
+	if _, _, err := client.UpdateRole("", role.NewUpdateParams()); err == nil {
 		t.Fatal("role name is required")
 	}
 	name := role.Name
 	role.Name = ""
-	if _, err := client.UpdateRole(name, role); err == nil {
+	if _, _, err := client.UpdateRole(name, role.NewUpdateParams()); err == nil {
 		t.Fatal("role name is required")
 	}
 }

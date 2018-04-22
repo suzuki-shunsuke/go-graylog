@@ -110,23 +110,23 @@ func TestHandleUpdateRole(t *testing.T) {
 		t.Fatal(err)
 	}
 	role.Description += " changed!"
-	if _, err := client.UpdateRole(name, role); err != nil {
+	if _, _, err := client.UpdateRole(name, role.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := client.UpdateRole("", role); err == nil {
+	if _, _, err := client.UpdateRole("", role.NewUpdateParams()); err == nil {
 		t.Fatal("role name is required")
 	}
-	if _, err := client.UpdateRole("h", role); err == nil {
+	if _, _, err := client.UpdateRole("h", role.NewUpdateParams()); err == nil {
 		t.Fatal(`no role whose name is "h"`)
 	}
 
 	role.Name = ""
-	if _, err := client.UpdateRole(name, role); err == nil {
+	if _, _, err := client.UpdateRole(name, role.NewUpdateParams()); err == nil {
 		t.Fatal("role name is required")
 	}
 	role.Name = name
 	role.Permissions = nil
-	if _, err := client.UpdateRole(name, role); err == nil {
+	if _, _, err := client.UpdateRole(name, role.NewUpdateParams()); err == nil {
 		t.Fatal("role permissions is required")
 	}
 

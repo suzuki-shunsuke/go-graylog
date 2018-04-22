@@ -49,19 +49,21 @@ func (store *PlainStore) AddRole(role *graylog.Role) error {
 }
 
 // UpdateRole updates a role at the store.
-func (store *PlainStore) UpdateRole(name string, role *graylog.Role) error {
+func (store *PlainStore) UpdateRole(name string, prms *graylog.RoleUpdateParams) (*graylog.Role, error) {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
-	s, ok := store.roles[name]
+	role, ok := store.roles[name]
 	if !ok {
-		return fmt.Errorf(`no role with name "%s"`, name)
+		return nil, fmt.Errorf(`no role with name "%s"`, name)
 	}
-	if role.Description == "" {
-		role.Description = s.Description
+	if prms.Description != nil {
+		role.Description = *prms.Description
 	}
+	role.Permissions = prms.Permissions
+	role.Name = prms.Name
 	delete(store.roles, name)
-	store.roles[role.Name] = *role
-	return nil
+	store.roles[role.Name] = role
+	return &role, nil
 }
 
 // DeleteRole deletes a role from store.

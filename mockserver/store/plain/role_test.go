@@ -69,7 +69,7 @@ func TestUpdateRole(t *testing.T) {
 		t.Fatal("role is nil")
 	}
 	role.Description += " changed"
-	if err := store.UpdateRole(role.Name, role); err != nil {
+	if _, err := store.UpdateRole(role.Name, role.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
 	r, err = store.GetRole(role.Name)

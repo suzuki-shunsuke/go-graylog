@@ -57,23 +57,25 @@ func (client *Client) GetRoleContext(
 }
 
 // UpdateRole updates a given role.
-func (client *Client) UpdateRole(name string, role *graylog.Role) (
-	*ErrorInfo, error,
+func (client *Client) UpdateRole(name string, role *graylog.RoleUpdateParams) (
+	*graylog.Role, *ErrorInfo, error,
 ) {
 	return client.UpdateRoleContext(context.Background(), name, role)
 }
 
 // UpdateRoleContext updates a given role with a context.
 func (client *Client) UpdateRoleContext(
-	ctx context.Context, name string, role *graylog.Role,
-) (*ErrorInfo, error) {
+	ctx context.Context, name string, prms *graylog.RoleUpdateParams,
+) (*graylog.Role, *ErrorInfo, error) {
 	if name == "" {
-		return nil, errors.New("name is empty")
+		return nil, nil, errors.New("name is empty")
 	}
-	if role == nil {
-		return nil, fmt.Errorf("role is nil")
+	if prms == nil {
+		return nil, nil, fmt.Errorf("role is nil")
 	}
-	return client.callPut(ctx, client.Endpoints.Role(name), role, role)
+	role := &graylog.Role{}
+	ei, err := client.callPut(ctx, client.Endpoints.Role(name), prms, role)
+	return role, ei, err
 }
 
 // DeleteRole deletes a given role.

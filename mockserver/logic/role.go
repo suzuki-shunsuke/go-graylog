@@ -47,33 +47,31 @@ func (ms *Logic) AddRole(role *graylog.Role) (int, error) {
 }
 
 // UpdateRole updates a role.
-func (ms *Logic) UpdateRole(name string, role *graylog.Role) (int, error) {
-	if err := validator.UpdateValidator.Struct(role); err != nil {
-		return 400, err
+func (ms *Logic) UpdateRole(name string, prms *graylog.RoleUpdateParams) (*graylog.Role, int, error) {
+	if err := validator.UpdateValidator.Struct(prms); err != nil {
+		return nil, 400, err
 	}
-	r, sc, err := ms.GetRole(name)
+	role, sc, err := ms.GetRole(name)
 	if err != nil {
-		return sc, err
+		return nil, sc, err
 	}
-	if name != role.Name {
-		ok, err := ms.HasRole(role.Name)
+	if name != prms.Name {
+		ok, err := ms.HasRole(prms.Name)
 		if err != nil {
-			return 500, err
+			return nil, 500, err
 		}
 		if ok {
-			return 400, fmt.Errorf("The role %s has already existed.", role.Name)
+			return nil, 400, fmt.Errorf("The role %s has already existed.", prms.Name)
 		}
 	}
-	if r.ReadOnly {
-		return 400, fmt.Errorf("cannot update read only role %s", role.Name)
+	if role.ReadOnly {
+		return nil, 400, fmt.Errorf("cannot update read only role %s", role.Name)
 	}
-	if role.Name != "Admin" && role.Name != "Reader" {
-		role.ReadOnly = false
+	role, err = ms.store.UpdateRole(name, prms)
+	if err != nil {
+		return nil, 500, err
 	}
-	if err := ms.store.UpdateRole(name, role); err != nil {
-		return 500, err
-	}
-	return 204, nil
+	return role, 204, nil
 }
 
 // DeleteRole deletes a role.
