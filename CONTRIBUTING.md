@@ -80,3 +80,9 @@ $ cp env.sh.tmpl env.sh
 * https://www.terraform.io/guides/writing-custom-terraform-providers.html
 * https://godoc.org/github.com/hashicorp/terraform/helper/schema
 * https://godoc.org/github.com/hashicorp/terraform/helper/resource#TestCase
+
+## Tools
+
+These tools are not used at CI due to false positive, but we recommend use them at local before PR.
+
+* [staticcheck](https://github.com/dominikh/go-tools/tree/master/cmd/staticcheck)

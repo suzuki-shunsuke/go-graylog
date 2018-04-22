@@ -13,6 +13,7 @@ script:
   - go vet $(go list ./... | grep -v /vendor/)
   - golint client terraform/... mockserver mockserver/store validator
   - (! gosimple ./... | grep '^')
+  - unused ./...
   - bash codecov-test.sh
 after_success:
   - bash codecov.sh
