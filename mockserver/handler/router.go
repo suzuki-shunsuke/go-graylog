@@ -5,6 +5,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
+// NewRouter returns a new HTTP router.
 func NewRouter(ms *logic.Logic) *httprouter.Router {
 	router := httprouter.New()
 

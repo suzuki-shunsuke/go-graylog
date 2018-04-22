@@ -8,7 +8,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/validator"
 )
 
-// HasInput
+// HasInput returns whether the input exists.
 func (ms *Logic) HasInput(id string) (bool, error) {
 	return ms.store.HasInput(id)
 }

@@ -10,6 +10,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
+// Handler is the graylog REST API's handler.
+// the argument `user` is the authenticated user and are mainly used for the authorization.
 type Handler func(user *graylog.User, ms *logic.Logic, w http.ResponseWriter, r *http.Request, ps httprouter.Params) (interface{}, int, error)
 
 func wrapHandle(ms *logic.Logic, handler Handler) httprouter.Handle {

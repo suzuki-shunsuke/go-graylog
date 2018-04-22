@@ -8,7 +8,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/validator"
 )
 
-// HasStreamRule
+// HasStreamRule returns whether the stream sule exists.
 func (ms *Logic) HasStreamRule(streamID, streamRuleID string) (bool, error) {
 	return ms.store.HasStreamRule(streamID, streamRuleID)
 }

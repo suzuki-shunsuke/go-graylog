@@ -8,7 +8,7 @@ import (
 	st "github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 )
 
-// HasInput
+// HasInput returns whether the input exists.
 func (store *Store) HasInput(id string) (bool, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()

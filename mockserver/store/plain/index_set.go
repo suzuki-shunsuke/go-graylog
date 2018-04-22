@@ -8,7 +8,7 @@ import (
 	st "github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 )
 
-// HasIndexSet
+// HasIndexSet returns whether the index set exists.
 func (store *Store) HasIndexSet(id string) (bool, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()

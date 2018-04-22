@@ -32,6 +32,7 @@ func (ms *Logic) GetTotalIndexSetStats() (*graylog.IndexSetStats, int, error) {
 	return stats, 200, nil
 }
 
+// GetIndexSetStatsMap returns a each Index Set's statistics.
 func (ms *Logic) GetIndexSetStatsMap() (map[string]graylog.IndexSetStats, int, error) {
 	m, err := ms.store.GetIndexSetStatsMap()
 	if err != nil {

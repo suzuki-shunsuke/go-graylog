@@ -13,7 +13,7 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
-// HandleGetIndexSets
+// HandleGetIndexSets is the handler of Get Index Sets API.
 func HandleGetIndexSets(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
@@ -82,7 +82,7 @@ func HandleGetIndexSets(
 	}, sc, nil
 }
 
-// HandleGetIndexSet
+// HandleGetIndexSet is the handler of Get an Index Set API.
 func HandleGetIndexSet(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -98,7 +98,7 @@ func HandleGetIndexSet(
 	return ms.GetIndexSet(id)
 }
 
-// HandleCreateIndexSet
+// HandleCreateIndexSet is the handler of Create an Index Set API.
 func HandleCreateIndexSet(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
@@ -152,7 +152,7 @@ func HandleCreateIndexSet(
 	return is, 200, nil
 }
 
-// HandleUpdateIndexSet
+// HandleUpdateIndexSet is the handler of Update an Index Set API.
 func HandleUpdateIndexSet(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -197,7 +197,7 @@ func HandleUpdateIndexSet(
 	return is, 200, nil
 }
 
-// HandleDeleteIndexSet
+// HandleDeleteIndexSet is the handler of Delete an Index Set API.
 func HandleDeleteIndexSet(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -216,7 +216,7 @@ func HandleDeleteIndexSet(
 	return nil, 204, nil
 }
 
-// HandleSetDefaultIndexSet
+// HandleSetDefaultIndexSet is the handler of Set the default Index Set API.
 func HandleSetDefaultIndexSet(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,

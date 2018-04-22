@@ -11,7 +11,7 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
-// HandleGetRole
+// HandleGetRole is the handler of GET Role API.
 func HandleGetRole(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -26,7 +26,7 @@ func HandleGetRole(
 	return ms.GetRole(name)
 }
 
-// HandleGetRoles
+// HandleGetRoles is the handler of GET Roles API.
 func HandleGetRoles(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
@@ -39,7 +39,7 @@ func HandleGetRoles(
 	return &graylog.RolesBody{Roles: arr, Total: total}, sc, nil
 }
 
-// HandleCreateRole
+// HandleCreateRole is the handler of Create Role API.
 func HandleCreateRole(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
@@ -76,7 +76,7 @@ func HandleCreateRole(
 	return role, sc, nil
 }
 
-// HandleUpdateRole
+// HandleUpdateRole is the handler of Update Role API.
 func HandleUpdateRole(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -115,7 +115,7 @@ func HandleUpdateRole(
 	return role, 204, nil
 }
 
-// HandleDeleteRole
+// HandleDeleteRole is the handler of Delete Role API.
 func HandleDeleteRole(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,

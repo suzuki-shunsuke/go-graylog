@@ -13,7 +13,7 @@ func encryptPassword(password string) string {
 	return fmt.Sprintf("%x", md5.Sum([]byte(password)))
 }
 
-// HasUser
+// HasUser returns whether the user exists.
 func (ms *Logic) HasUser(username string) (bool, error) {
 	return ms.store.HasUser(username)
 }

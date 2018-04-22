@@ -17,12 +17,12 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/plain"
 )
 
-const VERSION = "0.1.0"
+const version = "0.1.0"
 
-var HELP string
+var help string
 
 func init() {
-	HELP = fmt.Sprintf(`
+	help = fmt.Sprintf(`
 graylog-mock-server - Run Graylog mock server.
 
 USAGE:
@@ -37,7 +37,7 @@ OPTIONS:
    --data value       data file path. When the server runs data of the file is loaded and when data of the server is changed data is saved at the file. If this option is not set, no data is loaded and saved.
    --help, -h         show help
    --version, -v      print the version
-`, VERSION)
+`, version)
 }
 
 func action(dataPath, logLevel string, port int) error {
@@ -53,39 +53,39 @@ func action(dataPath, logLevel string, port int) error {
 			fmt.Sprintf(":%d", port), plain.NewStore(dataPath))
 	}
 	if err != nil {
-		return errors.Wrap(err, "Failed to create a mock server.")
+		return errors.Wrap(err, "failed to create a mock server")
 	}
 	lvl, err := log.ParseLevel(logLevel)
 	if err != nil {
 		return fmt.Errorf(
-			`Invalid log-level %s.
-log-level must be any of debug|info|warn|error|fatal|panic .`, logLevel)
+			`invalid log-level %s.
+log-level must be any of debug|info|warn|error|fatal|panic`, logLevel)
 	}
 
 	server.Logger().SetLevel(lvl)
 	if err := server.Load(); err != nil {
-		return errors.Wrap(err, fmt.Sprintf("Failed to load data at %s", dataPath))
+		return errors.Wrap(err, fmt.Sprintf("failed to load data at %s", dataPath))
 	}
 	server.Start()
 	defer server.Close()
 	server.Logger().Infof(
 		"Start Graylog mock server: %s\nCtrl + C to stop server", server.Endpoint())
-	signal_chan := make(chan os.Signal, 1)
+	signalChan := make(chan os.Signal, 1)
 	signal.Notify(
-		signal_chan, syscall.SIGHUP, syscall.SIGINT,
+		signalChan, syscall.SIGHUP, syscall.SIGINT,
 		syscall.SIGTERM, syscall.SIGQUIT)
-	exit_chan := make(chan int)
+	exitChan := make(chan int)
 	go func() {
 		for {
-			s := <-signal_chan
+			s := <-signalChan
 			switch s {
 			default:
-				exit_chan <- 0
+				exitChan <- 0
 			}
 		}
 	}()
 
-	<-exit_chan
+	<-exitChan
 	return nil
 }
 
@@ -104,11 +104,11 @@ func main() {
 	flag.Parse()
 
 	if *helpFlag {
-		fmt.Println(HELP)
+		fmt.Println(help)
 		return
 	}
 	if *versionFlag {
-		fmt.Println(VERSION)
+		fmt.Println(version)
 		return
 	}
 

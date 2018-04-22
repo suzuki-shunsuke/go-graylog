@@ -8,7 +8,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
-// HandleGetIndexSetStats
+// HandleGetIndexSetStats is the handler of Get Index Set Statistics API.
 func HandleGetIndexSetStats(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -19,7 +19,7 @@ func HandleGetIndexSetStats(
 	return ms.GetIndexSetStats(id)
 }
 
-// HandleGetTotalIndexSetStats
+// HandleGetTotalIndexSetStats is the handler of Get Index Set Statistics of all Index Sets API.
 func HandleGetTotalIndexSetStats(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,

@@ -11,7 +11,7 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
-// HandleGetStreams
+// HandleGetStreams is the handler of Get Streams API.
 func HandleGetStreams(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
@@ -25,7 +25,7 @@ func HandleGetStreams(
 	return &graylog.StreamsBody{Streams: arr, Total: total}, sc, nil
 }
 
-// HandleGetStream
+// HandleGetStream is the handler of Get a Stream API.
 func HandleGetStream(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -41,7 +41,7 @@ func HandleGetStream(
 	return ms.GetStream(id)
 }
 
-// HandleCreateStream
+// HandleCreateStream is the handler of Create a Stream API.
 func HandleCreateStream(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
@@ -75,7 +75,7 @@ func HandleCreateStream(
 	return map[string]string{"stream_id": stream.ID}, sc, nil
 }
 
-// HandleUpdateStream
+// HandleUpdateStream is the handler of Update a Stream API.
 func HandleUpdateStream(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -115,7 +115,7 @@ func HandleUpdateStream(
 	return stream, 200, nil
 }
 
-// HandleDeleteStream
+// HandleDeleteStream is the handler of Delete a Stream API.
 func HandleDeleteStream(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -133,7 +133,7 @@ func HandleDeleteStream(
 	return nil, sc, nil
 }
 
-// HandleGetEnabledStreams
+// HandleGetEnabledStreams is the handler of Get all enabled streams API.
 func HandleGetEnabledStreams(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
@@ -146,7 +146,7 @@ func HandleGetEnabledStreams(
 	return &graylog.StreamsBody{Streams: arr, Total: total}, sc, nil
 }
 
-// HandlePauseStream
+// HandlePauseStream is the handler of Pause a Stream API.
 func HandlePauseStream(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -160,7 +160,7 @@ func HandlePauseStream(
 	return nil, sc, err
 }
 
-// HandleResumeStream
+// HandleResumeStream is the handler of Resume a Stream API.
 func HandleResumeStream(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,

@@ -35,7 +35,7 @@ func (ms *Logic) AddRole(role *graylog.Role) (int, error) {
 		return 500, err
 	}
 	if ok {
-		return 400, fmt.Errorf("Role %s already exists.", role.Name)
+		return 400, fmt.Errorf("role %s already exists", role.Name)
 	}
 	if role.Name != "Admin" && role.Name != "Reader" {
 		role.ReadOnly = false
@@ -61,7 +61,7 @@ func (ms *Logic) UpdateRole(name string, prms *graylog.RoleUpdateParams) (*grayl
 			return nil, 500, err
 		}
 		if ok {
-			return nil, 400, fmt.Errorf("The role %s has already existed.", prms.Name)
+			return nil, 400, fmt.Errorf("the role %s has already existed", prms.Name)
 		}
 	}
 	if role.ReadOnly {

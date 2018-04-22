@@ -12,7 +12,7 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
-// HandleGetStreamRules
+// HandleGetStreamRules is the handler of Get Stream Rules API.
 func HandleGetStreamRules(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -26,7 +26,18 @@ func HandleGetStreamRules(
 	return &graylog.StreamRulesBody{StreamRules: arr, Total: total}, 200, nil
 }
 
-// HandleCreateStreamRule
+// HandleGetStreamRule is the handler of Get a Stream Rule API.
+func HandleGetStreamRule(
+	user *graylog.User, ms *logic.Logic,
+	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+) (interface{}, int, error) {
+	// GET /streams/{streamid}/rules/{streamRuleId} Get a single stream rules
+	// TODO authorization
+	return ms.GetStreamRule(
+		ps.ByName("streamID"), ps.ByName("streamRuleID"))
+}
+
+// HandleCreateStreamRule is the handler of Create a Stream Rule API.
 func HandleCreateStreamRule(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -38,7 +49,7 @@ func HandleCreateStreamRule(
 		return nil, 500, err
 	}
 	if !ok {
-		return nil, 404, fmt.Errorf("stream <%s> not found!", streamID)
+		return nil, 404, fmt.Errorf("stream <%s> not found", streamID)
 	}
 
 	body, sc, err := validateRequestBody(
@@ -76,12 +87,9 @@ func HandleCreateStreamRule(
 	return map[string]string{"streamrule_id": rule.ID}, 201, nil
 }
 
-// null body 415 {"type": "ApiError", "message": "HTTP 415 Unsupported Media Type"}
-// {} value field 400 {"type": "ApiError", "message": "Can not construct instance of org.graylog2.rest.resources.streams.rules.requests.CreateStreamRuleRequest, problem: Null value\n at [Source: org.glassfish.jersey.message.internal.ReaderInterceptorExecutor$UnCloseableInputStream@162d5cc5; line: 1, column: 2]"}
 // type 400 {"type": "ApiError", "message": "Unknown stream rule type 0"}
-// value, type, description, inverted, field
 
-// HandleUpdateStreamRule
+// HandleUpdateStreamRule is the handler of Update a Stream Rule API.
 func HandleUpdateStreamRule(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -124,7 +132,7 @@ func HandleUpdateStreamRule(
 	return map[string]string{"streamrule_id": rule.ID}, 200, nil
 }
 
-// HandleDeleteStreamRule
+// HandleDeleteStreamRule is the handler of Delete a Stream Rule API.
 func HandleDeleteStreamRule(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -135,15 +143,4 @@ func HandleDeleteStreamRule(
 	// TODO authorization
 	sc, err := ms.DeleteStreamRule(streamID, id)
 	return nil, sc, err
-}
-
-// HandleGetStreamRule
-func HandleGetStreamRule(
-	user *graylog.User, ms *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
-) (interface{}, int, error) {
-	// GET /streams/{streamid}/rules/{streamRuleId} Get a single stream rules
-	// TODO authorization
-	return ms.GetStreamRule(
-		ps.ByName("streamID"), ps.ByName("streamRuleID"))
 }

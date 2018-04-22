@@ -11,7 +11,7 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
-// HandleGetUsers
+// HandleGetUsers is the handler of GET Users API.
 func HandleGetUsers(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
@@ -29,7 +29,7 @@ func HandleGetUsers(
 	return &graylog.UsersBody{Users: users}, sc, nil
 }
 
-// HandleGetUser
+// HandleGetUser is the handler of GET User API.
 func HandleGetUser(
 	u *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -44,7 +44,7 @@ func HandleGetUser(
 	return user, sc, err
 }
 
-// HandleCreateUser
+// HandleCreateUser is the handler of Create User API.
 func HandleCreateUser(
 	u *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
@@ -79,7 +79,7 @@ func HandleCreateUser(
 	return nil, 201, nil
 }
 
-// HandleUpdateUser
+// HandleUpdateUser is the handler of Update User API.
 func HandleUpdateUser(
 	u *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -115,7 +115,7 @@ func HandleUpdateUser(
 	return nil, 200, nil
 }
 
-// HandleDeleteUser
+// HandleDeleteUser is the handler of Delete User API.
 func HandleDeleteUser(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,

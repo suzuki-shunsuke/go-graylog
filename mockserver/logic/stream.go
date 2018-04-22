@@ -8,7 +8,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/validator"
 )
 
-// HasStream
+// HasStream returns whether the stream exists.
 func (ms *Logic) HasStream(id string) (bool, error) {
 	return ms.store.HasStream(id)
 }

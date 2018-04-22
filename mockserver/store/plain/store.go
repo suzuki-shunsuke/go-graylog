@@ -11,7 +11,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 )
 
-// Store
+// Store is the implementation of the Store interface with pure golang.
 type Store struct {
 	users             map[string]graylog.User
 	roles             map[string]graylog.Role
@@ -36,6 +36,7 @@ type plainStore struct {
 	Tokens            map[string]string                        `json:"tokens"`
 }
 
+// MarshalJSON is the implementation of the json.Marshaler interface.
 func (store *Store) MarshalJSON() ([]byte, error) {
 	data := map[string]interface{}{
 		"users":                store.users,
@@ -50,6 +51,7 @@ func (store *Store) MarshalJSON() ([]byte, error) {
 	return json.Marshal(data)
 }
 
+// UnmarshalJSON is the implementation of the json.Unmarshaler interface.
 func (store *Store) UnmarshalJSON(b []byte) error {
 	s := &plainStore{}
 	if err := json.Unmarshal(b, s); err != nil {
@@ -66,6 +68,9 @@ func (store *Store) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// NewStore returns a new Store.
+// the argument `dataPath` is the file path where write the data.
+// If `dataPath` is empty, the data aren't written to the file.
 func NewStore(dataPath string) store.Store {
 	return &Store{
 		roles:       map[string]graylog.Role{},
@@ -110,6 +115,7 @@ func (store *Store) Load() error {
 	return json.Unmarshal(b, store)
 }
 
+// Authorize authorizes the user.
 func (store *Store) Authorize(user *graylog.User, scope string, args ...string) (bool, error) {
 	if user == nil {
 		return true, nil

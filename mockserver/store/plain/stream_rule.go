@@ -7,7 +7,7 @@ import (
 	st "github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 )
 
-// HasStreamRule
+// HasStreamRule returns whether the stream rule exists.
 func (store *Store) HasStreamRule(streamID, streamRuleID string) (bool, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()

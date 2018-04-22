@@ -7,7 +7,7 @@ import (
 	st "github.com/suzuki-shunsuke/go-graylog/mockserver/store"
 )
 
-// HasUser
+// HasUser returns whether the user exists.
 func (store *Store) HasUser(username string) (bool, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()

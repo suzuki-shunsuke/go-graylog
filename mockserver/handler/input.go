@@ -11,7 +11,7 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
-// HandleGetInput
+// HandleGetInput is the handler of Get an Input API.
 func HandleGetInput(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -24,7 +24,7 @@ func HandleGetInput(
 	return ms.GetInput(id)
 }
 
-// HandleGetInputs
+// HandleGetInputs is the handler of Get Inputs API.
 func HandleGetInputs(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
@@ -38,7 +38,7 @@ func HandleGetInputs(
 	return inputs, sc, nil
 }
 
-// HandleCreateInput
+// HandleCreateInput is the handler of Create an Input API.
 func HandleCreateInput(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
@@ -82,7 +82,7 @@ func HandleCreateInput(
 	return &map[string]string{"id": input.ID}, 201, nil
 }
 
-// HandleUpdateInput
+// HandleUpdateInput is the handler of Update an Input API.
 func HandleUpdateInput(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -132,7 +132,7 @@ func HandleUpdateInput(
 	return input, 200, nil
 }
 
-// HandleDeleteInput
+// HandleDeleteInput is the handler of Delete an Input API.
 func HandleDeleteInput(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,

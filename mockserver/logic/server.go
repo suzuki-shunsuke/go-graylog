@@ -18,6 +18,7 @@ type Logic struct {
 	logger *log.Logger
 }
 
+// Logger returns a logger.
 func (ms *Logic) Logger() *log.Logger {
 	return ms.logger
 }
@@ -68,7 +69,7 @@ func (ms *Logic) Auth() bool {
 	return ms.authEnabled
 }
 
-// Authorize
+// Authorize authorizes a user.
 func (ms *Logic) Authorize(user *graylog.User, scope string, args ...string) (int, error) {
 	if user == nil {
 		return 200, nil

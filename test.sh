@@ -10,7 +10,7 @@ echo "! git ls-files | grep .go | xargs gofmt -s -d | grep '^'"
 ! git ls-files | grep .go | xargs gofmt -s -d | grep '^'
 
 # golint
-decho golint client terraform/... mockserver mockserver/store validator
+decho golint client terraform/... validator mockserver mockserver/store mockserver/handler mockserver/logic mockserver/seed mockserver/exec mockserver/store/plain
 
 decho go test ./mockserver/... -covermode=atomic
 

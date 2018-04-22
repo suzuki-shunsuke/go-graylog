@@ -14,7 +14,7 @@ type membersBody struct {
 	Users []graylog.User `json:"users"`
 }
 
-// HandleRoleMembers
+// HandleRoleMembers is the handler of Get the role's members API.
 func HandleRoleMembers(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -36,7 +36,7 @@ func HandleRoleMembers(
 	return users, sc, nil
 }
 
-// HandleAddUserToRole
+// HandleAddUserToRole is the handler of Add a user to a role API.
 func HandleAddUserToRole(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
@@ -46,7 +46,7 @@ func HandleAddUserToRole(
 	return nil, sc, err
 }
 
-// HandleRemoveUserFromRole
+// HandleRemoveUserFromRole is the handler of Remove a user from a role API.
 func HandleRemoveUserFromRole(
 	user *graylog.User, ms *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,

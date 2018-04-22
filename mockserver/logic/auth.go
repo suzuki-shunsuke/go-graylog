@@ -6,6 +6,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
+// Authenticate authenticates a user.
 func (ms *Logic) Authenticate(name, password string) (*graylog.User, int, error) {
 	if name == "" || password == "" {
 		return nil, 401, fmt.Errorf("authentication failure")

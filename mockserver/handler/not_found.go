@@ -8,7 +8,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
-// HandleNotFound
+// HandleNotFound is the generator of the NotFound handler.
 func HandleNotFound(ms *logic.Logic) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ms.Logger().WithFields(log.Fields{

@@ -6,7 +6,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
-// HasRole
+// HasRole returns whether the role exists.
 func (store *Store) HasRole(name string) (bool, error) {
 	store.imutex.RLock()
 	defer store.imutex.RUnlock()

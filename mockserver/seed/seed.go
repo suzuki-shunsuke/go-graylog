@@ -5,6 +5,7 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
+// Role returns a Role.
 func Role() *graylog.Role {
 	return &graylog.Role{
 		Name:        "Admin",
@@ -13,6 +14,7 @@ func Role() *graylog.Role {
 		ReadOnly:    true}
 }
 
+// User returns a user.
 func User() *graylog.User {
 	return &graylog.User{
 		Username:    "admin",
@@ -23,6 +25,8 @@ func User() *graylog.User {
 	}
 }
 
+// Nobody returns a user who has no permission.
+// This user is used to test the authorization.
 func Nobody() *graylog.User {
 	return &graylog.User{
 		Username:    "nobody",
@@ -33,6 +37,7 @@ func Nobody() *graylog.User {
 	}
 }
 
+// Input returns an input.
 func Input() *graylog.Input {
 	return &graylog.Input{
 		Title: "test",
@@ -45,6 +50,7 @@ func Input() *graylog.Input {
 		}}
 }
 
+// IndexSet returns an index set.
 func IndexSet() *graylog.IndexSet {
 	return &graylog.IndexSet{
 		Title:                 "Default index set",
@@ -68,6 +74,7 @@ func IndexSet() *graylog.IndexSet {
 		Default:                         true}
 }
 
+// IndexSetStats returns an index set statistics.
 func IndexSetStats() *graylog.IndexSetStats {
 	return &graylog.IndexSetStats{
 		Indices:   2,
@@ -76,6 +83,7 @@ func IndexSetStats() *graylog.IndexSetStats {
 	}
 }
 
+// Stream returns a stream.
 func Stream() *graylog.Stream {
 	return &graylog.Stream{
 		MatchingType: "AND",
@@ -85,6 +93,7 @@ func Stream() *graylog.Stream {
 	}
 }
 
+// StreamRule returns a stream rule.
 func StreamRule() *graylog.StreamRule {
 	return &graylog.StreamRule{
 		Type:  1,
