@@ -9,10 +9,13 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var CreateValidator *validator.Validate
-var UpdateValidator *validator.Validate
-
-var indexPrefixRegexp *regexp.Regexp
+var (
+	// CreateValidator validates parameters of Create APIs.
+	CreateValidator *validator.Validate
+	// UpdateValidator validates parameters of Update APIs.
+	UpdateValidator   *validator.Validate
+	indexPrefixRegexp *regexp.Regexp
+)
 
 func init() {
 	indexPrefixRegexp = regexp.MustCompile(`^[a-z0-9][a-z0-9_+-]*$`)

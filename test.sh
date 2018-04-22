@@ -5,9 +5,12 @@ decho() {
   eval $@
 }
 
-# go fmt
+# gofmt
 echo "! git ls-files | grep .go | xargs gofmt -s -d | grep '^'"
 ! git ls-files | grep .go | xargs gofmt -s -d | grep '^'
+
+# golint
+decho golint client terraform/... mockserver mockserver/store validator
 
 decho go test ./mockserver/... -covermode=atomic
 
