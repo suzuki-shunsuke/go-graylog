@@ -3,84 +3,11 @@ package graylog
 import (
 	"fmt"
 	"os"
-	"strconv"
 
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/pkg/errors"
 	"github.com/suzuki-shunsuke/go-graylog/client"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver"
 )
-
-func getStrInt(cfg map[string]interface{}, key string, required bool) (int, error) {
-	val, ok := cfg[key]
-	if !ok {
-		if required {
-			return 0, fmt.Errorf("%s is required", key)
-		}
-		return 0, nil
-	}
-	v, ok := val.(string)
-	if !ok {
-		return 0, fmt.Errorf("Failed to convert %s to string: %v", key, val)
-	}
-	i, err := strconv.Atoi(v)
-	if err != nil {
-		return 0, errors.Wrap(
-			err, fmt.Sprintf("%s must be int: %v", key, v))
-	}
-	return i, nil
-}
-
-func getInt(
-	cfg map[string]interface{}, key string, required bool,
-) (int, error) {
-	val, ok := cfg[key]
-	if !ok {
-		if required {
-			return 0, fmt.Errorf("%s is required", key)
-		}
-		return 0, nil
-	}
-	v, ok := val.(int)
-	if !ok {
-		return 0, fmt.Errorf("%s must be int: %v", key, val)
-	}
-	return v, nil
-}
-
-func getString(
-	cfg map[string]interface{}, key string, required bool,
-) (string, error) {
-	val, ok := cfg[key]
-	if !ok {
-		if required {
-			return "", fmt.Errorf("%s is required", key)
-		}
-		return "", nil
-	}
-	v, ok := val.(string)
-	if !ok {
-		return "", fmt.Errorf("%s must be string: %v", key, val)
-	}
-	return v, nil
-}
-
-func getBool(
-	cfg map[string]interface{}, key string, required bool,
-) (bool, error) {
-	val, ok := cfg[key]
-	if !ok {
-		if required {
-			return false, fmt.Errorf("%s is required", key)
-		}
-		return false, nil
-	}
-	v, ok := val.(bool)
-	if !ok {
-		return false, fmt.Errorf("%s must be bool: %v", key, val)
-	}
-	return v, nil
-}
 
 func getStringArray(src []interface{}) []string {
 	dest := make([]string, len(src))
