@@ -105,24 +105,24 @@ func HandleUpdateInput(
 	// https://github.com/Graylog2/graylog2-server/issues/3480
 	body["attributes"] = body["configuration"]
 	delete(body, "configuration")
-	d := &graylog.InputData{}
+	d := &graylog.InputUpdateParamsData{}
 	if err := util.MSDecode(body, d); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
-		}).Info("Failed to parse request body as InputData")
+		}).Info("Failed to parse request body as InputUpdateParamsData")
 		return nil, 400, err
 	}
-	input := &graylog.Input{}
-	if err := d.ToInput(input); err != nil {
+	prms := &graylog.InputUpdateParams{}
+	if err := d.ToInput(prms); err != nil {
 		return nil, 400, err
 	}
 
 	ms.Logger().WithFields(log.Fields{
-		"body": body, "input": input, "id": id,
+		"body": body, "input": prms, "id": id,
 	}).Debug("request body")
 
-	input.ID = id
-	sc, err = ms.UpdateInput(input)
+	prms.ID = id
+	input, sc, err := ms.UpdateInput(prms)
 	if err != nil {
 		return nil, sc, err
 	}

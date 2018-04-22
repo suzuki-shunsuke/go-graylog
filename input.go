@@ -6,6 +6,7 @@ import (
 	"reflect"
 
 	"github.com/suzuki-shunsuke/go-graylog/util"
+	"github.com/suzuki-shunsuke/go-ptr"
 )
 
 const (
@@ -120,7 +121,7 @@ type Input struct {
 	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required,objectid"`
 
 	// Should this input start on all nodes
-	Global *bool `json:"global,omitempty"`
+	Global bool `json:"global,omitempty"`
 	// On which node should this input start
 	// ex. "2ad6b340-3e5f-4a96-ae81-040cfb8b6024"
 	Node string `json:"node,omitempty"`
@@ -132,6 +133,39 @@ type Input struct {
 	// StaticFields `json:"static_fields,omitempty"`
 }
 
+func (input *Input) NewUpdateParams() *InputUpdateParams {
+	return &InputUpdateParams{
+		ID:         input.ID,
+		Title:      input.Title,
+		Type:       input.Type,
+		Attributes: input.Attributes,
+		Node:       input.Node,
+		Global:     ptr.PBool(input.Global),
+	}
+}
+
+// InputUpdateParams represents Graylog Input update API's paramter.
+type InputUpdateParams struct {
+	ID         string          `json:"id,omitempty" v-update:"required,objectid"`
+	Title      string          `json:"title,omitempty" v-update:"required"`
+	Type       string          `json:"type,omitempty" v-update:"required"`
+	Attributes InputAttributes `json:"attributes,omitempty" v-update:"required"`
+	Global     *bool           `json:"global,omitempty"`
+	Node       string          `json:"node,omitempty"`
+}
+
+// InputUpdateParamsData represents InputUpdateParams's data.
+// This is used for data conversion of InputUpdateParams.
+// ex. json.Unmarshal
+type InputUpdateParamsData struct {
+	ID         string                 `json:"id,omitempty"`
+	Title      string                 `json:"title,omitempty"`
+	Type       string                 `json:"type,omitempty"`
+	Attributes map[string]interface{} `json:"attributes,omitempty"`
+	Global     *bool                  `json:"global,omitempty"`
+	Node       string                 `json:"node,omitempty"`
+}
+
 // InputData represents data of Input.
 // This is used for data conversion of Input.
 // ex. json.Unmarshal
@@ -140,10 +174,32 @@ type InputData struct {
 	Type          string                 `json:"type,omitempty"`
 	Attributes    map[string]interface{} `json:"attributes,omitempty"`
 	ID            string                 `json:"id,omitempty"`
-	Global        *bool                  `json:"global,omitempty"`
+	Global        bool                   `json:"global,omitempty"`
 	Node          string                 `json:"node,omitempty"`
 	CreatedAt     string                 `json:"created_at,omitempty"`
 	CreatorUserID string                 `json:"creator_user_id,omitempty"`
+}
+
+// ToInput copies InputUpdateParamsData's data to InputUpdateParams.
+func (d *InputUpdateParamsData) ToInput(input *InputUpdateParams) error {
+	input.Title = d.Title
+	input.Type = d.Type
+	input.ID = d.ID
+	input.Global = d.Global
+	input.Node = d.Node
+	attrs, err := NewInputAttrs(input.Type)
+	if err != nil {
+		return err
+	}
+	if _, ok := attrs.(*InputUnknownAttrs); ok {
+		input.Attributes = InputUnknownAttrs{inputType: input.Type, Data: d.Attributes}
+		return nil
+	}
+	if err := util.MSDecode(d.Attributes, attrs); err != nil {
+		return err
+	}
+	input.Attributes = attrs
+	return nil
 }
 
 // ToInput copies InputData's data to Input.

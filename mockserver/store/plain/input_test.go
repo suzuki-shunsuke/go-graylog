@@ -69,7 +69,7 @@ func TestUpdateInput(t *testing.T) {
 		t.Fatal("input is nil")
 	}
 	input.Title += " changed"
-	if err := store.UpdateInput(input); err != nil {
+	if _, err := store.UpdateInput(input.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
 	r, err = store.GetInput(input.ID)

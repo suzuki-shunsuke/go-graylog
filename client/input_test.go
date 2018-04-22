@@ -106,18 +106,18 @@ func TestUpdateInput(t *testing.T) {
 	if attrs.BindAddress == "" {
 		t.Fatal(`attrs.BindAddress == ""`)
 	}
-	if _, err := client.UpdateInput(input); err != nil {
+	if _, _, err := client.UpdateInput(input.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
 	input.ID = ""
-	if _, err := client.UpdateInput(input); err == nil {
+	if _, _, err := client.UpdateInput(input.NewUpdateParams()); err == nil {
 		t.Fatal("input id is required")
 	}
-	if _, err := client.UpdateInput(nil); err == nil {
+	if _, _, err := client.UpdateInput(nil); err == nil {
 		t.Fatal("input is required")
 	}
 	input.ID = "h"
-	if _, err := client.UpdateInput(nil); err == nil {
+	if _, _, err := client.UpdateInput(input.NewUpdateParams()); err == nil {
 		t.Fatal("input should no be found")
 	}
 }

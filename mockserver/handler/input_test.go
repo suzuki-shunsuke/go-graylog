@@ -105,7 +105,7 @@ func TestHandleUpdateInput(t *testing.T) {
 	}
 	id := input.ID
 	input.Title += " updated"
-	if _, err := client.UpdateInput(input); err != nil {
+	if _, _, err := client.UpdateInput(input.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
 	act, _, err := server.GetInput(id)
@@ -120,34 +120,34 @@ func TestHandleUpdateInput(t *testing.T) {
 	}
 
 	input.ID = ""
-	if _, err := client.UpdateInput(input); err == nil {
+	if _, _, err := client.UpdateInput(input.NewUpdateParams()); err == nil {
 		t.Fatal("input id is required")
 	}
 
 	input.ID = "h"
-	if _, err := client.UpdateInput(input); err == nil {
+	if _, _, err := client.UpdateInput(input.NewUpdateParams()); err == nil {
 		t.Fatal(`no input whose id is "h"`)
 	}
 
 	input.ID = id
 	input.Type = ""
-	if _, err := client.UpdateInput(input); err == nil {
+	if _, _, err := client.UpdateInput(input.NewUpdateParams()); err == nil {
 		t.Fatal("input type is required")
 	}
 	input.Type = act.Type
 	input.Attributes = nil
-	if _, err := client.UpdateInput(input); err == nil {
+	if _, _, err := client.UpdateInput(input.NewUpdateParams()); err == nil {
 		t.Fatal("input attributes is required")
 	}
 	input.Attributes = act.Attributes
 	input.Title = ""
-	if _, err := client.UpdateInput(input); err == nil {
+	if _, _, err := client.UpdateInput(input.NewUpdateParams()); err == nil {
 		t.Fatal("input title is required")
 	}
 
 	input.Title = act.Title
 
-	if _, err := client.UpdateInput(nil); err == nil {
+	if _, _, err := client.UpdateInput(nil); err == nil {
 		t.Fatal("input is required")
 	}
 

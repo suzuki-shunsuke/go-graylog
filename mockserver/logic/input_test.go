@@ -84,7 +84,7 @@ func TestUpdateInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	input.Title += " updated"
-	if _, err := server.UpdateInput(input); err != nil {
+	if _, _, err := server.UpdateInput(input.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
 	act, _, err := server.GetInput(input.ID)
@@ -99,27 +99,27 @@ func TestUpdateInput(t *testing.T) {
 	}
 
 	input.ID = ""
-	if _, err := server.UpdateInput(input); err == nil {
+	if _, _, err := server.UpdateInput(input.NewUpdateParams()); err == nil {
 		t.Fatal("input id is required")
 	}
 
 	input.ID = "h"
-	if _, err := server.UpdateInput(input); err == nil {
+	if _, _, err := server.UpdateInput(input.NewUpdateParams()); err == nil {
 		t.Fatal(`no input whose id is "h"`)
 	}
 
 	input.Type = ""
-	if _, err := server.UpdateInput(input); err == nil {
+	if _, _, err := server.UpdateInput(input.NewUpdateParams()); err == nil {
 		t.Fatal("input type is required")
 	}
 	input.Type = act.Type
 	input.Attributes = nil
-	if _, err := server.UpdateInput(input); err == nil {
+	if _, _, err := server.UpdateInput(input.NewUpdateParams()); err == nil {
 		t.Fatal("input attributes is required")
 	}
 	input.Attributes = act.Attributes
 	input.Title = ""
-	if _, err := server.UpdateInput(input); err == nil {
+	if _, _, err := server.UpdateInput(input.NewUpdateParams()); err == nil {
 		t.Fatal("input title is required")
 	}
 
@@ -132,11 +132,11 @@ func TestUpdateInput(t *testing.T) {
 		}
 		attrs.BindAddress = ""
 		input.Attributes = attrs
-		if _, err := server.UpdateInput(input); err == nil {
+		if _, _, err := server.UpdateInput(input.NewUpdateParams()); err == nil {
 			t.Fatal("input bind_address is required")
 		}
 	}
-	if _, err := server.UpdateInput(nil); err == nil {
+	if _, _, err := server.UpdateInput(nil); err == nil {
 		t.Fatal("input is required")
 	}
 }

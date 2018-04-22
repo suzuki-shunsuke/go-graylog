@@ -6,7 +6,6 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
-	"github.com/suzuki-shunsuke/go-ptr"
 )
 
 func resourceInput() *schema.Resource {
@@ -94,7 +93,7 @@ func newInput(d *schema.ResourceData) (*graylog.Input, error) {
 	data := &graylog.InputData{
 		Title:         d.Get("title").(string),
 		Type:          d.Get("type").(string),
-		Global:        ptr.PBool(d.Get("global").(bool)),
+		Global:        d.Get("global").(bool),
 		Node:          d.Get("node").(string),
 		ID:            d.Id(),
 		CreatorUserID: d.Get("creator_user_id").(string),
@@ -172,7 +171,7 @@ func resourceInputUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	if _, err := cl.UpdateInput(input); err != nil {
+	if _, _, err := cl.UpdateInput(input.NewUpdateParams()); err != nil {
 		return err
 	}
 	return nil

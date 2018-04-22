@@ -47,25 +47,26 @@ func (ms *Logic) AddInput(input *graylog.Input) (int, error) {
 // UpdateInput updates an input at the Server.
 // Required: Title, Type, Attributes
 // Allowed: Global, Node
-func (ms *Logic) UpdateInput(input *graylog.Input) (int, error) {
-	if input == nil {
-		return 400, fmt.Errorf("input is nil")
+func (ms *Logic) UpdateInput(prms *graylog.InputUpdateParams) (*graylog.Input, int, error) {
+	if prms == nil {
+		return nil, 400, fmt.Errorf("input is nil")
 	}
-	if err := validator.UpdateValidator.Struct(input); err != nil {
-		return 400, err
+	if err := validator.UpdateValidator.Struct(prms); err != nil {
+		return nil, 400, err
 	}
-	ok, err := ms.HasInput(input.ID)
+	ok, err := ms.HasInput(prms.ID)
 	if err != nil {
-		return 500, err
+		return nil, 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("the input <%s> is not found", input.ID)
+		return nil, 404, fmt.Errorf("the input <%s> is not found", prms.ID)
 	}
 
-	if err := ms.store.UpdateInput(input); err != nil {
-		return 500, err
+	input, err := ms.store.UpdateInput(prms)
+	if err != nil {
+		return nil, 500, err
 	}
-	return 200, nil
+	return input, 200, nil
 }
 
 // DeleteInput deletes a input from the mock server.
