@@ -10,6 +10,7 @@ install:
 script:
   - npm run commitlint-travis
   - (! git ls-files | grep .go | xargs gofmt -s -d | grep '^')
+  - go vet $(go list ./... | grep -v /vendor/)
   - bash codecov-test.sh
 after_success:
   - bash codecov.sh

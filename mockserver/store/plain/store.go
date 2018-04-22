@@ -12,15 +12,15 @@ import (
 )
 
 type PlainStore struct {
-	users             map[string]graylog.User                  `json:"users"`
-	roles             map[string]graylog.Role                  `json:"roles"`
-	inputs            map[string]graylog.Input                 `json:"inputs"`
-	indexSets         []graylog.IndexSet                       `json:"index_sets"`
-	defaultIndexSetID string                                   `json:"default_index_set_id"`
-	streams           map[string]graylog.Stream                `json:"streams"`
-	streamRules       map[string]map[string]graylog.StreamRule `json:"stream_rules"`
-	dataPath          string                                   `json:"-"`
-	tokens            map[string]string                        `json:"tokens"`
+	users             map[string]graylog.User
+	roles             map[string]graylog.Role
+	inputs            map[string]graylog.Input
+	indexSets         []graylog.IndexSet
+	defaultIndexSetID string
+	streams           map[string]graylog.Stream
+	streamRules       map[string]map[string]graylog.StreamRule
+	dataPath          string
+	tokens            map[string]string
 	imutex            sync.RWMutex
 }
 

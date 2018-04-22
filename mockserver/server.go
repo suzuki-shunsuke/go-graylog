@@ -14,8 +14,8 @@ import (
 // Server represents a mock of the Graylog API.
 type Server struct {
 	*logic.Logic `json:"-"`
-	server       *httptest.Server `json:"-"`
-	endpoint     string           `json:"-"`
+	server       *httptest.Server
+	endpoint     string
 }
 
 // NewServer returns new Server but doesn't start it.

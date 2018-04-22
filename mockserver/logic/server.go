@@ -11,11 +11,11 @@ import (
 
 // Logic represents a mock of the Graylog API.
 type Logic struct {
-	authEnabled bool                                     `json:"-"`
-	streamRules map[string]map[string]graylog.StreamRule `json:"stream_rules"`
+	authEnabled bool
+	streamRules map[string]map[string]graylog.StreamRule
 
-	store  store.Store `json:"-"`
-	logger *log.Logger `json:"-"`
+	store  store.Store
+	logger *log.Logger
 }
 
 func (ms *Logic) Logger() *log.Logger {

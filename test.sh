@@ -5,6 +5,7 @@ decho() {
   eval $@
 }
 
+# go fmt
 echo "! git ls-files | grep .go | xargs gofmt -s -d | grep '^'"
 ! git ls-files | grep .go | xargs gofmt -s -d | grep '^'
 
