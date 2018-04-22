@@ -80,12 +80,12 @@ func resourceUser() *schema.Resource {
 				Optional: true,
 				Computed: true,
 			},
-			"session_active": &schema.Schema{
+			"session_active": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Computed: true,
 			},
-			"last_activity": &schema.Schema{
+			"last_activity": {
 				Type:     schema.TypeString,
 				Required: false,
 				Computed: true,

@@ -2,6 +2,7 @@
   "version": "0.1.0",
   "scripts": {
     "release": "standard-version",
+    "precommit": "bash precommit.sh",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "test": "bash test.sh",
     "cover-client": "make cover-client",

@@ -9,6 +9,7 @@ install:
   - npm install
 script:
   - npm run commitlint-travis
+  - (! git ls-files | grep .go | xargs gofmt -s -d | grep '^')
   - bash codecov-test.sh
 after_success:
   - bash codecov.sh
