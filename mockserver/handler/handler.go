@@ -41,7 +41,7 @@ func wrapHandle(ms *logic.Logic, handler Handler) httprouter.Handle {
 				if sc == 401 {
 					return
 				}
-				ae := graylog.NewAPIError(err.Error())
+				ae := NewAPIError(err.Error())
 				b, err := json.Marshal(ae)
 				if err != nil {
 					w.Write([]byte(`{"message":"failed to authenticate"}`))
@@ -60,7 +60,7 @@ func wrapHandle(ms *logic.Logic, handler Handler) httprouter.Handle {
 		if err != nil {
 			w.WriteHeader(sc)
 
-			ae := graylog.NewAPIError(err.Error())
+			ae := NewAPIError(err.Error())
 			b, err := json.Marshal(ae)
 			if err != nil {
 				w.Write([]byte(`{"message":"failed to marshal an APIError"}`))
