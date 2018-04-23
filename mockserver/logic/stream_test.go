@@ -97,11 +97,11 @@ func TestUpdateStream(t *testing.T) {
 	if _, err := lgc.AddStream(stream); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := lgc.UpdateStream(stream); err != nil {
+	if _, _, err := lgc.UpdateStream(stream.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
 	stream.ID = ""
-	if _, err := lgc.UpdateStream(stream); err == nil {
+	if _, _, err := lgc.UpdateStream(stream.NewUpdateParams()); err == nil {
 		t.Fatal("stream id is required")
 	}
 }

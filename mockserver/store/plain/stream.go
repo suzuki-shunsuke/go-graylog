@@ -42,43 +42,42 @@ func (store *Store) AddStream(stream *graylog.Stream) error {
 }
 
 // UpdateStream updates a stream at the store.
-func (store *Store) UpdateStream(stream *graylog.Stream) error {
+func (store *Store) UpdateStream(prms *graylog.StreamUpdateParams) (*graylog.Stream, error) {
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
-	orig, ok := store.streams[stream.ID]
+	stream, ok := store.streams[prms.ID]
 	if !ok {
-		return fmt.Errorf("the stream <%s> is not found", stream.ID)
+		return nil, fmt.Errorf("the stream <%s> is not found", prms.ID)
 	}
-	stream.CreatorUserID = orig.CreatorUserID
-	stream.CreatedAt = orig.CreatedAt
-	stream.Disabled = orig.Disabled
-	stream.IsDefault = orig.IsDefault
-	if stream.Title == "" {
-		stream.Title = orig.Title
+	if prms.Title != "" {
+		stream.Title = prms.Title
 	}
-	if stream.IndexSetID == "" {
-		stream.IndexSetID = orig.IndexSetID
+	if prms.IndexSetID != "" {
+		stream.IndexSetID = prms.IndexSetID
 	}
-	if stream.Description == "" {
-		stream.Description = orig.Description
+	if prms.Description != "" {
+		stream.Description = prms.Description
 	}
-	if stream.Outputs == nil {
-		stream.Description = orig.Description
+	if prms.Outputs != nil {
+		stream.Outputs = prms.Outputs
 	}
-	if stream.MatchingType == "" {
-		stream.MatchingType = orig.MatchingType
+	if prms.MatchingType != "" {
+		stream.MatchingType = prms.MatchingType
 	}
-	if stream.Rules == nil {
-		stream.Rules = orig.Rules
+	if prms.Rules != nil {
+		stream.Rules = prms.Rules
 	}
-	if stream.AlertConditions == nil {
-		stream.AlertConditions = orig.AlertConditions
+	if prms.AlertConditions != nil {
+		stream.AlertConditions = prms.AlertConditions
 	}
-	if stream.AlertReceivers == nil {
-		stream.AlertReceivers = orig.AlertReceivers
+	if prms.AlertReceivers != nil {
+		stream.AlertReceivers = prms.AlertReceivers
 	}
-	store.streams[stream.ID] = *stream
-	return nil
+	if prms.RemoveMatchesFromDefaultStream != nil {
+		stream.RemoveMatchesFromDefaultStream = *prms.RemoveMatchesFromDefaultStream
+	}
+	store.streams[stream.ID] = stream
+	return &stream, nil
 }
 
 // DeleteStream removes a stream from the store.

@@ -37,19 +37,19 @@ func (ms *Logic) AddStreamRule(rule *graylog.StreamRule) (int, error) {
 }
 
 // UpdateStreamRule updates a stream rule of the Server.
-func (ms *Logic) UpdateStreamRule(rule *graylog.StreamRule) (int, error) {
+func (ms *Logic) UpdateStreamRule(prms *graylog.StreamRuleUpdateParams) (int, error) {
 	// PUT /streams/{streamid}/rules/{streamRuleID} Update a stream rule
-	if err := validator.UpdateValidator.Struct(rule); err != nil {
+	if err := validator.UpdateValidator.Struct(prms); err != nil {
 		return 400, err
 	}
-	ok, err := ms.HasStreamRule(rule.StreamID, rule.ID)
+	ok, err := ms.HasStreamRule(prms.StreamID, prms.ID)
 	if err != nil {
 		return 500, err
 	}
 	if !ok {
-		return 404, fmt.Errorf("no stream rule is not found: <%s>", rule.StreamID)
+		return 404, fmt.Errorf("no stream rule is not found: <%s>", prms.StreamID)
 	}
-	if err := ms.store.UpdateStreamRule(rule); err != nil {
+	if err := ms.store.UpdateStreamRule(prms); err != nil {
 		return 500, err
 	}
 	return 204, nil

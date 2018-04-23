@@ -1,5 +1,9 @@
 package graylog
 
+import (
+	"github.com/suzuki-shunsuke/go-ptr"
+)
+
 // CloneStream
 // POST /streams/{streamID}/clone Clone a stream
 // TestMatchStream
@@ -29,6 +33,36 @@ type Stream struct {
 	RemoveMatchesFromDefaultStream bool             `json:"remove_matches_from_default_stream,omitempty"`
 	IsDefault                      bool             `json:"is_default,omitempty" v-create:"isdefault"`
 	// ContentPack `json:"content_pack,omitempty"`
+}
+
+// StreamUpdateParams represents a steram update params.
+type StreamUpdateParams struct {
+	ID                             string           `json:"id,omitempty" v-update:"required,objectid"`
+	Title                          string           `json:"title,omitempty"`
+	IndexSetID                     string           `json:"index_set_id,omitempty"`
+	Description                    string           `json:"description,omitempty"`
+	Outputs                        []Output         `json:"outputs,omitempty"`
+	MatchingType                   string           `json:"matching_type,omitempty"`
+	Rules                          []StreamRule     `json:"rules,omitempty"`
+	AlertConditions                []AlertCondition `json:"alert_conditions,omitempty"`
+	AlertReceivers                 *AlertReceivers  `json:"alert_receivers,omitempty"`
+	RemoveMatchesFromDefaultStream *bool            `json:"remove_matches_from_default_stream,omitempty"`
+}
+
+// NewUpdateParams
+func (stream *Stream) NewUpdateParams() *StreamUpdateParams {
+	return &StreamUpdateParams{
+		ID:                             stream.ID,
+		Title:                          stream.Title,
+		IndexSetID:                     stream.IndexSetID,
+		Description:                    stream.Description,
+		Outputs:                        stream.Outputs,
+		MatchingType:                   stream.MatchingType,
+		Rules:                          stream.Rules,
+		AlertConditions:                stream.AlertConditions,
+		AlertReceivers:                 stream.AlertReceivers,
+		RemoveMatchesFromDefaultStream: ptr.PBool(stream.RemoveMatchesFromDefaultStream),
+	}
 }
 
 // Output represents an output.

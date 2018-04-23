@@ -107,29 +107,29 @@ func HandleUpdateStreamRule(
 	if sc != 200 {
 		return nil, sc, err
 	}
-	rule := &graylog.StreamRule{}
-	if err := util.MSDecode(body, rule); err != nil {
+	prms := &graylog.StreamRuleUpdateParams{}
+	if err := util.MSDecode(body, prms); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
-		}).Info("Failed to parse request body as StreamRule")
+		}).Info("Failed to parse request body as StreamRuleUpdateParams")
 		return nil, 400, err
 	}
 	ms.Logger().WithFields(log.Fields{
-		"body": body, "stream_rule": rule,
+		"body": body, "stream_rule": prms,
 	}).Debug("request body")
 
-	rule.StreamID = streamID
-	rule.ID = ruleID
-	if sc, err := ms.UpdateStreamRule(rule); err != nil {
+	prms.StreamID = streamID
+	prms.ID = ruleID
+	if sc, err := ms.UpdateStreamRule(prms); err != nil {
 		logic.LogWE(sc, ms.Logger().WithFields(log.Fields{
-			"error": err, "rule": &rule, "status_code": sc,
+			"error": err, "rule": &prms, "status_code": sc,
 		}), "faield to update stream rule")
 		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {
 		return nil, 500, err
 	}
-	return map[string]string{"streamrule_id": rule.ID}, 200, nil
+	return map[string]string{"streamrule_id": prms.ID}, 200, nil
 }
 
 // HandleDeleteStreamRule is the handler of Delete a Stream Rule API.

@@ -1,8 +1,9 @@
 package graylog
 
 import (
-	"github.com/suzuki-shunsuke/go-ptr"
 	"time"
+
+	"github.com/suzuki-shunsuke/go-ptr"
 )
 
 const (
@@ -54,6 +55,7 @@ type IndexSet struct {
 	Stats                     *IndexSetStats `json:"-"`
 }
 
+// NewUpdateParams
 func (is *IndexSet) NewUpdateParams() *IndexSetUpdateParams {
 	return &IndexSetUpdateParams{
 		Title:                  is.Title,

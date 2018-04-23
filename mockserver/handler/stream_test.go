@@ -209,18 +209,18 @@ func TestServerHandleUpdateStream(t *testing.T) {
 	}
 
 	// nil check
-	if _, err := server.UpdateStream(nil); err == nil {
+	if _, _, err := server.UpdateStream(nil); err == nil {
 		t.Fatal("stream is nil")
 	}
 
 	// validation
 	stream.ID = ""
-	if _, err := server.UpdateStream(stream); err == nil {
+	if _, _, err := server.UpdateStream(stream.NewUpdateParams()); err == nil {
 		t.Fatal("id is required")
 	}
 	// id check
 	stream.ID = "h"
-	if _, err := server.UpdateStream(stream); err == nil {
+	if _, _, err := server.UpdateStream(stream.NewUpdateParams()); err == nil {
 		t.Fatal("id check")
 	}
 

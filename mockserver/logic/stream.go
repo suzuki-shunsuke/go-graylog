@@ -52,40 +52,41 @@ func (ms *Logic) AddStream(stream *graylog.Stream) (int, error) {
 }
 
 // UpdateStream updates a stream at the Server.
-func (ms *Logic) UpdateStream(stream *graylog.Stream) (int, error) {
-	if stream == nil {
-		return 400, fmt.Errorf("stream is nil")
+func (ms *Logic) UpdateStream(prms *graylog.StreamUpdateParams) (*graylog.Stream, int, error) {
+	if prms == nil {
+		return nil, 400, fmt.Errorf("stream is nil")
 	}
-	if err := validator.UpdateValidator.Struct(stream); err != nil {
-		return 400, err
+	if err := validator.UpdateValidator.Struct(prms); err != nil {
+		return nil, 400, err
 	}
-	s, sc, err := ms.GetStream(stream.ID)
+	stream, sc, err := ms.GetStream(prms.ID)
 	if err != nil {
 		LogWE(sc, ms.Logger().WithFields(log.Fields{
-			"error": err, "id": stream.ID, "status_code": sc,
+			"error": err, "id": prms.ID, "status_code": sc,
 		}), "failed to get a stream")
-		return sc, err
+		return nil, sc, err
 	}
-	if s.IsDefault {
-		return 400, fmt.Errorf("the default stream cannot be edited")
+	if stream.IsDefault {
+		return nil, 400, fmt.Errorf("the default stream cannot be edited")
 	}
 	// check index set existence
-	if stream.IndexSetID != "" {
-		is, sc, err := ms.GetIndexSet(stream.IndexSetID)
+	if prms.IndexSetID != "" {
+		is, sc, err := ms.GetIndexSet(prms.IndexSetID)
 		if err != nil {
 			LogWE(sc, ms.Logger().WithFields(log.Fields{
-				"error": err, "index_set_id": stream.IndexSetID, "status_code": sc,
+				"error": err, "index_set_id": prms.IndexSetID, "status_code": sc,
 			}), "failed to get an index set")
-			return sc, err
+			return nil, sc, err
 		}
 		if !is.Writable {
-			return 400, fmt.Errorf("assigned index set must be writable")
+			return nil, 400, fmt.Errorf("assigned index set must be writable")
 		}
 	}
-	if err := ms.store.UpdateStream(stream); err != nil {
-		return 500, err
+	s, err := ms.store.UpdateStream(prms)
+	if err != nil {
+		return nil, 500, err
 	}
-	return 200, nil
+	return s, 200, nil
 }
 
 // DeleteStream deletes a stream from the Server.

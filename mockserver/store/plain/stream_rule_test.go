@@ -96,11 +96,11 @@ func TestUpdateStreamRule(t *testing.T) {
 	if err := store.AddStreamRule(rule); err != nil {
 		t.Fatal(err)
 	}
-	if err := store.UpdateStreamRule(rule); err != nil {
+	if err := store.UpdateStreamRule(rule.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
 	rule.StreamID = ""
-	if err := store.UpdateStreamRule(rule); err == nil {
+	if err := store.UpdateStreamRule(rule.NewUpdateParams()); err == nil {
 		t.Fatal("stream id is empty")
 	}
 	if err := store.UpdateStreamRule(nil); err == nil {

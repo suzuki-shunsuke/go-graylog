@@ -53,11 +53,11 @@ func TestUpdateStreamRule(t *testing.T) {
 	if _, err := lgc.UpdateStreamRule(nil); err == nil {
 		t.Fatal("stream is nil")
 	}
-	if _, err := lgc.UpdateStreamRule(rule); err != nil {
+	if _, err := lgc.UpdateStreamRule(rule.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
 	rule.ID = ""
-	if _, err := lgc.UpdateStreamRule(rule); err == nil {
+	if _, err := lgc.UpdateStreamRule(rule.NewUpdateParams()); err == nil {
 		t.Fatal("stream.ID is required")
 	}
 }

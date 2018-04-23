@@ -72,30 +72,36 @@ func (store *Store) AddStreamRule(rule *graylog.StreamRule) error {
 }
 
 // UpdateStreamRule updates a stream rule.
-func (store *Store) UpdateStreamRule(rule *graylog.StreamRule) error {
-	if rule == nil {
+func (store *Store) UpdateStreamRule(prms *graylog.StreamRuleUpdateParams) error {
+	if prms == nil {
 		return fmt.Errorf("rule is nil")
 	}
 	store.imutex.Lock()
 	defer store.imutex.Unlock()
-	rules, ok := store.streamRules[rule.StreamID]
+	rules, ok := store.streamRules[prms.StreamID]
 	if !ok {
-		return fmt.Errorf("no stream with id <%s> is found", rule.StreamID)
+		return fmt.Errorf("no stream with id <%s> is found", prms.StreamID)
 	}
-	orig, ok := rules[rule.ID]
+	rule, ok := rules[prms.ID]
 	if !ok {
-		return fmt.Errorf("no stream rule with id <%s> is found", rule.ID)
+		return fmt.Errorf("no stream rule with id <%s> is found", prms.ID)
 	}
-	if rule.Description == "" {
-		rule.Description = orig.Description
+	if prms.Field != "" {
+		rule.Field = prms.Field
 	}
-	if rule.Type == 0 {
-		rule.Type = orig.Type
+	if prms.Description != "" {
+		rule.Description = prms.Description
 	}
-	if rule.Inverted == nil {
-		rule.Inverted = orig.Inverted
+	if prms.Value != "" {
+		rule.Value = prms.Value
 	}
-	rules[rule.ID] = *rule
+	if prms.Type != nil {
+		rule.Type = *prms.Type
+	}
+	if prms.Inverted != nil {
+		rule.Inverted = *prms.Inverted
+	}
+	rules[rule.ID] = rule
 	store.streamRules[rule.StreamID] = rules
 	return nil
 }

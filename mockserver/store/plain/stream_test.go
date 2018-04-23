@@ -77,7 +77,7 @@ func TestUpdateStream(t *testing.T) {
 		t.Fatal(err)
 	}
 	stream.Title += " changed"
-	if err := st.UpdateStream(stream); err != nil {
+	if _, err := st.UpdateStream(stream.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
 	r, err := st.GetStream(stream.ID)

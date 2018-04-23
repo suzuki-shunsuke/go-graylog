@@ -50,6 +50,7 @@ func HandleCreateStream(
 	if sc, err := ms.Authorize(user, "streams:create"); err != nil {
 		return nil, sc, err
 	}
+	// empty description is ignored
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
 			Required:     set.NewStrSet("title", "index_set_id"),
@@ -81,8 +82,8 @@ func HandleUpdateStream(
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// PUT /streams/{streamID} Update a stream
-	stream := &graylog.Stream{ID: ps.ByName("streamID")}
-	if sc, err := ms.Authorize(user, "streams:edit", stream.ID); err != nil {
+	prms := &graylog.StreamUpdateParams{ID: ps.ByName("streamID")}
+	if sc, err := ms.Authorize(user, "streams:edit", prms.ID); err != nil {
 		return nil, sc, err
 	}
 
@@ -93,20 +94,22 @@ func HandleUpdateStream(
 				"title", "index_set_id", "description", "outputs", "matching_type",
 				"rules", "alert_conditions", "alert_receivers",
 				"remove_matches_from_default_stream"),
+			Ignored:      set.NewStrSet("creator_user_id", "created_at", "disabled", "is_default"),
 			ExtForbidden: false,
 		})
 	if err != nil {
 		return nil, sc, err
 	}
 
-	if err := util.MSDecode(body, stream); err != nil {
+	if err := util.MSDecode(body, prms); err != nil {
 		ms.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Warn("Failed to parse request body as stream")
 		return nil, 400, err
 	}
 
-	if sc, err := ms.UpdateStream(stream); err != nil {
+	stream, sc, err := ms.UpdateStream(prms)
+	if err != nil {
 		return nil, sc, err
 	}
 	if err := ms.Save(); err != nil {

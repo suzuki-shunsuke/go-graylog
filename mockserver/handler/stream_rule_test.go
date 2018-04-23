@@ -61,11 +61,11 @@ func TestHandleUpdateStreamRule(t *testing.T) {
 	}
 	rule := rules[0]
 	rule.StreamID = ""
-	if _, err := server.UpdateStreamRule(&rule); err == nil {
+	if _, err := server.UpdateStreamRule(rule.NewUpdateParams()); err == nil {
 		t.Fatal("stream id is required")
 	}
 	rule.StreamID = "h"
-	if _, err := server.UpdateStreamRule(&rule); err == nil {
+	if _, err := server.UpdateStreamRule(rule.NewUpdateParams()); err == nil {
 		t.Fatal(`no stream with id "h" is found`)
 	}
 }
