@@ -182,8 +182,8 @@ type InputData struct {
 	CreatorUserID string                 `json:"creator_user_id,omitempty"`
 }
 
-// ToInput copies InputUpdateParamsData's data to InputUpdateParams.
-func (d *InputUpdateParamsData) ToInput(input *InputUpdateParams) error {
+// ToInputUpdateParams copies InputUpdateParamsData's data to InputUpdateParams.
+func (d *InputUpdateParamsData) ToInputUpdateParams(input *InputUpdateParams) error {
 	input.Title = d.Title
 	input.Type = d.Type
 	input.ID = d.ID

@@ -96,6 +96,7 @@ type IndexSetUpdateParams struct {
 	Writable                  *bool   `json:"writable,omitempty"`
 }
 
+// SetCreateDefaultValues sets the default values of Create Index Set API.
 func (is *IndexSet) SetCreateDefaultValues() {
 	if is.CreationDate == "" {
 		is.SetCreationTime(time.Now())

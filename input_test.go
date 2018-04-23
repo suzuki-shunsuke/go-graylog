@@ -41,16 +41,16 @@ func TestInputNewUpdateParams(t *testing.T) {
 	}
 }
 
-func TestInputUpdatePramsDataToInput(t *testing.T) {
+func TestInputUpdatePramsDataToInputUpdateParams(t *testing.T) {
 	data := graylog.InputUpdateParamsData{}
 	prms := &graylog.InputUpdateParams{}
-	if err := data.ToInput(prms); err != nil {
+	if err := data.ToInputUpdateParams(prms); err != nil {
 		t.Fatal(err)
 	}
 	data = graylog.InputUpdateParamsData{
 		Type: graylog.InputTypeBeats,
 	}
-	if err := data.ToInput(prms); err != nil {
+	if err := data.ToInputUpdateParams(prms); err != nil {
 		t.Fatal(err)
 	}
 }

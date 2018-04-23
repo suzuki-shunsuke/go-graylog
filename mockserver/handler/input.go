@@ -113,7 +113,7 @@ func HandleUpdateInput(
 		return nil, 400, err
 	}
 	prms := &graylog.InputUpdateParams{}
-	if err := d.ToInput(prms); err != nil {
+	if err := d.ToInputUpdateParams(prms); err != nil {
 		return nil, 400, err
 	}
 
