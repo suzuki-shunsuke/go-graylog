@@ -8,7 +8,7 @@
 [![GitHub tag](https://img.shields.io/github/tag/suzuki-shunsuke/go-graylog.svg)](https://github.com/suzuki-shunsuke/go-graylog/releases)
 [![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://raw.githubusercontent.com/suzuki-shunsuke/go-graylog/master/LICENSE)
 
-[Graylog](https://www.graylog.org/) API client and mock server for golang and terraform provider for Graylog.
+[Graylog](https://www.graylog.org/) API client and mock server for Golang and terraform provider for Graylog.
 
 ## Example - client and mock server
 

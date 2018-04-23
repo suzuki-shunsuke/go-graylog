@@ -24,13 +24,13 @@
 * [npm](https://www.npmjs.com/): to validate a commit message and generate the Change Log
 * [Golang](https://golang.org/)
 * [dep](https://golang.github.io/dep/)
-
-We use some node modules to validate commit messages and generate Change Log.
-
-Install node modules by
+* [staticcheck](https://github.com/dominikh/go-tools/tree/master/cmd/staticcheck)
+* [gosimple](https://github.com/dominikh/go-tools/tree/master/cmd/gosimple)
+* [unused](https://github.com/dominikh/go-tools/tree/master/cmd/unused)
+* [errcheck](https://github.com/kisielk/errcheck)
 
 ```
-$ npm
+$ npm i
 ```
 
 ## Test
@@ -59,7 +59,10 @@ $ git push origin master --follow-tags
 ## Coding Guide
 
 * https://github.com/golang/go/wiki/CodeReviewComments
-* Format with `npm run fmt`
+
+```
+$ npm run lint
+```
 
 ## docker-compose.yml
 

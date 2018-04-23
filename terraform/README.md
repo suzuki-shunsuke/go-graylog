@@ -2,12 +2,15 @@
 
 [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/suzuki-shunsuke/go-graylog/terraform)
 [![Build Status](https://travis-ci.org/suzuki-shunsuke/terraform-provider-graylog.svg?branch=master)](https://travis-ci.org/suzuki-shunsuke/terraform-provider-graylog)
-[![codecov](https://codecov.io/gh/suzuki-shunsuke/terraform-provider-graylog/branch/master/graph/badge.svg)](https://codecov.io/gh/suzuki-shunsuke/terraform-provider-graylog)
-[![GitHub last commit](https://img.shields.io/github/last-commit/suzuki-shunsuke/terraform-provider-graylog.svg)](https://github.com/suzuki-shunsuke/terraform-provider-graylog)
-[![GitHub tag](https://img.shields.io/github/tag/suzuki-shunsuke/terraform-provider-graylog.svg)](https://github.com/suzuki-shunsuke/terraform-provider-graylog/releases)
-[![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://raw.githubusercontent.com/suzuki-shunsuke/terraform-provider-graylog/master/LICENSE)
+[![codecov](https://codecov.io/gh/suzuki-shunsuke/go-graylog/branch/master/graph/badge.svg)](https://codecov.io/gh/suzuki-shunsuke/go-graylog)
+[![Go Report Card](https://goreportcard.com/badge/github.com/suzuki-shunsuke/go-graylog)](https://goreportcard.com/report/github.com/suzuki-shunsuke/go-graylog)
+[![GitHub last commit](https://img.shields.io/github/last-commit/suzuki-shunsuke/go-graylog.svg)](https://github.com/suzuki-shunsuke/go-graylog)
+[![GitHub tag](https://img.shields.io/github/tag/suzuki-shunsuke/go-graylog.svg)](https://github.com/suzuki-shunsuke/go-graylog/releases)
+[![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://raw.githubusercontent.com/suzuki-shunsuke/go-graylog/master/LICENSE)
 
-terraform provider for graylog
+terraform provider for [Graylog](https://www.graylog.org/).
+
+This is sub project of [go-graylog](https://github.com/suzuki-shunsuke/go-graylog).
 
 ## Motivation
 
@@ -54,21 +57,3 @@ auth_password | GRAYLOG_AUTH_PASSWORD |
 * [input](docs/input.md)
 * [index_set](docs/index_set.md)
 * [stream](docs/stream.md)
-
-## Supported Graylog version
-
-We use [the graylog's official Docker Image](https://hub.docker.com/r/graylog/graylog/) .
-
-The version is `2.4.3-1` .
-
-## Contribution
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) .
-
-## See also
-
-* [go-graylog](https://github.com/suzuki-shunsuke/go-graylog): Graylog API client and simple mock server for golang
-
-## License
-
-[MIT](LICENSE)
