@@ -22,13 +22,13 @@ By using this provider, you can utilize this flexibility and manage the infrastr
 ## Install
 
 ```
-$ go get github.com/suzuki-shunsuke/terraform-provider-graylog
+$ go get github.com/suzuki-shunsuke/go-graylog/terraform
 ```
 
 Or download binary.
 
 ```
-$ curl 
+$ curl https://github.com/suzuki-shunsuke/go-graylog/releases/download/0.1.0/terraform-provider-graylog-0.1.0.gz
 ```
 
 ## Example
