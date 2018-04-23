@@ -6,6 +6,7 @@
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "test": "bash test.sh",
     "lint": "bash lint.sh",
+    "cover": "make cover",
     "cover-client": "make cover-client",
     "cover-mockserver": "make cover-mockserver",
     "cover-logic": "make cover-logic",

@@ -4,8 +4,11 @@ coverage:
 	mkdir coverage
 t:
 	go test ./... -covermode=atomic
+cover: coverage
+	go test . -coverprofile=coverage/main.txt -covermode=atomic
+	go tool cover -html=coverage/main.txt
 cover-client: coverage
-	go test -coverprofile=coverage/client.txt -covermode=atomic
+	go test ./client -coverprofile=coverage/client.txt -covermode=atomic
 	go tool cover -html=coverage/client.txt
 cover-mockserver: coverage *.go mockserver/*.go
 	go test ./mockserver -coverprofile=coverage/mockserver.txt -covermode=atomic
@@ -13,9 +16,12 @@ cover-mockserver: coverage *.go mockserver/*.go
 cover-logic: coverage
 	go test ./mockserver/logic -coverprofile=coverage/logic.txt -covermode=atomic
 	go tool cover -html=coverage/logic.txt
-cover-inmemory: coverage
-	go test ./mockserver/store/inmemory -coverprofile=coverage/inmemory.txt -covermode=atomic
-	go tool cover -html=coverage/inmemory.txt
+cover-store: coverage
+	go test ./mockserver/store -coverprofile=coverage/store.txt -covermode=atomic
+	go tool cover -html=coverage/store.txt
+cover-plain: coverage
+	go test ./mockserver/store/plain -coverprofile=coverage/plain.txt -covermode=atomic
+	go tool cover -html=coverage/plain.txt
 graylog-mock-server: *.go mockserver/*.go mockserver/exec/main.go
 	go build -o graylog-mock-server mockserver/exec/main.go
 # https://github.com/mitchellh/gox
