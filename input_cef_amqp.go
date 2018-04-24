@@ -5,7 +5,7 @@ func (attrs *InputCEFAMQPAttrs) InputType() string {
 	return InputTypeCEFAMQP
 }
 
-// InputCEFAMQPAttrs
+// InputCEFAMQPAttrs represents CEF AMQP Input's attributes.
 type InputCEFAMQPAttrs struct {
 	Heartbeat              int    `json:"heartbeat,omitempty"`
 	Exchange               string `json:"exchange,omitempty"`

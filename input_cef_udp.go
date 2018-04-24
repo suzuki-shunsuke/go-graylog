@@ -5,7 +5,7 @@ func (attrs *InputCEFUDPAttrs) InputType() string {
 	return InputTypeCEFUDP
 }
 
-// InputCEFUDPAttrs
+// InputCEFUDPAttrs represents CEF UDP Input's attributes.
 type InputCEFUDPAttrs struct {
 	Locale         string `json:"locale,omitempty"`
 	UseFullNames   bool   `json:"use_full_names,omitempty"`

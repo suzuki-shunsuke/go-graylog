@@ -5,7 +5,7 @@ func (attrs *InputSyslogUDPAttrs) InputType() string {
 	return InputTypeSyslogUDP
 }
 
-// InputSyslogUDPAttrs
+// InputSyslogUDPAttrs represents SyslogUDP Input's attributes.
 type InputSyslogUDPAttrs struct {
 	BindAddress            string `json:"bind_address,omitempty" v-create:"required" v-update:"required"`
 	Port                   int    `json:"port,omitempty" v-create:"required" v-update:"required"`

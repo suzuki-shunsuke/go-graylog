@@ -5,7 +5,7 @@ func (attrs *InputGELFKafkaAttrs) InputType() string {
 	return InputTypeGELFKafka
 }
 
-// InputGELFKafkaAttrs
+// InputGELFKafkaAttrs represents GELF Kafka Input's attributes.
 type InputGELFKafkaAttrs struct {
 	OverrideSource      string `json:"override_source,omitempty"`
 	DecompressSizeLimit int    `json:"decompress_size_limit,omitempty"`

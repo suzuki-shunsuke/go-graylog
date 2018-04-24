@@ -5,7 +5,7 @@ func (attrs *InputAWSFlowLogsAttrs) InputType() string {
 	return InputTypeAWSFlowLogs
 }
 
-// InputAWSFlowLogsAttrs
+// InputAWSFlowLogsAttrs represents AWS flow logs Input's attributes.
 type InputAWSFlowLogsAttrs struct {
 	AWSRegion         string `json:"aws_region,omitempty"`
 	AWSAssumeRoleArn  string `json:"aws_assume_role_arn,omitempty"`

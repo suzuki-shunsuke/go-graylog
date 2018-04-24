@@ -11,13 +11,10 @@ import (
 
 // Stream represents a steram.
 type Stream struct {
-	// required
-	Title string `json:"title,omitempty" v-create:"required"`
-	// ex. "5a8c086fc006c600013ca6f5"
-	IndexSetID string `json:"index_set_id,omitempty" v-create:"required"`
-
-	// ex. "5a94abdac006c60001f04fc1"
 	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required,objectid"`
+	// required
+	Title      string `json:"title,omitempty" v-create:"required"`
+	IndexSetID string `json:"index_set_id,omitempty" v-create:"required"`
 	// ex. "2018-02-20T11:37:19.371Z"
 	CreatedAt string `json:"created_at,omitempty" v-create:"isdefault"`
 	// ex. local:admin
@@ -49,7 +46,7 @@ type StreamUpdateParams struct {
 	RemoveMatchesFromDefaultStream *bool            `json:"remove_matches_from_default_stream,omitempty"`
 }
 
-// NewUpdateParams
+// NewUpdateParams converts Stream to StreamUpdateParams.
 func (stream *Stream) NewUpdateParams() *StreamUpdateParams {
 	return &StreamUpdateParams{
 		ID:                             stream.ID,

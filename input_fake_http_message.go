@@ -5,7 +5,7 @@ func (attrs *InputFakeHTTPMessageAttrs) InputType() string {
 	return InputTypeFakeHTTPMessage
 }
 
-// InputFakeHTTPMessageAttrs
+// InputFakeHTTPMessageAttrs represents fake HTTP message Input's attributes.
 type InputFakeHTTPMessageAttrs struct {
 	Sleep             int    `json:"sleep,omitempty"`
 	SleepDeviation    int    `json:"sleep_deviation,omitempty"`

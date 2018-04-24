@@ -15,7 +15,7 @@ type StreamRule struct {
 	Inverted    bool   `json:"inverted,omitempty"`
 }
 
-// StreamRuleUpdateParams
+// StreamRuleUpdateParams represents Update Stream API's paramteres.
 type StreamRuleUpdateParams struct {
 	ID          string `json:"id,omitempty" v-update:"required,objectid"`
 	StreamID    string `json:"stream_id,omitempty" v-update:"required,objectid"`
@@ -26,7 +26,7 @@ type StreamRuleUpdateParams struct {
 	Inverted    *bool  `json:"inverted,omitempty"`
 }
 
-// NewUpdateParams
+// NewUpdateParams converts StreamRule to StreamRuleUpdateParams.
 func (rule *StreamRule) NewUpdateParams() *StreamRuleUpdateParams {
 	return &StreamRuleUpdateParams{
 		ID:          rule.ID,

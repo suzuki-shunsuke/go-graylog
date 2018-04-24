@@ -5,7 +5,7 @@ func (attrs *InputSyslogAMQPAttrs) InputType() string {
 	return InputTypeSyslogAMQP
 }
 
-// InputSyslogAMQPAttrs
+// InputSyslogAMQPAttrs represents SyslogAMQP Input's attributes.
 type InputSyslogAMQPAttrs struct {
 	Heartbeat              int    `json:"heartbeat,omitempty"`
 	Prefetch               int    `json:"prefetch,omitempty"`

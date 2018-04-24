@@ -5,7 +5,7 @@ func (attrs *InputGELFUDPAttrs) InputType() string {
 	return InputTypeGELFUDP
 }
 
-// InputGELFUDPAttrs
+// InputGELFUDPAttrs represents GELF UDP Input's attributes.
 type InputGELFUDPAttrs struct {
 	DecompressSizeLimit int    `json:"decompress_size_limit,omitempty"`
 	OverrideSource      string `json:"override_source,omitempty"`

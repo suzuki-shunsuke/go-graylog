@@ -5,7 +5,7 @@ func (attrs *InputJSONPathAttrs) InputType() string {
 	return InputTypeJSONPath
 }
 
-// InputJSONPathAttrs
+// InputJSONPathAttrs represents JSON path Input's attributes.
 type InputJSONPathAttrs struct {
 	ThrottlingAllowed bool   `json:"throttling_allowed,omitempty"`
 	OverrideSource    string `json:"override_source,omitempty"`

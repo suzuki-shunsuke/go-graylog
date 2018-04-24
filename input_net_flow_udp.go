@@ -5,7 +5,7 @@ func (attrs *InputNetFlowUDPAttrs) InputType() string {
 	return InputTypeNetFlowUDP
 }
 
-// InputNetFlowUDPAttrs
+// InputNetFlowUDPAttrs represents net flow UDP Input's attributes.
 type InputNetFlowUDPAttrs struct {
 	NetFlow9DefinitionsPath string `json:"netflow9_definitions_path,omitempty"`
 	OverrideSource          string `json:"override_source,omitempty"`

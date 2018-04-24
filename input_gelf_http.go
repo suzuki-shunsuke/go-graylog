@@ -5,7 +5,7 @@ func (attrs *InputGELFHTTPAttrs) InputType() string {
 	return InputTypeGELFHTTP
 }
 
-// InputGELFHTTPAttrs
+// InputGELFHTTPAttrs represents GELF HTTP Input's attributes.
 type InputGELFHTTPAttrs struct {
 	IdleWriterTimeOut     int    `json:"idle_writer_timeout,omitempty"`
 	RecvBufferSize        int    `json:"recv_buffer_size,omitempty" v-create:"required" v-update:"required"`

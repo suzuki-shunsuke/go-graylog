@@ -5,7 +5,7 @@ func (attrs *InputCloudTrailAttrs) InputType() string {
 	return InputTypeAWSCloudTrail
 }
 
-// InputCloudTrailAttrs
+// InputCloudTrailAttrs represents aws cloud trail Input's attributes.
 type InputCloudTrailAttrs struct {
 	CreatorUserID     string `json:"creator_user_id,omitempty" v-create:"isdefault"`
 	AWSAssumeRoleArn  string `json:"aws_assume_role_arn,omitempty"`

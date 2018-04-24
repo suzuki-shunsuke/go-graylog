@@ -5,7 +5,7 @@ func (attrs *InputSyslogKafkaAttrs) InputType() string {
 	return InputTypeSyslogKafka
 }
 
-// InputSyslogKafkaAttrs
+// InputSyslogKafkaAttrs represents SyslogKafka Input's attributes.
 type InputSyslogKafkaAttrs struct {
 	ForceRDNS            bool   `json:"force_rdns,omitempty"`
 	StoreFullMessage     bool   `json:"store_full_message,omitempty"`

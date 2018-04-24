@@ -5,7 +5,7 @@ func (attrs *InputGELFTCPAttrs) InputType() string {
 	return InputTypeGELFTCP
 }
 
-// InputGELFTCPAttrs
+// InputGELFTCPAttrs represents GELF TCP Input's attributes.
 type InputGELFTCPAttrs struct {
 	MaxMessageSize        int    `json:"max_message_size,omitempty"`
 	DecompressSizeLimit   int    `json:"decompress_size_limit,omitempty"`

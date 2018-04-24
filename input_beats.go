@@ -5,7 +5,7 @@ func (attrs *InputBeatsAttrs) InputType() string {
 	return InputTypeBeats
 }
 
-// InputBeatsAttrs
+// InputBeatsAttrs represents Beats Input's attributes.
 type InputBeatsAttrs struct {
 	BindAddress           string `json:"bind_address,omitempty" v-create:"required" v-update:"required"`
 	Port                  int    `json:"port,omitempty" v-create:"required" v-update:"required"`

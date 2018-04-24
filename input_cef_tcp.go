@@ -5,7 +5,7 @@ func (attrs *InputCEFTCPAttrs) InputType() string {
 	return InputTypeCEFTCP
 }
 
-// InputCEFTCPAttrs
+// InputCEFTCPAttrs represents CEF TCP Input's attributes.
 type InputCEFTCPAttrs struct {
 	MaxMessageSize        int    `json:"max_message_size,omitempty"`
 	Timezone              string `json:"timezone,omitempty"`

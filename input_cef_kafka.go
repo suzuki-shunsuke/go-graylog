@@ -5,7 +5,7 @@ func (attrs *InputCEFKafkaAttrs) InputType() string {
 	return InputTypeCEFKafka
 }
 
-// InputCEFKafkaAttrs
+// InputCEFKafkaAttrs represents CEF Kafka Input's attributes.
 type InputCEFKafkaAttrs struct {
 	ThrottlingAllowed bool   `json:"throttling_allowed,omitempty"`
 	Locale            string `json:"locale,omitempty"`

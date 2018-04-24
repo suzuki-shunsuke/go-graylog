@@ -5,7 +5,7 @@ func (attrs *InputGELFAMQPAttrs) InputType() string {
 	return InputTypeGELFAMQP
 }
 
-// InputGELFAMQPAttrs
+// InputGELFAMQPAttrs represents GELF AMQP Input's attributes.
 type InputGELFAMQPAttrs struct {
 	ExchangeBind           bool   `json:"exchange_bind,omitempty"`
 	Prefetch               int    `json:"prefetch,omitempty"`

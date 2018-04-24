@@ -5,7 +5,7 @@ func (attrs *InputAWSLogsAttrs) InputType() string {
 	return InputTypeAWSLogs
 }
 
-// InputAWSLogsAttrs
+// InputAWSLogsAttrs represents AWS logs Input's attributes.
 type InputAWSLogsAttrs struct {
 	AWSRegion         string `json:"aws_region,omitempty"`
 	AWSAssumeRoleArn  string `json:"aws_assume_role_arn,omitempty"`
