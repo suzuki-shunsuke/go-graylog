@@ -12,6 +12,8 @@ import (
 )
 
 // Server represents a mock of the Graylog API.
+// Server embeds the Logic, so please see the document about Logic also.
+// https://godoc.org/github.com/suzuki-shunsuke/go-graylog/mockserver/logic
 type Server struct {
 	*logic.Logic `json:"-"`
 	server       *httptest.Server
@@ -19,7 +21,17 @@ type Server struct {
 }
 
 // NewServer returns new Server but doesn't start it.
+// The argument `addr` is the port number which the server uses.
+//
+//   server, err := mockserver.NewServer(":8000", nil)
+//
 // If addr is an empty string, the free port is assigned automatially.
+// The argument `store` is the store which the server uses.
+// If `store` is nil, the default plain store is used and data is not persisted.
+// To start the server, call the Start method.
+//
+//   server.Start()
+//   defer server.Close()
 func NewServer(addr string, store store.Store) (*Server, error) {
 	if store == nil {
 		store = plain.NewStore("")
@@ -55,6 +67,9 @@ func (ms *Server) Close() {
 }
 
 // Endpoint returns the endpoint url.
+//
+//   server, err := mockserver.NewServer(":8000", nil)
+//   fmt.Println(server.Endpoint()) // http://localhost:8000/api
 func (ms *Server) Endpoint() string {
 	return ms.endpoint
 }
