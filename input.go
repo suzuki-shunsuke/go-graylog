@@ -146,7 +146,7 @@ func (input *Input) NewUpdateParams() *InputUpdateParams {
 	}
 }
 
-// InputUpdateParams represents Graylog Input update API's paramter.
+// InputUpdateParams represents Graylog Input update API's parameter.
 type InputUpdateParams struct {
 	ID         string          `json:"id,omitempty" v-update:"required,objectid"`
 	Title      string          `json:"title,omitempty" v-update:"required"`

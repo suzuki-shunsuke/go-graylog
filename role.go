@@ -14,7 +14,7 @@ type Role struct {
 	ReadOnly    bool        `json:"read_only,omitempty"`
 }
 
-// RoleUpdateParams represents Update Role API's parameteres.
+// RoleUpdateParams represents Update Role API's parameters.
 type RoleUpdateParams struct {
 	Name        string  `json:"name,omitempty" v-create:"required" v-update:"required"`
 	Description *string `json:"description,omitempty"`
@@ -22,7 +22,7 @@ type RoleUpdateParams struct {
 	Permissions *set.StrSet `json:"permissions,omitempty" v-create:"required" v-update:"required"`
 }
 
-// NewUpdateParams returns Update Role API's parameteres.
+// NewUpdateParams returns Update Role API's parameters.
 func (role *Role) NewUpdateParams() *RoleUpdateParams {
 	return &RoleUpdateParams{
 		Name:        role.Name,

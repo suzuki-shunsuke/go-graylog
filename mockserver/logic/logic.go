@@ -10,7 +10,7 @@ import (
 )
 
 // Logic represents a mock of the Graylog API.
-// This is embeded to mockserver.Server.
+// This is embedded to mockserver.Server.
 type Logic struct {
 	authEnabled bool
 	streamRules map[string]map[string]graylog.StreamRule

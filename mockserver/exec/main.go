@@ -32,7 +32,7 @@ VERSION:
    %s
 
 OPTIONS:
-   --port value       port number. If you don't set this option, a free port is assigned and the assigned port number is outputed to the console when the mock server runs.
+   --port value       port number. If you don't set this option, a free port is assigned and the assigned port number is output to the console when the mock server runs.
    --log-level value  the log level of logrus which the mock server uses internally. (default: "info")
    --data value       data file path. When the server runs data of the file is loaded and when data of the server is changed data is saved at the file. If this option is not set, no data is loaded and saved.
    --help, -h         show help
@@ -92,7 +92,7 @@ log-level must be any of debug|info|warn|error|fatal|panic`, logLevel)
 func main() {
 	var portFlag = flag.Int(
 		"port", 0,
-		"port number. If you don't set this option, a free port is assigned and the assigned port number is outputed to the console when the mock server runs.")
+		"port number. If you don't set this option, a free port is assigned and the assigned port number is output to the console when the mock server runs.")
 	var dataFlag = flag.String(
 		"data", "",
 		"data file path. When the server runs data of the file is loaded and when data of the server is changed data is saved at the file. If this option is not set, no data is loaded and saved.")

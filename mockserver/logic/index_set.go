@@ -8,7 +8,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/validator"
 )
 
-// HasIndexSet returns wheter the user exists.
+// HasIndexSet returns whether the user exists.
 func (ms *Logic) HasIndexSet(id string) (bool, error) {
 	return ms.store.HasIndexSet(id)
 }
