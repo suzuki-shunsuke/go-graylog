@@ -7,6 +7,12 @@ before_install:
   - npm -v
 install:
   - npm install
+  - go get -t ./...
+  # https://github.com/golang/lint/issues/397
+  # - go get -u golang.org/x/lint/golint
+  - go get honnef.co/go/tools/cmd/gosimple
+  - go get honnef.co/go/tools/cmd/unused
+  - go get honnef.co/go/tools/cmd/staticcheck
 script:
   - npm run commitlint-travis
   - bash lint.sh
