@@ -6,6 +6,8 @@
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "test": "bash test.sh",
     "lint": "bash lint.sh",
+    "metalint": "gometalinter ./...",
+    "fmt": "find . -type d -name node_modules -prune -o -type d -name vendor -prune -o -type f -name \"*.go\" -print | xargs gofmt -l -s -w",
     "cover": "make cover",
     "cover-client": "make cover-client",
     "cover-mockserver": "make cover-mockserver",
@@ -13,7 +15,6 @@
     "cover-inmemory": "make cover-inmemory",
     "build": "make build",
     "upload": "make upload",
-    "fmt": "git ls-files | grep .go | xargs gofmt -l -s -w",
     "commitlint-travis": "commitlint-travis"
   },
   "devDependencies": {
