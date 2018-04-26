@@ -38,10 +38,8 @@ func testCreateStream(
 		}
 		testutil.WaitAfterCreateIndexSet(server)
 
-		if _, _, err := cl.GetStream(id); err != nil {
-			return err
-		}
-		return nil
+		_, _, err = cl.GetStream(id)
+		return err
 	}
 }
 

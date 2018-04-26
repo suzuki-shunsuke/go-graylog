@@ -7,6 +7,10 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
+const (
+	adminName string = "admin"
+)
+
 // RoleMembers returns members of a given role.
 func (ms *Logic) RoleMembers(name string) ([]graylog.User, int, error) {
 	ok, err := ms.HasRole(name)
@@ -45,7 +49,7 @@ func (ms *Logic) AddUserToRole(userName, roleName string) (int, error) {
 		return 404, fmt.Errorf("no role found with name %s", roleName)
 	}
 
-	if userName == "admin" {
+	if userName == adminName {
 		return 500, fmt.Errorf("cannot modify local root user, this is a bug")
 	}
 	user, sc, err := ms.GetUser(userName)
@@ -75,7 +79,7 @@ func (ms *Logic) RemoveUserFromRole(
 		return 404, fmt.Errorf(`no role found with name "%s"`, roleName)
 	}
 
-	if userName == "admin" {
+	if userName == adminName {
 		return 500, fmt.Errorf("cannot modify local root user, this is a bug")
 	}
 	user, sc, err := ms.GetUser(userName)

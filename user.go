@@ -11,33 +11,33 @@ type User struct {
 	// ex. "local:admin"
 	Username string `json:"username,omitempty" v-create:"required" v-update:"required"`
 	// the contact email address
-	Email       string      `json:"email,omitempty" v-create:"required"`
-	Permissions *set.StrSet `json:"permissions,omitempty" v-create:"required"`
+	Email string `json:"email,omitempty" v-create:"required"`
 	// a descriptive name for this account, e.g. the full name.
 	FullName string `json:"full_name,omitempty" v-create:"required"`
 	Password string `json:"password,omitempty" v-create:"required"`
 
-	ID          string       `json:"id,omitempty"`
-	Preferences *Preferences `json:"preferences,omitempty"`
+	ID string `json:"id,omitempty"`
 	// the timezone to use to display times, or leave it as it is to use the system's default.
 	// ex. "UTC"
 	Timezone string `json:"timezone,omitempty"`
-	// Session automatically end after this amount of time, unless they are actively used.
-	// ex. 28800000
-	SessionTimeoutMs int        `json:"session_timeout_ms,omitempty"`
-	External         bool       `json:"external,omitempty"`
-	Startpage        *Startpage `json:"startpage,omitempty"`
-	// Assign the relevant roles to this user to grant them access to the relevant streams and dashboards.
-	// The Reader role grants basic access to the system and will be enabled.
-	// The Admin role grants access to everything in Graylog.
-	// ex. ["Admin"]
-	Roles         *set.StrSet `json:"roles,omitempty"`
-	ReadOnly      bool        `json:"read_only,omitempty"`
-	SessionActive bool        `json:"session_active,omitempty"`
 	// ex. "2018-03-02T06:32:01.841+0000"
 	LastActivity string `json:"last_activity,omitempty"`
 	// ex. "192.168.192.1"
 	ClientAddress string `json:"client_address,omitempty"`
+	// Session automatically end after this amount of time, unless they are actively used.
+	// ex. 28800000
+	SessionTimeoutMs int          `json:"session_timeout_ms,omitempty"`
+	External         bool         `json:"external,omitempty"`
+	ReadOnly         bool         `json:"read_only,omitempty"`
+	SessionActive    bool         `json:"session_active,omitempty"`
+	Preferences      *Preferences `json:"preferences,omitempty"`
+	Startpage        *Startpage   `json:"startpage,omitempty"`
+	// Assign the relevant roles to this user to grant them access to the relevant streams and dashboards.
+	// The Reader role grants basic access to the system and will be enabled.
+	// The Admin role grants access to everything in Graylog.
+	// ex. ["Admin"]
+	Roles       *set.StrSet `json:"roles,omitempty"`
+	Permissions *set.StrSet `json:"permissions,omitempty" v-create:"required"`
 }
 
 // UserUpdateParams represents a user update API's parameter.

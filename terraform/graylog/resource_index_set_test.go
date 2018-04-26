@@ -39,10 +39,8 @@ func testCreateIndexSet(
 		}
 		testutil.WaitAfterCreateIndexSet(server)
 
-		if _, _, err := cl.GetIndexSet(id); err != nil {
-			return err
-		}
-		return nil
+		_, _, err = cl.GetIndexSet(id)
+		return err
 	}
 }
 

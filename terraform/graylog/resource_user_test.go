@@ -25,10 +25,8 @@ func testCreateUser(
 	cl *client.Client, name string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		if _, _, err := cl.GetUser(name); err != nil {
-			return err
-		}
-		return nil
+		_, _, err := cl.GetUser(name)
+		return err
 	}
 }
 

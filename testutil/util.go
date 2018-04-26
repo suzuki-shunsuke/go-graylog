@@ -11,13 +11,17 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver"
 )
 
+const (
+	adminName string = "admin"
+)
+
 func GetNonAdminUser(cl *client.Client) (*graylog.User, error) {
 	users, _, err := cl.GetUsers()
 	if err != nil {
 		return nil, err
 	}
 	for _, user := range users {
-		if user.Username != "admin" {
+		if user.Username != adminName {
 			return &user, nil
 		}
 	}
@@ -129,7 +133,7 @@ func GetServerAndClient() (*mockserver.Server, *client.Client, error) {
 	authName := os.Getenv("GRAYLOG_AUTH_NAME")
 	authPass := os.Getenv("GRAYLOG_AUTH_PASSWORD")
 	if authName == "" {
-		authName = "admin"
+		authName = adminName
 	}
 	if authPass == "" {
 		authPass = "admin"

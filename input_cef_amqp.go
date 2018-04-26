@@ -7,22 +7,22 @@ func (attrs *InputCEFAMQPAttrs) InputType() string {
 
 // InputCEFAMQPAttrs represents CEF AMQP Input's attributes.
 type InputCEFAMQPAttrs struct {
-	Heartbeat              int    `json:"heartbeat,omitempty"`
 	Exchange               string `json:"exchange,omitempty"`
 	Timezone               string `json:"timezone,omitempty"`
 	BrokerPassword         string `json:"broker_password,omitempty"`
-	ParallelQueues         int    `json:"parallel_queues,omitempty"`
-	Prefetch               int    `json:"prefetch,omitempty"`
-	BrokerPort             int    `json:"broker_port,omitempty"`
 	Locale                 string `json:"locale,omitempty"`
-	ExchangeBind           bool   `json:"exchange_bind,omitempty"`
-	RequeueInvalidMessages bool   `json:"requeue_invalid_messages,omitempty"`
-	UseFullNames           bool   `json:"use_full_names,omitempty"`
-	TLS                    bool   `json:"tls,omitempty"`
 	BrokerHostname         string `json:"broker_hostname,omitempty"`
-	ThrottlingAllowed      bool   `json:"throttling_allowed,omitempty"`
 	Queue                  string `json:"queue,omitempty"`
 	BrokerVHost            string `json:"broker_vhost,omitempty"`
 	BrokerUsername         string `json:"broker_username,omitempty"`
 	RoutingKey             string `json:"routing_key,omitempty"`
+	Heartbeat              int    `json:"heartbeat,omitempty"`
+	ParallelQueues         int    `json:"parallel_queues,omitempty"`
+	Prefetch               int    `json:"prefetch,omitempty"`
+	BrokerPort             int    `json:"broker_port,omitempty"`
+	ExchangeBind           bool   `json:"exchange_bind,omitempty"`
+	RequeueInvalidMessages bool   `json:"requeue_invalid_messages,omitempty"`
+	UseFullNames           bool   `json:"use_full_names,omitempty"`
+	TLS                    bool   `json:"tls,omitempty"`
+	ThrottlingAllowed      bool   `json:"throttling_allowed,omitempty"`
 }

@@ -25,10 +25,8 @@ func testCreateRole(
 	cl *client.Client, name string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		if _, _, err := cl.GetRole(name); err != nil {
-			return err
-		}
-		return nil
+		_, _, err := cl.GetRole(name)
+		return err
 	}
 }
 

@@ -51,10 +51,8 @@ func NewLogic(store store.Store) (*Logic, error) {
 	// By Default logLevel is warn,
 	// because debug and info logs are often noisy at unit tests.
 	ms.logger.SetLevel(log.WarnLevel)
-	if err := ms.InitData(); err != nil {
-		return ms, err
-	}
-	return ms, nil
+	err := ms.InitData()
+	return ms, err
 }
 
 // SetStore sets a store to the mock server.

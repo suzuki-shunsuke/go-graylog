@@ -32,8 +32,6 @@ func (ms *Logic) InitData() error {
 	}
 	rule := seed.StreamRule()
 	rule.StreamID = stream.ID
-	if _, err := ms.AddStreamRule(rule); err != nil {
-		return err
-	}
-	return nil
+	_, err = ms.AddStreamRule(rule)
+	return err
 }

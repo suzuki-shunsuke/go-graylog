@@ -157,10 +157,8 @@ func resourceUserUpdate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 	user := newUser(d)
-	if _, err = cl.UpdateUser(user.NewUpdateParams()); err != nil {
-		return err
-	}
-	return nil
+	_, err = cl.UpdateUser(user.NewUpdateParams())
+	return err
 }
 
 func resourceUserDelete(d *schema.ResourceData, m interface{}) error {

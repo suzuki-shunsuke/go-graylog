@@ -11,22 +11,21 @@ import (
 
 // Stream represents a steram.
 type Stream struct {
-	ID string `json:"id,omitempty" v-create:"isdefault" v-update:"required,objectid"`
-	// required
+	ID         string `json:"id,omitempty" v-create:"isdefault" v-update:"required,objectid"`
 	Title      string `json:"title,omitempty" v-create:"required"`
 	IndexSetID string `json:"index_set_id,omitempty" v-create:"required"`
 	// ex. "2018-02-20T11:37:19.371Z"
 	CreatedAt string `json:"created_at,omitempty" v-create:"isdefault"`
 	// ex. local:admin
-	CreatorUserID string   `json:"creator_user_id,omitempty" v-create:"isdefault"`
-	Description   string   `json:"description,omitempty"`
-	Outputs       []Output `json:"outputs,omitempty" v-create:"isdefault"`
+	CreatorUserID string `json:"creator_user_id,omitempty" v-create:"isdefault"`
+	Description   string `json:"description,omitempty"`
 	// ex. "AND"
 	MatchingType                   string           `json:"matching_type,omitempty"`
-	Disabled                       bool             `json:"disabled,omitempty" v-create:"isdefault"`
+	Outputs                        []Output         `json:"outputs,omitempty" v-create:"isdefault"`
 	Rules                          []StreamRule     `json:"rules,omitempty"`
 	AlertConditions                []AlertCondition `json:"alert_conditions,omitempty" v-create:"isdefault"`
 	AlertReceivers                 *AlertReceivers  `json:"alert_receivers,omitempty" v-create:"isdefault"`
+	Disabled                       bool             `json:"disabled,omitempty" v-create:"isdefault"`
 	RemoveMatchesFromDefaultStream bool             `json:"remove_matches_from_default_stream,omitempty"`
 	IsDefault                      bool             `json:"is_default,omitempty" v-create:"isdefault"`
 	// ContentPack `json:"content_pack,omitempty"`
