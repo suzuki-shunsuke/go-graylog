@@ -78,7 +78,7 @@ func TestHandleCreateInput(t *testing.T) {
 
 	body := bytes.NewBuffer([]byte("hoge"))
 	req, err := http.NewRequest(
-		http.MethodPost, client.Endpoints.Inputs, body)
+		http.MethodPost, client.Endpoints().Inputs(), body)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -152,8 +152,12 @@ func TestHandleUpdateInput(t *testing.T) {
 	}
 
 	body := bytes.NewBuffer([]byte("hoge"))
+	u, err := client.Endpoints().Input(id)
+	if err != nil {
+		t.Fatal(err)
+	}
 	req, err := http.NewRequest(
-		http.MethodPut, client.Endpoints.Input(id), body)
+		http.MethodPut, u.String(), body)
 	if err != nil {
 		t.Fatal(err)
 	}

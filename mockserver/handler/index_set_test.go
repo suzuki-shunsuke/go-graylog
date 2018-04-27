@@ -75,7 +75,7 @@ func TestHandleCreateIndexSet(t *testing.T) {
 
 	body := bytes.NewBuffer([]byte("hoge"))
 	req, err := http.NewRequest(
-		http.MethodPost, client.Endpoints.IndexSets, body)
+		http.MethodPost, client.Endpoints().IndexSets(), body)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -129,8 +129,11 @@ func TestHandleUpdateIndexSet(t *testing.T) {
 	}
 
 	body := bytes.NewBuffer([]byte("hoge"))
-	req, err := http.NewRequest(
-		http.MethodPut, client.Endpoints.IndexSet(id), body)
+	u, err := client.Endpoints().IndexSet(id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req, err := http.NewRequest(http.MethodPut, u.String(), body)
 	if err != nil {
 		t.Fatal(err)
 	}

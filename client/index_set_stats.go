@@ -22,8 +22,12 @@ func (client *Client) GetIndexSetStatsContext(
 		return nil, nil, errors.New("id is empty")
 	}
 	indexSetStats := &graylog.IndexSetStats{}
+	u, err := client.Endpoints().IndexSetStats(id)
+	if err != nil {
+		return nil, nil, err
+	}
 	ei, err := client.callGet(
-		ctx, client.Endpoints.IndexSetStats(id), nil, indexSetStats)
+		ctx, u.String(), nil, indexSetStats)
 	return indexSetStats, ei, err
 }
 
@@ -40,6 +44,6 @@ func (client *Client) GetTotalIndexSetsStatsContext(
 ) (*graylog.IndexSetStats, *ErrorInfo, error) {
 	indexSetStats := &graylog.IndexSetStats{}
 	ei, err := client.callGet(
-		ctx, client.Endpoints.IndexSetsStats(), nil, indexSetStats)
+		ctx, client.Endpoints().IndexSetsStats(), nil, indexSetStats)
 	return indexSetStats, ei, err
 }

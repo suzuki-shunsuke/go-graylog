@@ -19,7 +19,7 @@ func (client *Client) GetInputsContext(ctx context.Context) (
 ) {
 	inputs := &graylog.InputsBody{}
 	ei, err := client.callGet(
-		ctx, client.Endpoints.Inputs, nil, inputs)
+		ctx, client.Endpoints().Inputs(), nil, inputs)
 	return inputs.Inputs, inputs.Total, ei, err
 }
 
@@ -35,9 +35,13 @@ func (client *Client) GetInputContext(
 	if id == "" {
 		return nil, nil, errors.New("id is empty")
 	}
+	u, err := client.Endpoints().Input(id)
+	if err != nil {
+		return nil, nil, err
+	}
 	input := &graylog.Input{}
 	ei, err := client.callGet(
-		ctx, client.Endpoints.Input(id), nil, input)
+		ctx, u.String(), nil, input)
 	return input, ei, err
 }
 
@@ -70,7 +74,7 @@ func (client *Client) CreateInputContext(
 		d["node"] = input.Node
 	}
 
-	return client.callPost(ctx, client.Endpoints.Inputs, &d, input)
+	return client.callPost(ctx, client.Endpoints().Inputs(), &d, input)
 }
 
 // UpdateInput updates an given input.
@@ -88,6 +92,10 @@ func (client *Client) UpdateInputContext(
 	if prms.ID == "" {
 		return nil, nil, errors.New("id is empty")
 	}
+	u, err := client.Endpoints().Input(prms.ID)
+	if err != nil {
+		return nil, nil, err
+	}
 	// change attributes to configuration
 	// https://github.com/Graylog2/graylog2-server/issues/3480
 	d := map[string]interface{}{
@@ -100,7 +108,7 @@ func (client *Client) UpdateInputContext(
 		d["node"] = prms.Node
 	}
 	input := &graylog.Input{}
-	ei, err := client.callPut(ctx, client.Endpoints.Input(prms.ID), &d, input)
+	ei, err := client.callPut(ctx, u.String(), &d, input)
 	return input, ei, err
 }
 
@@ -116,5 +124,9 @@ func (client *Client) DeleteInputContext(
 	if id == "" {
 		return nil, errors.New("id is empty")
 	}
-	return client.callDelete(ctx, client.Endpoints.Input(id), nil, nil)
+	u, err := client.Endpoints().Input(id)
+	if err != nil {
+		return nil, err
+	}
+	return client.callDelete(ctx, u.String(), nil, nil)
 }

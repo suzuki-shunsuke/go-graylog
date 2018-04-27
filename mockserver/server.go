@@ -69,7 +69,7 @@ func (ms *Server) Close() {
 // Endpoint returns the endpoint url.
 //
 //   server, err := mockserver.NewServer(":8000", nil)
-//   fmt.Println(server.Endpoint()) // http://localhost:8000/api
+//   fmt.Println(server.Endpoint().String()) // http://localhost:8000/api
 func (ms *Server) Endpoint() string {
 	return ms.endpoint
 }

@@ -16,7 +16,7 @@ func TestNewServer(t *testing.T) {
 	}
 	server.Start()
 	defer server.Close()
-	if ep := server.Endpoint(); ep == "" {
+	if server.Endpoint() == "" {
 		t.Fatal("endpoint is empty")
 	}
 }

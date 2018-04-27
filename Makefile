@@ -10,6 +10,9 @@ cover: coverage
 cover-client: coverage
 	go test ./client -coverprofile=coverage/client.txt -covermode=atomic
 	go tool cover -html=coverage/client.txt
+cover-endpoint: coverage
+	go test ./client/endpoint -coverprofile=coverage/endpoint.txt -covermode=atomic
+	go tool cover -html=coverage/endpoint.txt
 cover-mockserver: coverage *.go mockserver/*.go
 	go test ./mockserver -coverprofile=coverage/mockserver.txt -covermode=atomic
 	go tool cover -html=coverage/mockserver.txt

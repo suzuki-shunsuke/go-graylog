@@ -1,22 +1,19 @@
-set -e
-
 decho() {
   echo "+ $@"
   eval $@
 }
 
 # gofmt
-echo "! git ls-files | grep .go | xargs gofmt -s -d | grep '^'"
-! git ls-files | grep .go | xargs gofmt -s -d | grep '^'
+npm run fmt || exit 1
 
 # golint
-decho golint client terraform/... validator mockserver mockserver/store mockserver/handler mockserver/logic mockserver/seed mockserver/exec mockserver/store/plain
+decho golint client/... terraform/... validator mockserver mockserver/store mockserver/handler mockserver/logic mockserver/seed mockserver/exec mockserver/store/plain || exit 1
 
-decho go test ./mockserver/... -covermode=atomic
+decho go test ./mockserver/... -covermode=atomic || exit 1
 
 if [ -f env.sh ]; then
   decho source env.sh
 fi
 
-decho go test ./util/... ./validator/... ./client/... . -covermode=atomic
-decho go test -v ./terraform/... -covermode=atomic
+decho go test ./util/... ./validator/... ./client/... . -covermode=atomic || exit 1
+decho go test -v ./terraform/... -covermode=atomic || exit 1

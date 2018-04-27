@@ -21,7 +21,7 @@ func (client *Client) GetStreamsContext(
 ) (streams []graylog.Stream, total int, ei *ErrorInfo, err error) {
 	streamsBody := &graylog.StreamsBody{}
 	ei, err = client.callGet(
-		ctx, client.Endpoints.Streams, nil, streamsBody)
+		ctx, client.Endpoints().Streams(), nil, streamsBody)
 	return streamsBody.Streams, streamsBody.Total, ei, err
 }
 
@@ -37,9 +37,12 @@ func (client *Client) GetStreamContext(
 	if id == "" {
 		return nil, nil, errors.New("id is empty")
 	}
+	u, err := client.Endpoints().Stream(id)
+	if err != nil {
+		return nil, nil, err
+	}
 	stream := &graylog.Stream{}
-	ei, err := client.callGet(
-		ctx, client.Endpoints.Stream(id), nil, stream)
+	ei, err := client.callGet(ctx, u.String(), nil, stream)
 	return stream, ei, err
 }
 
@@ -56,7 +59,7 @@ func (client *Client) CreateStreamContext(
 		return nil, fmt.Errorf("stream is nil")
 	}
 	ret := map[string]string{}
-	ei, err := client.callPost(ctx, client.Endpoints.Streams, stream, &ret)
+	ei, err := client.callPost(ctx, client.Endpoints().Streams(), stream, &ret)
 	if err != nil {
 		return ei, err
 	}
@@ -80,7 +83,7 @@ func (client *Client) GetEnabledStreamsContext(
 ) (streams []graylog.Stream, total int, ei *ErrorInfo, err error) {
 	streamsBody := &graylog.StreamsBody{}
 	ei, err = client.callGet(
-		ctx, client.Endpoints.EnabledStreams, nil, streamsBody)
+		ctx, client.Endpoints().EnabledStreams(), nil, streamsBody)
 	return streamsBody.Streams, streamsBody.Total, ei, err
 }
 
@@ -99,9 +102,13 @@ func (client *Client) UpdateStreamContext(
 	if stream.ID == "" {
 		return nil, errors.New("id is empty")
 	}
+	u, err := client.Endpoints().Stream(stream.ID)
+	if err != nil {
+		return nil, err
+	}
 	body := *stream
 	body.ID = ""
-	return client.callPut(ctx, client.Endpoints.Stream(stream.ID), &body, stream)
+	return client.callPut(ctx, u.String(), &body, stream)
 }
 
 // DeleteStream deletes a stream.
@@ -116,7 +123,11 @@ func (client *Client) DeleteStreamContext(
 	if id == "" {
 		return nil, errors.New("id is empty")
 	}
-	return client.callDelete(ctx, client.Endpoints.Stream(id), nil, nil)
+	u, err := client.Endpoints().Stream(id)
+	if err != nil {
+		return nil, err
+	}
+	return client.callDelete(ctx, u.String(), nil, nil)
 }
 
 // PauseStream pauses a stream.
@@ -131,7 +142,11 @@ func (client *Client) PauseStreamContext(
 	if id == "" {
 		return nil, errors.New("id is empty")
 	}
-	return client.callPost(ctx, client.Endpoints.PauseStream(id), nil, nil)
+	u, err := client.Endpoints().PauseStream(id)
+	if err != nil {
+		return nil, err
+	}
+	return client.callPost(ctx, u.String(), nil, nil)
 }
 
 // ResumeStream resumes a stream.
@@ -146,5 +161,9 @@ func (client *Client) ResumeStreamContext(
 	if id == "" {
 		return nil, errors.New("id is empty")
 	}
-	return client.callPost(ctx, client.Endpoints.ResumeStream(id), nil, nil)
+	u, err := client.Endpoints().ResumeStream(id)
+	if err != nil {
+		return nil, err
+	}
+	return client.callPost(ctx, u.String(), nil, nil)
 }

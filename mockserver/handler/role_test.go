@@ -83,7 +83,7 @@ func TestHandleCreateRole(t *testing.T) {
 
 	body := bytes.NewBuffer([]byte("hoge"))
 	req, err := http.NewRequest(
-		http.MethodPost, client.Endpoints.Roles, body)
+		http.MethodPost, client.Endpoints().Roles(), body)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -131,8 +131,11 @@ func TestHandleUpdateRole(t *testing.T) {
 	}
 
 	body := bytes.NewBuffer([]byte("hoge"))
-	req, err := http.NewRequest(
-		http.MethodPut, client.Endpoints.Role(name), body)
+	u, err := client.Endpoints().Role(name)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req, err := http.NewRequest(http.MethodPut, u.String(), body)
 	if err != nil {
 		t.Fatal(err)
 	}

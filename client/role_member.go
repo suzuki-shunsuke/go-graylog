@@ -19,9 +19,13 @@ func (client *Client) GetRoleMembersContext(
 	if name == "" {
 		return nil, nil, errors.New("name is empty")
 	}
+	u, err := client.Endpoints().RoleMembers(name)
+	if err != nil {
+		return nil, nil, err
+	}
 	users := &graylog.UsersBody{}
 	ei, err := client.callGet(
-		ctx, client.Endpoints.RoleMembers(name), nil, users)
+		ctx, u.String(), nil, users)
 	return users.Users, ei, err
 }
 
@@ -42,8 +46,11 @@ func (client *Client) AddUserToRoleContext(
 	if roleName == "" {
 		return nil, errors.New("roleName is empty")
 	}
-	return client.callPut(
-		ctx, client.Endpoints.RoleMember(userName, roleName), nil, nil)
+	u, err := client.Endpoints().RoleMember(userName, roleName)
+	if err != nil {
+		return nil, err
+	}
+	return client.callPut(ctx, u.String(), nil, nil)
 }
 
 // RemoveUserFromRole removes a user from a role.
@@ -64,6 +71,9 @@ func (client *Client) RemoveUserFromRoleContext(
 	if roleName == "" {
 		return nil, errors.New("roleName is empty")
 	}
-	return client.callDelete(
-		ctx, client.Endpoints.RoleMember(userName, roleName), nil, nil)
+	u, err := client.Endpoints().RoleMember(userName, roleName)
+	if err != nil {
+		return nil, err
+	}
+	return client.callDelete(ctx, u.String(), nil, nil)
 }

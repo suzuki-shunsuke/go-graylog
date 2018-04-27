@@ -146,7 +146,7 @@ func TestHandleCreateStream(t *testing.T) {
 
 	body := bytes.NewBuffer([]byte("hoge"))
 	req, err := http.NewRequest(
-		http.MethodPost, client.Endpoints.Streams, body)
+		http.MethodPost, client.Endpoints().Streams(), body)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -176,7 +176,11 @@ func TestServerHandleUpdateStream(t *testing.T) {
 	if _, err := server.AddStream(stream); err != nil {
 		t.Fatal(err)
 	}
-	endpoint := client.Endpoints.Stream(stream.ID)
+	u, err := client.Endpoints().Stream(stream.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	endpoint := u.String()
 
 	body := bytes.NewBuffer([]byte("hoge"))
 	if err := testUpdateStreamStatusCode(endpoint, client.Name(), client.Password(), body, 400); err != nil {

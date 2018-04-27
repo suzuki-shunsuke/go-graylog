@@ -42,8 +42,8 @@ func setEnv() (*client.Client, *mockserver.Server, error) {
 		server *mockserver.Server
 		err    error
 	)
-	endpoint, ok := os.LookupEnv("GRAYLOG_WEB_ENDPOINT_URI")
-	if !ok {
+	endpoint := os.Getenv("GRAYLOG_WEB_ENDPOINT_URI")
+	if endpoint == "" {
 		server, err = mockserver.NewServer("", nil)
 		if err != nil {
 			return nil, nil, err

@@ -20,7 +20,7 @@ func (client *Client) CreateRoleContext(
 	if role == nil {
 		return nil, fmt.Errorf("role is nil")
 	}
-	return client.callPost(ctx, client.Endpoints.Roles, role, role)
+	return client.callPost(ctx, client.Endpoints().Roles(), role, role)
 }
 
 // GetRoles returns all roles.
@@ -34,7 +34,7 @@ func (client *Client) GetRolesContext(ctx context.Context) (
 ) {
 	roles := &graylog.RolesBody{}
 	ei, err := client.callGet(
-		ctx, client.Endpoints.Roles, nil, roles)
+		ctx, client.Endpoints().Roles(), nil, roles)
 	return roles.Roles, roles.Total, ei, err
 }
 
@@ -50,9 +50,13 @@ func (client *Client) GetRoleContext(
 	if name == "" {
 		return nil, nil, errors.New("name is empty")
 	}
+	u, err := client.Endpoints().Role(name)
+	if err != nil {
+		return nil, nil, err
+	}
 	role := &graylog.Role{}
 	ei, err := client.callGet(
-		ctx, client.Endpoints.Role(name), nil, role)
+		ctx, u.String(), nil, role)
 	return role, ei, err
 }
 
@@ -73,8 +77,12 @@ func (client *Client) UpdateRoleContext(
 	if prms == nil {
 		return nil, nil, fmt.Errorf("role is nil")
 	}
+	u, err := client.Endpoints().Role(name)
+	if err != nil {
+		return nil, nil, err
+	}
 	role := &graylog.Role{}
-	ei, err := client.callPut(ctx, client.Endpoints.Role(name), prms, role)
+	ei, err := client.callPut(ctx, u.String(), prms, role)
 	return role, ei, err
 }
 
@@ -90,5 +98,9 @@ func (client *Client) DeleteRoleContext(
 	if name == "" {
 		return nil, errors.New("name is empty")
 	}
-	return client.callDelete(ctx, client.Endpoints.Role(name), nil, nil)
+	u, err := client.Endpoints().Role(name)
+	if err != nil {
+		return nil, err
+	}
+	return client.callDelete(ctx, u.String(), nil, nil)
 }

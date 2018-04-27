@@ -97,7 +97,7 @@ func TestHandleCreateUser(t *testing.T) {
 
 	body := bytes.NewBuffer([]byte("hoge"))
 	req, err := http.NewRequest(
-		http.MethodPost, client.Endpoints.Users, body)
+		http.MethodPost, client.Endpoints().Users(), body)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -142,8 +142,11 @@ func TestHandleUpdateUser(t *testing.T) {
 	}
 
 	body := bytes.NewBuffer([]byte("hoge"))
-	req, err := http.NewRequest(
-		http.MethodPut, client.Endpoints.User(userName), body)
+	u, err := client.Endpoints().User(userName)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req, err := http.NewRequest(http.MethodPut, u.String(), body)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -171,7 +174,7 @@ func TestHandleDeleteUser(t *testing.T) {
 		t.Fatal(err)
 	}
 	if _, err := client.DeleteUser(user.Username); err != nil {
-		t.Fatal("Failed to DeleteUser", err)
+		t.Fatal(err)
 	}
 	if _, err := client.DeleteUser(""); err == nil {
 		t.Fatal("username should be required.")
