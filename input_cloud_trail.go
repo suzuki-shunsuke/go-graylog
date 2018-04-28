@@ -4,18 +4,18 @@ const (
 	InputTypeAWSCloudTrail string = "org.graylog.aws.inputs.cloudtrail.CloudTrailInput"
 )
 
-// NewInputCloudTrailAttrs is the constructor of InputCloudTrailAttrs.
-func NewInputCloudTrailAttrs() InputAttrs {
-	return &InputCloudTrailAttrs{}
+// NewInputAWSCloudTrailAttrs is the constructor of InputAWSCloudTrailAttrs.
+func NewInputAWSCloudTrailAttrs() InputAttrs {
+	return &InputAWSCloudTrailAttrs{}
 }
 
 // InputType is the implementation of the InputAttrs interface.
-func (attrs InputCloudTrailAttrs) InputType() string {
+func (attrs InputAWSCloudTrailAttrs) InputType() string {
 	return InputTypeAWSCloudTrail
 }
 
 // InputCloudTrailAttrs represents aws cloud trail Input's attributes.
-type InputCloudTrailAttrs struct {
+type InputAWSCloudTrailAttrs struct {
 	CreatorUserID     string `json:"creator_user_id,omitempty" v-create:"isdefault"`
 	AWSAssumeRoleArn  string `json:"aws_assume_role_arn,omitempty"`
 	AWSAccessKey      string `json:"aws_access_key,omitempty"`

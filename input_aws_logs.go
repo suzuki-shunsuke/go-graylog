@@ -1,21 +1,21 @@
 package graylog
 
 const (
-	InputTypeAWSLogs string = "org.graylog.aws.inputs.cloudwatch.CloudWatchLogsInput"
+	InputTypeAWSCloudWatchLogs string = "org.graylog.aws.inputs.cloudwatch.CloudWatchLogsInput"
 )
 
-// NewInputAWSLogsAttrs is the constructor of InputAWSLogsAttrs.
-func NewInputAWSLogsAttrs() InputAttrs {
-	return &InputAWSLogsAttrs{}
+// NewInputAWSCloudWatchLogsAttrs is the constructor of InputAWSCloudWatchLogsAttrs.
+func NewInputAWSCloudWatchLogsAttrs() InputAttrs {
+	return &InputAWSCloudWatchLogsAttrs{}
 }
 
 // InputType is the implementation of the InputAttrs interface.
-func (attrs InputAWSLogsAttrs) InputType() string {
-	return InputTypeAWSLogs
+func (attrs InputAWSCloudWatchLogsAttrs) InputType() string {
+	return InputTypeAWSCloudWatchLogs
 }
 
-// InputAWSLogsAttrs represents AWS logs Input's attributes.
-type InputAWSLogsAttrs struct {
+// InputAWSCloudWatchLogsAttrs represents AWS logs Input's attributes.
+type InputAWSCloudWatchLogsAttrs struct {
 	AWSRegion         string `json:"aws_region,omitempty"`
 	AWSAssumeRoleArn  string `json:"aws_assume_role_arn,omitempty"`
 	AWSAccessKey      string `json:"aws_access_key,omitempty"`
