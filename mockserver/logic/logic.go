@@ -45,8 +45,8 @@ func NewLogic(store store.Store) (*Logic, error) {
 
 		store:  store,
 		logger: log.New(),
-		// By default the authentication is disabled
-		authEnabled: false,
+		// By default the authentication is enabled
+		authEnabled: true,
 	}
 	// By Default logLevel is warn,
 	// because debug and info logs are often noisy at unit tests.
