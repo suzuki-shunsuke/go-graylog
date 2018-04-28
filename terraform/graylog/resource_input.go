@@ -10,19 +10,19 @@ import (
 
 func resourceInput() *schema.Resource {
 	cfgSchema := map[string]*schema.Schema{}
-	for _, s := range graylog.InputAttributesStrFields {
+	for s := range graylog.InputAttributesStrFieldSet.ToMap(false) {
 		cfgSchema[s] = &schema.Schema{
 			Type:     schema.TypeString,
 			Optional: true,
 		}
 	}
-	for _, s := range graylog.InputAttributesIntFields {
+	for s := range graylog.InputAttributesIntFieldSet.ToMap(false) {
 		cfgSchema[s] = &schema.Schema{
 			Type:     schema.TypeInt,
 			Optional: true,
 		}
 	}
-	for _, s := range graylog.InputAttributesBoolFields {
+	for s := range graylog.InputAttributesBoolFieldSet.ToMap(false) {
 		cfgSchema[s] = &schema.Schema{
 			Type:     schema.TypeBool,
 			Optional: true,

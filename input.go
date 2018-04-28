@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/suzuki-shunsuke/go-graylog/util"
 	"github.com/suzuki-shunsuke/go-ptr"
+	"github.com/suzuki-shunsuke/go-set"
 )
 
 const (
@@ -34,19 +36,10 @@ const (
 )
 
 var (
-	// When update these fields variables, update also terraform graylog_input resource's document.
-	InputAttributesIntFields = []string{
-		"port", "recv_buffer_size", "heartbeat", "prefetch", "broker_port",
-		"parallel_queues", "fetch_wait_max", "fetch_min_bytes", "threads",
-		"max_message_size", "decompress_size_limit", "idle_writer_timeout",
-		"max_chunk_size", "interval"}
-	// When update these fields variables, update also terraform graylog_input resource's document.
-	InputAttributesBoolFields = []string{
-		"throttling_allowed", "tls_enable", "tcp_keepalive", "exchange_bind", "tls", "requeue_invalid_messages", "use_full_names", "use_null_delimiter", "enable_cors", "force_rdns", "store_full_message", "expand_structured_data", "allow_override_date"}
-	// When update these fields variables, update also terraform graylog_input resource's document.
-	InputAttributesStrFields = []string{
-		"bind_address", "aws_region", "aws_assume_role_arn", "aws_access_key", "kinesis_stream_name", "aws_secret_key", "aws_sqs_region", "aws_s3_region", "aws_sqs_queue_name", "override_source", "tls_key_file", "tls_key_password", "tls_client_auth_cert_file", "tls_client_auth", "tls_cert_file", "timezone", "broker_vhost", "broker_username", "locale", "broker_password", "exchange", "routing_key", "broker_hostname", "queue", "topic_filter", "offset_reset", "zookeeper", "headers", "path", "target_url", "source", "timeunit", "netflow9_definitions_path"}
-	inputAttrsList = []InputAttributes{
+	InputAttributesIntFieldSet  = set.NewStrSet()
+	InputAttributesBoolFieldSet = set.NewStrSet()
+	InputAttributesStrFieldSet  = set.NewStrSet()
+	inputAttrsList              = []InputAttributes{
 		&InputCloudTrailAttrs{},
 		&InputAWSFlowLogsAttrs{},
 		&InputAWSLogsAttrs{},
@@ -75,6 +68,22 @@ var (
 func init() {
 	for _, attrs := range inputAttrsList {
 		inputAttrsMap[attrs.InputType()] = attrs
+		ts := reflect.Indirect(reflect.ValueOf(attrs)).Type()
+		n := ts.NumField()
+		for i := 0; i < n; i++ {
+			f := ts.Field(i)
+			tag := strings.Split(f.Tag.Get("json"), ",")[0]
+			switch f.Type.Kind() {
+			case reflect.String:
+				InputAttributesStrFieldSet.Add(tag)
+			case reflect.Int:
+				InputAttributesIntFieldSet.Add(tag)
+			case reflect.Bool:
+				InputAttributesBoolFieldSet.Add(tag)
+			default:
+				panic(fmt.Sprintf("invalid type: %v", f.Type.Kind()))
+			}
+		}
 	}
 }
 
