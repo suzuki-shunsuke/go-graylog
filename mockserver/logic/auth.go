@@ -7,7 +7,7 @@ import (
 )
 
 // Authenticate authenticates a user.
-func (ms *Logic) Authenticate(name, password string) (*graylog.User, int, error) {
+func (lgc *Logic) Authenticate(name, password string) (*graylog.User, int, error) {
 	if name == "" || password == "" {
 		return nil, 401, fmt.Errorf("authentication failure")
 	}
@@ -17,7 +17,7 @@ func (ms *Logic) Authenticate(name, password string) (*graylog.User, int, error)
 	}
 	if password == "token" {
 		// access token
-		user, err := ms.store.GetUserByAccessToken(name)
+		user, err := lgc.store.GetUserByAccessToken(name)
 		if err != nil {
 			return nil, 500, err
 		}
@@ -26,7 +26,7 @@ func (ms *Logic) Authenticate(name, password string) (*graylog.User, int, error)
 		}
 		return user, 200, nil
 	}
-	user, err := ms.store.GetUser(name)
+	user, err := lgc.store.GetUser(name)
 	if err != nil {
 		return nil, 500, err
 	}

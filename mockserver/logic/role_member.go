@@ -12,8 +12,8 @@ const (
 )
 
 // RoleMembers returns members of a given role.
-func (ms *Logic) RoleMembers(name string) ([]graylog.User, int, error) {
-	ok, err := ms.HasRole(name)
+func (lgc *Logic) RoleMembers(name string) ([]graylog.User, int, error) {
+	ok, err := lgc.HasRole(name)
 	if err != nil {
 		return nil, 500, err
 	}
@@ -21,7 +21,7 @@ func (ms *Logic) RoleMembers(name string) ([]graylog.User, int, error) {
 		return nil, 404, fmt.Errorf("no role found with name %s", name)
 	}
 	users := []graylog.User{}
-	us, sc, err := ms.GetUsers()
+	us, sc, err := lgc.GetUsers()
 	if err != nil {
 		return us, sc, err
 	}
@@ -40,8 +40,8 @@ func (ms *Logic) RoleMembers(name string) ([]graylog.User, int, error) {
 }
 
 // AddUserToRole adds a user to a role.
-func (ms *Logic) AddUserToRole(userName, roleName string) (int, error) {
-	ok, err := ms.HasRole(roleName)
+func (lgc *Logic) AddUserToRole(userName, roleName string) (int, error) {
+	ok, err := lgc.HasRole(roleName)
 	if err != nil {
 		return 500, err
 	}
@@ -52,7 +52,7 @@ func (ms *Logic) AddUserToRole(userName, roleName string) (int, error) {
 	if userName == adminName {
 		return 500, fmt.Errorf("cannot modify local root user, this is a bug")
 	}
-	user, sc, err := ms.GetUser(userName)
+	user, sc, err := lgc.GetUser(userName)
 	if err != nil {
 		return sc, err
 	}
@@ -64,14 +64,14 @@ func (ms *Logic) AddUserToRole(userName, roleName string) (int, error) {
 	} else {
 		user.Roles.Add(roleName)
 	}
-	return ms.UpdateUser(user.NewUpdateParams())
+	return lgc.UpdateUser(user.NewUpdateParams())
 }
 
 // RemoveUserFromRole removes a user from a role.
-func (ms *Logic) RemoveUserFromRole(
+func (lgc *Logic) RemoveUserFromRole(
 	userName, roleName string,
 ) (int, error) {
-	ok, err := ms.HasRole(roleName)
+	ok, err := lgc.HasRole(roleName)
 	if err != nil {
 		return 500, err
 	}
@@ -82,7 +82,7 @@ func (ms *Logic) RemoveUserFromRole(
 	if userName == adminName {
 		return 500, fmt.Errorf("cannot modify local root user, this is a bug")
 	}
-	user, sc, err := ms.GetUser(userName)
+	user, sc, err := lgc.GetUser(userName)
 	if err != nil {
 		return sc, err
 	}
@@ -92,5 +92,5 @@ func (ms *Logic) RemoveUserFromRole(
 	if user.Roles != nil {
 		user.Roles.Remove(roleName)
 	}
-	return ms.UpdateUser(user.NewUpdateParams())
+	return lgc.UpdateUser(user.NewUpdateParams())
 }

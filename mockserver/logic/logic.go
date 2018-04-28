@@ -28,8 +28,8 @@ type Logic struct {
 //   logger := lgc.Logger()
 //   logger.SetFormatter(&log.JSONFormatter{})
 //   logger.SetLevel(log.WarnLevel)
-func (ms *Logic) Logger() *log.Logger {
-	return ms.logger
+func (lgc *Logic) Logger() *log.Logger {
+	return lgc.logger
 }
 
 // NewLogic returns new Server.
@@ -39,7 +39,7 @@ func NewLogic(store store.Store) (*Logic, error) {
 	if store == nil {
 		store = plain.NewStore("")
 	}
-	ms := &Logic{
+	lgc := &Logic{
 		// indexSetStats: map[string]graylog.IndexSetStats{},
 		streamRules: map[string]map[string]graylog.StreamRule{},
 
@@ -50,24 +50,24 @@ func NewLogic(store store.Store) (*Logic, error) {
 	}
 	// By Default logLevel is warn,
 	// because debug and info logs are often noisy at unit tests.
-	ms.logger.SetLevel(log.WarnLevel)
-	err := ms.InitData()
-	return ms, err
+	lgc.logger.SetLevel(log.WarnLevel)
+	err := lgc.InitData()
+	return lgc, err
 }
 
 // SetStore sets a store to the mock server.
-func (ms *Logic) SetStore(store store.Store) {
-	ms.store = store
+func (lgc *Logic) SetStore(store store.Store) {
+	lgc.store = store
 }
 
 // Save writes Mock Server's data in a file for persistence.
-func (ms *Logic) Save() error {
-	return ms.store.Save()
+func (lgc *Logic) Save() error {
+	return lgc.store.Save()
 }
 
 // Load reads Mock Server's data from a file.
-func (ms *Logic) Load() error {
-	return ms.store.Load()
+func (lgc *Logic) Load() error {
+	return lgc.store.Load()
 }
 
 // SetAuth sets whether the authentication and authentication are enabled.
@@ -78,13 +78,13 @@ func (ms *Logic) Load() error {
 // Enable the authentication.
 //
 //   lgc.SetAuth(true)
-func (ms *Logic) SetAuth(authEnabled bool) {
-	ms.authEnabled = authEnabled
+func (lgc *Logic) SetAuth(authEnabled bool) {
+	lgc.authEnabled = authEnabled
 }
 
 // Auth returns whether the authentication and authentication are enabled.
-func (ms *Logic) Auth() bool {
-	return ms.authEnabled
+func (lgc *Logic) Auth() bool {
+	return lgc.authEnabled
 }
 
 // Authorize authorizes a user.
@@ -98,11 +98,11 @@ func (ms *Logic) Auth() bool {
 //   // whether the user has the permission to read the role "foo"
 //   sc, err := lgc.Authorize(admin, "roles:read", "foo")
 //   fmt.Println(sc, err) // 200, nil
-func (ms *Logic) Authorize(user *graylog.User, scope string, args ...string) (int, error) {
+func (lgc *Logic) Authorize(user *graylog.User, scope string, args ...string) (int, error) {
 	if user == nil {
 		return 200, nil
 	}
-	ok, err := ms.store.Authorize(user, scope, args...)
+	ok, err := lgc.store.Authorize(user, scope, args...)
 	if err != nil {
 		return 500, err
 	}

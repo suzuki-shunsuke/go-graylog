@@ -14,13 +14,13 @@ func encryptPassword(password string) string {
 }
 
 // HasUser returns whether the user exists.
-func (ms *Logic) HasUser(username string) (bool, error) {
-	return ms.store.HasUser(username)
+func (lgc *Logic) HasUser(username string) (bool, error) {
+	return lgc.store.HasUser(username)
 }
 
 // GetUser returns a user.
-func (ms *Logic) GetUser(username string) (*graylog.User, int, error) {
-	user, err := ms.store.GetUser(username)
+func (lgc *Logic) GetUser(username string) (*graylog.User, int, error) {
+	user, err := lgc.store.GetUser(username)
 	if err != nil {
 		return user, 500, err
 	}
@@ -31,18 +31,18 @@ func (ms *Logic) GetUser(username string) (*graylog.User, int, error) {
 }
 
 // GetUsers returns a list of users.
-func (ms *Logic) GetUsers() ([]graylog.User, int, error) {
-	users, err := ms.store.GetUsers()
+func (lgc *Logic) GetUsers() ([]graylog.User, int, error) {
+	users, err := lgc.store.GetUsers()
 	if err != nil {
 		return users, 500, err
 	}
 	return users, 200, nil
 }
 
-func (ms *Logic) checkUserRoles(roles []string) (int, error) {
+func (lgc *Logic) checkUserRoles(roles []string) (int, error) {
 	if len(roles) != 0 {
 		for _, roleName := range roles {
-			ok, err := ms.HasRole(roleName)
+			ok, err := lgc.HasRole(roleName)
 			if err != nil {
 				return 500, err
 			}
@@ -57,14 +57,14 @@ func (ms *Logic) checkUserRoles(roles []string) (int, error) {
 }
 
 // AddUser adds a user to the Server.
-func (ms *Logic) AddUser(user *graylog.User) (int, error) {
+func (lgc *Logic) AddUser(user *graylog.User) (int, error) {
 	// client side validation
 	if err := validator.CreateValidator.Struct(user); err != nil {
 		return 400, err
 	}
 
 	// Check a given username has already used.
-	ok, err := ms.HasUser(user.Username)
+	ok, err := lgc.HasUser(user.Username)
 	if err != nil {
 		return 500, err
 	}
@@ -75,7 +75,7 @@ func (ms *Logic) AddUser(user *graylog.User) (int, error) {
 
 	// check role exists
 	if user.Roles != nil {
-		if sc, err := ms.checkUserRoles(user.Roles.ToList()); err != nil {
+		if sc, err := lgc.checkUserRoles(user.Roles.ToList()); err != nil {
 			return sc, err
 		}
 	}
@@ -83,7 +83,7 @@ func (ms *Logic) AddUser(user *graylog.User) (int, error) {
 	user.SetDefaultValues()
 	user.Password = encryptPassword(user.Password)
 	// Add a user
-	if err := ms.store.AddUser(user); err != nil {
+	if err := lgc.store.AddUser(user); err != nil {
 		return 500, err
 	}
 	return 200, nil
@@ -91,12 +91,12 @@ func (ms *Logic) AddUser(user *graylog.User) (int, error) {
 
 // UpdateUser updates a user of the Server.
 // "email", "permissions", "full_name", "password"
-func (ms *Logic) UpdateUser(prms *graylog.UserUpdateParams) (int, error) {
+func (lgc *Logic) UpdateUser(prms *graylog.UserUpdateParams) (int, error) {
 	if prms == nil {
 		return 400, fmt.Errorf("user is nil")
 	}
 	// Check updated user exists
-	ok, err := ms.HasUser(prms.Username)
+	ok, err := lgc.HasUser(prms.Username)
 	if err != nil {
 		return 500, err
 	}
@@ -111,7 +111,7 @@ func (ms *Logic) UpdateUser(prms *graylog.UserUpdateParams) (int, error) {
 
 	// check role exists
 	if prms.Roles != nil {
-		if sc, err := ms.checkUserRoles(prms.Roles.ToList()); err != nil {
+		if sc, err := lgc.checkUserRoles(prms.Roles.ToList()); err != nil {
 			return sc, err
 		}
 	}
@@ -120,16 +120,16 @@ func (ms *Logic) UpdateUser(prms *graylog.UserUpdateParams) (int, error) {
 	}
 
 	// update
-	if err := ms.store.UpdateUser(prms); err != nil {
+	if err := lgc.store.UpdateUser(prms); err != nil {
 		return 500, err
 	}
 	return 200, nil
 }
 
 // DeleteUser removes a user from the Server.
-func (ms *Logic) DeleteUser(name string) (int, error) {
+func (lgc *Logic) DeleteUser(name string) (int, error) {
 	// Check deleted user exists
-	ok, err := ms.HasUser(name)
+	ok, err := lgc.HasUser(name)
 	if err != nil {
 		return 500, err
 	}
@@ -141,13 +141,13 @@ func (ms *Logic) DeleteUser(name string) (int, error) {
 		return 404, fmt.Errorf(`the user "%s" is not found`, name)
 	}
 	// Delete a user
-	if err := ms.store.DeleteUser(name); err != nil {
+	if err := lgc.store.DeleteUser(name); err != nil {
 		return 500, err
 	}
 	return 200, nil
 }
 
 // UserList returns a list of all users.
-func (ms *Logic) UserList() ([]graylog.User, error) {
-	return ms.store.GetUsers()
+func (lgc *Logic) UserList() ([]graylog.User, error) {
+	return lgc.store.GetUsers()
 }

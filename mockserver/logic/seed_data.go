@@ -5,33 +5,33 @@ import (
 )
 
 // InitData sets an initial data.
-func (ms *Logic) InitData() error {
+func (lgc *Logic) InitData() error {
 	role := seed.Role()
-	if _, err := ms.AddRole(role); err != nil {
+	if _, err := lgc.AddRole(role); err != nil {
 		return err
 	}
-	if _, err := ms.AddUser(seed.User()); err != nil {
+	if _, err := lgc.AddUser(seed.User()); err != nil {
 		return err
 	}
-	if _, err := ms.AddUser(seed.Nobody()); err != nil {
+	if _, err := lgc.AddUser(seed.Nobody()); err != nil {
 		return err
 	}
-	ms.AddInput(seed.Input())
+	lgc.AddInput(seed.Input())
 	is := seed.IndexSet()
-	if _, err := ms.AddIndexSet(is); err != nil {
+	if _, err := lgc.AddIndexSet(is); err != nil {
 		return err
 	}
-	is, _, err := ms.SetDefaultIndexSet(is.ID)
+	is, _, err := lgc.SetDefaultIndexSet(is.ID)
 	if err != nil {
 		return err
 	}
 	stream := seed.Stream()
 	stream.IndexSetID = is.ID
-	if _, err := ms.AddStream(stream); err != nil {
+	if _, err := lgc.AddStream(stream); err != nil {
 		return err
 	}
 	rule := seed.StreamRule()
 	rule.StreamID = stream.ID
-	_, err = ms.AddStreamRule(rule)
+	_, err = lgc.AddStreamRule(rule)
 	return err
 }

@@ -9,13 +9,13 @@ import (
 )
 
 // HasIndexSet returns whether the user exists.
-func (ms *Logic) HasIndexSet(id string) (bool, error) {
-	return ms.store.HasIndexSet(id)
+func (lgc *Logic) HasIndexSet(id string) (bool, error) {
+	return lgc.store.HasIndexSet(id)
 }
 
 // GetIndexSets returns a list of all index sets.
-func (ms *Logic) GetIndexSets(skip, limit int) ([]graylog.IndexSet, int, int, error) {
-	iss, total, err := ms.store.GetIndexSets(skip, limit)
+func (lgc *Logic) GetIndexSets(skip, limit int) ([]graylog.IndexSet, int, int, error) {
+	iss, total, err := lgc.store.GetIndexSets(skip, limit)
 	if err != nil {
 		return iss, total, 500, err
 	}
@@ -24,7 +24,7 @@ func (ms *Logic) GetIndexSets(skip, limit int) ([]graylog.IndexSet, int, int, er
 
 // GetIndexSet returns an index set.
 // If an index set is not found, returns an error.
-func (ms *Logic) GetIndexSet(id string) (*graylog.IndexSet, int, error) {
+func (lgc *Logic) GetIndexSet(id string) (*graylog.IndexSet, int, error) {
 	if id == "" {
 		return nil, 400, fmt.Errorf("index set id is empty")
 	}
@@ -32,7 +32,7 @@ func (ms *Logic) GetIndexSet(id string) (*graylog.IndexSet, int, error) {
 		// unfortunately graylog returns not 400 but 404.
 		return nil, 404, err
 	}
-	is, err := ms.store.GetIndexSet(id)
+	is, err := lgc.store.GetIndexSet(id)
 	if err != nil {
 		return is, 500, err
 	}
@@ -43,13 +43,13 @@ func (ms *Logic) GetIndexSet(id string) (*graylog.IndexSet, int, error) {
 }
 
 // AddIndexSet adds an index set to the Mock Server.
-func (ms *Logic) AddIndexSet(is *graylog.IndexSet) (int, error) {
+func (lgc *Logic) AddIndexSet(is *graylog.IndexSet) (int, error) {
 	// Class org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy not subtype of [simple type, class org.graylog2.plugin.indexer.rotation.RotationStrategyConfig] (through reference chain: org.graylog2.rest.resources.system.indexer.responses.IndexSetSummary["rotation_strategy"])
 	if is == nil {
 		return 400, fmt.Errorf("index set is nil")
 	}
 	// indexPrefix unique check
-	ok, err := ms.store.IsConflictIndexPrefix(is.ID, is.IndexPrefix)
+	ok, err := lgc.store.IsConflictIndexPrefix(is.ID, is.IndexPrefix)
 	if err != nil {
 		return 500, err
 	}
@@ -63,32 +63,32 @@ func (ms *Logic) AddIndexSet(is *graylog.IndexSet) (int, error) {
 		return 400, err
 	}
 	is.Default = false
-	if err := ms.store.AddIndexSet(is); err != nil {
+	if err := lgc.store.AddIndexSet(is); err != nil {
 		return 500, err
 	}
 	return 200, nil
 }
 
 // UpdateIndexSet updates an index set at the Mock Server.
-func (ms *Logic) UpdateIndexSet(prms *graylog.IndexSetUpdateParams) (*graylog.IndexSet, int, error) {
+func (lgc *Logic) UpdateIndexSet(prms *graylog.IndexSetUpdateParams) (*graylog.IndexSet, int, error) {
 	if prms == nil {
 		return nil, 400, fmt.Errorf("index set is nil")
 	}
 	if err := validator.UpdateValidator.Struct(prms); err != nil {
 		return nil, 400, err
 	}
-	ok, err := ms.HasIndexSet(prms.ID)
+	ok, err := lgc.HasIndexSet(prms.ID)
 	if err != nil {
-		ms.Logger().WithFields(log.Fields{
+		lgc.Logger().WithFields(log.Fields{
 			"error": err, "id": prms.ID,
-		}).Error("ms.HasIndexSet() is failure")
+		}).Error("lgc.HasIndexSet() is failure")
 		return nil, 500, err
 	}
 	if !ok {
 		return nil, 404, fmt.Errorf("no indexSet found with id <%s>", prms.ID)
 	}
 	// indexPrefix unique check
-	ok, err = ms.store.IsConflictIndexPrefix(prms.ID, prms.IndexPrefix)
+	ok, err = lgc.store.IsConflictIndexPrefix(prms.ID, prms.IndexPrefix)
 	if err != nil {
 		return nil, 500, err
 	}
@@ -97,7 +97,7 @@ func (ms *Logic) UpdateIndexSet(prms *graylog.IndexSetUpdateParams) (*graylog.In
 			`index prefix "%s" would conflict with an existing index set`,
 			prms.IndexPrefix)
 	}
-	defID, err := ms.store.GetDefaultIndexSetID()
+	defID, err := lgc.store.GetDefaultIndexSetID()
 	if err != nil {
 		return nil, 500, err
 	}
@@ -105,7 +105,7 @@ func (ms *Logic) UpdateIndexSet(prms *graylog.IndexSetUpdateParams) (*graylog.In
 		return nil, 409, fmt.Errorf("default index set must be writable")
 	}
 
-	is, err := ms.store.UpdateIndexSet(prms)
+	is, err := lgc.store.UpdateIndexSet(prms)
 	if err != nil {
 		return nil, 500, err
 	}
@@ -113,33 +113,33 @@ func (ms *Logic) UpdateIndexSet(prms *graylog.IndexSetUpdateParams) (*graylog.In
 }
 
 // DeleteIndexSet removes a index set from the Mock Server.
-func (ms *Logic) DeleteIndexSet(id string) (int, error) {
-	ok, err := ms.HasIndexSet(id)
+func (lgc *Logic) DeleteIndexSet(id string) (int, error) {
+	ok, err := lgc.HasIndexSet(id)
 	if err != nil {
-		ms.Logger().WithFields(log.Fields{
+		lgc.Logger().WithFields(log.Fields{
 			"error": err, "id": id,
-		}).Error("ms.HasIndexSet() is failure")
+		}).Error("lgc.HasIndexSet() is failure")
 		return 500, err
 	}
 	if !ok {
 		return 404, fmt.Errorf("no indexSet with id <%s> is not found", id)
 	}
-	defID, err := ms.store.GetDefaultIndexSetID()
+	defID, err := lgc.store.GetDefaultIndexSetID()
 	if err != nil {
 		return 500, err
 	}
 	if id == defID {
 		return 400, fmt.Errorf("default index set <%s> cannot be deleted", id)
 	}
-	if err := ms.store.DeleteIndexSet(id); err != nil {
+	if err := lgc.store.DeleteIndexSet(id); err != nil {
 		return 500, err
 	}
 	return 200, nil
 }
 
 // SetDefaultIndexSet sets a default index set
-func (ms *Logic) SetDefaultIndexSet(id string) (*graylog.IndexSet, int, error) {
-	is, sc, err := ms.GetIndexSet(id)
+func (lgc *Logic) SetDefaultIndexSet(id string) (*graylog.IndexSet, int, error) {
+	is, sc, err := lgc.GetIndexSet(id)
 	if err != nil {
 		return nil, sc, err
 	}
@@ -149,7 +149,7 @@ func (ms *Logic) SetDefaultIndexSet(id string) (*graylog.IndexSet, int, error) {
 	if !is.Writable {
 		return nil, 409, fmt.Errorf("default index set must be writable")
 	}
-	if err := ms.store.SetDefaultIndexSetID(id); err != nil {
+	if err := lgc.store.SetDefaultIndexSetID(id); err != nil {
 		return nil, 500, err
 	}
 	is.Default = true

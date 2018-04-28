@@ -9,17 +9,17 @@ import (
 )
 
 // HasStream returns whether the stream exists.
-func (ms *Logic) HasStream(id string) (bool, error) {
-	return ms.store.HasStream(id)
+func (lgc *Logic) HasStream(id string) (bool, error) {
+	return lgc.store.HasStream(id)
 }
 
 // GetStream returns a stream.
-func (ms *Logic) GetStream(id string) (*graylog.Stream, int, error) {
+func (lgc *Logic) GetStream(id string) (*graylog.Stream, int, error) {
 	if err := ValidateObjectID(id); err != nil {
 		// unfortunately graylog returns not 400 but 404.
 		return nil, 404, err
 	}
-	stream, err := ms.store.GetStream(id)
+	stream, err := lgc.store.GetStream(id)
 	if err != nil {
 		return nil, 500, err
 	}
@@ -30,14 +30,14 @@ func (ms *Logic) GetStream(id string) (*graylog.Stream, int, error) {
 }
 
 // AddStream adds a stream to the Server.
-func (ms *Logic) AddStream(stream *graylog.Stream) (int, error) {
+func (lgc *Logic) AddStream(stream *graylog.Stream) (int, error) {
 	if err := validator.CreateValidator.Struct(stream); err != nil {
 		return 400, err
 	}
 	// check index set existence
-	is, sc, err := ms.GetIndexSet(stream.IndexSetID)
+	is, sc, err := lgc.GetIndexSet(stream.IndexSetID)
 	if err != nil {
-		LogWE(sc, ms.Logger().WithFields(log.Fields{
+		LogWE(sc, lgc.Logger().WithFields(log.Fields{
 			"error": err, "index_set_id": stream.IndexSetID, "status_code": sc,
 		}), "failed to get an index set")
 		return sc, err
@@ -45,23 +45,23 @@ func (ms *Logic) AddStream(stream *graylog.Stream) (int, error) {
 	if !is.Writable {
 		return 400, fmt.Errorf("assigned index set must be writable")
 	}
-	if err := ms.store.AddStream(stream); err != nil {
+	if err := lgc.store.AddStream(stream); err != nil {
 		return 500, err
 	}
 	return 200, nil
 }
 
 // UpdateStream updates a stream at the Server.
-func (ms *Logic) UpdateStream(prms *graylog.StreamUpdateParams) (*graylog.Stream, int, error) {
+func (lgc *Logic) UpdateStream(prms *graylog.StreamUpdateParams) (*graylog.Stream, int, error) {
 	if prms == nil {
 		return nil, 400, fmt.Errorf("stream is nil")
 	}
 	if err := validator.UpdateValidator.Struct(prms); err != nil {
 		return nil, 400, err
 	}
-	stream, sc, err := ms.GetStream(prms.ID)
+	stream, sc, err := lgc.GetStream(prms.ID)
 	if err != nil {
-		LogWE(sc, ms.Logger().WithFields(log.Fields{
+		LogWE(sc, lgc.Logger().WithFields(log.Fields{
 			"error": err, "id": prms.ID, "status_code": sc,
 		}), "failed to get a stream")
 		return nil, sc, err
@@ -71,9 +71,9 @@ func (ms *Logic) UpdateStream(prms *graylog.StreamUpdateParams) (*graylog.Stream
 	}
 	// check index set existence
 	if prms.IndexSetID != "" {
-		is, sc, err := ms.GetIndexSet(prms.IndexSetID)
+		is, sc, err := lgc.GetIndexSet(prms.IndexSetID)
 		if err != nil {
-			LogWE(sc, ms.Logger().WithFields(log.Fields{
+			LogWE(sc, lgc.Logger().WithFields(log.Fields{
 				"error": err, "index_set_id": prms.IndexSetID, "status_code": sc,
 			}), "failed to get an index set")
 			return nil, sc, err
@@ -82,7 +82,7 @@ func (ms *Logic) UpdateStream(prms *graylog.StreamUpdateParams) (*graylog.Stream
 			return nil, 400, fmt.Errorf("assigned index set must be writable")
 		}
 	}
-	s, err := ms.store.UpdateStream(prms)
+	s, err := lgc.store.UpdateStream(prms)
 	if err != nil {
 		return nil, 500, err
 	}
@@ -90,26 +90,26 @@ func (ms *Logic) UpdateStream(prms *graylog.StreamUpdateParams) (*graylog.Stream
 }
 
 // DeleteStream deletes a stream from the Server.
-func (ms *Logic) DeleteStream(id string) (int, error) {
-	ok, err := ms.HasStream(id)
+func (lgc *Logic) DeleteStream(id string) (int, error) {
+	ok, err := lgc.HasStream(id)
 	if err != nil {
-		ms.Logger().WithFields(log.Fields{
+		lgc.Logger().WithFields(log.Fields{
 			"error": err, "id": id,
-		}).Error("ms.HasStream() is failure")
+		}).Error("lgc.HasStream() is failure")
 		return 500, err
 	}
 	if !ok {
 		return 404, fmt.Errorf("no stream found with id <%s>", id)
 	}
-	if err := ms.store.DeleteStream(id); err != nil {
+	if err := lgc.store.DeleteStream(id); err != nil {
 		return 500, err
 	}
 	return 200, nil
 }
 
 // GetStreams returns a list of all streams.
-func (ms *Logic) GetStreams() ([]graylog.Stream, int, int, error) {
-	streams, total, err := ms.store.GetStreams()
+func (lgc *Logic) GetStreams() ([]graylog.Stream, int, int, error) {
+	streams, total, err := lgc.store.GetStreams()
 	if err != nil {
 		return nil, 0, 500, err
 	}
@@ -117,8 +117,8 @@ func (ms *Logic) GetStreams() ([]graylog.Stream, int, int, error) {
 }
 
 // GetEnabledStreams returns all enabled streams.
-func (ms *Logic) GetEnabledStreams() ([]graylog.Stream, int, int, error) {
-	streams, total, err := ms.store.GetEnabledStreams()
+func (lgc *Logic) GetEnabledStreams() ([]graylog.Stream, int, int, error) {
+	streams, total, err := lgc.store.GetEnabledStreams()
 	if err != nil {
 		return nil, 0, 500, err
 	}
@@ -126,8 +126,8 @@ func (ms *Logic) GetEnabledStreams() ([]graylog.Stream, int, int, error) {
 }
 
 // PauseStream pauses a stream.
-func (ms *Logic) PauseStream(id string) (int, error) {
-	ok, err := ms.HasStream(id)
+func (lgc *Logic) PauseStream(id string) (int, error) {
+	ok, err := lgc.HasStream(id)
 	if err != nil {
 		return 500, err
 	}
@@ -139,8 +139,8 @@ func (ms *Logic) PauseStream(id string) (int, error) {
 }
 
 // ResumeStream resumes a stream.
-func (ms *Logic) ResumeStream(id string) (int, error) {
-	ok, err := ms.HasStream(id)
+func (lgc *Logic) ResumeStream(id string) (int, error) {
+	ok, err := lgc.HasStream(id)
 	if err != nil {
 		return 500, err
 	}

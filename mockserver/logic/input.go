@@ -9,13 +9,13 @@ import (
 )
 
 // HasInput returns whether the input exists.
-func (ms *Logic) HasInput(id string) (bool, error) {
-	return ms.store.HasInput(id)
+func (lgc *Logic) HasInput(id string) (bool, error) {
+	return lgc.store.HasInput(id)
 }
 
 // GetInput returns an input.
 // If an input is not found, returns an error.
-func (ms *Logic) GetInput(id string) (*graylog.Input, int, error) {
+func (lgc *Logic) GetInput(id string) (*graylog.Input, int, error) {
 	if id == "" {
 		return nil, 400, fmt.Errorf("input id is empty")
 	}
@@ -23,7 +23,7 @@ func (ms *Logic) GetInput(id string) (*graylog.Input, int, error) {
 		// unfortunately graylog returns not 400 but 404.
 		return nil, 404, err
 	}
-	input, err := ms.store.GetInput(id)
+	input, err := lgc.store.GetInput(id)
 	if err != nil {
 		return input, 500, err
 	}
@@ -34,11 +34,11 @@ func (ms *Logic) GetInput(id string) (*graylog.Input, int, error) {
 }
 
 // AddInput adds an input to the mock server.
-func (ms *Logic) AddInput(input *graylog.Input) (int, error) {
+func (lgc *Logic) AddInput(input *graylog.Input) (int, error) {
 	if err := validator.CreateValidator.Struct(input); err != nil {
 		return 400, err
 	}
-	if err := ms.store.AddInput(input); err != nil {
+	if err := lgc.store.AddInput(input); err != nil {
 		return 500, err
 	}
 	return 200, nil
@@ -47,14 +47,14 @@ func (ms *Logic) AddInput(input *graylog.Input) (int, error) {
 // UpdateInput updates an input at the Server.
 // Required: Title, Type, Attrs
 // Allowed: Global, Node
-func (ms *Logic) UpdateInput(prms *graylog.InputUpdateParams) (*graylog.Input, int, error) {
+func (lgc *Logic) UpdateInput(prms *graylog.InputUpdateParams) (*graylog.Input, int, error) {
 	if prms == nil {
 		return nil, 400, fmt.Errorf("input is nil")
 	}
 	if err := validator.UpdateValidator.Struct(prms); err != nil {
 		return nil, 400, err
 	}
-	ok, err := ms.HasInput(prms.ID)
+	ok, err := lgc.HasInput(prms.ID)
 	if err != nil {
 		return nil, 500, err
 	}
@@ -62,7 +62,7 @@ func (ms *Logic) UpdateInput(prms *graylog.InputUpdateParams) (*graylog.Input, i
 		return nil, 404, fmt.Errorf("the input <%s> is not found", prms.ID)
 	}
 
-	input, err := ms.store.UpdateInput(prms)
+	input, err := lgc.store.UpdateInput(prms)
 	if err != nil {
 		return nil, 500, err
 	}
@@ -70,26 +70,26 @@ func (ms *Logic) UpdateInput(prms *graylog.InputUpdateParams) (*graylog.Input, i
 }
 
 // DeleteInput deletes a input from the mock server.
-func (ms *Logic) DeleteInput(id string) (int, error) {
-	ok, err := ms.HasInput(id)
+func (lgc *Logic) DeleteInput(id string) (int, error) {
+	ok, err := lgc.HasInput(id)
 	if err != nil {
-		ms.Logger().WithFields(log.Fields{
+		lgc.Logger().WithFields(log.Fields{
 			"error": err, "id": id,
-		}).Error("ms.HasInput() is failure")
+		}).Error("lgc.HasInput() is failure")
 		return 500, err
 	}
 	if !ok {
 		return 404, fmt.Errorf("the input <%s> is not found", id)
 	}
-	if err := ms.store.DeleteInput(id); err != nil {
+	if err := lgc.store.DeleteInput(id); err != nil {
 		return 500, err
 	}
 	return 200, nil
 }
 
 // GetInputs returns a list of inputs.
-func (ms *Logic) GetInputs() ([]graylog.Input, int, int, error) {
-	inputs, total, err := ms.store.GetInputs()
+func (lgc *Logic) GetInputs() ([]graylog.Input, int, int, error) {
+	inputs, total, err := lgc.store.GetInputs()
 	if err != nil {
 		return nil, 0, 500, err
 	}
