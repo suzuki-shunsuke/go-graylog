@@ -54,7 +54,6 @@ func (store *Store) UpdateInput(prms *graylog.InputUpdateParams) (*graylog.Input
 		return nil, fmt.Errorf("the input <%s> is not found", prms.ID)
 	}
 	input.Title = prms.Title
-	input.Type = prms.Type
 	input.Attributes = prms.Attributes
 	if prms.Global == nil {
 		input.Global = *prms.Global

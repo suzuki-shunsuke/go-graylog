@@ -41,7 +41,6 @@ func Nobody() *graylog.User {
 func Input() *graylog.Input {
 	return &graylog.Input{
 		Title: "test",
-		Type:  graylog.InputTypeBeats,
 		Node:  "2ad6b340-3e5f-4a96-ae81-040cfb8b6024",
 		Attributes: &graylog.InputBeatsAttrs{
 			BindAddress:    "0.0.0.0",

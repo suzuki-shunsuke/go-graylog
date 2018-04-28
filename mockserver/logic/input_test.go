@@ -21,11 +21,6 @@ func TestAddInput(t *testing.T) {
 		t.Fatal(`server.AddInput() == ""`)
 	}
 
-	input.ID = ""
-	input.Type = ""
-	if _, err := server.AddInput(input); err == nil {
-		t.Fatal("input type is required")
-	}
 	if _, err := server.AddInput(nil); err == nil {
 		t.Fatal("input is nil")
 	}
@@ -113,14 +108,6 @@ func TestUpdateInput(t *testing.T) {
 			t.Fatal(`no input whose id is "h"`)
 		}
 	})
-	t.Run("type is required", func(t *testing.T) {
-		input := testutil.Input()
-		input.ID = id
-		input.Type = ""
-		if _, _, err := server.UpdateInput(input.NewUpdateParams()); err == nil {
-			t.Fatal("input type is required")
-		}
-	})
 	t.Run("attributes is required", func(t *testing.T) {
 		input := testutil.Input()
 		input.ID = id
@@ -140,7 +127,7 @@ func TestUpdateInput(t *testing.T) {
 	t.Run("beats's bind_address is required", func(t *testing.T) {
 		input := testutil.Input()
 		input.ID = id
-		switch input.Type {
+		switch input.Type() {
 		case graylog.InputTypeBeats:
 			attrs, ok := input.Attributes.(*graylog.InputBeatsAttrs)
 			if !ok {

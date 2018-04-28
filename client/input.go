@@ -66,7 +66,7 @@ func (client *Client) CreateInputContext(
 	// https://github.com/Graylog2/graylog2-server/issues/3480
 	d := map[string]interface{}{
 		"title":         input.Title,
-		"type":          input.Type,
+		"type":          input.Type(),
 		"configuration": input.Attributes,
 		"global":        input.Global,
 	}

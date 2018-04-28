@@ -9,15 +9,12 @@ import (
 
 // Input represents Graylog Input.
 type Input struct {
-	// required
 	// Select a name of your new input that describes it.
 	Title string `json:"title,omitempty" v-create:"required"`
-	Type  string `json:"type,omitempty" v-create:"required"`
 	// https://github.com/Graylog2/graylog2-server/issues/3480
 	// update input overwrite attributes
 	Attributes InputAttributes `json:"attributes,omitempty" v-create:"required"`
 
-	// ex. "5a90d5c2c006c60001efc368"
 	ID string `json:"id,omitempty" v-create:"isdefault"`
 
 	// Should this input start on all nodes
@@ -33,12 +30,19 @@ type Input struct {
 	// StaticFields `json:"static_fields,omitempty"`
 }
 
+func (input Input) Type() string {
+	if input.Attributes == nil {
+		return ""
+	}
+	return input.Attributes.InputType()
+}
+
 // NewUpdateParams converts Input to InputUpdateParams.
 func (input *Input) NewUpdateParams() *InputUpdateParams {
 	return &InputUpdateParams{
 		ID:         input.ID,
 		Title:      input.Title,
-		Type:       input.Type,
+		Type:       input.Type(),
 		Attributes: input.Attributes,
 		Node:       input.Node,
 		Global:     ptr.PBool(input.Global),
@@ -55,11 +59,10 @@ type InputUpdateParams struct {
 	Node       string          `json:"node,omitempty"`
 }
 
-// UnmarshalJSON is the implementation of the json.Unmarshaler interface.
-func (input *Input) UnmarshalJSON(b []byte) error {
+func (input *Input) ToData() (*InputData, error) {
 	d := &InputData{
 		Title:         input.Title,
-		Type:          input.Type,
+		Type:          input.Type(),
 		ID:            input.ID,
 		Global:        input.Global,
 		Node:          input.Node,
@@ -67,15 +70,31 @@ func (input *Input) UnmarshalJSON(b []byte) error {
 		CreatorUserID: input.CreatorUserID,
 		Attributes:    map[string]interface{}{},
 	}
-	if input.Attributes != nil {
-		if err := util.MSDecode(input.Attributes, &d.Attributes); err != nil {
-			return err
-		}
+	if input.Attributes == nil {
+		return d, nil
+	}
+	return d, util.MSDecode(input.Attributes, &d.Attributes)
+}
+
+// UnmarshalJSON is the implementation of the json.Unmarshaler interface.
+func (input *Input) UnmarshalJSON(b []byte) error {
+	d, err := input.ToData()
+	if err != nil {
+		return err
 	}
 	if err := json.Unmarshal(b, d); err != nil {
 		return err
 	}
 	return d.ToInput(input)
+}
+
+// MarshalJSON is the implementation of the json.Marshaler interface.
+func (input *Input) MarshalJSON() ([]byte, error) {
+	d, err := input.ToData()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(d)
 }
 
 // InputsBody represents Get Inputs API's response body.

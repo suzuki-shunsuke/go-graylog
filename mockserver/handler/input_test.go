@@ -66,12 +66,6 @@ func TestHandleCreateInput(t *testing.T) {
 	if input.ID == "" {
 		t.Fatal(`client.CreateInput() == ""`)
 	}
-
-	input.ID = ""
-	input.Type = ""
-	if _, err := client.CreateInput(input); err == nil {
-		t.Fatal("input type is required")
-	}
 	if _, err := client.CreateInput(nil); err == nil {
 		t.Fatal("input is nil")
 	}
@@ -130,11 +124,6 @@ func TestHandleUpdateInput(t *testing.T) {
 	}
 
 	input.ID = id
-	input.Type = ""
-	if _, _, err := client.UpdateInput(input.NewUpdateParams()); err == nil {
-		t.Fatal("input type is required")
-	}
-	input.Type = act.Type
 	input.Attributes = nil
 	if _, _, err := client.UpdateInput(input.NewUpdateParams()); err == nil {
 		t.Fatal("input attributes is required")
