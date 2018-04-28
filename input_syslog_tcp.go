@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeSyslogTCP string = "org.graylog2.inputs.syslog.tcp.SyslogTCPInput"
+)
+
+// NewInputSyslogTCPAttrs is the constructor of InputSyslogTCPAttrs.
+func NewInputSyslogTCPAttrs() InputAttributes {
+	return &InputSyslogTCPAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputSyslogTCPAttrs) InputType() string {
+func (attrs InputSyslogTCPAttrs) InputType() string {
 	return InputTypeSyslogTCP
 }
 

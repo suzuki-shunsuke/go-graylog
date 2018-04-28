@@ -24,10 +24,7 @@ func TestInputUnmarshalJSON(t *testing.T) {
 }
 
 func TestNewInputAttrs(t *testing.T) {
-	attrs, err := graylog.NewInputAttrs("hoge")
-	if err != nil {
-		t.Fatal(err)
-	}
+	attrs := graylog.NewInputAttrs("hoge")
 	if attrs.InputType() != "hoge" {
 		t.Fatalf(`attrs.InputType() = "%s", wanted "hoge"`, attrs.InputType())
 	}
@@ -42,12 +39,12 @@ func TestInputNewUpdateParams(t *testing.T) {
 }
 
 func TestInputUpdatePramsDataToInputUpdateParams(t *testing.T) {
-	data := graylog.InputUpdateParamsData{}
+	data := &graylog.InputUpdateParamsData{}
 	prms := &graylog.InputUpdateParams{}
 	if err := data.ToInputUpdateParams(prms); err != nil {
 		t.Fatal(err)
 	}
-	data = graylog.InputUpdateParamsData{
+	data = &graylog.InputUpdateParamsData{
 		Type: graylog.InputTypeBeats,
 	}
 	if err := data.ToInputUpdateParams(prms); err != nil {
@@ -57,8 +54,23 @@ func TestInputUpdatePramsDataToInputUpdateParams(t *testing.T) {
 
 func TestInputDataToInput(t *testing.T) {
 	input := &graylog.Input{}
-	data := &graylog.InputData{Type: "hoge"}
+	data := &graylog.InputData{
+		Type: "hoge",
+		Attributes: map[string]interface{}{
+			"bind_address": "0.0.0.0",
+		}}
+	// if err := data.ToInput(input); err != nil {
+	// 	t.Fatal(err)
+	// }
+	data.Type = graylog.InputTypeBeats
 	if err := data.ToInput(input); err != nil {
 		t.Fatal(err)
+	}
+	attrs, ok := input.Attributes.(*graylog.InputBeatsAttrs)
+	if !ok {
+		t.Fatal("attrs must be beats attrs")
+	}
+	if attrs.BindAddress != "0.0.0.0" {
+		t.Fatalf(`bind_address = "%s", wanted "%s"`, attrs.BindAddress, "0.0.0.0")
 	}
 }

@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeJSONPath string = "org.graylog2.inputs.misc.jsonpath.JsonPathInput"
+)
+
+// NewInputJSONPathAttrs is the constructor of InputJSONPathAttrs.
+func NewInputJSONPathAttrs() InputAttributes {
+	return &InputJSONPathAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputJSONPathAttrs) InputType() string {
+func (attrs InputJSONPathAttrs) InputType() string {
 	return InputTypeJSONPath
 }
 

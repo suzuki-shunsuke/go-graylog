@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeAWSFlowLogs string = "org.graylog.aws.inputs.flowlogs.FlowLogsInput"
+)
+
+// NewInputAWSFlowLogsAttrs is the constructor of InputAWSFlowLogsAttrs.
+func NewInputAWSFlowLogsAttrs() InputAttributes {
+	return &InputAWSFlowLogsAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputAWSFlowLogsAttrs) InputType() string {
+func (attrs InputAWSFlowLogsAttrs) InputType() string {
 	return InputTypeAWSFlowLogs
 }
 

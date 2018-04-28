@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeRawAMQP string = "org.graylog2.inputs.raw.amqp.RawAMQPInput"
+)
+
+// NewInputRawAMQPAttrs is the constructor of InputRawAMQPAttrs.
+func NewInputRawAMQPAttrs() InputAttributes {
+	return &InputRawAMQPAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputRawAMQPAttrs) InputType() string {
+func (attrs InputRawAMQPAttrs) InputType() string {
 	return InputTypeRawAMQP
 }
 

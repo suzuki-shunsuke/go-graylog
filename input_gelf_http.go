@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeGELFHTTP string = "org.graylog2.inputs.gelf.http.GELFHttpInput"
+)
+
+// NewInputGELFHTTPAttrs is the constructor of InputGELFHTTPAttrs.
+func NewInputGELFHTTPAttrs() InputAttributes {
+	return &InputGELFHTTPAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputGELFHTTPAttrs) InputType() string {
+func (attrs InputGELFHTTPAttrs) InputType() string {
 	return InputTypeGELFHTTP
 }
 

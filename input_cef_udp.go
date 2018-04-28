@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeCEFUDP string = "org.graylog.plugins.cef.input.CEFUDPInput"
+)
+
+// NewInputCEFUDPAttrs is the constructor of InputCEFUDPAttrs.
+func NewInputCEFUDPAttrs() InputAttributes {
+	return &InputCEFUDPAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputCEFUDPAttrs) InputType() string {
+func (attrs InputCEFUDPAttrs) InputType() string {
 	return InputTypeCEFUDP
 }
 

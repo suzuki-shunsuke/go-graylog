@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeGELFKafka string = "org.graylog2.inputs.gelf.kafka.GELFKafkaInput"
+)
+
+// NewInputGELFKafkaAttrs is the constructor of InputGELFKafkaAttrs.
+func NewInputGELFKafkaAttrs() InputAttributes {
+	return &InputGELFKafkaAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputGELFKafkaAttrs) InputType() string {
+func (attrs InputGELFKafkaAttrs) InputType() string {
 	return InputTypeGELFKafka
 }
 

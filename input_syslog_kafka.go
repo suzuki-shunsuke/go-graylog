@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeSyslogKafka string = "org.graylog2.inputs.syslog.kafka.SyslogKafkaInput"
+)
+
+// NewInputSyslogKafkaAttrs is the constructor of InputSyslogKafkaAttrs.
+func NewInputSyslogKafkaAttrs() InputAttributes {
+	return &InputSyslogKafkaAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputSyslogKafkaAttrs) InputType() string {
+func (attrs InputSyslogKafkaAttrs) InputType() string {
 	return InputTypeSyslogKafka
 }
 

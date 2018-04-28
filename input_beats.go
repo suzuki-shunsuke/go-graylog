@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeBeats string = "org.graylog.plugins.beats.BeatsInput"
+)
+
+// NewInputBeatsAttrs is the constructor of InputBeatsAttrs.
+func NewInputBeatsAttrs() InputAttributes {
+	return &InputBeatsAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputBeatsAttrs) InputType() string {
+func (attrs InputBeatsAttrs) InputType() string {
 	return InputTypeBeats
 }
 

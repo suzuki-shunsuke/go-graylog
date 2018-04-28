@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeAWSLogs string = "org.graylog.aws.inputs.cloudwatch.CloudWatchLogsInput"
+)
+
+// NewInputAWSLogsAttrs is the constructor of InputAWSLogsAttrs.
+func NewInputAWSLogsAttrs() InputAttributes {
+	return &InputAWSLogsAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputAWSLogsAttrs) InputType() string {
+func (attrs InputAWSLogsAttrs) InputType() string {
 	return InputTypeAWSLogs
 }
 

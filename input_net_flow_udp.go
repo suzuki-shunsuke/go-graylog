@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeNetFlowUDP string = "org.graylog.plugins.netflow.inputs.NetFlowUdpInput"
+)
+
+// NewInputNetFlowUDPAttrs is the constructor of InputNetFlowUDPAttrs.
+func NewInputNetFlowUDPAttrs() InputAttributes {
+	return &InputNetFlowUDPAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputNetFlowUDPAttrs) InputType() string {
+func (attrs InputNetFlowUDPAttrs) InputType() string {
 	return InputTypeNetFlowUDP
 }
 

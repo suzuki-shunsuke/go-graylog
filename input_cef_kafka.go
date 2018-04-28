@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeCEFKafka string = "org.graylog.plugins.cef.input.CEFKafkaInput"
+)
+
+// NewInputCEFKafkaAttrs is the constructor of InputCEFKafkaAttrs.
+func NewInputCEFKafkaAttrs() InputAttributes {
+	return &InputCEFKafkaAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputCEFKafkaAttrs) InputType() string {
+func (attrs InputCEFKafkaAttrs) InputType() string {
 	return InputTypeCEFKafka
 }
 

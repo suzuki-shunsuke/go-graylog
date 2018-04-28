@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeFakeHTTPMessage string = "org.graylog2.inputs.random.FakeHttpMessageInput"
+)
+
+// NewInputFakeHTTPMessageAttrs is the constructor of InputFakeHTTPMessageAttrs.
+func NewInputFakeHTTPMessageAttrs() InputAttributes {
+	return &InputFakeHTTPMessageAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputFakeHTTPMessageAttrs) InputType() string {
+func (attrs InputFakeHTTPMessageAttrs) InputType() string {
 	return InputTypeFakeHTTPMessage
 }
 

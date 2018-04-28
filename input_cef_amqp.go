@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeCEFAMQP string = "org.graylog.plugins.cef.input.CEFAmqpInput"
+)
+
+// NewInputCEFAMQPAttrs is the constructor of InputCEFAMQPAttrs.
+func NewInputCEFAMQPAttrs() InputAttributes {
+	return &InputCEFAMQPAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputCEFAMQPAttrs) InputType() string {
+func (attrs InputCEFAMQPAttrs) InputType() string {
 	return InputTypeCEFAMQP
 }
 

@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeAWSCloudTrail string = "org.graylog.aws.inputs.cloudtrail.CloudTrailInput"
+)
+
+// NewInputCloudTrailAttrs is the constructor of InputCloudTrailAttrs.
+func NewInputCloudTrailAttrs() InputAttributes {
+	return &InputCloudTrailAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputCloudTrailAttrs) InputType() string {
+func (attrs InputCloudTrailAttrs) InputType() string {
 	return InputTypeAWSCloudTrail
 }
 

@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeGELFAMQP string = "org.graylog2.inputs.gelf.amqp.GELFAMQPInput"
+)
+
+// NewInputGELFAMQPAttrs is the constructor of InputGELFAMQPAttrs.
+func NewInputGELFAMQPAttrs() InputAttributes {
+	return &InputGELFAMQPAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputGELFAMQPAttrs) InputType() string {
+func (attrs InputGELFAMQPAttrs) InputType() string {
 	return InputTypeGELFAMQP
 }
 

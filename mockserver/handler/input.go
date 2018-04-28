@@ -71,7 +71,6 @@ func HandleCreateInput(
 	if err := d.ToInput(input); err != nil {
 		return nil, 400, err
 	}
-
 	sc, err = ms.AddInput(input)
 	if err != nil {
 		return nil, sc, err

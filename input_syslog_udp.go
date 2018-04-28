@@ -1,7 +1,16 @@
 package graylog
 
+const (
+	InputTypeSyslogUDP string = "org.graylog2.inputs.syslog.udp.SyslogUDPInput"
+)
+
+// NewInputSyslogUDPAttrs is the constructor of InputSyslogUDPAttrs.
+func NewInputSyslogUDPAttrs() InputAttributes {
+	return &InputSyslogUDPAttrs{}
+}
+
 // InputType is the implementation of the InputAttributes interface.
-func (attrs *InputSyslogUDPAttrs) InputType() string {
+func (attrs InputSyslogUDPAttrs) InputType() string {
 	return InputTypeSyslogUDP
 }
 
