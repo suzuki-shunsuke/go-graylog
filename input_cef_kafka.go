@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputCEFKafkaAttrs is the constructor of InputCEFKafkaAttrs.
-func NewInputCEFKafkaAttrs() InputAttributes {
+func NewInputCEFKafkaAttrs() InputAttrs {
 	return &InputCEFKafkaAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputCEFKafkaAttrs) InputType() string {
 	return InputTypeCEFKafka
 }

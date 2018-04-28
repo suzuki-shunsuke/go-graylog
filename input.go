@@ -13,7 +13,7 @@ type Input struct {
 	Title string `json:"title,omitempty" v-create:"required"`
 	// https://github.com/Graylog2/graylog2-server/issues/3480
 	// update input overwrite attributes
-	Attributes InputAttributes `json:"attributes,omitempty" v-create:"required"`
+	Attrs InputAttrs `json:"attributes,omitempty" v-create:"required"`
 
 	ID string `json:"id,omitempty" v-create:"isdefault"`
 
@@ -31,32 +31,32 @@ type Input struct {
 }
 
 func (input Input) Type() string {
-	if input.Attributes == nil {
+	if input.Attrs == nil {
 		return ""
 	}
-	return input.Attributes.InputType()
+	return input.Attrs.InputType()
 }
 
 // NewUpdateParams converts Input to InputUpdateParams.
 func (input *Input) NewUpdateParams() *InputUpdateParams {
 	return &InputUpdateParams{
-		ID:         input.ID,
-		Title:      input.Title,
-		Type:       input.Type(),
-		Attributes: input.Attributes,
-		Node:       input.Node,
-		Global:     ptr.PBool(input.Global),
+		ID:     input.ID,
+		Title:  input.Title,
+		Type:   input.Type(),
+		Attrs:  input.Attrs,
+		Node:   input.Node,
+		Global: ptr.PBool(input.Global),
 	}
 }
 
 // InputUpdateParams represents Graylog Input update API's parameter.
 type InputUpdateParams struct {
-	ID         string          `json:"id,omitempty" v-update:"required,objectid"`
-	Title      string          `json:"title,omitempty" v-update:"required"`
-	Type       string          `json:"type,omitempty" v-update:"required"`
-	Attributes InputAttributes `json:"attributes,omitempty" v-update:"required"`
-	Global     *bool           `json:"global,omitempty"`
-	Node       string          `json:"node,omitempty"`
+	ID     string     `json:"id,omitempty" v-update:"required,objectid"`
+	Title  string     `json:"title,omitempty" v-update:"required"`
+	Type   string     `json:"type,omitempty" v-update:"required"`
+	Attrs  InputAttrs `json:"attributes,omitempty" v-update:"required"`
+	Global *bool      `json:"global,omitempty"`
+	Node   string     `json:"node,omitempty"`
 }
 
 func (input *Input) ToData() (*InputData, error) {
@@ -68,12 +68,12 @@ func (input *Input) ToData() (*InputData, error) {
 		Node:          input.Node,
 		CreatedAt:     input.CreatedAt,
 		CreatorUserID: input.CreatorUserID,
-		Attributes:    map[string]interface{}{},
+		Attrs:         map[string]interface{}{},
 	}
-	if input.Attributes == nil {
+	if input.Attrs == nil {
 		return d, nil
 	}
-	return d, util.MSDecode(input.Attributes, &d.Attributes)
+	return d, util.MSDecode(input.Attrs, &d.Attrs)
 }
 
 // UnmarshalJSON is the implementation of the json.Unmarshaler interface.

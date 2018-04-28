@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputSyslogAMQPAttrs is the constructor of InputSyslogAMQPAttrs.
-func NewInputSyslogAMQPAttrs() InputAttributes {
+func NewInputSyslogAMQPAttrs() InputAttrs {
 	return &InputSyslogAMQPAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputSyslogAMQPAttrs) InputType() string {
 	return InputTypeSyslogAMQP
 }

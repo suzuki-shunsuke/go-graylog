@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputCEFTCPAttrs is the constructor of InputCEFTCPAttrs.
-func NewInputCEFTCPAttrs() InputAttributes {
+func NewInputCEFTCPAttrs() InputAttrs {
 	return &InputCEFTCPAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputCEFTCPAttrs) InputType() string {
 	return InputTypeCEFTCP
 }

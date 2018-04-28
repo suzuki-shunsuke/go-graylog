@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputSyslogKafkaAttrs is the constructor of InputSyslogKafkaAttrs.
-func NewInputSyslogKafkaAttrs() InputAttributes {
+func NewInputSyslogKafkaAttrs() InputAttrs {
 	return &InputSyslogKafkaAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputSyslogKafkaAttrs) InputType() string {
 	return InputTypeSyslogKafka
 }

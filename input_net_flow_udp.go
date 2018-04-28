@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputNetFlowUDPAttrs is the constructor of InputNetFlowUDPAttrs.
-func NewInputNetFlowUDPAttrs() InputAttributes {
+func NewInputNetFlowUDPAttrs() InputAttrs {
 	return &InputNetFlowUDPAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputNetFlowUDPAttrs) InputType() string {
 	return InputTypeNetFlowUDP
 }

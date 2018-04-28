@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputSyslogUDPAttrs is the constructor of InputSyslogUDPAttrs.
-func NewInputSyslogUDPAttrs() InputAttributes {
+func NewInputSyslogUDPAttrs() InputAttrs {
 	return &InputSyslogUDPAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputSyslogUDPAttrs) InputType() string {
 	return InputTypeSyslogUDP
 }

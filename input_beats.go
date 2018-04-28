@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputBeatsAttrs is the constructor of InputBeatsAttrs.
-func NewInputBeatsAttrs() InputAttributes {
+func NewInputBeatsAttrs() InputAttrs {
 	return &InputBeatsAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputBeatsAttrs) InputType() string {
 	return InputTypeBeats
 }

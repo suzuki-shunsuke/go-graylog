@@ -10,12 +10,12 @@ import (
 // This is used for data conversion of InputUpdateParams.
 // ex. json.Unmarshal
 type InputUpdateParamsData struct {
-	ID         string                 `json:"id,omitempty"`
-	Title      string                 `json:"title,omitempty"`
-	Type       string                 `json:"type,omitempty"`
-	Node       string                 `json:"node,omitempty"`
-	Global     *bool                  `json:"global,omitempty"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
+	ID     string                 `json:"id,omitempty"`
+	Title  string                 `json:"title,omitempty"`
+	Type   string                 `json:"type,omitempty"`
+	Node   string                 `json:"node,omitempty"`
+	Global *bool                  `json:"global,omitempty"`
+	Attrs  map[string]interface{} `json:"attributes,omitempty"`
 }
 
 // InputData represents data of Input.
@@ -29,7 +29,7 @@ type InputData struct {
 	CreatedAt     string                 `json:"created_at,omitempty"`
 	CreatorUserID string                 `json:"creator_user_id,omitempty"`
 	Global        bool                   `json:"global,omitempty"`
-	Attributes    map[string]interface{} `json:"attributes,omitempty"`
+	Attrs         map[string]interface{} `json:"attributes,omitempty"`
 }
 
 // ToInputUpdateParams copies InputUpdateParamsData's data to InputUpdateParams.
@@ -39,15 +39,15 @@ func (d *InputUpdateParamsData) ToInputUpdateParams(input *InputUpdateParams) er
 	input.ID = d.ID
 	input.Global = d.Global
 	input.Node = d.Node
-	attrs := NewInputAttrs(input.Type)
+	attrs := NewInputAttrsByType(input.Type)
 	if _, ok := attrs.(*InputUnknownAttrs); ok {
-		input.Attributes = &InputUnknownAttrs{inputType: input.Type, Data: d.Attributes}
+		input.Attrs = &InputUnknownAttrs{inputType: input.Type, Data: d.Attrs}
 		return nil
 	}
-	if err := util.MSDecode(d.Attributes, attrs); err != nil {
+	if err := util.MSDecode(d.Attrs, attrs); err != nil {
 		return err
 	}
-	input.Attributes = attrs
+	input.Attrs = attrs
 	return nil
 }
 
@@ -56,7 +56,7 @@ func (d *InputData) ToInput(input *Input) error {
 	if input.Type() != "" && input.Type() != d.Type {
 		return fmt.Errorf("input type is different")
 	}
-	if input.Attributes != nil && input.Attributes.InputType() != d.Type {
+	if input.Attrs != nil && input.Attrs.InputType() != d.Type {
 		return fmt.Errorf("input type is different")
 	}
 	input.Title = d.Title
@@ -65,14 +65,14 @@ func (d *InputData) ToInput(input *Input) error {
 	input.Node = d.Node
 	input.CreatedAt = d.CreatedAt
 	input.CreatorUserID = d.CreatorUserID
-	attrs := NewInputAttrs(d.Type)
+	attrs := NewInputAttrsByType(d.Type)
 	if _, ok := attrs.(*InputUnknownAttrs); ok {
-		input.Attributes = &InputUnknownAttrs{inputType: input.Type(), Data: d.Attributes}
+		input.Attrs = &InputUnknownAttrs{inputType: input.Type(), Data: d.Attrs}
 		return nil
 	}
-	if err := util.MSDecode(d.Attributes, attrs); err != nil {
+	if err := util.MSDecode(d.Attrs, attrs); err != nil {
 		return err
 	}
-	input.Attributes = attrs
+	input.Attrs = attrs
 	return nil
 }

@@ -44,7 +44,7 @@ func (store *Store) AddInput(input *graylog.Input) error {
 }
 
 // UpdateInput updates an input at the Store.
-// Required: Title, Type, Attributes
+// Required: Title, Type, Attrs
 // Allowed: Global, Node
 func (store *Store) UpdateInput(prms *graylog.InputUpdateParams) (*graylog.Input, error) {
 	store.imutex.Lock()
@@ -54,7 +54,7 @@ func (store *Store) UpdateInput(prms *graylog.InputUpdateParams) (*graylog.Input
 		return nil, fmt.Errorf("the input <%s> is not found", prms.ID)
 	}
 	input.Title = prms.Title
-	input.Attributes = prms.Attributes
+	input.Attrs = prms.Attrs
 	if prms.Global == nil {
 		input.Global = *prms.Global
 	}

@@ -78,7 +78,7 @@ func TestCreateInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer client.DeleteInput(input.ID)
-	attrs := input.Attributes.(*graylog.InputBeatsAttrs)
+	attrs := input.Attrs.(*graylog.InputBeatsAttrs)
 	if attrs.BindAddress == "" {
 		t.Fatal(`attrs.BindAddress == ""`)
 	}
@@ -102,7 +102,7 @@ func TestUpdateInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer client.DeleteInput(input.ID)
-	attrs := input.Attributes.(*graylog.InputBeatsAttrs)
+	attrs := input.Attrs.(*graylog.InputBeatsAttrs)
 	if attrs.BindAddress == "" {
 		t.Fatal(`attrs.BindAddress == ""`)
 	}

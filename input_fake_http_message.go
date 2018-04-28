@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputFakeHTTPMessageAttrs is the constructor of InputFakeHTTPMessageAttrs.
-func NewInputFakeHTTPMessageAttrs() InputAttributes {
+func NewInputFakeHTTPMessageAttrs() InputAttrs {
 	return &InputFakeHTTPMessageAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputFakeHTTPMessageAttrs) InputType() string {
 	return InputTypeFakeHTTPMessage
 }

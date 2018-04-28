@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputGELFKafkaAttrs is the constructor of InputGELFKafkaAttrs.
-func NewInputGELFKafkaAttrs() InputAttributes {
+func NewInputGELFKafkaAttrs() InputAttrs {
 	return &InputGELFKafkaAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputGELFKafkaAttrs) InputType() string {
 	return InputTypeGELFKafka
 }

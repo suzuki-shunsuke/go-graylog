@@ -10,19 +10,19 @@ import (
 
 func resourceInput() *schema.Resource {
 	cfgSchema := map[string]*schema.Schema{}
-	for s := range graylog.InputAttributesStrFieldSet.ToMap(false) {
+	for s := range graylog.InputAttrsStrFieldSet.ToMap(false) {
 		cfgSchema[s] = &schema.Schema{
 			Type:     schema.TypeString,
 			Optional: true,
 		}
 	}
-	for s := range graylog.InputAttributesIntFieldSet.ToMap(false) {
+	for s := range graylog.InputAttrsIntFieldSet.ToMap(false) {
 		cfgSchema[s] = &schema.Schema{
 			Type:     schema.TypeInt,
 			Optional: true,
 		}
 	}
-	for s := range graylog.InputAttributesBoolFieldSet.ToMap(false) {
+	for s := range graylog.InputAttrsBoolFieldSet.ToMap(false) {
 		cfgSchema[s] = &schema.Schema{
 			Type:     schema.TypeBool,
 			Optional: true,
@@ -98,7 +98,7 @@ func newInput(d *schema.ResourceData) (*graylog.Input, error) {
 		ID:            d.Id(),
 		CreatorUserID: d.Get("creator_user_id").(string),
 		CreatedAt:     d.Get("created_at").(string),
-		Attributes:    d.Get("attributes").([]interface{})[0].(map[string]interface{}),
+		Attrs:         d.Get("attributes").([]interface{})[0].(map[string]interface{}),
 	}
 	input := &graylog.Input{}
 	if err := data.ToInput(input); err != nil {
@@ -141,8 +141,8 @@ func resourceInputRead(d *schema.ResourceData, m interface{}) error {
 		}
 		return err
 	}
-	if input.Attributes != nil {
-		b, err := json.Marshal(input.Attributes)
+	if input.Attrs != nil {
+		b, err := json.Marshal(input.Attrs)
 		if err != nil {
 			return err
 		}

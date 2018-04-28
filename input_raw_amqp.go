@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputRawAMQPAttrs is the constructor of InputRawAMQPAttrs.
-func NewInputRawAMQPAttrs() InputAttributes {
+func NewInputRawAMQPAttrs() InputAttrs {
 	return &InputRawAMQPAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputRawAMQPAttrs) InputType() string {
 	return InputTypeRawAMQP
 }

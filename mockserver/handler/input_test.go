@@ -124,11 +124,11 @@ func TestHandleUpdateInput(t *testing.T) {
 	}
 
 	input.ID = id
-	input.Attributes = nil
+	input.Attrs = nil
 	if _, _, err := client.UpdateInput(input.NewUpdateParams()); err == nil {
 		t.Fatal("input attributes is required")
 	}
-	input.Attributes = act.Attributes
+	input.Attrs = act.Attrs
 	input.Title = ""
 	if _, _, err := client.UpdateInput(input.NewUpdateParams()); err == nil {
 		t.Fatal("input title is required")

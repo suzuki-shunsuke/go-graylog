@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputJSONPathAttrs is the constructor of InputJSONPathAttrs.
-func NewInputJSONPathAttrs() InputAttributes {
+func NewInputJSONPathAttrs() InputAttrs {
 	return &InputJSONPathAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputJSONPathAttrs) InputType() string {
 	return InputTypeJSONPath
 }

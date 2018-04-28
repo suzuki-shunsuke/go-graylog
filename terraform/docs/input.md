@@ -91,7 +91,7 @@ configuration.source | string |
 configuration.timeunit | string |
 configuration.netflow9_definitions_path | string |
 
-## Attributes Reference
+## Attrs Reference
 
 name | type | etc
 --- | --- | ---

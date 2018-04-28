@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputAWSFlowLogsAttrs is the constructor of InputAWSFlowLogsAttrs.
-func NewInputAWSFlowLogsAttrs() InputAttributes {
+func NewInputAWSFlowLogsAttrs() InputAttrs {
 	return &InputAWSFlowLogsAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputAWSFlowLogsAttrs) InputType() string {
 	return InputTypeAWSFlowLogs
 }

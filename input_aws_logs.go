@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputAWSLogsAttrs is the constructor of InputAWSLogsAttrs.
-func NewInputAWSLogsAttrs() InputAttributes {
+func NewInputAWSLogsAttrs() InputAttrs {
 	return &InputAWSLogsAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputAWSLogsAttrs) InputType() string {
 	return InputTypeAWSLogs
 }

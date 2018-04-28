@@ -25,7 +25,7 @@ name | default | type | description
 --- | --- | --- | ---
 description | "" | string |
 
-## Attributes Reference
+## Attrs Reference
 
 name | type | etc
 --- | --- | ---

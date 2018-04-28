@@ -9,10 +9,10 @@ import (
 )
 
 var (
-	InputAttributesIntFieldSet  = set.NewStrSet()
-	InputAttributesBoolFieldSet = set.NewStrSet()
-	InputAttributesStrFieldSet  = set.NewStrSet()
-	inputAttrsList              = []NewInputAttributes{
+	InputAttrsIntFieldSet  = set.NewStrSet()
+	InputAttrsBoolFieldSet = set.NewStrSet()
+	InputAttrsStrFieldSet  = set.NewStrSet()
+	inputAttrsList         = []NewInputAttrs{
 		NewInputAWSFlowLogsAttrs,
 		NewInputBeatsAttrs,
 		NewInputAWSLogsAttrs,
@@ -32,11 +32,11 @@ var (
 		NewInputSyslogTCPAttrs,
 		NewInputSyslogUDPAttrs,
 	}
-	inputAttrsMap = map[string]NewInputAttributes{}
+	inputAttrsMap = map[string]NewInputAttrs{}
 )
 
-// NewInputAttributes is the constructor of InputAttributes.
-type NewInputAttributes func() InputAttributes
+// NewInputAttrs is the constructor of InputAttrs.
+type NewInputAttrs func() InputAttrs
 
 func init() {
 	for _, attrs := range inputAttrsList {
@@ -49,11 +49,11 @@ func init() {
 			tag := strings.Split(f.Tag.Get("json"), ",")[0]
 			switch f.Type.Kind() {
 			case reflect.String:
-				InputAttributesStrFieldSet.Add(tag)
+				InputAttrsStrFieldSet.Add(tag)
 			case reflect.Int:
-				InputAttributesIntFieldSet.Add(tag)
+				InputAttrsIntFieldSet.Add(tag)
 			case reflect.Bool:
-				InputAttributesBoolFieldSet.Add(tag)
+				InputAttrsBoolFieldSet.Add(tag)
 			default:
 				panic(fmt.Sprintf("invalid type: %v", f.Type.Kind()))
 			}
@@ -61,8 +61,8 @@ func init() {
 	}
 }
 
-// NewInputAttrs returns a new InputAttributes.
-func NewInputAttrs(t string) InputAttributes {
+// NewInputAttrsByType returns a new InputAttrs.
+func NewInputAttrsByType(t string) InputAttrs {
 	a, ok := inputAttrsMap[t]
 	if !ok {
 		return &InputUnknownAttrs{inputType: t}
@@ -70,8 +70,8 @@ func NewInputAttrs(t string) InputAttributes {
 	return a()
 }
 
-// InputAttributes represents Input Attributes.
+// InputAttrs represents Input Attributes.
 // A receiver must be a pointer.
-type InputAttributes interface {
+type InputAttrs interface {
 	InputType() string
 }

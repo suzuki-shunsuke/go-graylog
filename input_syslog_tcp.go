@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputSyslogTCPAttrs is the constructor of InputSyslogTCPAttrs.
-func NewInputSyslogTCPAttrs() InputAttributes {
+func NewInputSyslogTCPAttrs() InputAttrs {
 	return &InputSyslogTCPAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputSyslogTCPAttrs) InputType() string {
 	return InputTypeSyslogTCP
 }

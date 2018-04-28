@@ -67,7 +67,7 @@ func (client *Client) CreateInputContext(
 	d := map[string]interface{}{
 		"title":         input.Title,
 		"type":          input.Type(),
-		"configuration": input.Attributes,
+		"configuration": input.Attrs,
 		"global":        input.Global,
 	}
 	if input.Node != "" {
@@ -101,7 +101,7 @@ func (client *Client) UpdateInputContext(
 	d := map[string]interface{}{
 		"title":         prms.Title,
 		"type":          prms.Type,
-		"configuration": prms.Attributes,
+		"configuration": prms.Attrs,
 		"global":        prms.Global,
 	}
 	if prms.Node != "" {

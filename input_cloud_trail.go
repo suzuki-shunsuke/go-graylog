@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputCloudTrailAttrs is the constructor of InputCloudTrailAttrs.
-func NewInputCloudTrailAttrs() InputAttributes {
+func NewInputCloudTrailAttrs() InputAttrs {
 	return &InputCloudTrailAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputCloudTrailAttrs) InputType() string {
 	return InputTypeAWSCloudTrail
 }

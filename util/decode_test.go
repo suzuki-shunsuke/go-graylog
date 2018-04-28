@@ -11,7 +11,7 @@ func TestMSDecode(t *testing.T) {
 	data := map[string]interface{}{
 		"bind_address": "0.0.0.0",
 	}
-	var attrs graylog.InputAttributes = &graylog.InputBeatsAttrs{}
+	var attrs graylog.InputAttrs = &graylog.InputBeatsAttrs{}
 	if err := util.MSDecode(data, attrs); err != nil {
 		t.Fatal(err)
 	}

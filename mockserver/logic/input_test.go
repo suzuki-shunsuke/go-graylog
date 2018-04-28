@@ -111,7 +111,7 @@ func TestUpdateInput(t *testing.T) {
 	t.Run("attributes is required", func(t *testing.T) {
 		input := testutil.Input()
 		input.ID = id
-		input.Attributes = nil
+		input.Attrs = nil
 		if _, _, err := server.UpdateInput(input.NewUpdateParams()); err == nil {
 			t.Fatal("input attributes is required")
 		}
@@ -129,12 +129,12 @@ func TestUpdateInput(t *testing.T) {
 		input.ID = id
 		switch input.Type() {
 		case graylog.InputTypeBeats:
-			attrs, ok := input.Attributes.(*graylog.InputBeatsAttrs)
+			attrs, ok := input.Attrs.(*graylog.InputBeatsAttrs)
 			if !ok {
-				t.Fatal("input.Attributes's type assertion is failure")
+				t.Fatal("input.Attrs's type assertion is failure")
 			}
 			attrs.BindAddress = ""
-			input.Attributes = attrs
+			input.Attrs = attrs
 			if _, _, err := server.UpdateInput(input.NewUpdateParams()); err == nil {
 				t.Fatal("input bind_address is required")
 			}

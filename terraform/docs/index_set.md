@@ -53,7 +53,7 @@ writable | | bool |
 default | | bool |
 creation_date | computed | string |
 
-## Attributes Reference
+## Attrs Reference
 
 name | type | etc
 --- | --- | ---

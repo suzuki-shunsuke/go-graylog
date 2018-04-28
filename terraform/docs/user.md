@@ -32,7 +32,7 @@ roles | [] | []string |
 timezone | "" | string | computed
 session_timeout_ms | | int | computed
 
-## Attributes Reference
+## Attrs Reference
 
 name | type | etc
 --- | --- | ---

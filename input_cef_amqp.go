@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputCEFAMQPAttrs is the constructor of InputCEFAMQPAttrs.
-func NewInputCEFAMQPAttrs() InputAttributes {
+func NewInputCEFAMQPAttrs() InputAttrs {
 	return &InputCEFAMQPAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputCEFAMQPAttrs) InputType() string {
 	return InputTypeCEFAMQP
 }

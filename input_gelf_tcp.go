@@ -5,11 +5,11 @@ const (
 )
 
 // NewInputGELFTCPAttrs is the constructor of InputGELFTCPAttrs.
-func NewInputGELFTCPAttrs() InputAttributes {
+func NewInputGELFTCPAttrs() InputAttrs {
 	return &InputGELFTCPAttrs{}
 }
 
-// InputType is the implementation of the InputAttributes interface.
+// InputType is the implementation of the InputAttrs interface.
 func (attrs InputGELFTCPAttrs) InputType() string {
 	return InputTypeGELFTCP
 }

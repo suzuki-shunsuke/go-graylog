@@ -29,7 +29,7 @@ matching_type | | string |
 remove_matches_from_default_stream | | bool |
 is_default | | bool |
 
-## Attributes Reference
+## Attrs Reference
 
 name | type | etc
 --- | --- | ---
