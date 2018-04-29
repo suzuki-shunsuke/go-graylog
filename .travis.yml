@@ -17,3 +17,4 @@ script:
   - bash codecov-test.sh
 after_success:
   - bash codecov.sh
+  - bash upload.sh

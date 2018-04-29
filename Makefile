@@ -25,16 +25,12 @@ cover-store: coverage
 cover-plain: coverage
 	go test ./mockserver/store/plain -coverprofile=coverage/plain.txt -covermode=atomic
 	go tool cover -html=coverage/plain.txt
-graylog-mock-server: *.go mockserver/*.go mockserver/exec/main.go
-	go build -o graylog-mock-server mockserver/exec/main.go
-# https://github.com/mitchellh/gox
-# brew install gox
-# go get github.com/mitchellh/gox
 build:
 	gox -output="dist/$(TAG)/graylog-mock-server_$(TAG)_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./mockserver/exec
-# https://github.com/tcnksm/ghr
-# brew tap tcnksm/ghr
-# brew install ghr
-# go get -u github.com/tcnksm/ghr
+	gox -output="dist/$(TAG)/terraform-provider-graylog_$(TAG)_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./terraform
 upload:
-	ghr $(TAG) dist/$(TAG)
+	# GITHUB_TOKEN envrionment variable
+	ghr -u suzuki-shunsuke $(TAG) dist/$(TAG)
+upload-dep:
+	go get -u github.com/tcnksm/ghr
+	go get github.com/mitchellh/gox
