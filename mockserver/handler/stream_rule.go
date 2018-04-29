@@ -58,7 +58,7 @@ func HandleCreateStreamRule(
 			Optional:     set.NewStrSet("type", "description", "inverted"),
 			ExtForbidden: true,
 		})
-	if sc != 200 {
+	if err != nil {
 		return nil, sc, err
 	}
 
@@ -104,7 +104,7 @@ func HandleUpdateStreamRule(
 			Optional:     set.NewStrSet("type", "description", "inverted"),
 			ExtForbidden: true,
 		})
-	if sc != 200 {
+	if err != nil {
 		return nil, sc, err
 	}
 	prms := &graylog.StreamRuleUpdateParams{}
