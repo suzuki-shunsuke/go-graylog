@@ -21,15 +21,9 @@ By using this provider, you can utilize this flexibility and manage the infrastr
 
 ## Install
 
-```
-$ go get github.com/suzuki-shunsuke/go-graylog/terraform
-```
+Download binary and rename it `terraform-provider-graylog` (name is important) and install under $PATH.
 
-Or download binary.
-
-```
-$ curl https://github.com/suzuki-shunsuke/go-graylog/releases/download/0.1.0/terraform-provider-graylog-0.1.0.gz
-```
+https://github.com/suzuki-shunsuke/go-graylog/releases
 
 ## Example
 
