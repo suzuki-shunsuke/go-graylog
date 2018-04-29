@@ -45,7 +45,7 @@ OPTIONS:
 
 ## Terraform provider
 
-* [terraform-provider-graylog](https://github.com/suzuki-shunsuke/go-graylog/terraform)
+* [terraform-provider-graylog](https://github.com/suzuki-shunsuke/go-graylog/tree/master/terraform)
 
 ## Supported Graylog version
 
