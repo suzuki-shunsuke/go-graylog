@@ -1,0 +1,20 @@
+---
+language: go
+go:
+  - 1.x
+before_install:
+  - node -v
+  - npm -v
+install:
+  - npm install
+  - go get -t ./...
+  - go get -u gopkg.in/alecthomas/gometalinter.v2
+  - ln -s $GOPATH/bin/gometalinter.v2 $GOPATH/bin/gometalinter
+  - gometalinter --install
+script:
+  - npm run commitlint-travis
+  - npm run lint
+  - bash codecov-test.sh
+after_success:
+  - bash codecov.sh
+  - bash upload.sh
