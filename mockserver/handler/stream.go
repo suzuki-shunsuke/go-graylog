@@ -13,11 +13,11 @@ import (
 
 // HandleGetStreams is the handler of Get Streams API.
 func HandleGetStreams(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /streams Get a list of all streams
-	arr, total, sc, err := ms.GetStreams()
+	arr, total, sc, err := lgc.GetStreams()
 	if err != nil {
 		return nil, sc, err
 	}
@@ -27,27 +27,27 @@ func HandleGetStreams(
 
 // HandleGetStream is the handler of Get a Stream API.
 func HandleGetStream(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /streams/{streamID} Get a single stream
 	id := ps.ByName("streamID")
 	if id == "enabled" {
-		return HandleGetEnabledStreams(user, ms, w, r, ps)
+		return HandleGetEnabledStreams(user, lgc, w, r, ps)
 	}
-	if sc, err := ms.Authorize(user, "streams:read", id); err != nil {
+	if sc, err := lgc.Authorize(user, "streams:read", id); err != nil {
 		return nil, sc, err
 	}
-	return ms.GetStream(id)
+	return lgc.GetStream(id)
 }
 
 // HandleCreateStream is the handler of Create a Stream API.
 func HandleCreateStream(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// POST /streams Create index set
-	if sc, err := ms.Authorize(user, "streams:create"); err != nil {
+	if sc, err := lgc.Authorize(user, "streams:create"); err != nil {
 		return nil, sc, err
 	}
 	// empty description is ignored
@@ -63,13 +63,13 @@ func HandleCreateStream(
 
 	stream := &graylog.Stream{}
 	if err := util.MSDecode(body, stream); err != nil {
-		ms.Logger().WithFields(log.Fields{
+		lgc.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as stream")
 		return nil, 400, err
 	}
 
-	sc, err = ms.AddStream(stream)
+	sc, err = lgc.AddStream(stream)
 	if err != nil {
 		return nil, sc, err
 	}
@@ -78,12 +78,12 @@ func HandleCreateStream(
 
 // HandleUpdateStream is the handler of Update a Stream API.
 func HandleUpdateStream(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// PUT /streams/{streamID} Update a stream
 	prms := &graylog.StreamUpdateParams{ID: ps.ByName("streamID")}
-	if sc, err := ms.Authorize(user, "streams:edit", prms.ID); err != nil {
+	if sc, err := lgc.Authorize(user, "streams:edit", prms.ID); err != nil {
 		return nil, sc, err
 	}
 
@@ -102,17 +102,17 @@ func HandleUpdateStream(
 	}
 
 	if err := util.MSDecode(body, prms); err != nil {
-		ms.Logger().WithFields(log.Fields{
+		lgc.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Warn("Failed to parse request body as stream")
 		return nil, 400, err
 	}
 
-	stream, sc, err := ms.UpdateStream(prms)
+	stream, sc, err := lgc.UpdateStream(prms)
 	if err != nil {
 		return nil, sc, err
 	}
-	if err := ms.Save(); err != nil {
+	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
 	return stream, 200, nil
@@ -120,17 +120,17 @@ func HandleUpdateStream(
 
 // HandleDeleteStream is the handler of Delete a Stream API.
 func HandleDeleteStream(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// DELETE /streams/{streamID} Delete a stream
 	id := ps.ByName("streamID")
 	// TODO authorization
-	sc, err := ms.DeleteStream(id)
+	sc, err := lgc.DeleteStream(id)
 	if err != nil {
 		return nil, sc, err
 	}
-	if err := ms.Save(); err != nil {
+	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
 	return nil, sc, nil
@@ -138,11 +138,11 @@ func HandleDeleteStream(
 
 // HandleGetEnabledStreams is the handler of Get all enabled streams API.
 func HandleGetEnabledStreams(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /streams/enabled Get a list of all enabled streams
-	arr, total, sc, err := ms.GetEnabledStreams()
+	arr, total, sc, err := lgc.GetEnabledStreams()
 	if err != nil {
 		return nil, sc, err
 	}
@@ -151,27 +151,27 @@ func HandleGetEnabledStreams(
 
 // HandlePauseStream is the handler of Pause a Stream API.
 func HandlePauseStream(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// POST /streams/{streamID}/pause Pause a stream
 	id := ps.ByName("streamID")
-	if sc, err := ms.Authorize(user, "streams:changestate", id); err != nil {
+	if sc, err := lgc.Authorize(user, "streams:changestate", id); err != nil {
 		return nil, sc, err
 	}
-	sc, err := ms.PauseStream(id)
+	sc, err := lgc.PauseStream(id)
 	return nil, sc, err
 }
 
 // HandleResumeStream is the handler of Resume a Stream API.
 func HandleResumeStream(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	id := ps.ByName("streamID")
-	if sc, err := ms.Authorize(user, "streams:changestate", id); err != nil {
+	if sc, err := lgc.Authorize(user, "streams:changestate", id); err != nil {
 		return nil, sc, err
 	}
-	sc, err := ms.ResumeStream(id)
+	sc, err := lgc.ResumeStream(id)
 	return nil, sc, err
 }

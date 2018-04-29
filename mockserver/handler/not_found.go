@@ -9,9 +9,9 @@ import (
 )
 
 // HandleNotFound is the generator of the NotFound handler.
-func HandleNotFound(ms *logic.Logic) http.HandlerFunc {
+func HandleNotFound(lgc *logic.Logic) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		ms.Logger().WithFields(log.Fields{
+		lgc.Logger().WithFields(log.Fields{
 			"path": r.URL.Path, "method": r.Method,
 			"message": "404 Page Not Found",
 		}).Info("request start")

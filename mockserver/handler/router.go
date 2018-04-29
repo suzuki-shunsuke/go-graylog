@@ -6,62 +6,62 @@ import (
 )
 
 // NewRouter returns a new HTTP router.
-func NewRouter(ms *logic.Logic) *httprouter.Router {
+func NewRouter(lgc *logic.Logic) *httprouter.Router {
 	router := httprouter.New()
 
-	router.GET("/api/roles/:rolename", wrapHandle(ms, HandleGetRole))
-	router.PUT("/api/roles/:rolename", wrapHandle(ms, HandleUpdateRole))
-	router.DELETE("/api/roles/:rolename", wrapHandle(ms, HandleDeleteRole))
-	router.GET("/api/roles", wrapHandle(ms, HandleGetRoles))
-	router.POST("/api/roles", wrapHandle(ms, HandleCreateRole))
+	router.GET("/api/roles/:rolename", wrapHandle(lgc, HandleGetRole))
+	router.PUT("/api/roles/:rolename", wrapHandle(lgc, HandleUpdateRole))
+	router.DELETE("/api/roles/:rolename", wrapHandle(lgc, HandleDeleteRole))
+	router.GET("/api/roles", wrapHandle(lgc, HandleGetRoles))
+	router.POST("/api/roles", wrapHandle(lgc, HandleCreateRole))
 
-	router.GET("/api/users/:username", wrapHandle(ms, HandleGetUser))
-	router.PUT("/api/users/:username", wrapHandle(ms, HandleUpdateUser))
-	router.DELETE("/api/users/:username", wrapHandle(ms, HandleDeleteUser))
-	router.GET("/api/users", wrapHandle(ms, HandleGetUsers))
-	router.POST("/api/users", wrapHandle(ms, HandleCreateUser))
+	router.GET("/api/users/:username", wrapHandle(lgc, HandleGetUser))
+	router.PUT("/api/users/:username", wrapHandle(lgc, HandleUpdateUser))
+	router.DELETE("/api/users/:username", wrapHandle(lgc, HandleDeleteUser))
+	router.GET("/api/users", wrapHandle(lgc, HandleGetUsers))
+	router.POST("/api/users", wrapHandle(lgc, HandleCreateUser))
 
-	router.GET("/api/roles/:rolename/members", wrapHandle(ms, HandleRoleMembers))
-	router.PUT("/api/roles/:rolename/members/:username", wrapHandle(ms, HandleAddUserToRole))
+	router.GET("/api/roles/:rolename/members", wrapHandle(lgc, HandleRoleMembers))
+	router.PUT("/api/roles/:rolename/members/:username", wrapHandle(lgc, HandleAddUserToRole))
 	router.DELETE(
-		"/api/roles/:rolename/members/:username", wrapHandle(ms, HandleRemoveUserFromRole))
+		"/api/roles/:rolename/members/:username", wrapHandle(lgc, HandleRemoveUserFromRole))
 
-	router.GET("/api/system/inputs", wrapHandle(ms, HandleGetInputs))
-	router.GET("/api/system/inputs/:inputID", wrapHandle(ms, HandleGetInput))
-	router.POST("/api/system/inputs", wrapHandle(ms, HandleCreateInput))
-	router.PUT("/api/system/inputs/:inputID", wrapHandle(ms, HandleUpdateInput))
-	router.DELETE("/api/system/inputs/:inputID", wrapHandle(ms, HandleDeleteInput))
+	router.GET("/api/system/inputs", wrapHandle(lgc, HandleGetInputs))
+	router.GET("/api/system/inputs/:inputID", wrapHandle(lgc, HandleGetInput))
+	router.POST("/api/system/inputs", wrapHandle(lgc, HandleCreateInput))
+	router.PUT("/api/system/inputs/:inputID", wrapHandle(lgc, HandleUpdateInput))
+	router.DELETE("/api/system/inputs/:inputID", wrapHandle(lgc, HandleDeleteInput))
 
-	router.GET("/api/system/indices/index_sets", wrapHandle(ms, HandleGetIndexSets))
+	router.GET("/api/system/indices/index_sets", wrapHandle(lgc, HandleGetIndexSets))
 	router.GET(
-		"/api/system/indices/index_sets/:indexSetID", wrapHandle(ms, HandleGetIndexSet))
-	router.POST("/api/system/indices/index_sets", wrapHandle(ms, HandleCreateIndexSet))
+		"/api/system/indices/index_sets/:indexSetID", wrapHandle(lgc, HandleGetIndexSet))
+	router.POST("/api/system/indices/index_sets", wrapHandle(lgc, HandleCreateIndexSet))
 	router.PUT(
-		"/api/system/indices/index_sets/:indexSetID", wrapHandle(ms, HandleUpdateIndexSet))
+		"/api/system/indices/index_sets/:indexSetID", wrapHandle(lgc, HandleUpdateIndexSet))
 	router.DELETE(
-		"/api/system/indices/index_sets/:indexSetID", wrapHandle(ms, HandleDeleteIndexSet))
+		"/api/system/indices/index_sets/:indexSetID", wrapHandle(lgc, HandleDeleteIndexSet))
 	router.PUT(
 		"/api/system/indices/index_sets/:indexSetID/default",
-		wrapHandle(ms, HandleSetDefaultIndexSet))
+		wrapHandle(lgc, HandleSetDefaultIndexSet))
 
 	router.GET(
 		"/api/system/indices/index_sets/:indexSetID/stats",
-		wrapHandle(ms, HandleGetIndexSetStats))
+		wrapHandle(lgc, HandleGetIndexSetStats))
 
-	router.GET("/api/streams", wrapHandle(ms, HandleGetStreams))
-	router.POST("/api/streams", wrapHandle(ms, HandleCreateStream))
-	router.GET("/api/streams/:streamID", wrapHandle(ms, HandleGetStream))
-	router.PUT("/api/streams/:streamID", wrapHandle(ms, HandleUpdateStream))
-	router.DELETE("/api/streams/:streamID", wrapHandle(ms, HandleDeleteStream))
-	router.POST("/api/streams/:streamID/pause", wrapHandle(ms, HandlePauseStream))
-	router.POST("/api/streams/:streamID/resume", wrapHandle(ms, HandleResumeStream))
+	router.GET("/api/streams", wrapHandle(lgc, HandleGetStreams))
+	router.POST("/api/streams", wrapHandle(lgc, HandleCreateStream))
+	router.GET("/api/streams/:streamID", wrapHandle(lgc, HandleGetStream))
+	router.PUT("/api/streams/:streamID", wrapHandle(lgc, HandleUpdateStream))
+	router.DELETE("/api/streams/:streamID", wrapHandle(lgc, HandleDeleteStream))
+	router.POST("/api/streams/:streamID/pause", wrapHandle(lgc, HandlePauseStream))
+	router.POST("/api/streams/:streamID/resume", wrapHandle(lgc, HandleResumeStream))
 
-	router.GET("/api/streams/:streamID/rules", wrapHandle(ms, HandleGetStreamRules))
-	router.POST("/api/streams/:streamID/rules", wrapHandle(ms, HandleCreateStreamRule))
-	router.PUT("/api/streams/:streamID/rules/:streamRuleID", wrapHandle(ms, HandleUpdateStreamRule))
-	router.DELETE("/api/streams/:streamID/rules/:streamRuleID", wrapHandle(ms, HandleDeleteStreamRule))
-	router.GET("/api/streams/:streamID/rules/:streamRuleID", wrapHandle(ms, HandleGetStreamRule))
+	router.GET("/api/streams/:streamID/rules", wrapHandle(lgc, HandleGetStreamRules))
+	router.POST("/api/streams/:streamID/rules", wrapHandle(lgc, HandleCreateStreamRule))
+	router.PUT("/api/streams/:streamID/rules/:streamRuleID", wrapHandle(lgc, HandleUpdateStreamRule))
+	router.DELETE("/api/streams/:streamID/rules/:streamRuleID", wrapHandle(lgc, HandleDeleteStreamRule))
+	router.GET("/api/streams/:streamID/rules/:streamRuleID", wrapHandle(lgc, HandleGetStreamRule))
 
-	router.NotFound = HandleNotFound(ms)
+	router.NotFound = HandleNotFound(lgc)
 	return router
 }

@@ -13,11 +13,11 @@ import (
 
 // HandleGetUsers is the handler of GET Users API.
 func HandleGetUsers(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /users List all users
-	users, sc, err := ms.GetUsers()
+	users, sc, err := lgc.GetUsers()
 	for i, u := range users {
 		u.Password = ""
 		users[i] = u
@@ -31,13 +31,13 @@ func HandleGetUsers(
 
 // HandleGetUser is the handler of GET User API.
 func HandleGetUser(
-	u *graylog.User, ms *logic.Logic,
+	u *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /users/{username} Get user details
 	name := ps.ByName("username")
 	// TODO authorization
-	user, sc, err := ms.GetUser(name)
+	user, sc, err := lgc.GetUser(name)
 	if user != nil {
 		user.Password = ""
 	}
@@ -46,11 +46,11 @@ func HandleGetUser(
 
 // HandleCreateUser is the handler of Create User API.
 func HandleCreateUser(
-	u *graylog.User, ms *logic.Logic,
+	u *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// POST /users Create a new user account.
-	if sc, err := ms.Authorize(u, "users:create"); err != nil {
+	if sc, err := lgc.Authorize(u, "users:create"); err != nil {
 		return nil, sc, err
 	}
 	body, sc, err := validateRequestBody(
@@ -64,16 +64,16 @@ func HandleCreateUser(
 
 	user := &graylog.User{}
 	if err := util.MSDecode(body, user); err != nil {
-		ms.Logger().WithFields(log.Fields{
+		lgc.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as User")
 		return nil, 400, err
 	}
 
-	if sc, err := ms.AddUser(user); err != nil {
+	if sc, err := lgc.AddUser(user); err != nil {
 		return nil, sc, err
 	}
-	if err := ms.Save(); err != nil {
+	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
 	return nil, 201, nil
@@ -81,12 +81,12 @@ func HandleCreateUser(
 
 // HandleUpdateUser is the handler of Update User API.
 func HandleUpdateUser(
-	u *graylog.User, ms *logic.Logic,
+	u *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// PUT /users/{username} Modify user details.
 	userName := ps.ByName("username")
-	if sc, err := ms.Authorize(u, "users:edit", userName); err != nil {
+	if sc, err := lgc.Authorize(u, "users:edit", userName); err != nil {
 		return nil, sc, err
 	}
 	body, sc, err := validateRequestBody(
@@ -101,15 +101,15 @@ func HandleUpdateUser(
 
 	prms := &graylog.UserUpdateParams{Username: userName}
 	if err := util.MSDecode(body, prms); err != nil {
-		ms.Logger().WithFields(log.Fields{
+		lgc.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as UserUpdateParams")
 		return nil, 400, err
 	}
-	if sc, err := ms.UpdateUser(prms); err != nil {
+	if sc, err := lgc.UpdateUser(prms); err != nil {
 		return nil, sc, err
 	}
-	if err := ms.Save(); err != nil {
+	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
 	return nil, 200, nil
@@ -117,16 +117,16 @@ func HandleUpdateUser(
 
 // HandleDeleteUser is the handler of Delete User API.
 func HandleDeleteUser(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// DELETE /users/{username} Removes a user account
 	name := ps.ByName("username")
 	// TODO authorization
-	if sc, err := ms.DeleteUser(name); err != nil {
+	if sc, err := lgc.DeleteUser(name); err != nil {
 		return nil, sc, err
 	}
-	if err := ms.Save(); err != nil {
+	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
 	return nil, 204, nil

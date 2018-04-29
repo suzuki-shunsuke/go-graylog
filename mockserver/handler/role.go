@@ -13,26 +13,26 @@ import (
 
 // HandleGetRole is the handler of GET Role API.
 func HandleGetRole(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /roles/{rolename} Retrieve permissions for a single role
 	name := ps.ByName("rolename")
-	ms.Logger().WithFields(log.Fields{
+	lgc.Logger().WithFields(log.Fields{
 		"handler": "handleGetRole", "rolename": name}).Info("request start")
-	if sc, err := ms.Authorize(user, "roles:read", name); err != nil {
+	if sc, err := lgc.Authorize(user, "roles:read", name); err != nil {
 		return nil, sc, err
 	}
-	return ms.GetRole(name)
+	return lgc.GetRole(name)
 }
 
 // HandleGetRoles is the handler of GET Roles API.
 func HandleGetRoles(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /roles List all roles
-	arr, total, sc, err := ms.GetRoles()
+	arr, total, sc, err := lgc.GetRoles()
 	if err != nil {
 		return arr, sc, err
 	}
@@ -41,11 +41,11 @@ func HandleGetRoles(
 
 // HandleCreateRole is the handler of Create Role API.
 func HandleCreateRole(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// POST /roles Create a new role
-	if sc, err := ms.Authorize(user, "roles:create"); err != nil {
+	if sc, err := lgc.Authorize(user, "roles:create"); err != nil {
 		return nil, sc, err
 	}
 	body, sc, err := validateRequestBody(
@@ -61,16 +61,16 @@ func HandleCreateRole(
 
 	role := &graylog.Role{}
 	if err := util.MSDecode(body, &role); err != nil {
-		ms.Logger().WithFields(log.Fields{
+		lgc.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Warn("Failed to parse request body as Role")
 		return nil, 400, err
 	}
 
-	if sc, err := ms.AddRole(role); err != nil {
+	if sc, err := lgc.AddRole(role); err != nil {
 		return nil, sc, err
 	}
-	if err := ms.Save(); err != nil {
+	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
 	return role, sc, nil
@@ -78,12 +78,12 @@ func HandleCreateRole(
 
 // HandleUpdateRole is the handler of Update Role API.
 func HandleUpdateRole(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// PUT /roles/{rolename} Update an existing role
 	name := ps.ByName("rolename")
-	if sc, err := ms.Authorize(user, "roles:edit", name); err != nil {
+	if sc, err := lgc.Authorize(user, "roles:edit", name); err != nil {
 		return nil, sc, err
 	}
 	body, sc, err := validateRequestBody(
@@ -99,17 +99,17 @@ func HandleUpdateRole(
 
 	prms := &graylog.RoleUpdateParams{}
 	if err := util.MSDecode(body, prms); err != nil {
-		ms.Logger().WithFields(log.Fields{
+		lgc.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as Role")
 		return nil, 400, err
 	}
 
-	role, sc, err := ms.UpdateRole(name, prms)
+	role, sc, err := lgc.UpdateRole(name, prms)
 	if err != nil {
 		return nil, sc, err
 	}
-	if err := ms.Save(); err != nil {
+	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
 	return role, 204, nil
@@ -117,19 +117,19 @@ func HandleUpdateRole(
 
 // HandleDeleteRole is the handler of Delete Role API.
 func HandleDeleteRole(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// DELETE /roles/{rolename} Remove the named role and dissociate any users from it
 	name := ps.ByName("rolename")
-	if sc, err := ms.Authorize(user, "roles:delete", name); err != nil {
+	if sc, err := lgc.Authorize(user, "roles:delete", name); err != nil {
 		return nil, sc, err
 	}
-	sc, err := ms.DeleteRole(name)
+	sc, err := lgc.DeleteRole(name)
 	if err != nil {
 		return nil, sc, err
 	}
-	if err := ms.Save(); err != nil {
+	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
 	return nil, 204, nil

@@ -13,24 +13,24 @@ import (
 
 // HandleGetInput is the handler of Get an Input API.
 func HandleGetInput(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /system/inputs/{inputID} Get information of a single input on this node
 	id := ps.ByName("inputID")
-	if sc, err := ms.Authorize(user, "inputs:read", id); err != nil {
+	if sc, err := lgc.Authorize(user, "inputs:read", id); err != nil {
 		return nil, sc, err
 	}
-	return ms.GetInput(id)
+	return lgc.GetInput(id)
 }
 
 // HandleGetInputs is the handler of Get Inputs API.
 func HandleGetInputs(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /system/inputs Get all inputs
-	arr, total, sc, err := ms.GetInputs()
+	arr, total, sc, err := lgc.GetInputs()
 	if err != nil {
 		return arr, sc, err
 	}
@@ -40,11 +40,11 @@ func HandleGetInputs(
 
 // HandleCreateInput is the handler of Create an Input API.
 func HandleCreateInput(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// POST /system/inputs Launch input on this node
-	if sc, err := ms.Authorize(user, "inputs:create"); err != nil {
+	if sc, err := lgc.Authorize(user, "inputs:create"); err != nil {
 		return nil, sc, err
 	}
 	body, sc, err := validateRequestBody(
@@ -62,7 +62,7 @@ func HandleCreateInput(
 	delete(body, "configuration")
 	d := &graylog.InputData{}
 	if err := util.MSDecode(body, d); err != nil {
-		ms.Logger().WithFields(log.Fields{
+		lgc.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as InputData")
 		return nil, 400, err
@@ -71,11 +71,11 @@ func HandleCreateInput(
 	if err := d.ToInput(input); err != nil {
 		return nil, 400, err
 	}
-	sc, err = ms.AddInput(input)
+	sc, err = lgc.AddInput(input)
 	if err != nil {
 		return nil, sc, err
 	}
-	if err := ms.Save(); err != nil {
+	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
 	return &map[string]string{"id": input.ID}, 201, nil
@@ -83,12 +83,12 @@ func HandleCreateInput(
 
 // HandleUpdateInput is the handler of Update an Input API.
 func HandleUpdateInput(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// PUT /system/inputs/{inputID} Update input on this node
 	id := ps.ByName("inputID")
-	if sc, err := ms.Authorize(user, "inputs:edit", id); err != nil {
+	if sc, err := lgc.Authorize(user, "inputs:edit", id); err != nil {
 		return nil, sc, err
 	}
 	body, sc, err := validateRequestBody(
@@ -106,7 +106,7 @@ func HandleUpdateInput(
 	delete(body, "configuration")
 	d := &graylog.InputUpdateParamsData{}
 	if err := util.MSDecode(body, d); err != nil {
-		ms.Logger().WithFields(log.Fields{
+		lgc.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
 		}).Info("Failed to parse request body as InputUpdateParamsData")
 		return nil, 400, err
@@ -116,16 +116,16 @@ func HandleUpdateInput(
 		return nil, 400, err
 	}
 
-	ms.Logger().WithFields(log.Fields{
+	lgc.Logger().WithFields(log.Fields{
 		"body": body, "input": prms, "id": id,
 	}).Debug("request body")
 
 	prms.ID = id
-	input, sc, err := ms.UpdateInput(prms)
+	input, sc, err := lgc.UpdateInput(prms)
 	if err != nil {
 		return nil, sc, err
 	}
-	if err := ms.Save(); err != nil {
+	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
 	return input, 200, nil
@@ -133,18 +133,18 @@ func HandleUpdateInput(
 
 // HandleDeleteInput is the handler of Delete an Input API.
 func HandleDeleteInput(
-	user *graylog.User, ms *logic.Logic,
+	user *graylog.User, lgc *logic.Logic,
 	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// DELETE /system/inputs/{inputID} Terminate input on this node
 	id := ps.ByName("inputID")
-	if sc, err := ms.Authorize(user, "inputs:terminate", id); err != nil {
+	if sc, err := lgc.Authorize(user, "inputs:terminate", id); err != nil {
 		return nil, sc, err
 	}
-	if sc, err := ms.DeleteInput(id); err != nil {
+	if sc, err := lgc.DeleteInput(id); err != nil {
 		return nil, sc, err
 	}
-	if err := ms.Save(); err != nil {
+	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
 	return nil, 204, nil
