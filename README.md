@@ -10,6 +10,13 @@
 
 [Graylog](https://www.graylog.org/) API client and mock server for Golang and terraform provider for Graylog.
 
+## Supported APIs
+
+Graylog provides very various APIs so we can't support all of them yet.
+Please check the following godoc's Client methods.
+
+https://godoc.org/github.com/suzuki-shunsuke/go-graylog/client
+
 ## Example - client and mock server
 
 * https://godoc.org/github.com/suzuki-shunsuke/go-graylog/client/#example_Client
@@ -36,6 +43,10 @@ OPTIONS:
    --version, -v      print the version
 ```
 
+## Terraform provider
+
+* [terraform-provider-graylog](https://github.com/suzuki-shunsuke/go-graylog/terraform)
+
 ## Supported Graylog version
 
 We use [the graylog's official Docker Image](https://hub.docker.com/r/graylog/graylog/) for development.
@@ -48,7 +59,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) .
 
 ## See also
 
-* [terraform-provider-graylog](https://github.com/suzuki-shunsuke/go-graylog/terraform)
 * http://docs.graylog.org/en/2.4/pages/configuration/rest_api.html
 * http://docs.graylog.org/en/2.4/pages/users_and_roles/permission_system.html
 
