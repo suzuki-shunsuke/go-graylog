@@ -17,5 +17,5 @@
     "goconst"
   ],
   "Vendor": true,
-  "Deadline": "60s"
+  "Deadline": "300s"
 }
