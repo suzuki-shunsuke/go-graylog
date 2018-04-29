@@ -78,7 +78,7 @@ func HandleCreateInput(
 	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
-	return &map[string]string{"id": input.ID}, 201, nil
+	return &map[string]string{"id": input.ID}, sc, nil
 }
 
 // HandleUpdateInput is the handler of Update an Input API.
@@ -128,7 +128,7 @@ func HandleUpdateInput(
 	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
-	return input, 200, nil
+	return input, sc, nil
 }
 
 // HandleDeleteInput is the handler of Delete an Input API.
@@ -141,11 +141,12 @@ func HandleDeleteInput(
 	if sc, err := lgc.Authorize(user, "inputs:terminate", id); err != nil {
 		return nil, sc, err
 	}
-	if sc, err := lgc.DeleteInput(id); err != nil {
+	sc, err := lgc.DeleteInput(id)
+	if err != nil {
 		return nil, sc, err
 	}
 	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
-	return nil, 204, nil
+	return nil, sc, nil
 }

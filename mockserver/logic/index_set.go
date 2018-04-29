@@ -134,7 +134,7 @@ func (lgc *Logic) DeleteIndexSet(id string) (int, error) {
 	if err := lgc.store.DeleteIndexSet(id); err != nil {
 		return 500, err
 	}
-	return 200, nil
+	return 204, nil
 }
 
 // SetDefaultIndexSet sets a default index set

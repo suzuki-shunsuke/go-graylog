@@ -70,13 +70,14 @@ func HandleCreateUser(
 		return nil, 400, err
 	}
 
-	if sc, err := lgc.AddUser(user); err != nil {
+	sc, err = lgc.AddUser(user)
+	if err != nil {
 		return nil, sc, err
 	}
 	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
-	return nil, 201, nil
+	return nil, sc, nil
 }
 
 // HandleUpdateUser is the handler of Update User API.
@@ -106,13 +107,14 @@ func HandleUpdateUser(
 		}).Info("Failed to parse request body as UserUpdateParams")
 		return nil, 400, err
 	}
-	if sc, err := lgc.UpdateUser(prms); err != nil {
+	sc, err = lgc.UpdateUser(prms)
+	if err != nil {
 		return nil, sc, err
 	}
 	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
-	return nil, 200, nil
+	return nil, sc, nil
 }
 
 // HandleDeleteUser is the handler of Delete User API.
@@ -123,11 +125,12 @@ func HandleDeleteUser(
 	// DELETE /users/{username} Removes a user account
 	name := ps.ByName("username")
 	// TODO authorization
-	if sc, err := lgc.DeleteUser(name); err != nil {
+	sc, err := lgc.DeleteUser(name)
+	if err != nil {
 		return nil, sc, err
 	}
 	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
-	return nil, 204, nil
+	return nil, sc, nil
 }

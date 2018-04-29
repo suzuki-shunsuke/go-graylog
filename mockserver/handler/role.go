@@ -112,7 +112,7 @@ func HandleUpdateRole(
 	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
-	return role, 204, nil
+	return role, sc, nil
 }
 
 // HandleDeleteRole is the handler of Delete Role API.
@@ -132,5 +132,5 @@ func HandleDeleteRole(
 	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
-	return nil, 204, nil
+	return nil, sc, nil
 }

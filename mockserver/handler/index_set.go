@@ -74,7 +74,7 @@ func HandleGetIndexSets(
 			return nil, sc, err
 		}
 		return &graylog.IndexSetsBody{
-			IndexSets: arr, Total: total, Stats: stats}, 200, nil
+			IndexSets: arr, Total: total, Stats: stats}, sc, nil
 	}
 	return &graylog.IndexSetsBody{
 		IndexSets: arr, Total: total,
@@ -140,7 +140,7 @@ func HandleCreateIndexSet(
 		if err := lgc.Save(); err != nil {
 			return nil, 500, err
 		}
-		return is, 201, nil
+		return is, sc, nil
 	}
 	is, sc, err = lgc.UpdateIndexSet(is.NewUpdateParams())
 	if err != nil {
@@ -149,7 +149,7 @@ func HandleCreateIndexSet(
 	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
-	return is, 200, nil
+	return is, sc, nil
 }
 
 // HandleUpdateIndexSet is the handler of Update an Index Set API.
@@ -194,7 +194,7 @@ func HandleUpdateIndexSet(
 	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
-	return is, 200, nil
+	return is, sc, nil
 }
 
 // HandleDeleteIndexSet is the handler of Delete an Index Set API.
@@ -207,13 +207,14 @@ func HandleDeleteIndexSet(
 	if sc, err := lgc.Authorize(user, "indexsets:delete", id); err != nil {
 		return nil, sc, err
 	}
-	if sc, err := lgc.DeleteIndexSet(id); err != nil {
+	sc, err := lgc.DeleteIndexSet(id)
+	if err != nil {
 		return nil, sc, err
 	}
 	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
-	return nil, 204, nil
+	return nil, sc, nil
 }
 
 // HandleSetDefaultIndexSet is the handler of Set the default Index Set API.

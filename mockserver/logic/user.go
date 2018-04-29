@@ -86,7 +86,7 @@ func (lgc *Logic) AddUser(user *graylog.User) (int, error) {
 	if err := lgc.store.AddUser(user); err != nil {
 		return 500, err
 	}
-	return 200, nil
+	return 201, nil
 }
 
 // UpdateUser updates a user of the Server.
@@ -144,7 +144,7 @@ func (lgc *Logic) DeleteUser(name string) (int, error) {
 	if err := lgc.store.DeleteUser(name); err != nil {
 		return 500, err
 	}
-	return 200, nil
+	return 204, nil
 }
 
 // UserList returns a list of all users.

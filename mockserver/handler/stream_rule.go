@@ -23,7 +23,7 @@ func HandleGetStreamRules(
 	if err != nil {
 		return nil, sc, err
 	}
-	return &graylog.StreamRulesBody{StreamRules: arr, Total: total}, 200, nil
+	return &graylog.StreamRulesBody{StreamRules: arr, Total: total}, sc, nil
 }
 
 // HandleGetStreamRule is the handler of Get a Stream Rule API.
@@ -84,7 +84,7 @@ func HandleCreateStreamRule(
 	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
-	return map[string]string{"streamrule_id": rule.ID}, 201, nil
+	return map[string]string{"streamrule_id": rule.ID}, sc, nil
 }
 
 // type 400 {"type": "ApiError", "message": "Unknown stream rule type 0"}
@@ -120,7 +120,8 @@ func HandleUpdateStreamRule(
 
 	prms.StreamID = streamID
 	prms.ID = ruleID
-	if sc, err := lgc.UpdateStreamRule(prms); err != nil {
+	sc, err = lgc.UpdateStreamRule(prms)
+	if err != nil {
 		logic.LogWE(sc, lgc.Logger().WithFields(log.Fields{
 			"error": err, "rule": &prms, "status_code": sc,
 		}), "faield to update stream rule")
@@ -129,7 +130,7 @@ func HandleUpdateStreamRule(
 	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
-	return map[string]string{"streamrule_id": prms.ID}, 200, nil
+	return map[string]string{"streamrule_id": prms.ID}, sc, nil
 }
 
 // HandleDeleteStreamRule is the handler of Delete a Stream Rule API.

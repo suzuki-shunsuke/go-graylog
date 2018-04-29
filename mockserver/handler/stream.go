@@ -115,7 +115,7 @@ func HandleUpdateStream(
 	if err := lgc.Save(); err != nil {
 		return nil, 500, err
 	}
-	return stream, 200, nil
+	return stream, sc, nil
 }
 
 // HandleDeleteStream is the handler of Delete a Stream API.
