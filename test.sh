@@ -12,5 +12,5 @@ if [ -f env.sh ]; then
   decho source env.sh
 fi
 
-decho go test ./util/... ./validator/... ./client/... . -covermode=atomic || exit 1
+decho go test ./testutil/... ./util/... ./validator/... ./client/... . -covermode=atomic || exit 1
 decho go test -v ./terraform/... -covermode=atomic || exit 1
