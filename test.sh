@@ -7,7 +7,7 @@ decho() {
 npm run fmt || exit 1
 
 # golint
-decho golint client/... terraform/... validator mockserver mockserver/store mockserver/handler mockserver/logic mockserver/seed mockserver/exec mockserver/store/plain || exit 1
+decho golint testutil/... client/... terraform/... validator mockserver mockserver/store mockserver/handler mockserver/logic mockserver/seed mockserver/exec mockserver/store/plain || exit 1
 
 decho go test ./mockserver/... -covermode=atomic || exit 1
 
