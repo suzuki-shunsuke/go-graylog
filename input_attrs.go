@@ -9,10 +9,13 @@ import (
 )
 
 var (
-	InputAttrsIntFieldSet  = set.NewStrSet()
+	// InputAttrsIntFieldSet is the set of int fields of all type of input attributes.
+	InputAttrsIntFieldSet = set.NewStrSet()
+	// InputAttrsBoolFieldSet is the set of bool fields of all type of input attributes.
 	InputAttrsBoolFieldSet = set.NewStrSet()
-	InputAttrsStrFieldSet  = set.NewStrSet()
-	inputAttrsList         = []NewInputAttrs{
+	// InputAttrsStrFieldSet is the set of string fields of all type of input attributes.
+	InputAttrsStrFieldSet = set.NewStrSet()
+	inputAttrsList        = []NewInputAttrs{
 		NewInputAWSFlowLogsAttrs,
 		NewInputAWSCloudWatchLogsAttrs,
 		NewInputAWSCloudTrailAttrs,

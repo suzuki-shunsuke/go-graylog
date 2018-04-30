@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeSyslogTCP is one of input types.
 	InputTypeSyslogTCP string = "org.graylog2.inputs.syslog.tcp.SyslogTCPInput"
 )
 

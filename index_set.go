@@ -7,23 +7,32 @@ import (
 )
 
 const (
-	// rotation_strategy_class
+	// MessageCountRotationStrategy is one of index set's rotation strategies.
 	MessageCountRotationStrategy string = "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy"
-	SizeBasedRotationStrategy    string = "org.graylog2.indexer.rotation.strategies.SizeBasedRotationStrategy"
-	TimeBasedRotationStrategy    string = "org.graylog2.indexer.rotation.strategies.TimeBasedRotationStrategy"
-	// rotation_strategy.type
+	// SizeBasedRotationStrategy is one of index set's rotation strategies.
+	SizeBasedRotationStrategy string = "org.graylog2.indexer.rotation.strategies.SizeBasedRotationStrategy"
+	// TimeBasedRotationStrategy is one of index set's rotation strategies.
+	TimeBasedRotationStrategy string = "org.graylog2.indexer.rotation.strategies.TimeBasedRotationStrategy"
+	// MessageCountRotationStrategyConfig is one of index set's rotation strategy configs.
 	MessageCountRotationStrategyConfig string = "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig"
-	SizeBasedRotationStrategyConfig    string = "org.graylog2.indexer.rotation.strategies.SizeBasedRotationStrategyConfig"
-	TimeBasedRotationStrategyConfig    string = "org.graylog2.indexer.rotation.strategies.TimeBasedRotationStrategyConfig"
-	// retention_strategy_class
+	// SizeBasedRotationStrategyConfig is one of index set's rotation strategy configs.
+	SizeBasedRotationStrategyConfig string = "org.graylog2.indexer.rotation.strategies.SizeBasedRotationStrategyConfig"
+	// TimeBasedRotationStrategyConfig is one of index set's rotation strategy configs.
+	TimeBasedRotationStrategyConfig string = "org.graylog2.indexer.rotation.strategies.TimeBasedRotationStrategyConfig"
+	// DeletionRetentionStrategy is one of index set's retention strategies.
 	DeletionRetentionStrategy string = "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy"
-	ClosingRetentionStrategy  string = "org.graylog2.indexer.retention.strategies.ClosingRetentionStrategy"
-	NoopRetentionStrategy     string = "org.graylog2.indexer.retention.strategies.NoopRetentionStrategy"
-	// retention_strategy_class.type
+	// ClosingRetentionStrategy is one of index set's retention strategies.
+	ClosingRetentionStrategy string = "org.graylog2.indexer.retention.strategies.ClosingRetentionStrategy"
+	// NoopRetentionStrategy is one of index set's retention strategies.
+	NoopRetentionStrategy string = "org.graylog2.indexer.retention.strategies.NoopRetentionStrategy"
+	// DeletionRetentionStrategyConfig is one of index set's retention strategy configs.
 	DeletionRetentionStrategyConfig string = "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig"
-	ClosingRetentionStrategyConfig  string = "org.graylog2.indexer.retention.strategies.ClosingRetentionStrategyConfig"
-	NoopRetentionStrategyConfig     string = "org.graylog2.indexer.retention.strategies.NoopRetentionStrategyConfig"
-	CreationDateFormat              string = "2006-01-02T15:04:05.000Z"
+	// ClosingRetentionStrategyConfig is one of index set's retention strategy configs.
+	ClosingRetentionStrategyConfig string = "org.graylog2.indexer.retention.strategies.ClosingRetentionStrategyConfig"
+	// NoopRetentionStrategyConfig is one of index set's retention strategy configs.
+	NoopRetentionStrategyConfig string = "org.graylog2.indexer.retention.strategies.NoopRetentionStrategyConfig"
+	// CreationDateFormat is the date format used at graylog API's request and response body.
+	CreationDateFormat string = "2006-01-02T15:04:05.000Z"
 )
 
 // IndexSet represents a Graylog's Index Set.
@@ -55,7 +64,7 @@ type IndexSet struct {
 	Stats                     *IndexSetStats `json:"-"`
 }
 
-// NewUpdateParams
+// NewUpdateParams converts an IndexSet to IndexSetUpdateParams.
 func (is *IndexSet) NewUpdateParams() *IndexSetUpdateParams {
 	return &IndexSetUpdateParams{
 		Title:                  is.Title,
@@ -142,6 +151,8 @@ type RetentionStrategy struct {
 	MaxNumberOfIndices int `json:"max_number_of_indices,omitempty"`
 }
 
+// IndexSetsBody represents Get Index Sets API's response body.
+// Basically users don't use this struct, but this struct is public because some sub packages use this struct.
 type IndexSetsBody struct {
 	IndexSets []IndexSet               `json:"index_sets"`
 	Stats     map[string]IndexSetStats `json:"stats"`

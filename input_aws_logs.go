@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeAWSCloudWatchLogs is one of input types.
 	InputTypeAWSCloudWatchLogs string = "org.graylog.aws.inputs.cloudwatch.CloudWatchLogsInput"
 )
 

@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeJSONPath is one of input types.
 	InputTypeJSONPath string = "org.graylog2.inputs.misc.jsonpath.JsonPathInput"
 )
 

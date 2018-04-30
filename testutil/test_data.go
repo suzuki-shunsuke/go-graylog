@@ -5,6 +5,7 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 )
 
+// Role returns a new Role.
 func Role() *graylog.Role {
 	return &graylog.Role{
 		Name:        "Writer",
@@ -13,6 +14,7 @@ func Role() *graylog.Role {
 		ReadOnly:    true}
 }
 
+// User returns a new User.
 func User() *graylog.User {
 	return &graylog.User{
 		Username:    "foo",
@@ -23,6 +25,7 @@ func User() *graylog.User {
 	}
 }
 
+// DummyAdmin returns a new Admin user.
 func DummyAdmin() *graylog.User {
 	return &graylog.User{
 		ID:          "local:admin",
@@ -47,6 +50,7 @@ func DummyAdmin() *graylog.User {
 	}
 }
 
+// Input returns a new Input.
 func Input() *graylog.Input {
 	return &graylog.Input{
 		Title: "test",
@@ -58,6 +62,7 @@ func Input() *graylog.Input {
 		}}
 }
 
+// IndexSet returns a new IndexSet.
 func IndexSet(prefix string) *graylog.IndexSet {
 	return &graylog.IndexSet{
 		Title:                           "Default index set",
@@ -74,14 +79,7 @@ func IndexSet(prefix string) *graylog.IndexSet {
 		Default:                         true}
 }
 
-func DummyIndexSetStats() *graylog.IndexSetStats {
-	return &graylog.IndexSetStats{
-		Indices:   2,
-		Documents: 0,
-		Size:      1412,
-	}
-}
-
+// Stream returns a new Stream.
 func Stream() *graylog.Stream {
 	return &graylog.Stream{
 		MatchingType: "AND",
@@ -91,6 +89,7 @@ func Stream() *graylog.Stream {
 	}
 }
 
+// DummyStream returns a Stream.
 func DummyStream() *graylog.Stream {
 	return &graylog.Stream{
 		ID:              "000000000000000000000001",
@@ -111,28 +110,11 @@ func DummyStream() *graylog.Stream {
 	}
 }
 
+// StreamRule returns a new StreamRule.
 func StreamRule() *graylog.StreamRule {
 	return &graylog.StreamRule{
 		Type:  1,
 		Value: "test",
 		Field: "tag",
-	}
-}
-
-func DummyNewStreamRule() *graylog.StreamRule {
-	return &graylog.StreamRule{
-		Type:  1,
-		Value: "test",
-		Field: "tag",
-	}
-}
-
-func DummyStreamRule() *graylog.StreamRule {
-	return &graylog.StreamRule{
-		ID:       "5a9b53c7c006c6000127f965",
-		Type:     1,
-		Value:    "test",
-		StreamID: "5a94abdac006c60001f04fc1",
-		Field:    "tag",
 	}
 }

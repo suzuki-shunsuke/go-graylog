@@ -16,6 +16,9 @@ cover-endpoint: coverage
 cover-mockserver: coverage *.go mockserver/*.go
 	go test ./mockserver -coverprofile=coverage/mockserver.txt -covermode=atomic
 	go tool cover -html=coverage/mockserver.txt
+cover-handler: coverage
+	go test ./mockserver/handler -coverprofile=coverage/handler.txt -covermode=atomic
+	go tool cover -html=coverage/handler.txt
 cover-logic: coverage
 	go test ./mockserver/logic -coverprofile=coverage/logic.txt -covermode=atomic
 	go tool cover -html=coverage/logic.txt

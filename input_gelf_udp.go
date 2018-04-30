@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeGELFUDP is one of input types.
 	InputTypeGELFUDP string = "org.graylog2.inputs.gelf.udp.GELFUDPInput"
 )
 

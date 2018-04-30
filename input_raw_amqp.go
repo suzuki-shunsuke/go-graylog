@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeRawAMQP is one of input types.
 	InputTypeRawAMQP string = "org.graylog2.inputs.raw.amqp.RawAMQPInput"
 )
 

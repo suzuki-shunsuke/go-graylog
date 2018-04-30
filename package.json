@@ -5,6 +5,7 @@
     "precommit": "bash precommit.sh",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "test": "bash test.sh",
+    "golint": " go list ./... | xargs golint -set_exit_status",
     "lint": "bash lint.sh",
     "metalint": "gometalinter ./...",
     "fmt": "find . -type d -name node_modules -prune -o -type d -name vendor -prune -o -type f -name \"*.go\" -print | xargs gofmt -l -s -w",
@@ -13,7 +14,8 @@
     "cover-endpoint": "make cover-endpoint",
     "cover-mockserver": "make cover-mockserver",
     "cover-logic": "make cover-logic",
-    "cover-inmemory": "make cover-inmemory",
+    "cover-handler": "make cover-handler",
+    "cover-plain": "make cover-plain",
     "build": "make build",
     "upload": "make upload",
     "commitlint-travis": "commitlint-travis"

@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeAWSCloudTrail is one of input types.
 	InputTypeAWSCloudTrail string = "org.graylog.aws.inputs.cloudtrail.CloudTrailInput"
 )
 
@@ -14,7 +15,7 @@ func (attrs InputAWSCloudTrailAttrs) InputType() string {
 	return InputTypeAWSCloudTrail
 }
 
-// InputCloudTrailAttrs represents aws cloud trail Input's attributes.
+// InputAWSCloudTrailAttrs represents aws cloud trail Input's attributes.
 type InputAWSCloudTrailAttrs struct {
 	CreatorUserID     string `json:"creator_user_id,omitempty" v-create:"isdefault"`
 	AWSAssumeRoleArn  string `json:"aws_assume_role_arn,omitempty"`

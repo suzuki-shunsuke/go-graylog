@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeFakeHTTPMessage is one of input types.
 	InputTypeFakeHTTPMessage string = "org.graylog2.inputs.random.FakeHttpMessageInput"
 )
 

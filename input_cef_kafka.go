@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeCEFKafka is one of input types.
 	InputTypeCEFKafka string = "org.graylog.plugins.cef.input.CEFKafkaInput"
 )
 
