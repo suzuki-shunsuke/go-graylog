@@ -13,7 +13,8 @@
     "cover-endpoint": "make cover-endpoint",
     "cover-mockserver": "make cover-mockserver",
     "cover-logic": "make cover-logic",
-    "cover-inmemory": "make cover-inmemory",
+    "cover-handler": "make cover-handler",
+    "cover-plain": "make cover-plain",
     "build": "make build",
     "upload": "make upload",
     "commitlint-travis": "commitlint-travis"
