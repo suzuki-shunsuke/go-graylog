@@ -93,7 +93,7 @@ func TestHandleCreateStreamRule(t *testing.T) {
 	if f != nil {
 		defer f(stream.ID)
 	}
-	rule := testutil.DummyNewStreamRule()
+	rule := testutil.StreamRule()
 	rule.StreamID = stream.ID
 	if _, err := client.CreateStreamRule(rule); err != nil {
 		t.Fatal(err)

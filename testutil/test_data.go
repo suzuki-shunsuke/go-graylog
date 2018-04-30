@@ -74,14 +74,6 @@ func IndexSet(prefix string) *graylog.IndexSet {
 		Default:                         true}
 }
 
-func DummyIndexSetStats() *graylog.IndexSetStats {
-	return &graylog.IndexSetStats{
-		Indices:   2,
-		Documents: 0,
-		Size:      1412,
-	}
-}
-
 func Stream() *graylog.Stream {
 	return &graylog.Stream{
 		MatchingType: "AND",
@@ -116,23 +108,5 @@ func StreamRule() *graylog.StreamRule {
 		Type:  1,
 		Value: "test",
 		Field: "tag",
-	}
-}
-
-func DummyNewStreamRule() *graylog.StreamRule {
-	return &graylog.StreamRule{
-		Type:  1,
-		Value: "test",
-		Field: "tag",
-	}
-}
-
-func DummyStreamRule() *graylog.StreamRule {
-	return &graylog.StreamRule{
-		ID:       "5a9b53c7c006c6000127f965",
-		Type:     1,
-		Value:    "test",
-		StreamID: "5a94abdac006c60001f04fc1",
-		Field:    "tag",
 	}
 }
