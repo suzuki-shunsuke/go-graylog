@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeCEFTCP is one of input types.
 	InputTypeCEFTCP string = "org.graylog.plugins.cef.input.CEFTCPInput"
 )
 

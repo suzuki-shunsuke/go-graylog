@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeSyslogKafka is one of input types.
 	InputTypeSyslogKafka string = "org.graylog2.inputs.syslog.kafka.SyslogKafkaInput"
 )
 

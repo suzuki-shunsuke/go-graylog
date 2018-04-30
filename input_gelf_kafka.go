@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeGELFKafka is one of input types.
 	InputTypeGELFKafka string = "org.graylog2.inputs.gelf.kafka.GELFKafkaInput"
 )
 

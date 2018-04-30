@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeCEFAMQP is one of input types.
 	InputTypeCEFAMQP string = "org.graylog.plugins.cef.input.CEFAmqpInput"
 )
 

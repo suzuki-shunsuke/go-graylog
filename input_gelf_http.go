@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeGELFHTTP is one of input types.
 	InputTypeGELFHTTP string = "org.graylog2.inputs.gelf.http.GELFHttpInput"
 )
 

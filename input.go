@@ -30,6 +30,7 @@ type Input struct {
 	// StaticFields `json:"static_fields,omitempty"`
 }
 
+// Type returns the input's type.
 func (input Input) Type() string {
 	if input.Attrs == nil {
 		return ""
@@ -59,6 +60,7 @@ type InputUpdateParams struct {
 	Node   string     `json:"node,omitempty"`
 }
 
+// ToData assigns input's data to InputData.
 func (input *Input) ToData() (*InputData, error) {
 	d := &InputData{
 		Title:         input.Title,

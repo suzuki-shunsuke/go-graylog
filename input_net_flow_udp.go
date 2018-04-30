@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeNetFlowUDP is one of input types.
 	InputTypeNetFlowUDP string = "org.graylog.plugins.netflow.inputs.NetFlowUdpInput"
 )
 

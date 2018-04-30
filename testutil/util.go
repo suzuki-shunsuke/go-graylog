@@ -15,6 +15,7 @@ const (
 	adminName string = "admin"
 )
 
+// GetNonAdminUser returns a user whose name is not "admin".
 func GetNonAdminUser(cl *client.Client) (*graylog.User, error) {
 	users, _, err := cl.GetUsers()
 	if err != nil {
@@ -28,6 +29,8 @@ func GetNonAdminUser(cl *client.Client) (*graylog.User, error) {
 	return nil, nil
 }
 
+// GetRoleOrCreate gets a given name's role.
+// If no role whose name is a given name exists, create a role with a given name and returns it.
 func GetRoleOrCreate(cl *client.Client, name string) (*graylog.Role, error) {
 	role, ei, err := cl.GetRole(name)
 	if err == nil {
@@ -44,6 +47,7 @@ func GetRoleOrCreate(cl *client.Client, name string) (*graylog.Role, error) {
 	return role, nil
 }
 
+// GetIndexSet returns an IndexSet.
 func GetIndexSet(cl *client.Client, server *mockserver.Server, prefix string) (*graylog.IndexSet, func(string), error) {
 	iss, _, _, _, err := cl.GetIndexSets(0, 0, false)
 	if err != nil {
@@ -64,6 +68,7 @@ func GetIndexSet(cl *client.Client, server *mockserver.Server, prefix string) (*
 	}, nil
 }
 
+// GetStream returns a stream.
 func GetStream(cl *client.Client, server *mockserver.Server, mode int) (*graylog.Stream, func(string), error) {
 	streams, _, _, err := cl.GetStreams()
 	if err != nil {
@@ -108,6 +113,8 @@ func GetStream(cl *client.Client, server *mockserver.Server, mode int) (*graylog
 	}, nil
 }
 
+// WaitAfterCreateIndexSet waits for a while after creates an index set
+// if server is not a mock server.
 func WaitAfterCreateIndexSet(server *mockserver.Server) {
 	// At real graylog API we need to sleep
 	// 404 Index set not found.
@@ -116,6 +123,8 @@ func WaitAfterCreateIndexSet(server *mockserver.Server) {
 	}
 }
 
+// WaitAfterDeleteIndexSet waits for a while after deletes an index set
+// if server is not a mock server.
 func WaitAfterDeleteIndexSet(server *mockserver.Server) {
 	// At real graylog API we need to sleep
 	// 404 Index set not found.

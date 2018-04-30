@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeAWSFlowLogs is one of input types.
 	InputTypeAWSFlowLogs string = "org.graylog.aws.inputs.flowlogs.FlowLogsInput"
 )
 

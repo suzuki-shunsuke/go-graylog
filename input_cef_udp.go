@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeCEFUDP is one of input types.
 	InputTypeCEFUDP string = "org.graylog.plugins.cef.input.CEFUDPInput"
 )
 

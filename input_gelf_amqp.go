@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeGELFAMQP is one of input types.
 	InputTypeGELFAMQP string = "org.graylog2.inputs.gelf.amqp.GELFAMQPInput"
 )
 

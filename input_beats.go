@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeBeats is one of input types.
 	InputTypeBeats string = "org.graylog.plugins.beats.BeatsInput"
 )
 

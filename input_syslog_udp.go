@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeSyslogUDP is one of input types.
 	InputTypeSyslogUDP string = "org.graylog2.inputs.syslog.udp.SyslogUDPInput"
 )
 

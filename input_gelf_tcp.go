@@ -1,6 +1,7 @@
 package graylog
 
 const (
+	// InputTypeGELFTCP is one of input types.
 	InputTypeGELFTCP string = "org.graylog2.inputs.gelf.tcp.GELFTCPInput"
 )
 
