@@ -1,8 +1,6 @@
 package handler_test
 
 import (
-	"bytes"
-	"net/http"
 	"reflect"
 	"testing"
 
@@ -73,20 +71,14 @@ func TestHandleCreateIndexSet(t *testing.T) {
 		t.Fatal("index prefix should conflict")
 	}
 
-	body := bytes.NewBuffer([]byte("hoge"))
-	req, err := http.NewRequest(
-		http.MethodPost, client.Endpoints().IndexSets(), body)
+	pc := &plainClient{Name: client.Name(), Password: client.Password()}
+	resp, err := pc.Post(client.Endpoints().IndexSets(), "hoge")
 	if err != nil {
 		t.Fatal(err)
 	}
-	req.SetBasicAuth(client.Name(), client.Password())
-	hc := &http.Client{}
-	resp, err := hc.Do(req)
-	if err != nil {
-		t.Fatal(err)
-	}
+	defer resp.Body.Close()
 	if resp.StatusCode != 400 {
-		t.Fatalf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
+		t.Fatalf("resp.StatusCode = %d, wanted 400", resp.StatusCode)
 	}
 }
 
@@ -128,23 +120,14 @@ func TestHandleUpdateIndexSet(t *testing.T) {
 		t.Fatal("index set is nil")
 	}
 
-	body := bytes.NewBuffer([]byte("hoge"))
+	pc := &plainClient{Name: client.Name(), Password: client.Password()}
 	u, err := client.Endpoints().IndexSet(id)
 	if err != nil {
 		t.Fatal(err)
 	}
-	req, err := http.NewRequest(http.MethodPut, u.String(), body)
-	if err != nil {
-		t.Fatal(err)
-	}
-	req.SetBasicAuth(client.Name(), client.Password())
-	hc := &http.Client{}
-	resp, err := hc.Do(req)
-	if err != nil {
-		t.Fatal(err)
-	}
+	resp, err := pc.Put(u.String(), "hoge")
 	if resp.StatusCode != 400 {
-		t.Fatalf("resp.StatusCode == %d, wanted 400", resp.StatusCode)
+		t.Fatalf("resp.StatusCode = %d, wanted 400", resp.StatusCode)
 	}
 }
 
