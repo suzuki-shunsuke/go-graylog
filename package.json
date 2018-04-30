@@ -5,6 +5,7 @@
     "precommit": "bash precommit.sh",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "test": "bash test.sh",
+    "golint": "golint -set_exit_status . testutil/... client/... terraform/... validator mockserver mockserver/store mockserver/handler mockserver/logic mockserver/seed mockserver/exec mockserver/store/plain",
     "lint": "bash lint.sh",
     "metalint": "gometalinter ./...",
     "fmt": "find . -type d -name node_modules -prune -o -type d -name vendor -prune -o -type f -name \"*.go\" -print | xargs gofmt -l -s -w",
