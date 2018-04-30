@@ -106,6 +106,20 @@ func TestHandleCreateStreamRule(t *testing.T) {
 	if _, err := client.CreateStreamRule(rule); err == nil {
 		t.Fatal(`no stream with id "h" is not found`)
 	}
+
+	pc := &plainClient{Name: client.Name(), Password: client.Password()}
+	e, err := client.Endpoints().StreamRules(stream.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp, err := pc.Post(e.String(), `{"value": 0, "field": 0}`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 400 {
+		t.Fatalf("resp.StatusCode = %d, wanted 400", resp.StatusCode)
+	}
 }
 
 func TestHandleUpdateStreamRule(t *testing.T) {
@@ -137,6 +151,9 @@ func TestHandleUpdateStreamRule(t *testing.T) {
 		rule = &(rules[0])
 	}
 
+	ruleID := rule.ID
+	streamID := rule.StreamID
+
 	rule.Description += " changed!"
 	if _, err := client.UpdateStreamRule(rule); err != nil {
 		t.Fatal(err)
@@ -148,6 +165,28 @@ func TestHandleUpdateStreamRule(t *testing.T) {
 	rule.ID = "h"
 	if _, err := client.UpdateStreamRule(rule); err == nil {
 		t.Fatal(`no stream rule with id "h" is not found`)
+	}
+
+	pc := &plainClient{Name: client.Name(), Password: client.Password()}
+	e, err := client.Endpoints().StreamRule(streamID, ruleID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp, err := pc.Put(e.String(), `{"value": 0, "field": 0}`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 400 {
+		t.Fatalf("resp.StatusCode = %d, wanted 400", resp.StatusCode)
+	}
+	resp, err = pc.Put(e.String(), `{"field": 0}`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 400 {
+		t.Fatalf("resp.StatusCode = %d, wanted 400", resp.StatusCode)
 	}
 }
 
