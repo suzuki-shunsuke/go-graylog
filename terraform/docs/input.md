@@ -6,7 +6,7 @@ https://github.com/suzuki-shunsuke/terraform-provider-graylog/blob/master/resour
 resource "graylog_input" "test" {
   title = "terraform test"
   type = "org.graylog2.inputs.syslog.udp.SyslogUDPInput"
-  configuration = {
+  attributes = {
     bind_address = "0.0.0.0"
     port = 514
     recv_buffer_size = 262144
@@ -22,7 +22,7 @@ name | type | description
 --- | --- | ---
 title | string |
 type | string |
-configuration | |
+attributes | |
 
 ### Optional Argument
 
@@ -30,66 +30,66 @@ name | default | type | description
 --- | --- | --- | ---
 global | "" | string |
 node | "" | string |
-configuration.bind_address | string |
-configuration.port | int |
-configuration.recv_buffer_size | int |
-configuration.heartbeat | int |
-configuration.prefetch | int |
-configuration.broker_port | int |
-configuration.parallel_queues | int |
-configuration.fetch_wait_max | int |
-configuration.fetch_min_bytes | int |
-configuration.threads | int |
-configuration.max_message_size | int |
-configuration.decompress_size_limit | int |
-configuration.idle_writer_timeout | int |
-configuration.max_chunk_size | int |
-configuration.interval | int |
-configuration.throttling_allowed | bool |
-configuration.tls_enable | bool |
-configuration.tcp_keepalive | bool |
-configuration.exchange_bind | bool |
-configuration.tls | bool |
-configuration.requeue_invalid_messages | bool |
-configuration.use_full_names | bool |
-configuration.use_null_delimiter | bool |
-configuration.enable_cors | bool |
-configuration.force_rdns | bool |
-configuration.store_full_message | bool |
-configuration.expand_structured_data | bool |
-configuration.allow_override_date | bool |
-configuration.aws_region | string |
-configuration.aws_assume_role_arn | string |
-configuration.aws_access_key | string |
-configuration.kinesis_stream_name | string |
-configuration.aws_secret_key | string |
-configuration.aws_sqs_region | string |
-configuration.aws_s3_region | string |
-configuration.aws_sqs_queue_name | string |
-configuration.override_source | string |
-configuration.tls_key_file | string |
-configuration.tls_key_password | string |
-configuration.tls_client_auth | string |
-configuration.tls_client_auth_cert_file | string |
-configuration.tls_cert_file | string |
-configuration.timezone | string |
-configuration.broker_vhost | string |
-configuration.broker_username | string |
-configuration.locale | string |
-configuration.broker_password | string |
-configuration.exchange | string |
-configuration.routing_key | string |
-configuration.broker_hostname | string |
-configuration.queue | string |
-configuration.topic_filter | string |
-configuration.offset_reset | string |
-configuration.zookeeper | string |
-configuration.headers | string |
-configuration.path | string |
-configuration.target_url | string |
-configuration.source | string |
-configuration.timeunit | string |
-configuration.netflow9_definitions_path | string |
+attributes.bind_address | string |
+attributes.port | int |
+attributes.recv_buffer_size | int |
+attributes.heartbeat | int |
+attributes.prefetch | int |
+attributes.broker_port | int |
+attributes.parallel_queues | int |
+attributes.fetch_wait_max | int |
+attributes.fetch_min_bytes | int |
+attributes.threads | int |
+attributes.max_message_size | int |
+attributes.decompress_size_limit | int |
+attributes.idle_writer_timeout | int |
+attributes.max_chunk_size | int |
+attributes.interval | int |
+attributes.throttling_allowed | bool |
+attributes.tls_enable | bool |
+attributes.tcp_keepalive | bool |
+attributes.exchange_bind | bool |
+attributes.tls | bool |
+attributes.requeue_invalid_messages | bool |
+attributes.use_full_names | bool |
+attributes.use_null_delimiter | bool |
+attributes.enable_cors | bool |
+attributes.force_rdns | bool |
+attributes.store_full_message | bool |
+attributes.expand_structured_data | bool |
+attributes.allow_override_date | bool |
+attributes.aws_region | string |
+attributes.aws_assume_role_arn | string |
+attributes.aws_access_key | string |
+attributes.kinesis_stream_name | string |
+attributes.aws_secret_key | string |
+attributes.aws_sqs_region | string |
+attributes.aws_s3_region | string |
+attributes.aws_sqs_queue_name | string |
+attributes.override_source | string |
+attributes.tls_key_file | string |
+attributes.tls_key_password | string |
+attributes.tls_client_auth | string |
+attributes.tls_client_auth_cert_file | string |
+attributes.tls_cert_file | string |
+attributes.timezone | string |
+attributes.broker_vhost | string |
+attributes.broker_username | string |
+attributes.locale | string |
+attributes.broker_password | string |
+attributes.exchange | string |
+attributes.routing_key | string |
+attributes.broker_hostname | string |
+attributes.queue | string |
+attributes.topic_filter | string |
+attributes.offset_reset | string |
+attributes.zookeeper | string |
+attributes.headers | string |
+attributes.path | string |
+attributes.target_url | string |
+attributes.source | string |
+attributes.timeunit | string |
+attributes.netflow9_definitions_path | string |
 
 ## Attrs Reference
 

@@ -21,13 +21,25 @@ By using this provider, you can utilize this flexibility and manage the infrastr
 
 ## Install
 
-Download binary and rename it `terraform-provider-graylog` (name is important) and install under $PATH.
+[Download binary](https://github.com/suzuki-shunsuke/go-graylog/releases) and install under `~/.terraform.d/plugins`.
 
-https://github.com/suzuki-shunsuke/go-graylog/releases
+https://www.terraform.io/docs/configuration/providers.html#third-party-plugins
+
+```
+$ wget https://github.com/suzuki-shunsuke/go-graylog/releases/download/v0.1.1/terraform-provider-graylog_v0.1.1_darwin_amd64.tar.gz
+$ tar xvzf terraform-provider-graylog_v0.1.1_darwin_amd64.tar.gz
+$ mv terraform-provider-graylog_v0.1.1_darwin_amd64 ~/.terraform.d/plugins/terraform-provider-graylog_v0.1.1
+```
 
 ## Example
 
 ```
+provider "graylog" {
+  web_endpoint_uri = "${var.web_endpoint_uri}"
+  auth_name = "${var.auth_name}"
+  auth_password = "${var.auth_password}"
+}
+
 // Role my-role-2
 resource "graylog_role" "my-role-2" {
   name = "my-role-2"
