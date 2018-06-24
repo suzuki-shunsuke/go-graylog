@@ -36,21 +36,21 @@ type User struct {
 	// The Reader role grants basic access to the system and will be enabled.
 	// The Admin role grants access to everything in Graylog.
 	// ex. ["Admin"]
-	Roles       *set.StrSet `json:"roles,omitempty"`
-	Permissions *set.StrSet `json:"permissions,omitempty" v-create:"required"`
+	Roles       set.StrSet `json:"roles,omitempty"`
+	Permissions set.StrSet `json:"permissions,omitempty" v-create:"required"`
 }
 
 // UserUpdateParams represents a user update API's parameter.
 type UserUpdateParams struct {
-	Username         string      `json:"username,omitempty" v-update:"required"`
-	Email            *string     `json:"email,omitempty"`
-	FullName         *string     `json:"full_name,omitempty"`
-	Password         *string     `json:"password,omitempty"`
-	Timezone         *string     `json:"timezone,omitempty"`
-	SessionTimeoutMs *int        `json:"session_timeout_ms,omitempty"`
-	Permissions      *set.StrSet `json:"permissions,omitempty"`
-	Startpage        *Startpage  `json:"startpage,omitempty"`
-	Roles            *set.StrSet `json:"roles,omitempty"`
+	Username         string     `json:"username,omitempty" v-update:"required"`
+	Email            *string    `json:"email,omitempty"`
+	FullName         *string    `json:"full_name,omitempty"`
+	Password         *string    `json:"password,omitempty"`
+	Timezone         *string    `json:"timezone,omitempty"`
+	SessionTimeoutMs *int       `json:"session_timeout_ms,omitempty"`
+	Permissions      set.StrSet `json:"permissions,omitempty"`
+	Startpage        *Startpage `json:"startpage,omitempty"`
+	Roles            set.StrSet `json:"roles,omitempty"`
 }
 
 // NewUpdateParams returns Update User API's parameters.

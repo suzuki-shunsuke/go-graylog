@@ -10,8 +10,8 @@ type Role struct {
 	Name        string `json:"name,omitempty" v-create:"required" v-update:"required"`
 	Description string `json:"description,omitempty"`
 	// ex. ["clusterconfigentry:read", "users:edit"]
-	Permissions *set.StrSet `json:"permissions,omitempty" v-create:"required" v-update:"required"`
-	ReadOnly    bool        `json:"read_only,omitempty"`
+	Permissions set.StrSet `json:"permissions,omitempty" v-create:"required" v-update:"required"`
+	ReadOnly    bool       `json:"read_only,omitempty"`
 }
 
 // RoleUpdateParams represents Update Role API's parameters.
@@ -19,7 +19,7 @@ type RoleUpdateParams struct {
 	Name        string  `json:"name,omitempty" v-create:"required" v-update:"required"`
 	Description *string `json:"description,omitempty"`
 	// ex. ["clusterconfigentry:read", "users:edit"]
-	Permissions *set.StrSet `json:"permissions,omitempty" v-create:"required" v-update:"required"`
+	Permissions set.StrSet `json:"permissions,omitempty" v-create:"required" v-update:"required"`
 }
 
 // NewUpdateParams returns Update Role API's parameters.
