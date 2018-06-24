@@ -77,11 +77,8 @@ log-level must be any of debug|info|warn|error|fatal|panic`, logLevel)
 	exitChan := make(chan int)
 	go func() {
 		for {
-			s := <-signalChan
-			switch s {
-			default:
-				exitChan <- 0
-			}
+			<-signalChan
+			exitChan <- 0
 		}
 	}()
 
