@@ -8,8 +8,8 @@ npm run golint
 
 decho go test ./mockserver/... -covermode=atomic || exit 1
 
-if [ -f env.sh ]; then
-  decho source env.sh
+if [ -f script/env.sh ]; then
+  decho source script/env.sh
 fi
 
 decho go test ./testutil/... ./util/... ./validator/... ./client/... . -covermode=atomic || exit 1

@@ -10,10 +10,10 @@ import (
 )
 
 type validateReqBodyPrms struct {
-	Required     *set.StrSet
-	Optional     *set.StrSet
-	Ignored      *set.StrSet
-	Forbidden    *set.StrSet
+	Required     set.StrSet
+	Optional     set.StrSet
+	Ignored      set.StrSet
+	Forbidden    set.StrSet
 	ExtForbidden bool
 }
 

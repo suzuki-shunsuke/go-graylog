@@ -1,20 +1,29 @@
 ---
 language: go
 go:
-  - 1.x
+- 1.x
 before_install:
-  - node -v
-  - npm -v
+- node -v
+- npm -v
 install:
-  - npm install
-  - go get -t ./...
-  - go get -u gopkg.in/alecthomas/gometalinter.v2
-  - ln -s $GOPATH/bin/gometalinter.v2 $GOPATH/bin/gometalinter
-  - gometalinter --install
+- npm install
+- go get -t ./...
+- go get -u gopkg.in/alecthomas/gometalinter.v2
+- ln -s $GOPATH/bin/gometalinter.v2 $GOPATH/bin/gometalinter
+- gometalinter --install
 script:
-  - npm run commitlint-travis
-  - npm run lint
-  - bash codecov-test.sh
+- npm run commitlint-travis
+- gometalinter ./...
+- bash script/codecov-test.sh
 after_success:
-  - bash codecov.sh
-  - bash upload.sh
+- bash script/codecov.sh
+- git status --porcelain
+# mainly ignore change of package-lock.json
+- git checkout -- .
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: curl -sL https://git.io/goreleaser | bash
+  on:
+    tags: true
+    condition: $TRAVIS_OS_NAME = linux

@@ -125,7 +125,7 @@ func TestHandleUpdateIndexSet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	resp, err := pc.Put(u.String(), "hoge")
+	resp, _ := pc.Put(u.String(), "hoge")
 	if resp.StatusCode != 400 {
 		t.Fatalf("resp.StatusCode = %d, wanted 400", resp.StatusCode)
 	}
