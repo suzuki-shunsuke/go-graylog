@@ -1,3 +1,6 @@
+cd `dirname $0`/.. || exit 1
+echo "pwd: $PWD" || exit 1
+
 find . -type d -name node_modules -prune -o \
   -type d -name .git -prune -o \
   -type d -name vendor -prune -o \
