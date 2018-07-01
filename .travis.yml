@@ -15,7 +15,12 @@ install:
 - go get github.com/mitchellh/gox
 script:
 - npm run commitlint-travis
-- gometalinter ./...
+# I can't understand the reason but it is failed to run "gometalinter ./..." travis ci
+# index_set.go:1::warning: file is not goimported (goimports)
+# index_set.go:1::warning: file is not gofmted with -s (gofmt)
+# - gometalinter ./...
+- bash script/metalint_travis.sh
+- go list ./... | gsed -e "s/.*\/go-graylog/./" | xargs gometalinter
 - bash script/codecov-test.sh
 after_success:
 - bash script/codecov.sh
