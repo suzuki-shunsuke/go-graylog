@@ -214,19 +214,17 @@ func resourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("retention_strategy", dest)
 	}
 
-	d.Set("title", is.Title)
-	d.Set("description", is.Description)
-	d.Set("shards", is.Shards)
-	d.Set("replicas", is.Replicas)
-	d.Set("rotation_strategy_class", is.RotationStrategyClass)
-	d.Set("retention_strategy_class", is.RetentionStrategyClass)
-	d.Set("index_analyzer", is.IndexAnalyzer)
-	d.Set(
-		"index_optimization_max_num_segments",
-		is.IndexOptimizationMaxNumSegments)
-	d.Set("index_optimization_disabled", is.IndexOptimizationDisabled)
-	d.Set("writable", is.Writable)
-	d.Set("default", is.Default)
+	setStrToRD(d, "title", is.Title)
+	setStrToRD(d, "description", is.Description)
+	setIntToRD(d, "shards", is.Shards)
+	setIntToRD(d, "replicas", is.Replicas)
+	setStrToRD(d, "rotation_strategy_class", is.RotationStrategyClass)
+	setStrToRD(d, "retention_strategy_class", is.RetentionStrategyClass)
+	setStrToRD(d, "index_analyzer", is.IndexAnalyzer)
+	setIntToRD(d, "index_optimization_max_num_segments", is.IndexOptimizationMaxNumSegments)
+	setBoolToRD(d, "index_optimization_disabled", is.IndexOptimizationDisabled)
+	setBoolToRD(d, "writable", is.Writable)
+	setBoolToRD(d, "default", is.Default)
 	return nil
 }
 

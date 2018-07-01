@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/hashicorp/terraform/helper/schema"
+
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
 )
@@ -152,11 +153,11 @@ func resourceInputRead(d *schema.ResourceData, m interface{}) error {
 		}
 		d.Set("attributes", []map[string]interface{}{dest})
 	}
-	d.Set("title", input.Title)
-	d.Set("type", input.Type)
-	d.Set("node", input.Node)
-	d.Set("creator_user_id", input.CreatorUserID)
-	d.Set("created_at", input.CreatedAt)
+	setStrToRD(d, "title", input.Title)
+	setStrToRD(d, "type", input.Type())
+	setStrToRD(d, "node", input.Node)
+	setStrToRD(d, "creator_user_id", input.CreatorUserID)
+	setStrToRD(d, "created_at", input.CreatedAt)
 	return nil
 }
 
