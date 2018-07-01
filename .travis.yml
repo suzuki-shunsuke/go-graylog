@@ -11,19 +11,12 @@ install:
 - go get -u gopkg.in/alecthomas/gometalinter.v2
 - ln -s $GOPATH/bin/gometalinter.v2 $GOPATH/bin/gometalinter
 - gometalinter --install
+- go get -u github.com/tcnksm/ghr
+- go get github.com/mitchellh/gox
 script:
 - npm run commitlint-travis
 - gometalinter ./...
 - bash script/codecov-test.sh
 after_success:
 - bash script/codecov.sh
-- git status --porcelain
-# mainly ignore change of package-lock.json
-- git checkout -- .
-deploy:
-- provider: script
-  skip_cleanup: true
-  script: curl -sL https://git.io/goreleaser | bash
-  on:
-    tags: true
-    condition: $TRAVIS_OS_NAME = linux
+- TAG=$TRAVIS_TAG bash script/release.sh

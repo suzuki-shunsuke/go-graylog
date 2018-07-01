@@ -1,0 +1,4 @@
+decho() {
+  echo "+ $@"
+  eval $@
+}

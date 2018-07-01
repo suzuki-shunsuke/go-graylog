@@ -2,7 +2,6 @@ TAG=edge
 BIN=terraform-provider-graylog
 $(BIN): *.go graylog/*.go
 	go build -o $(BIN)
-	terraform init
 .terraform:
 	terraform init
 plan: $(BIN) .terraform

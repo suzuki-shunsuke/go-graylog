@@ -26,8 +26,9 @@ By using this provider, you can utilize this flexibility and manage the infrastr
 https://www.terraform.io/docs/configuration/providers.html#third-party-plugins
 
 ```
-$ wget https://github.com/suzuki-shunsuke/go-graylog/releases/download/v0.1.1/terraform-provider-graylog_v0.1.1_darwin_amd64.tar.gz
-$ tar xvzf terraform-provider-graylog_v0.1.1_darwin_amd64.tar.gz
+$ wget https://github.com/suzuki-shunsuke/go-graylog/releases/download/v0.1.1/terraform-provider-graylog_v0.1.1_darwin_amd64.gz
+$ gzip -d terraform-provider-graylog_v0.1.1_darwin_amd64.gz
+$ mkdir -p ~/.terraform.d/plugins
 $ mv terraform-provider-graylog_v0.1.1_darwin_amd64 ~/.terraform.d/plugins/terraform-provider-graylog_v0.1.1
 ```
 
