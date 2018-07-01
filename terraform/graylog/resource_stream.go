@@ -119,19 +119,19 @@ func resourceStreamRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	d.Set("index_set_id", stream.IndexSetID)
-	d.Set("title", stream.Title)
-	d.Set("description", stream.Description)
-	d.Set("matching_type", stream.MatchingType)
-	d.Set(
-		"remove_matches_from_default_stream",
+	setStrToRD(d, "index_set_id", stream.IndexSetID)
+	setStrToRD(d, "title", stream.Title)
+	setStrToRD(d, "description", stream.Description)
+	setStrToRD(d, "matching_type", stream.MatchingType)
+	setBoolToRD(
+		d, "remove_matches_from_default_stream",
 		stream.RemoveMatchesFromDefaultStream)
 	// rules
 	// content_pack
-	d.Set("creator_user_id", stream.CreatorUserID)
-	d.Set("created_at", stream.CreatedAt)
-	d.Set("disabled", stream.Disabled)
-	d.Set("is_default", stream.IsDefault)
+	setStrToRD(d, "creator_user_id", stream.CreatorUserID)
+	setStrToRD(d, "created_at", stream.CreatedAt)
+	setBoolToRD(d, "disabled", stream.Disabled)
+	setBoolToRD(d, "is_default", stream.IsDefault)
 	// alert_receivers
 	// alert_conditions
 	return nil

@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
+
 	"github.com/suzuki-shunsuke/go-graylog/client"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver"
 )
@@ -71,4 +73,20 @@ func getIDFromTfState(tfState *terraform.State, key string) (string, error) {
 		return "", fmt.Errorf("No ID is set")
 	}
 	return id, nil
+}
+
+func setStrListToRD(d *schema.ResourceData, key string, val []string) error {
+	return d.Set(key, val)
+}
+
+func setStrToRD(d *schema.ResourceData, key, val string) error {
+	return d.Set(key, val)
+}
+
+func setIntToRD(d *schema.ResourceData, key string, val int) error {
+	return d.Set(key, val)
+}
+
+func setBoolToRD(d *schema.ResourceData, key string, val bool) error {
+	return d.Set(key, val)
 }

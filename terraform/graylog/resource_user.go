@@ -139,13 +139,13 @@ func resourceUserRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	d.Set("username", user.Username)
-	d.Set("email", user.Email)
-	d.Set("permissions", user.Permissions)
-	d.Set("timezone", user.Timezone)
-	d.Set("session_timeout_ms", user.SessionTimeoutMs)
-	d.Set("external", user.External)
-	d.Set("read_only", user.ReadOnly)
+	setStrToRD(d, "username", user.Username)
+	setStrToRD(d, "email", user.Email)
+	setStrToRD(d, "timezone", user.Timezone)
+	setStrListToRD(d, "permissions", user.Permissions.ToList())
+	setIntToRD(d, "session_timeout_ms", user.SessionTimeoutMs)
+	setBoolToRD(d, "external", user.External)
+	setBoolToRD(d, "read_only", user.ReadOnly)
 	return nil
 }
 
