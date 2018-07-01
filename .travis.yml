@@ -15,27 +15,8 @@ install:
 - go get github.com/mitchellh/gox
 script:
 - npm run commitlint-travis
-# I can't understand the reason but it is failed to run "gometalinter ./..." travis ci
-# index_set.go:1::warning: file is not goimported (goimports)
-# index_set.go:1::warning: file is not gofmted with -s (gofmt)
-# - gometalinter ./...
-# - bash script/metalint_travis.sh
-- gometalinter --debug .
-# - gometalinter ./client
-# - gometalinter ./client/endpoint
-# - gometalinter ./mockserver
-# - gometalinter ./mockserver/exec
-# - gometalinter ./mockserver/handler
-# - gometalinter ./mockserver/logic
-# - gometalinter ./mockserver/seed
-# - gometalinter ./mockserver/store
-# - gometalinter ./mockserver/store/plain
-# - gometalinter ./terraform
-# - gometalinter ./terraform/graylog
-# - gometalinter ./testutil
-# - gometalinter ./util
-# - gometalinter ./validator
-# - bash script/codecov-test.sh
+- gometalinter ./...
+- bash script/codecov-test.sh
 after_success:
 - bash script/codecov.sh
 - TAG=$TRAVIS_TAG bash script/release.sh
