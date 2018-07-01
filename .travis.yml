@@ -19,8 +19,22 @@ script:
 # index_set.go:1::warning: file is not goimported (goimports)
 # index_set.go:1::warning: file is not gofmted with -s (gofmt)
 # - gometalinter ./...
-- bash script/metalint_travis.sh
-- go list ./... | gsed -e "s/.*\/go-graylog/./" | xargs gometalinter
+# - bash script/metalint_travis.sh
+- gometalinter .
+- gometalinter ./client
+- gometalinter ./client/endpoint
+- gometalinter ./mockserver
+- gometalinter ./mockserver/exec
+- gometalinter ./mockserver/handler
+- gometalinter ./mockserver/logic
+- gometalinter ./mockserver/seed
+- gometalinter ./mockserver/store
+- gometalinter ./mockserver/store/plain
+- gometalinter ./terraform
+- gometalinter ./terraform/graylog
+- gometalinter ./testutil
+- gometalinter ./util
+- gometalinter ./validator
 - bash script/codecov-test.sh
 after_success:
 - bash script/codecov.sh
