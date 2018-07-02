@@ -200,7 +200,7 @@ func resourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 		if err := json.Unmarshal(b, &dest); err != nil {
 			return err
 		}
-		d.Set("rotation_strategy", dest)
+		d.Set("rotation_strategy", []map[string]interface{}{dest})
 	}
 	if is.RetentionStrategy != nil {
 		b, err := json.Marshal(is.RetentionStrategy)
@@ -211,10 +211,11 @@ func resourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 		if err := json.Unmarshal(b, &dest); err != nil {
 			return err
 		}
-		d.Set("retention_strategy", dest)
+		d.Set("retention_strategy", []map[string]interface{}{dest})
 	}
 
 	setStrToRD(d, "title", is.Title)
+	setStrToRD(d, "index_prefix", is.IndexPrefix)
 	setStrToRD(d, "description", is.Description)
 	setIntToRD(d, "shards", is.Shards)
 	setIntToRD(d, "replicas", is.Replicas)
