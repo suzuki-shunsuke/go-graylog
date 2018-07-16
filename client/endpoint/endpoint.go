@@ -12,13 +12,14 @@ func urlJoin(ep *url.URL, arg string) (*url.URL, error) {
 
 // Endpoints represents each API's endpoint URLs.
 type Endpoints struct {
-	roles          *url.URL
-	users          *url.URL
-	inputs         *url.URL
-	indexSets      *url.URL
-	indexSetStats  *url.URL
-	streams        *url.URL
-	enabledStreams *url.URL
+	roles           *url.URL
+	users           *url.URL
+	inputs          *url.URL
+	indexSets       *url.URL
+	indexSetStats   *url.URL
+	streams         *url.URL
+	enabledStreams  *url.URL
+	alertConditions *url.URL
 }
 
 // NewEndpoints returns a new Endpoints.
@@ -58,13 +59,15 @@ func NewEndpoints(endpoint string) (*Endpoints, error) {
 	if err != nil {
 		return nil, err
 	}
+	alertConditions, err := urlJoin(ep, "alerts/conditions")
 	return &Endpoints{
-		roles:          roles,
-		users:          users,
-		inputs:         inputs,
-		indexSets:      indexSets,
-		indexSetStats:  indexSetStats,
-		streams:        streams,
-		enabledStreams: enabledStreams,
+		roles:           roles,
+		users:           users,
+		inputs:          inputs,
+		indexSets:       indexSets,
+		indexSetStats:   indexSetStats,
+		streams:         streams,
+		enabledStreams:  enabledStreams,
+		alertConditions: alertConditions,
 	}, nil
 }

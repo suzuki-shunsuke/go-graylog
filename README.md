@@ -19,7 +19,7 @@ https://godoc.org/github.com/suzuki-shunsuke/go-graylog/client
 
 ## Example - client and mock server
 
-* https://godoc.org/github.com/suzuki-shunsuke/go-graylog/client/#example_Client
+* https://godoc.org/github.com/suzuki-shunsuke/go-graylog/client/#example-Client
 
 ## Mock Server CLI tool
 

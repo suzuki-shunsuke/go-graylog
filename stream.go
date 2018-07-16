@@ -70,9 +70,6 @@ type AlertReceivers struct {
 	Users  []string `json:"users,omitempty"`
 }
 
-// AlertCondition represents an alert condition.
-type AlertCondition struct{}
-
 // StreamsBody represents Get Streams API's response body.
 // Basically users don't use this struct, but this struct is public because some sub packages use this struct.
 type StreamsBody struct {

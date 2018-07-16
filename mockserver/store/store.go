@@ -64,4 +64,6 @@ type Store interface {
 	UpdateStreamRule(*graylog.StreamRuleUpdateParams) error
 	DeleteStreamRule(streamID, streamRuleID string) error
 	HasStreamRule(streamID, streamRuleID string) (bool, error)
+
+	GetAlertConditions() ([]graylog.AlertCondition, int, error)
 }

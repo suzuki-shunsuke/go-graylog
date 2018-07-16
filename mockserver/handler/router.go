@@ -62,6 +62,8 @@ func NewRouter(lgc *logic.Logic) *httprouter.Router {
 	router.DELETE("/api/streams/:streamID/rules/:streamRuleID", wrapHandle(lgc, HandleDeleteStreamRule))
 	router.GET("/api/streams/:streamID/rules/:streamRuleID", wrapHandle(lgc, HandleGetStreamRule))
 
+	router.GET("/api/alerts/conditions", wrapHandle(lgc, HandleGetAlertConditions))
+
 	router.NotFound = HandleNotFound(lgc)
 	return router
 }
