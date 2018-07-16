@@ -20,6 +20,7 @@ type Store struct {
 	defaultIndexSetID string
 	streams           map[string]graylog.Stream
 	streamRules       map[string]map[string]graylog.StreamRule
+	alertConditions   map[string]graylog.AlertCondition
 	dataPath          string
 	tokens            map[string]string
 	imutex            sync.RWMutex
@@ -33,6 +34,7 @@ type plainStore struct {
 	DefaultIndexSetID string                                   `json:"default_index_set_id"`
 	Streams           map[string]graylog.Stream                `json:"streams"`
 	StreamRules       map[string]map[string]graylog.StreamRule `json:"stream_rules"`
+	AlertConditions   map[string]graylog.AlertCondition        `json:"alert_conditions"`
 	Tokens            map[string]string                        `json:"tokens"`
 }
 
@@ -46,6 +48,7 @@ func (store *Store) MarshalJSON() ([]byte, error) {
 		"default_index_set_id": store.defaultIndexSetID,
 		"streams":              store.streams,
 		"stream_rules":         store.streamRules,
+		"alert_conditions":     store.alertConditions,
 		"tokens":               store.tokens,
 	}
 	return json.Marshal(data)
@@ -64,6 +67,7 @@ func (store *Store) UnmarshalJSON(b []byte) error {
 	store.defaultIndexSetID = s.DefaultIndexSetID
 	store.streams = s.Streams
 	store.streamRules = s.StreamRules
+	store.alertConditions = s.AlertConditions
 	store.tokens = s.Tokens
 	return nil
 }
@@ -73,14 +77,15 @@ func (store *Store) UnmarshalJSON(b []byte) error {
 // If `dataPath` is empty, the data aren't written to the file.
 func NewStore(dataPath string) store.Store {
 	return &Store{
-		roles:       map[string]graylog.Role{},
-		users:       map[string]graylog.User{},
-		inputs:      map[string]graylog.Input{},
-		indexSets:   []graylog.IndexSet{},
-		streams:     map[string]graylog.Stream{},
-		streamRules: map[string]map[string]graylog.StreamRule{},
-		tokens:      map[string]string{},
-		dataPath:    dataPath,
+		roles:           map[string]graylog.Role{},
+		users:           map[string]graylog.User{},
+		inputs:          map[string]graylog.Input{},
+		indexSets:       []graylog.IndexSet{},
+		streams:         map[string]graylog.Stream{},
+		streamRules:     map[string]map[string]graylog.StreamRule{},
+		alertConditions: map[string]graylog.AlertCondition{},
+		tokens:          map[string]string{},
+		dataPath:        dataPath,
 	}
 }
 
