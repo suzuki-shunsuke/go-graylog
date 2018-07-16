@@ -28,8 +28,7 @@ func (client *Client) GetIndexSetsContext(
 		"stats": []string{strconv.FormatBool(stats)},
 	}
 	u := fmt.Sprintf("%s?%s", client.Endpoints().IndexSets(), v.Encode())
-	ei, err := client.callGet(
-		ctx, u, nil, indexSets)
+	ei, err := client.callGet(ctx, u, nil, indexSets)
 	return indexSets.IndexSets, indexSets.Stats, indexSets.Total, ei, err
 }
 

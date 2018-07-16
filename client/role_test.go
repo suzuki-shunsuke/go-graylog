@@ -47,9 +47,6 @@ func TestGetRoles(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if roles == nil {
-		t.Fatal("roles is nil")
-	}
 	if len(roles) == 0 {
 		t.Fatal("roles is empty")
 	}
