@@ -20,6 +20,7 @@ type Store struct {
 	defaultIndexSetID string
 	streams           map[string]graylog.Stream
 	streamRules       map[string]map[string]graylog.StreamRule
+	alerts            map[string]graylog.Alert
 	alertConditions   map[string]graylog.AlertCondition
 	dataPath          string
 	tokens            map[string]string
@@ -34,6 +35,7 @@ type plainStore struct {
 	DefaultIndexSetID string                                   `json:"default_index_set_id"`
 	Streams           map[string]graylog.Stream                `json:"streams"`
 	StreamRules       map[string]map[string]graylog.StreamRule `json:"stream_rules"`
+	Alerts            map[string]graylog.Alert                 `json:"alerts"`
 	AlertConditions   map[string]graylog.AlertCondition        `json:"alert_conditions"`
 	Tokens            map[string]string                        `json:"tokens"`
 }
@@ -49,6 +51,7 @@ func (store *Store) MarshalJSON() ([]byte, error) {
 		"streams":              store.streams,
 		"stream_rules":         store.streamRules,
 		"alert_conditions":     store.alertConditions,
+		"alerts":               store.alerts,
 		"tokens":               store.tokens,
 	}
 	return json.Marshal(data)
@@ -67,6 +70,7 @@ func (store *Store) UnmarshalJSON(b []byte) error {
 	store.defaultIndexSetID = s.DefaultIndexSetID
 	store.streams = s.Streams
 	store.streamRules = s.StreamRules
+	store.alerts = s.Alerts
 	store.alertConditions = s.AlertConditions
 	store.tokens = s.Tokens
 	return nil
@@ -83,6 +87,7 @@ func NewStore(dataPath string) store.Store {
 		indexSets:       []graylog.IndexSet{},
 		streams:         map[string]graylog.Stream{},
 		streamRules:     map[string]map[string]graylog.StreamRule{},
+		alerts:          map[string]graylog.Alert{},
 		alertConditions: map[string]graylog.AlertCondition{},
 		tokens:          map[string]string{},
 		dataPath:        dataPath,

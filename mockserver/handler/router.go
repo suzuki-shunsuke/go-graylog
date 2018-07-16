@@ -68,6 +68,10 @@ func NewRouter(lgc *logic.Logic) http.Handler {
 		"/api/system/indices/index_sets",
 		wrapEchoHandle(lgc, HandleCreateIndexSet))
 
+	// Alert
+	e.GET("/api/streams/alerts/:alertID", wrapEchoHandle(lgc, HandleGetAlert))
+	e.GET("/api/streams/alerts", wrapEchoHandle(lgc, HandleGetAlerts))
+
 	// Stream
 	e.GET("/api/streams/enabled", wrapEchoHandle(lgc, HandleGetEnabledStreams))
 	e.GET("/api/streams/:streamID", wrapEchoHandle(lgc, HandleGetStream))

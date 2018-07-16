@@ -3,13 +3,14 @@ package graylog
 // Alert represents an Alert.
 // http://docs.graylog.org/en/2.4/pages/streams/alerts.html
 type Alert struct {
-	ID            string                    `json:"id"`
-	Type          string                    `json:"type"`
-	CreatorUserID string                    `json:"creator_user_id"`
-	CreatedAt     string                    `json:"created_at"`
-	Parameters    *AlertConditionParameters `json:"parameters"`
-	InGrace       bool                      `json:"in_grace"`
-	Title         string                    `json:"title"`
+	ID                  string                    `json:"id"`
+	Description         string                    `json:"description"`
+	ConditionID         string                    `json:"condition_id"`
+	StreamID            string                    `json:"stream_id"`
+	TriggeredAt         string                    `json:"triggered_at"`
+	ResolvedAt          string                    `json:"resolved_at"`
+	IsInterval          bool                      `json:"is_interval"`
+	ConditionParameters *AlertConditionParameters `json:"condition_parameters"`
 }
 
 // AlertsBody represents Get Alerts API's response body.

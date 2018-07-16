@@ -7,9 +7,9 @@ type AlertCondition struct {
 	ID            string                    `json:"id"`
 	CreatorUserID string                    `json:"creator_user_id"`
 	CreatedAt     string                    `json:"created_at"`
-	Parameters    *AlertConditionParameters `json:"parameters"`
-	InGrace       bool                      `json:"in_grace"`
 	Title         string                    `json:"title"`
+	InGrace       bool                      `json:"in_grace"`
+	Parameters    *AlertConditionParameters `json:"parameters"`
 }
 
 // AlertConditionParameters represents Alert Condition's parameters.

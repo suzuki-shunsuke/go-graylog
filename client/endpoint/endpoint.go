@@ -19,6 +19,7 @@ type Endpoints struct {
 	indexSetStats   *url.URL
 	streams         *url.URL
 	enabledStreams  *url.URL
+	alerts          *url.URL
 	alertConditions *url.URL
 }
 
@@ -59,7 +60,14 @@ func NewEndpoints(endpoint string) (*Endpoints, error) {
 	if err != nil {
 		return nil, err
 	}
+	alerts, err := urlJoin(ep, "streams/alerts")
+	if err != nil {
+		return nil, err
+	}
 	alertConditions, err := urlJoin(ep, "alerts/conditions")
+	if err != nil {
+		return nil, err
+	}
 	return &Endpoints{
 		roles:           roles,
 		users:           users,
@@ -68,6 +76,7 @@ func NewEndpoints(endpoint string) (*Endpoints, error) {
 		indexSetStats:   indexSetStats,
 		streams:         streams,
 		enabledStreams:  enabledStreams,
+		alerts:          alerts,
 		alertConditions: alertConditions,
 	}, nil
 }
