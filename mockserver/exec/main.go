@@ -17,7 +17,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/plain"
 )
 
-const version = "0.1.5"
+const version = "0.2.0"
 
 var help string
 
