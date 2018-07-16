@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.2.0"></a>
+# [0.2.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.1.4...v0.2.0) (2018-07-16)
+
+
+### Features
+
+* support GET Alert Conditions API ([a35b7f5](https://github.com/suzuki-shunsuke/go-graylog/commit/a35b7f5))
+
+
+
 <a name="0.1.4"></a>
 ## [0.1.4](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.1.3...v0.1.4) (2018-07-02)
 
