@@ -106,6 +106,17 @@ resource "graylog_stream" "test" {
   title = "%s"
 	index_set_id = "${graylog_index_set.test.id}"
 	matching_type = "AND"
+	rule {
+			type = 1
+			field = "foo"
+			value = "bar"
+	}
+
+	rule {
+			type = 1
+			field = "bar"
+			value = "foo"
+	}
 }`
 	createTitle := "terraform stream test"
 	updateTitle := "terraform stream test updated"
