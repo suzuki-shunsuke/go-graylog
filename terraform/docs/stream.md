@@ -10,14 +10,14 @@ resource "graylog_stream" "test-terraform" {
   matching_type = "AND"
 	rule {
     type = 1
-		field = "foo"
-		value = "bar"
+    field = "foo"
+    value = "bar"
     description = "foo bar"
 	}
 	rule {
-		type = 1
-		field = "bar"
-		value = "foo"
+    type = 1
+    field = "bar"
+    value = "foo"
     description = "bar foo"
     inverted = true
 	}
