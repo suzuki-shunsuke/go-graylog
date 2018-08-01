@@ -8,19 +8,19 @@ resource "graylog_stream" "test-terraform" {
   index_set_id = "${graylog_index_set.test-terraform.id}"
   disabled = true
   matching_type = "AND"
-	rule {
+  rule {
     type = 1
     field = "foo"
     value = "bar"
     description = "foo bar"
 	}
-	rule {
+  rule {
     type = 1
     field = "bar"
     value = "foo"
     description = "bar foo"
     inverted = true
-	}
+  }
 }
 ```
 
