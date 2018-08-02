@@ -19,4 +19,4 @@ script:
 - bash script/codecov-test.sh
 after_success:
 - bash script/codecov.sh
-- TAG=$TRAVIS_TAG bash script/release.sh
+- TAG="$TRAVIS_TAG" bash script/release.sh

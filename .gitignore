@@ -8,3 +8,5 @@ graylog-mock-server
 dist
 docker-compose.yml
 env.sh
+
+.git-rm-branch.yml
