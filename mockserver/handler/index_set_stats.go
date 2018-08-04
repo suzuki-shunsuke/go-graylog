@@ -11,7 +11,7 @@ import (
 // HandleGetIndexSetStats is the handler of Get Index Set Statistics API.
 func HandleGetIndexSetStats(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /system/indices/index_sets/{id}/stats Get index set statistics
 	// TODO authorization
@@ -22,7 +22,7 @@ func HandleGetIndexSetStats(
 // HandleGetTotalIndexSetStats is the handler of Get Index Set Statistics of all Index Sets API.
 func HandleGetTotalIndexSetStats(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /system/indices/index_sets/stats Get stats of all index sets
 	// TODO authorization

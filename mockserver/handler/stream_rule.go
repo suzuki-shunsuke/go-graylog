@@ -15,7 +15,7 @@ import (
 // HandleGetStreamRules is the handler of Get Stream Rules API.
 func HandleGetStreamRules(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /streams/{streamid}/rules Get a list of all stream rules
 	streamID := ps.ByName("streamID")
@@ -29,7 +29,7 @@ func HandleGetStreamRules(
 // HandleGetStreamRule is the handler of Get a Stream Rule API.
 func HandleGetStreamRule(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /streams/{streamid}/rules/{streamRuleId} Get a single stream rules
 	// TODO authorization
@@ -40,7 +40,7 @@ func HandleGetStreamRule(
 // HandleCreateStreamRule is the handler of Create a Stream Rule API.
 func HandleCreateStreamRule(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// POST /streams/{streamid}/rules Create a stream rule
 	streamID := ps.ByName("streamID")
@@ -92,7 +92,7 @@ func HandleCreateStreamRule(
 // HandleUpdateStreamRule is the handler of Update a Stream Rule API.
 func HandleUpdateStreamRule(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// PUT /streams/{streamid}/rules/{streamRuleID} Update a stream rule
 	streamID := ps.ByName("streamID")
@@ -136,7 +136,7 @@ func HandleUpdateStreamRule(
 // HandleDeleteStreamRule is the handler of Delete a Stream Rule API.
 func HandleDeleteStreamRule(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// DELETE /streams/{streamid}/rules/{streamRuleId} Delete a stream rule
 	streamID := ps.ByName("streamID")

@@ -14,7 +14,7 @@ import (
 // HandleGetUsers is the handler of GET Users API.
 func HandleGetUsers(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+	r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /users List all users
 	users, sc, err := lgc.GetUsers()
@@ -32,7 +32,7 @@ func HandleGetUsers(
 // HandleGetUser is the handler of GET User API.
 func HandleGetUser(
 	u *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /users/{username} Get user details
 	name := ps.ByName("username")
@@ -47,7 +47,7 @@ func HandleGetUser(
 // HandleCreateUser is the handler of Create User API.
 func HandleCreateUser(
 	u *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+	r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// POST /users Create a new user account.
 	if sc, err := lgc.Authorize(u, "users:create"); err != nil {
@@ -83,7 +83,7 @@ func HandleCreateUser(
 // HandleUpdateUser is the handler of Update User API.
 func HandleUpdateUser(
 	u *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// PUT /users/{username} Modify user details.
 	userName := ps.ByName("username")
@@ -120,7 +120,7 @@ func HandleUpdateUser(
 // HandleDeleteUser is the handler of Delete User API.
 func HandleDeleteUser(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// DELETE /users/{username} Removes a user account
 	name := ps.ByName("username")

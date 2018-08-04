@@ -14,22 +14,26 @@ import (
 // HandleGetRole is the handler of GET Role API.
 func HandleGetRole(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /roles/{rolename} Retrieve permissions for a single role
+	// get parameter
+	// logging
 	name := ps.ByName("rolename")
 	lgc.Logger().WithFields(log.Fields{
 		"handler": "handleGetRole", "rolename": name}).Info("request start")
+	// authorization
 	if sc, err := lgc.Authorize(user, "roles:read", name); err != nil {
 		return nil, sc, err
 	}
+	// call logic
 	return lgc.GetRole(name)
 }
 
 // HandleGetRoles is the handler of GET Roles API.
 func HandleGetRoles(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+	r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /roles List all roles
 	arr, total, sc, err := lgc.GetRoles()
@@ -42,12 +46,13 @@ func HandleGetRoles(
 // HandleCreateRole is the handler of Create Role API.
 func HandleCreateRole(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+	r *http.Request, _ httprouter.Params,
 ) (interface{}, int, error) {
 	// POST /roles Create a new role
 	if sc, err := lgc.Authorize(user, "roles:create"); err != nil {
 		return nil, sc, err
 	}
+	// validate and filter request body
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
 			Required:     set.NewStrSet("name", "permissions"),
@@ -79,7 +84,7 @@ func HandleCreateRole(
 // HandleUpdateRole is the handler of Update Role API.
 func HandleUpdateRole(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// PUT /roles/{rolename} Update an existing role
 	name := ps.ByName("rolename")
@@ -118,7 +123,7 @@ func HandleUpdateRole(
 // HandleDeleteRole is the handler of Delete Role API.
 func HandleDeleteRole(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// DELETE /roles/{rolename} Remove the named role and dissociate any users from it
 	name := ps.ByName("rolename")

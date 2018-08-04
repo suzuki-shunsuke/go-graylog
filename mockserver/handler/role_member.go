@@ -17,7 +17,7 @@ type membersBody struct {
 // HandleRoleMembers is the handler of Get the role's members API.
 func HandleRoleMembers(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// GET /roles/{rolename}/members Retrieve the role's members
 	name := ps.ByName("rolename")
@@ -39,7 +39,7 @@ func HandleRoleMembers(
 // HandleAddUserToRole is the handler of Add a user to a role API.
 func HandleAddUserToRole(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// PUT /roles/{rolename}/members/{username} Add a user to a role
 	sc, err := lgc.AddUserToRole(ps.ByName("username"), ps.ByName("rolename"))
@@ -49,7 +49,7 @@ func HandleAddUserToRole(
 // HandleRemoveUserFromRole is the handler of Remove a user from a role API.
 func HandleRemoveUserFromRole(
 	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	r *http.Request, ps httprouter.Params,
 ) (interface{}, int, error) {
 	// DELETE /roles/{rolename}/members/{username} Remove a user from a role
 	sc, err := lgc.RemoveUserFromRole(ps.ByName("username"), ps.ByName("rolename"))
