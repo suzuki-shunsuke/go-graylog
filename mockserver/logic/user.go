@@ -4,9 +4,10 @@ import (
 	"crypto/md5"
 	"fmt"
 
+	"github.com/suzuki-shunsuke/go-ptr"
+
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/validator"
-	"github.com/suzuki-shunsuke/go-ptr"
 )
 
 func encryptPassword(password string) string {

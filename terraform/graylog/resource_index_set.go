@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/hashicorp/terraform/helper/schema"
+
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
 	"github.com/suzuki-shunsuke/go-graylog/util"

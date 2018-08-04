@@ -4,10 +4,11 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/suzuki-shunsuke/go-ptr"
+
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
-	"github.com/suzuki-shunsuke/go-ptr"
 )
 
 func TestAddIndexSet(t *testing.T) {

@@ -3,9 +3,10 @@ package logic_test
 import (
 	"testing"
 
+	"github.com/suzuki-shunsuke/go-set"
+
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
-	"github.com/suzuki-shunsuke/go-set"
 )
 
 func TestAddUser(t *testing.T) {

@@ -3,8 +3,9 @@ package logic
 import (
 	"fmt"
 
-	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-set"
+
+	"github.com/suzuki-shunsuke/go-graylog"
 )
 
 const (
