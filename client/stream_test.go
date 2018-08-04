@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 

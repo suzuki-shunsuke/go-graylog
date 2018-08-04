@@ -26,10 +26,6 @@
 
 
 [[constraint]]
-  name = "github.com/satori/go.uuid"
-  branch = "master"
-
-[[constraint]]
   name = "github.com/pkg/errors"
   version = "0.8.0"
 

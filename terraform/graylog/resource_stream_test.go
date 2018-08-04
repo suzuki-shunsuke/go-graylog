@@ -5,9 +5,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/gofrs/uuid"
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/satori/go.uuid"
 	"github.com/suzuki-shunsuke/go-graylog/client"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"

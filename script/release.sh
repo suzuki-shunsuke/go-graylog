@@ -1,4 +1,4 @@
-if [ -n "$TRAVIS_TAG" ]; then
+if [ -n "$TAG" ]; then
   cd `dirname $0`/.. || exit 1
   echo "pwd: $PWD" || exit 1
 
