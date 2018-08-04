@@ -118,3 +118,36 @@ func StreamRule() *graylog.StreamRule {
 		Field: "tag",
 	}
 }
+
+// Dashboard returns a new Dashboard.
+func Dashboard() *graylog.Dashboard {
+	return &graylog.Dashboard{
+		Title:       "test-dashboard",
+		Description: "test dashboard",
+	}
+}
+
+// FullDashboard returns a new Dashboard.
+func FullDashboard() *graylog.Dashboard {
+	return &graylog.Dashboard{
+		Title:       "test-dashboard",
+		Description: "test dashboard",
+		CreatedAt:   "2018-02-20T11:37:19.305Z",
+		Widgets: []graylog.Widget{
+			{
+				Type:          "STREAM_SEARCH_RESULT_COUNT",
+				CreatorUserID: "admin",
+				CacheTime:     0,
+				Config: &graylog.WidgetConfig{
+					Timerange: &graylog.Timerange{
+						Type:  "",
+						Range: 0,
+					},
+					LowerIsBetter: true,
+					Trend:         true,
+					Query:         "",
+				},
+			},
+		},
+	}
+}

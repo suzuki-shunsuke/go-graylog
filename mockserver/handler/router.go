@@ -94,6 +94,13 @@ func NewRouter(lgc *logic.Logic) http.Handler {
 	// Alert Condition
 	e.GET("/api/alerts/conditions", wrapEchoHandle(lgc, HandleGetAlertConditions))
 
+	// Dashboard
+	e.GET("/api/dashboards/:dashboardID", wrapEchoHandle(lgc, HandleGetDashboard))
+	e.GET("/api/dashboards", wrapEchoHandle(lgc, HandleGetDashboards))
+	e.POST("/api/dashboards", wrapEchoHandle(lgc, HandleCreateDashboard))
+	e.PUT("/api/dashboards/:dashboardID", wrapEchoHandle(lgc, HandleUpdateDashboard))
+	e.DELETE("/api/dashboards/:dashboardID", wrapEchoHandle(lgc, HandleDeleteDashboard))
+
 	echo.NotFoundHandler = HandleNotFound(lgc)
 	return e
 }

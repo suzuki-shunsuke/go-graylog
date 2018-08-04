@@ -1,7 +1,6 @@
 package client_test
 
 import (
-	"os"
 	"testing"
 
 	"github.com/gofrs/uuid"
@@ -161,11 +160,6 @@ func TestUpdateStream(t *testing.T) {
 }
 
 func TestDeleteStream(t *testing.T) {
-	if err := os.Setenv("GRAYLOG_WEB_ENDPOINT_URI", "http://localhost:9000/api"); err != nil {
-		t.Fatal(err)
-	}
-	defer os.Unsetenv("GRAYLOG_WEB_ENDPOINT_URI")
-
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
