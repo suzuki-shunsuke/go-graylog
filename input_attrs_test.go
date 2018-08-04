@@ -37,6 +37,7 @@ func TestSetFuncGetUnknownType(t *testing.T) {
 		t.Fatalf(`a.Foo = "%s", wanted "foo"`, a.Foo)
 	}
 }
+
 func TestSetFuncGetInputAttrsByType(t *testing.T) {
 	f := graylog.GetFuncGetInputAttrsByType()
 	defer graylog.SetFuncGetInputAttrsByType(f)

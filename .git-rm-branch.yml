@@ -1,0 +1,11 @@
+local:
+  protected:
+  - master
+  merged:
+  - origin/master
+remote:
+  origin:
+    protected:
+    - master
+    merged:
+    - origin/master
