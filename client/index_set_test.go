@@ -3,7 +3,7 @@ package client_test
 import (
 	"testing"
 
-	"github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 	"github.com/suzuki-shunsuke/go-ptr"
