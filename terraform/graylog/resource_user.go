@@ -35,7 +35,7 @@ func resourceUser() *schema.Resource {
 				Required: true,
 			},
 			"permissions": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Required: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
@@ -46,7 +46,7 @@ func resourceUser() *schema.Resource {
 
 			// Optional
 			"roles": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
@@ -96,8 +96,8 @@ func resourceUser() *schema.Resource {
 }
 
 func newUser(d *schema.ResourceData) *graylog.User {
-	permissions := set.NewStrSet(getStringArray(d.Get("permissions").([]interface{}))...)
-	roles := set.NewStrSet(getStringArray(d.Get("roles").([]interface{}))...)
+	permissions := set.NewStrSet(getStringArray(d.Get("permissions").(*schema.Set).List())...)
+	roles := set.NewStrSet(getStringArray(d.Get("roles").(*schema.Set).List())...)
 	return &graylog.User{
 		Username:         d.Get("username").(string),
 		Roles:            roles,
