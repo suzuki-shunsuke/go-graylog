@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/pkg/errors"
+
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 

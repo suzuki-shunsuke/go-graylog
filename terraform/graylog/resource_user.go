@@ -2,9 +2,10 @@ package graylog
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/suzuki-shunsuke/go-set"
+
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
-	"github.com/suzuki-shunsuke/go-set"
 )
 
 func resourceUser() *schema.Resource {

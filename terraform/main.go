@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/hashicorp/terraform/plugin"
 	"github.com/hashicorp/terraform/terraform"
+
 	"github.com/suzuki-shunsuke/go-graylog/terraform/graylog"
 )
 
