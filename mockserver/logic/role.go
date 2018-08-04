@@ -71,7 +71,7 @@ func (lgc *Logic) UpdateRole(name string, prms *graylog.RoleUpdateParams) (*gray
 	if err != nil {
 		return nil, 500, err
 	}
-	return role, 204, nil
+	return role, 200, nil
 }
 
 // DeleteRole deletes a role.

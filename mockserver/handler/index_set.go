@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
@@ -15,8 +14,7 @@ import (
 
 // HandleGetIndexSets is the handler of Get Index Sets API.
 func HandleGetIndexSets(
-	user *graylog.User, lgc *logic.Logic,
-	r *http.Request, _ httprouter.Params,
+	user *graylog.User, lgc *logic.Logic, r *http.Request, ps Params,
 ) (interface{}, int, error) {
 	// GET /system/indices/index_sets Get a list of all index sets
 	skip := 0
@@ -84,14 +82,10 @@ func HandleGetIndexSets(
 
 // HandleGetIndexSet is the handler of Get an Index Set API.
 func HandleGetIndexSet(
-	user *graylog.User, lgc *logic.Logic,
-	r *http.Request, ps httprouter.Params,
+	user *graylog.User, lgc *logic.Logic, r *http.Request, ps Params,
 ) (interface{}, int, error) {
 	// GET /system/indices/index_sets/{id} Get index set
-	id := ps.ByName("indexSetID")
-	if id == "stats" {
-		return HandleGetTotalIndexSetStats(user, lgc, r, ps)
-	}
+	id := ps.PathParam("indexSetID")
 	if sc, err := lgc.Authorize(user, "indexsets:read", id); err != nil {
 		return nil, sc, err
 	}
@@ -100,8 +94,7 @@ func HandleGetIndexSet(
 
 // HandleCreateIndexSet is the handler of Create an Index Set API.
 func HandleCreateIndexSet(
-	user *graylog.User, lgc *logic.Logic,
-	r *http.Request, _ httprouter.Params,
+	user *graylog.User, lgc *logic.Logic, r *http.Request, ps Params,
 ) (interface{}, int, error) {
 	// POST /system/indices/index_sets Create index set
 	if sc, err := lgc.Authorize(user, "indexsets:create"); err != nil {
@@ -154,11 +147,10 @@ func HandleCreateIndexSet(
 
 // HandleUpdateIndexSet is the handler of Update an Index Set API.
 func HandleUpdateIndexSet(
-	user *graylog.User, lgc *logic.Logic,
-	r *http.Request, ps httprouter.Params,
+	user *graylog.User, lgc *logic.Logic, r *http.Request, ps Params,
 ) (interface{}, int, error) {
 	// PUT /system/indices/index_sets/{id} Update index set
-	id := ps.ByName("indexSetID")
+	id := ps.PathParam("indexSetID")
 	prms := &graylog.IndexSetUpdateParams{}
 	if sc, err := lgc.Authorize(user, "indexsets:edit", id); err != nil {
 		return nil, sc, err
@@ -199,11 +191,10 @@ func HandleUpdateIndexSet(
 
 // HandleDeleteIndexSet is the handler of Delete an Index Set API.
 func HandleDeleteIndexSet(
-	user *graylog.User, lgc *logic.Logic,
-	r *http.Request, ps httprouter.Params,
+	user *graylog.User, lgc *logic.Logic, r *http.Request, ps Params,
 ) (interface{}, int, error) {
 	// DELETE /system/indices/index_sets/{id} Delete index set
-	id := ps.ByName("indexSetID")
+	id := ps.PathParam("indexSetID")
 	if sc, err := lgc.Authorize(user, "indexsets:delete", id); err != nil {
 		return nil, sc, err
 	}
@@ -219,11 +210,10 @@ func HandleDeleteIndexSet(
 
 // HandleSetDefaultIndexSet is the handler of Set the default Index Set API.
 func HandleSetDefaultIndexSet(
-	user *graylog.User, lgc *logic.Logic,
-	r *http.Request, ps httprouter.Params,
+	user *graylog.User, lgc *logic.Logic, r *http.Request, ps Params,
 ) (interface{}, int, error) {
 	// PUT /system/indices/index_sets/{id}/default Set default index set
-	id := ps.ByName("indexSetID")
+	id := ps.PathParam("indexSetID")
 	if sc, err := lgc.Authorize(user, "indexsets:edit", id); err != nil {
 		return nil, sc, err
 	}

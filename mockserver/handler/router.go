@@ -1,69 +1,95 @@
 package handler
 
 import (
-	"github.com/julienschmidt/httprouter"
+	"net/http"
+
+	"github.com/labstack/echo"
+
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
 // NewRouter returns a new HTTP router.
-func NewRouter(lgc *logic.Logic) *httprouter.Router {
-	router := httprouter.New()
+func NewRouter(lgc *logic.Logic) http.Handler {
+	e := echo.New()
 
-	router.GET("/api/roles/:rolename", wrapHandle(lgc, HandleGetRole))
-	router.PUT("/api/roles/:rolename", wrapHandle(lgc, HandleUpdateRole))
-	router.DELETE("/api/roles/:rolename", wrapHandle(lgc, HandleDeleteRole))
-	router.GET("/api/roles", wrapHandle(lgc, HandleGetRoles))
-	router.POST("/api/roles", wrapHandle(lgc, HandleCreateRole))
+	// Role
+	e.GET("/api/roles/:rolename", wrapEchoHandle(lgc, HandleGetRole))
+	e.GET("/api/roles", wrapEchoHandle(lgc, HandleGetRoles))
+	e.PUT("/api/roles/:rolename", wrapEchoHandle(lgc, HandleUpdateRole))
+	e.DELETE("/api/roles/:rolename", wrapEchoHandle(lgc, HandleDeleteRole))
+	e.POST("/api/roles", wrapEchoHandle(lgc, HandleCreateRole))
 
-	router.GET("/api/users/:username", wrapHandle(lgc, HandleGetUser))
-	router.PUT("/api/users/:username", wrapHandle(lgc, HandleUpdateUser))
-	router.DELETE("/api/users/:username", wrapHandle(lgc, HandleDeleteUser))
-	router.GET("/api/users", wrapHandle(lgc, HandleGetUsers))
-	router.POST("/api/users", wrapHandle(lgc, HandleCreateUser))
+	// Role member
+	e.GET("/api/roles/:rolename/members", wrapEchoHandle(lgc, HandleRoleMembers))
+	e.PUT(
+		"/api/roles/:rolename/members/:username",
+		wrapEchoHandle(lgc, HandleAddUserToRole))
+	e.DELETE(
+		"/api/roles/:rolename/members/:username",
+		wrapEchoHandle(lgc, HandleRemoveUserFromRole))
 
-	router.GET("/api/roles/:rolename/members", wrapHandle(lgc, HandleRoleMembers))
-	router.PUT("/api/roles/:rolename/members/:username", wrapHandle(lgc, HandleAddUserToRole))
-	router.DELETE(
-		"/api/roles/:rolename/members/:username", wrapHandle(lgc, HandleRemoveUserFromRole))
+	// User
+	e.GET("/api/users/:username", wrapEchoHandle(lgc, HandleGetUser))
+	e.GET("/api/users", wrapEchoHandle(lgc, HandleGetUsers))
+	e.PUT("/api/users/:username", wrapEchoHandle(lgc, HandleUpdateUser))
+	e.DELETE("/api/users/:username", wrapEchoHandle(lgc, HandleDeleteUser))
+	e.POST("/api/users", wrapEchoHandle(lgc, HandleCreateUser))
 
-	router.GET("/api/system/inputs", wrapHandle(lgc, HandleGetInputs))
-	router.GET("/api/system/inputs/:inputID", wrapHandle(lgc, HandleGetInput))
-	router.POST("/api/system/inputs", wrapHandle(lgc, HandleCreateInput))
-	router.PUT("/api/system/inputs/:inputID", wrapHandle(lgc, HandleUpdateInput))
-	router.DELETE("/api/system/inputs/:inputID", wrapHandle(lgc, HandleDeleteInput))
+	// Input
+	e.GET("/api/system/inputs/:inputID", wrapEchoHandle(lgc, HandleGetInput))
+	e.GET("/api/system/inputs", wrapEchoHandle(lgc, HandleGetInputs))
+	e.PUT("/api/system/inputs/:inputID", wrapEchoHandle(lgc, HandleUpdateInput))
+	e.DELETE(
+		"/api/system/inputs/:inputID", wrapEchoHandle(lgc, HandleDeleteInput))
+	e.POST("/api/system/inputs", wrapEchoHandle(lgc, HandleCreateInput))
 
-	router.GET("/api/system/indices/index_sets", wrapHandle(lgc, HandleGetIndexSets))
-	router.GET(
-		"/api/system/indices/index_sets/:indexSetID", wrapHandle(lgc, HandleGetIndexSet))
-	router.POST("/api/system/indices/index_sets", wrapHandle(lgc, HandleCreateIndexSet))
-	router.PUT(
-		"/api/system/indices/index_sets/:indexSetID", wrapHandle(lgc, HandleUpdateIndexSet))
-	router.DELETE(
-		"/api/system/indices/index_sets/:indexSetID", wrapHandle(lgc, HandleDeleteIndexSet))
-	router.PUT(
-		"/api/system/indices/index_sets/:indexSetID/default",
-		wrapHandle(lgc, HandleSetDefaultIndexSet))
-
-	router.GET(
+	// IndexSet
+	e.GET(
+		"/api/system/indices/index_sets/stats",
+		wrapEchoHandle(lgc, HandleGetTotalIndexSetStats))
+	e.GET(
 		"/api/system/indices/index_sets/:indexSetID/stats",
-		wrapHandle(lgc, HandleGetIndexSetStats))
+		wrapEchoHandle(lgc, HandleGetIndexSetStats))
+	e.GET(
+		"/api/system/indices/index_sets/:indexSetID",
+		wrapEchoHandle(lgc, HandleGetIndexSet))
+	e.GET(
+		"/api/system/indices/index_sets", wrapEchoHandle(lgc, HandleGetIndexSets))
+	e.PUT(
+		"/api/system/indices/index_sets/:indexSetID/default",
+		wrapEchoHandle(lgc, HandleSetDefaultIndexSet))
+	e.PUT(
+		"/api/system/indices/index_sets/:indexSetID",
+		wrapEchoHandle(lgc, HandleUpdateIndexSet))
+	e.DELETE(
+		"/api/system/indices/index_sets/:indexSetID",
+		wrapEchoHandle(lgc, HandleDeleteIndexSet))
+	e.POST(
+		"/api/system/indices/index_sets",
+		wrapEchoHandle(lgc, HandleCreateIndexSet))
 
-	router.GET("/api/streams", wrapHandle(lgc, HandleGetStreams))
-	router.POST("/api/streams", wrapHandle(lgc, HandleCreateStream))
-	router.GET("/api/streams/:streamID", wrapHandle(lgc, HandleGetStream))
-	router.PUT("/api/streams/:streamID", wrapHandle(lgc, HandleUpdateStream))
-	router.DELETE("/api/streams/:streamID", wrapHandle(lgc, HandleDeleteStream))
-	router.POST("/api/streams/:streamID/pause", wrapHandle(lgc, HandlePauseStream))
-	router.POST("/api/streams/:streamID/resume", wrapHandle(lgc, HandleResumeStream))
+	// Stream
+	e.GET("/api/streams/enabled", wrapEchoHandle(lgc, HandleGetEnabledStreams))
+	e.GET("/api/streams/:streamID", wrapEchoHandle(lgc, HandleGetStream))
+	e.GET("/api/streams", wrapEchoHandle(lgc, HandleGetStreams))
+	e.POST("/api/streams", wrapEchoHandle(lgc, HandleCreateStream))
+	e.PUT("/api/streams/:streamID", wrapEchoHandle(lgc, HandleUpdateStream))
+	e.DELETE("/api/streams/:streamID", wrapEchoHandle(lgc, HandleDeleteStream))
+	e.POST(
+		"/api/streams/:streamID/pause", wrapEchoHandle(lgc, HandlePauseStream))
+	e.POST(
+		"/api/streams/:streamID/resume", wrapEchoHandle(lgc, HandleResumeStream))
 
-	router.GET("/api/streams/:streamID/rules", wrapHandle(lgc, HandleGetStreamRules))
-	router.POST("/api/streams/:streamID/rules", wrapHandle(lgc, HandleCreateStreamRule))
-	router.PUT("/api/streams/:streamID/rules/:streamRuleID", wrapHandle(lgc, HandleUpdateStreamRule))
-	router.DELETE("/api/streams/:streamID/rules/:streamRuleID", wrapHandle(lgc, HandleDeleteStreamRule))
-	router.GET("/api/streams/:streamID/rules/:streamRuleID", wrapHandle(lgc, HandleGetStreamRule))
+	// Stream Rule
+	e.GET("/api/streams/:streamID/rules/:streamRuleID", wrapEchoHandle(lgc, HandleGetStreamRule))
+	e.GET("/api/streams/:streamID/rules", wrapEchoHandle(lgc, HandleGetStreamRules))
+	e.POST("/api/streams/:streamID/rules", wrapEchoHandle(lgc, HandleCreateStreamRule))
+	e.PUT("/api/streams/:streamID/rules/:streamRuleID", wrapEchoHandle(lgc, HandleUpdateStreamRule))
+	e.DELETE("/api/streams/:streamID/rules/:streamRuleID", wrapEchoHandle(lgc, HandleDeleteStreamRule))
 
-	router.GET("/api/alerts/conditions", wrapHandle(lgc, HandleGetAlertConditions))
+	// Alert Condition
+	e.GET("/api/alerts/conditions", wrapEchoHandle(lgc, HandleGetAlertConditions))
 
-	router.NotFound = HandleNotFound(lgc)
-	return router
+	echo.NotFoundHandler = HandleNotFound(lgc)
+	return e
 }
