@@ -10,7 +10,7 @@ jobs:
     - run: npm i
     - run: go get -t ./...
     - run: bash script/commitlint-circleci.sh
-    - run: gometalinter ./...
+    - run: npm run lint
     - run: bash script/codecov-test.sh
     - run: bash <(curl -s https://codecov.io/bash)
     - run: TAG="$CIRCLE_TAG" bash script/release.sh
