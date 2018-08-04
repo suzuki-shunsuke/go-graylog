@@ -3,21 +3,20 @@ package handler
 import (
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
+	"github.com/suzuki-shunsuke/go-set"
+
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 	"github.com/suzuki-shunsuke/go-graylog/util"
-	"github.com/suzuki-shunsuke/go-set"
 )
 
 // HandleGetInput is the handler of Get an Input API.
 func HandleGetInput(
-	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	user *graylog.User, lgc *logic.Logic, r *http.Request, ps Params,
 ) (interface{}, int, error) {
 	// GET /system/inputs/{inputID} Get information of a single input on this node
-	id := ps.ByName("inputID")
+	id := ps.PathParam("inputID")
 	if sc, err := lgc.Authorize(user, "inputs:read", id); err != nil {
 		return nil, sc, err
 	}
@@ -26,8 +25,7 @@ func HandleGetInput(
 
 // HandleGetInputs is the handler of Get Inputs API.
 func HandleGetInputs(
-	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+	user *graylog.User, lgc *logic.Logic, r *http.Request, ps Params,
 ) (interface{}, int, error) {
 	// GET /system/inputs Get all inputs
 	arr, total, sc, err := lgc.GetInputs()
@@ -40,8 +38,7 @@ func HandleGetInputs(
 
 // HandleCreateInput is the handler of Create an Input API.
 func HandleCreateInput(
-	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, _ httprouter.Params,
+	user *graylog.User, lgc *logic.Logic, r *http.Request, ps Params,
 ) (interface{}, int, error) {
 	// POST /system/inputs Launch input on this node
 	if sc, err := lgc.Authorize(user, "inputs:create"); err != nil {
@@ -83,11 +80,10 @@ func HandleCreateInput(
 
 // HandleUpdateInput is the handler of Update an Input API.
 func HandleUpdateInput(
-	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	user *graylog.User, lgc *logic.Logic, r *http.Request, ps Params,
 ) (interface{}, int, error) {
 	// PUT /system/inputs/{inputID} Update input on this node
-	id := ps.ByName("inputID")
+	id := ps.PathParam("inputID")
 	if sc, err := lgc.Authorize(user, "inputs:edit", id); err != nil {
 		return nil, sc, err
 	}
@@ -133,11 +129,10 @@ func HandleUpdateInput(
 
 // HandleDeleteInput is the handler of Delete an Input API.
 func HandleDeleteInput(
-	user *graylog.User, lgc *logic.Logic,
-	w http.ResponseWriter, r *http.Request, ps httprouter.Params,
+	user *graylog.User, lgc *logic.Logic, r *http.Request, ps Params,
 ) (interface{}, int, error) {
 	// DELETE /system/inputs/{inputID} Terminate input on this node
-	id := ps.ByName("inputID")
+	id := ps.PathParam("inputID")
 	if sc, err := lgc.Authorize(user, "inputs:terminate", id); err != nil {
 		return nil, sc, err
 	}

@@ -2,22 +2,23 @@ package handler
 
 import (
 	"fmt"
-	"net/http"
 
+	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"
+
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/logic"
 )
 
 // HandleNotFound is the generator of the NotFound handler.
-func HandleNotFound(lgc *logic.Logic) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func HandleNotFound(lgc *logic.Logic) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		req := c.Request()
 		lgc.Logger().WithFields(log.Fields{
-			"path": r.URL.Path, "method": r.Method,
+			"path": req.URL.Path, "method": req.Method,
 			"message": "404 Page Not Found",
 		}).Info("request start")
-		w.WriteHeader(404)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(fmt.Sprintf(
-			`{"message":"Page Not Found %s %s"}`, r.Method, r.URL.Path)))
+		return c.JSON(404, map[string]string{
+			"message": fmt.Sprintf("Page Not Found %s %s", req.Method, req.URL.Path),
+		})
 	}
 }
