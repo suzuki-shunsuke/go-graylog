@@ -77,4 +77,6 @@ type Store interface {
 	GetDashboard(id string) (*graylog.Dashboard, error)
 	HasDashboard(id string) (bool, error)
 	UpdateDashboard(*graylog.Dashboard) error
+
+	GetAlarmCallbacks() ([]graylog.AlarmCallback, int, error)
 }
