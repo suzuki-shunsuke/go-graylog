@@ -25,7 +25,7 @@ func resourceRole() *schema.Resource {
 				Required: true,
 			},
 			"permissions": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Required: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
@@ -45,7 +45,7 @@ func resourceRole() *schema.Resource {
 func newRole(d *schema.ResourceData) *graylog.Role {
 	return &graylog.Role{
 		Name:        d.Get("name").(string),
-		Permissions: set.NewStrSet(getStringArray(d.Get("permissions").([]interface{}))...),
+		Permissions: set.NewStrSet(getStringArray(d.Get("permissions").(*schema.Set).List())...),
 		Description: d.Get("description").(string),
 		ReadOnly:    d.Get("read_only").(bool),
 	}
