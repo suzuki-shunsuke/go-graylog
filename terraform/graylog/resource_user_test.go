@@ -62,14 +62,19 @@ func TestAccUser(t *testing.T) {
 
 	name := "test terraform name"
 
+	// TODO: "users:edit:{name}" and "users:passwordchange:{name}" is automatically added
 	userTf := fmt.Sprintf(`
 resource "graylog_user" "zoo" {
   username = "%s"
   password = "password"
   email = "zoo@example.com"
   full_name = "zooull"
-  permissions = ["users:read:zoo"]
-}`, name)
+  permissions = [
+	  "users:read:zoo",
+		"users:edit:%s",
+		"users:passwordchange:%s"
+  ]
+}`, name, name, name)
 	fullName := "new full name"
 	updateTf := fmt.Sprintf(`
 resource "graylog_user" "zoo" {
@@ -77,8 +82,12 @@ resource "graylog_user" "zoo" {
   password = "password"
   email = "zoo@example.com"
   full_name = "%s"
-  permissions = ["users:read:zoo"]
-}`, name, fullName)
+  permissions = [
+	  "users:read:zoo",
+		"users:edit:%s",
+		"users:passwordchange:%s"
+  ]
+}`, name, fullName, name, name)
 	if server != nil {
 		server.Start()
 		defer server.Close()

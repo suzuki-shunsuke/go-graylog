@@ -32,6 +32,7 @@ func Provider() *schema.Provider {
 			"graylog_input":     resourceInput(),
 			"graylog_index_set": resourceIndexSet(),
 			"graylog_stream":    resourceStream(),
+			"graylog_dashboard": resourceDashboard(),
 		},
 		ConfigureFunc: providerConfigure,
 	}

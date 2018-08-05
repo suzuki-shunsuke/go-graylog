@@ -1,7 +1,6 @@
 package client_test
 
 import (
-	"os"
 	"testing"
 
 	"github.com/gofrs/uuid"
@@ -161,11 +160,6 @@ func TestUpdateStream(t *testing.T) {
 }
 
 func TestDeleteStream(t *testing.T) {
-	if err := os.Setenv("GRAYLOG_WEB_ENDPOINT_URI", "http://localhost:9000/api"); err != nil {
-		t.Fatal(err)
-	}
-	defer os.Unsetenv("GRAYLOG_WEB_ENDPOINT_URI")
-
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -192,19 +186,36 @@ func TestPauseStream(t *testing.T) {
 	if server != nil {
 		defer server.Close()
 	}
-	streams, _, _, err := client.GetStreams()
-	if err != nil {
-		t.Fatal(err)
-	}
-	stream := streams[0]
-	if _, err = client.PauseStream(stream.ID); err != nil {
-		t.Fatal("Failed to PauseStream", err)
-	}
+
 	if _, err := client.PauseStream(""); err == nil {
 		t.Fatal("id is required")
 	}
 	if _, err := client.PauseStream("h"); err == nil {
 		t.Fatal(`no stream whose id is "h"`)
+	}
+
+	u, err := uuid.NewV4()
+	if err != nil {
+		t.Fatal(err)
+	}
+	is := testutil.IndexSet(u.String())
+	if _, err := client.CreateIndexSet(is); err != nil {
+		t.Fatal(err)
+	}
+	testutil.WaitAfterCreateIndexSet(server)
+	defer func(id string) {
+		client.DeleteIndexSet(id)
+		testutil.WaitAfterDeleteIndexSet(server)
+	}(is.ID)
+	stream := testutil.Stream()
+	stream.IndexSetID = is.ID
+	if _, err := client.CreateStream(stream); err != nil {
+		t.Fatal(err)
+	}
+	defer client.DeleteStream(stream.ID)
+
+	if _, err = client.PauseStream(stream.ID); err != nil {
+		t.Fatal("Failed to PauseStream", err)
 	}
 	// TODO test pause
 }
@@ -217,15 +228,6 @@ func TestResumeStream(t *testing.T) {
 	if server != nil {
 		defer server.Close()
 	}
-	streams, _, _, err := client.GetStreams()
-	if err != nil {
-		t.Fatal(err)
-	}
-	stream := streams[0]
-
-	if _, err = client.ResumeStream(stream.ID); err != nil {
-		t.Fatal("Failed to ResumeStream", err)
-	}
 
 	if _, err = client.ResumeStream(""); err == nil {
 		t.Fatal("id is required")
@@ -233,6 +235,30 @@ func TestResumeStream(t *testing.T) {
 
 	if _, err = client.ResumeStream("h"); err == nil {
 		t.Fatal(`no stream whose id is "h"`)
+	}
+
+	u, err := uuid.NewV4()
+	if err != nil {
+		t.Fatal(err)
+	}
+	is := testutil.IndexSet(u.String())
+	if _, err := client.CreateIndexSet(is); err != nil {
+		t.Fatal(err)
+	}
+	testutil.WaitAfterCreateIndexSet(server)
+	defer func(id string) {
+		client.DeleteIndexSet(id)
+		testutil.WaitAfterDeleteIndexSet(server)
+	}(is.ID)
+	stream := testutil.Stream()
+	stream.IndexSetID = is.ID
+	if _, err := client.CreateStream(stream); err != nil {
+		t.Fatal(err)
+	}
+	defer client.DeleteStream(stream.ID)
+
+	if _, err = client.ResumeStream(stream.ID); err != nil {
+		t.Fatal("Failed to ResumeStream", err)
 	}
 	// TODO test resume
 }

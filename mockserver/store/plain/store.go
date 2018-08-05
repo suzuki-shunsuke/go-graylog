@@ -13,46 +13,55 @@ import (
 
 // Store is the implementation of the Store interface with pure golang.
 type Store struct {
-	users             map[string]graylog.User
-	roles             map[string]graylog.Role
-	inputs            map[string]graylog.Input
-	indexSets         []graylog.IndexSet
-	defaultIndexSetID string
-	streams           map[string]graylog.Stream
-	streamRules       map[string]map[string]graylog.StreamRule
-	alerts            map[string]graylog.Alert
-	alertConditions   map[string]graylog.AlertCondition
+	alerts          map[string]graylog.Alert
+	alertConditions map[string]graylog.AlertCondition
+	dashboards      map[string]graylog.Dashboard
+	indexSets       []graylog.IndexSet
+	inputs          map[string]graylog.Input
+	roles           map[string]graylog.Role
+	streams         map[string]graylog.Stream
+	streamRules     map[string]map[string]graylog.StreamRule
+	users           map[string]graylog.User
+
+	tokens map[string]string
+
 	dataPath          string
-	tokens            map[string]string
-	imutex            sync.RWMutex
+	defaultIndexSetID string
+
+	imutex sync.RWMutex
 }
 
 type plainStore struct {
-	Users             map[string]graylog.User                  `json:"users"`
-	Roles             map[string]graylog.Role                  `json:"roles"`
-	Inputs            map[string]graylog.Input                 `json:"inputs"`
-	IndexSets         []graylog.IndexSet                       `json:"index_sets"`
-	DefaultIndexSetID string                                   `json:"default_index_set_id"`
-	Streams           map[string]graylog.Stream                `json:"streams"`
-	StreamRules       map[string]map[string]graylog.StreamRule `json:"stream_rules"`
-	Alerts            map[string]graylog.Alert                 `json:"alerts"`
-	AlertConditions   map[string]graylog.AlertCondition        `json:"alert_conditions"`
-	Tokens            map[string]string                        `json:"tokens"`
+	Alerts          map[string]graylog.Alert                 `json:"alerts"`
+	AlertConditions map[string]graylog.AlertCondition        `json:"alert_conditions"`
+	Dashboards      map[string]graylog.Dashboard             `json:"dashboards"`
+	Inputs          map[string]graylog.Input                 `json:"inputs"`
+	IndexSets       []graylog.IndexSet                       `json:"index_sets"`
+	Roles           map[string]graylog.Role                  `json:"roles"`
+	Streams         map[string]graylog.Stream                `json:"streams"`
+	StreamRules     map[string]map[string]graylog.StreamRule `json:"stream_rules"`
+	Users           map[string]graylog.User                  `json:"users"`
+
+	Tokens map[string]string `json:"tokens"`
+
+	DefaultIndexSetID string `json:"default_index_set_id"`
 }
 
 // MarshalJSON is the implementation of the json.Marshaler interface.
 func (store *Store) MarshalJSON() ([]byte, error) {
 	data := map[string]interface{}{
-		"users":                store.users,
-		"roles":                store.roles,
-		"inputs":               store.inputs,
-		"index_sets":           store.indexSets,
+		"alerts":           store.alerts,
+		"alert_conditions": store.alertConditions,
+		"inputs":           store.inputs,
+		"index_sets":       store.indexSets,
+		"roles":            store.roles,
+		"streams":          store.streams,
+		"stream_rules":     store.streamRules,
+		"users":            store.users,
+
+		"tokens": store.tokens,
+
 		"default_index_set_id": store.defaultIndexSetID,
-		"streams":              store.streams,
-		"stream_rules":         store.streamRules,
-		"alert_conditions":     store.alertConditions,
-		"alerts":               store.alerts,
-		"tokens":               store.tokens,
 	}
 	return json.Marshal(data)
 }
@@ -63,16 +72,19 @@ func (store *Store) UnmarshalJSON(b []byte) error {
 	if err := json.Unmarshal(b, s); err != nil {
 		return err
 	}
-	store.users = s.Users
-	store.roles = s.Roles
-	store.inputs = s.Inputs
-	store.indexSets = s.IndexSets
-	store.defaultIndexSetID = s.DefaultIndexSetID
-	store.streams = s.Streams
-	store.streamRules = s.StreamRules
 	store.alerts = s.Alerts
 	store.alertConditions = s.AlertConditions
+	store.dashboards = s.Dashboards
+	store.inputs = s.Inputs
+	store.indexSets = s.IndexSets
+	store.roles = s.Roles
+	store.users = s.Users
+	store.streams = s.Streams
+	store.streamRules = s.StreamRules
+
 	store.tokens = s.Tokens
+
+	store.defaultIndexSetID = s.DefaultIndexSetID
 	return nil
 }
 
@@ -81,16 +93,19 @@ func (store *Store) UnmarshalJSON(b []byte) error {
 // If `dataPath` is empty, the data aren't written to the file.
 func NewStore(dataPath string) store.Store {
 	return &Store{
-		roles:           map[string]graylog.Role{},
-		users:           map[string]graylog.User{},
-		inputs:          map[string]graylog.Input{},
-		indexSets:       []graylog.IndexSet{},
-		streams:         map[string]graylog.Stream{},
-		streamRules:     map[string]map[string]graylog.StreamRule{},
 		alerts:          map[string]graylog.Alert{},
 		alertConditions: map[string]graylog.AlertCondition{},
-		tokens:          map[string]string{},
-		dataPath:        dataPath,
+		dashboards:      map[string]graylog.Dashboard{},
+		inputs:          map[string]graylog.Input{},
+		indexSets:       []graylog.IndexSet{},
+		roles:           map[string]graylog.Role{},
+		streams:         map[string]graylog.Stream{},
+		streamRules:     map[string]map[string]graylog.StreamRule{},
+		users:           map[string]graylog.User{},
+
+		tokens: map[string]string{},
+
+		dataPath: dataPath,
 	}
 }
 

@@ -70,4 +70,11 @@ type Store interface {
 	GetAlerts(since, limit int) ([]graylog.Alert, int, error)
 	GetAlert(id string) (*graylog.Alert, error)
 	HasAlert(id string) (bool, error)
+
+	AddDashboard(*graylog.Dashboard) error
+	DeleteDashboard(id string) error
+	GetDashboards() ([]graylog.Dashboard, int, error)
+	GetDashboard(id string) (*graylog.Dashboard, error)
+	HasDashboard(id string) (bool, error)
+	UpdateDashboard(*graylog.Dashboard) error
 }

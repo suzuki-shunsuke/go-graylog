@@ -21,6 +21,7 @@ type Endpoints struct {
 	enabledStreams  *url.URL
 	alerts          *url.URL
 	alertConditions *url.URL
+	dashboards      *url.URL
 }
 
 // NewEndpoints returns a new Endpoints.
@@ -68,6 +69,10 @@ func NewEndpoints(endpoint string) (*Endpoints, error) {
 	if err != nil {
 		return nil, err
 	}
+	dashboards, err := urlJoin(ep, "dashboards")
+	if err != nil {
+		return nil, err
+	}
 	return &Endpoints{
 		roles:           roles,
 		users:           users,
@@ -78,5 +83,6 @@ func NewEndpoints(endpoint string) (*Endpoints, error) {
 		enabledStreams:  enabledStreams,
 		alerts:          alerts,
 		alertConditions: alertConditions,
+		dashboards:      dashboards,
 	}, nil
 }

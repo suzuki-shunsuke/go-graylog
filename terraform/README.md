@@ -60,8 +60,9 @@ auth_password | GRAYLOG_AUTH_PASSWORD |
 
 ## Resources
 
-* [role](docs/role.md)
-* [user](docs/user.md)
-* [input](docs/input.md)
+* [dashboard](docs/dashboard.md)
 * [index_set](docs/index_set.md)
+* [input](docs/input.md)
+* [role](docs/role.md)
 * [stream](docs/stream.md)
+* [user](docs/user.md)
