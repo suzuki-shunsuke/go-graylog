@@ -26,6 +26,13 @@ func TestHasStreamRule(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	f, err := store.HasStreamRule(stream.ID, "h")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if f {
+		t.Fatal("stream rule should not be found")
+	}
 }
 
 func TestGetStreamRule(t *testing.T) {
@@ -118,6 +125,12 @@ func TestDeleteStreamRule(t *testing.T) {
 	if err := store.DeleteStreamRule("", ""); err == nil {
 		t.Fatal("stream id is empty")
 	}
+	if err := store.DeleteStreamRule("h", ""); err == nil {
+		t.Fatal("stream rule id is empty")
+	}
+	if err := store.DeleteStreamRule("h", "g"); err == nil {
+		t.Fatal("stream should not be found")
+	}
 	stream := testutil.Stream()
 	rule := testutil.StreamRule()
 	if err := store.AddStream(stream); err != nil {
@@ -126,6 +139,9 @@ func TestDeleteStreamRule(t *testing.T) {
 	rule.StreamID = stream.ID
 	if err := store.AddStreamRule(rule); err != nil {
 		t.Fatal(err)
+	}
+	if err := store.DeleteStreamRule(stream.ID, "h"); err == nil {
+		t.Fatal("stream rule should not be found")
 	}
 	if err := store.DeleteStreamRule(stream.ID, rule.ID); err != nil {
 		t.Fatal(err)
