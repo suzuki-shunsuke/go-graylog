@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.3.0...v0.4.0) (2018-08-05)
+
+
+### Bug Fixes
+
+* fix schema.Type from List to Set ([7b89520](https://github.com/suzuki-shunsuke/go-graylog/commit/7b89520))
+
+
+### Features
+
+* add dashboard resource to terraform provider ([8392828](https://github.com/suzuki-shunsuke/go-graylog/commit/8392828))
+* support Dashboard API ([cd1ec3c](https://github.com/suzuki-shunsuke/go-graylog/commit/cd1ec3c))
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.2.0...v0.3.0) (2018-08-04)
 
