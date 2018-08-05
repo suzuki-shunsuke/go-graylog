@@ -13,6 +13,7 @@ import (
 
 // Store is the implementation of the Store interface with pure golang.
 type Store struct {
+	alarmCallbacks  map[string]graylog.AlarmCallback
 	alerts          map[string]graylog.Alert
 	alertConditions map[string]graylog.AlertCondition
 	dashboards      map[string]graylog.Dashboard
@@ -31,6 +32,7 @@ type Store struct {
 }
 
 type plainStore struct {
+	AlarmCallbacks  map[string]graylog.AlarmCallback  `json:"alarm_callbacks"`
 	Alerts          map[string]graylog.Alert          `json:"alerts"`
 	AlertConditions map[string]graylog.AlertCondition `json:"alert_conditions"`
 	Dashboards      map[string]graylog.Dashboard      `json:"dashboards"`
@@ -48,6 +50,7 @@ type plainStore struct {
 // MarshalJSON is the implementation of the json.Marshaler interface.
 func (store *Store) MarshalJSON() ([]byte, error) {
 	data := map[string]interface{}{
+		"alarm_callbacks":  store.alarmCallbacks,
 		"alerts":           store.alerts,
 		"alert_conditions": store.alertConditions,
 		"inputs":           store.inputs,
@@ -69,6 +72,7 @@ func (store *Store) UnmarshalJSON(b []byte) error {
 	if err := json.Unmarshal(b, s); err != nil {
 		return err
 	}
+	store.alarmCallbacks = s.AlarmCallbacks
 	store.alerts = s.Alerts
 	store.alertConditions = s.AlertConditions
 	store.dashboards = s.Dashboards
@@ -89,6 +93,7 @@ func (store *Store) UnmarshalJSON(b []byte) error {
 // If `dataPath` is empty, the data aren't written to the file.
 func NewStore(dataPath string) store.Store {
 	return &Store{
+		alarmCallbacks:  map[string]graylog.AlarmCallback{},
 		alerts:          map[string]graylog.Alert{},
 		alertConditions: map[string]graylog.AlertCondition{},
 		dashboards:      map[string]graylog.Dashboard{},

@@ -12,6 +12,19 @@ import (
 func NewRouter(lgc *logic.Logic) http.Handler {
 	e := echo.New()
 
+	// Alarm Callback
+	e.GET("/api/alerts/callbacks", wrapEchoHandle(lgc, HandleGetAlarmCallbacks))
+
+	// Alert Condition
+	e.GET("/api/alerts/conditions", wrapEchoHandle(lgc, HandleGetAlertConditions))
+
+	// Dashboard
+	e.GET("/api/dashboards/:dashboardID", wrapEchoHandle(lgc, HandleGetDashboard))
+	e.GET("/api/dashboards", wrapEchoHandle(lgc, HandleGetDashboards))
+	e.POST("/api/dashboards", wrapEchoHandle(lgc, HandleCreateDashboard))
+	e.PUT("/api/dashboards/:dashboardID", wrapEchoHandle(lgc, HandleUpdateDashboard))
+	e.DELETE("/api/dashboards/:dashboardID", wrapEchoHandle(lgc, HandleDeleteDashboard))
+
 	// Role
 	e.GET("/api/roles/:rolename", wrapEchoHandle(lgc, HandleGetRole))
 	e.GET("/api/roles", wrapEchoHandle(lgc, HandleGetRoles))
@@ -28,12 +41,28 @@ func NewRouter(lgc *logic.Logic) http.Handler {
 		"/api/roles/:rolename/members/:username",
 		wrapEchoHandle(lgc, HandleRemoveUserFromRole))
 
-	// User
-	e.GET("/api/users/:username", wrapEchoHandle(lgc, HandleGetUser))
-	e.GET("/api/users", wrapEchoHandle(lgc, HandleGetUsers))
-	e.PUT("/api/users/:username", wrapEchoHandle(lgc, HandleUpdateUser))
-	e.DELETE("/api/users/:username", wrapEchoHandle(lgc, HandleDeleteUser))
-	e.POST("/api/users", wrapEchoHandle(lgc, HandleCreateUser))
+	// Alert
+	e.GET("/api/streams/alerts/:alertID", wrapEchoHandle(lgc, HandleGetAlert))
+	e.GET("/api/streams/alerts", wrapEchoHandle(lgc, HandleGetAlerts))
+
+	// Stream
+	e.GET("/api/streams/enabled", wrapEchoHandle(lgc, HandleGetEnabledStreams))
+	e.GET("/api/streams/:streamID", wrapEchoHandle(lgc, HandleGetStream))
+	e.GET("/api/streams", wrapEchoHandle(lgc, HandleGetStreams))
+	e.POST("/api/streams", wrapEchoHandle(lgc, HandleCreateStream))
+	e.PUT("/api/streams/:streamID", wrapEchoHandle(lgc, HandleUpdateStream))
+	e.DELETE("/api/streams/:streamID", wrapEchoHandle(lgc, HandleDeleteStream))
+	e.POST(
+		"/api/streams/:streamID/pause", wrapEchoHandle(lgc, HandlePauseStream))
+	e.POST(
+		"/api/streams/:streamID/resume", wrapEchoHandle(lgc, HandleResumeStream))
+
+	// Stream Rule
+	e.GET("/api/streams/:streamID/rules/:streamRuleID", wrapEchoHandle(lgc, HandleGetStreamRule))
+	e.GET("/api/streams/:streamID/rules", wrapEchoHandle(lgc, HandleGetStreamRules))
+	e.POST("/api/streams/:streamID/rules", wrapEchoHandle(lgc, HandleCreateStreamRule))
+	e.PUT("/api/streams/:streamID/rules/:streamRuleID", wrapEchoHandle(lgc, HandleUpdateStreamRule))
+	e.DELETE("/api/streams/:streamID/rules/:streamRuleID", wrapEchoHandle(lgc, HandleDeleteStreamRule))
 
 	// Input
 	e.GET("/api/system/inputs/:inputID", wrapEchoHandle(lgc, HandleGetInput))
@@ -68,38 +97,12 @@ func NewRouter(lgc *logic.Logic) http.Handler {
 		"/api/system/indices/index_sets",
 		wrapEchoHandle(lgc, HandleCreateIndexSet))
 
-	// Alert
-	e.GET("/api/streams/alerts/:alertID", wrapEchoHandle(lgc, HandleGetAlert))
-	e.GET("/api/streams/alerts", wrapEchoHandle(lgc, HandleGetAlerts))
-
-	// Stream
-	e.GET("/api/streams/enabled", wrapEchoHandle(lgc, HandleGetEnabledStreams))
-	e.GET("/api/streams/:streamID", wrapEchoHandle(lgc, HandleGetStream))
-	e.GET("/api/streams", wrapEchoHandle(lgc, HandleGetStreams))
-	e.POST("/api/streams", wrapEchoHandle(lgc, HandleCreateStream))
-	e.PUT("/api/streams/:streamID", wrapEchoHandle(lgc, HandleUpdateStream))
-	e.DELETE("/api/streams/:streamID", wrapEchoHandle(lgc, HandleDeleteStream))
-	e.POST(
-		"/api/streams/:streamID/pause", wrapEchoHandle(lgc, HandlePauseStream))
-	e.POST(
-		"/api/streams/:streamID/resume", wrapEchoHandle(lgc, HandleResumeStream))
-
-	// Stream Rule
-	e.GET("/api/streams/:streamID/rules/:streamRuleID", wrapEchoHandle(lgc, HandleGetStreamRule))
-	e.GET("/api/streams/:streamID/rules", wrapEchoHandle(lgc, HandleGetStreamRules))
-	e.POST("/api/streams/:streamID/rules", wrapEchoHandle(lgc, HandleCreateStreamRule))
-	e.PUT("/api/streams/:streamID/rules/:streamRuleID", wrapEchoHandle(lgc, HandleUpdateStreamRule))
-	e.DELETE("/api/streams/:streamID/rules/:streamRuleID", wrapEchoHandle(lgc, HandleDeleteStreamRule))
-
-	// Alert Condition
-	e.GET("/api/alerts/conditions", wrapEchoHandle(lgc, HandleGetAlertConditions))
-
-	// Dashboard
-	e.GET("/api/dashboards/:dashboardID", wrapEchoHandle(lgc, HandleGetDashboard))
-	e.GET("/api/dashboards", wrapEchoHandle(lgc, HandleGetDashboards))
-	e.POST("/api/dashboards", wrapEchoHandle(lgc, HandleCreateDashboard))
-	e.PUT("/api/dashboards/:dashboardID", wrapEchoHandle(lgc, HandleUpdateDashboard))
-	e.DELETE("/api/dashboards/:dashboardID", wrapEchoHandle(lgc, HandleDeleteDashboard))
+	// User
+	e.GET("/api/users/:username", wrapEchoHandle(lgc, HandleGetUser))
+	e.GET("/api/users", wrapEchoHandle(lgc, HandleGetUsers))
+	e.PUT("/api/users/:username", wrapEchoHandle(lgc, HandleUpdateUser))
+	e.DELETE("/api/users/:username", wrapEchoHandle(lgc, HandleDeleteUser))
+	e.POST("/api/users", wrapEchoHandle(lgc, HandleCreateUser))
 
 	echo.NotFoundHandler = HandleNotFound(lgc)
 	return e
