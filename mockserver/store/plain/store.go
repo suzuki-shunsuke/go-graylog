@@ -20,7 +20,6 @@ type Store struct {
 	inputs          map[string]graylog.Input
 	roles           map[string]graylog.Role
 	streams         map[string]graylog.Stream
-	streamRules     map[string]map[string]graylog.StreamRule
 	users           map[string]graylog.User
 
 	tokens map[string]string
@@ -32,15 +31,14 @@ type Store struct {
 }
 
 type plainStore struct {
-	Alerts          map[string]graylog.Alert                 `json:"alerts"`
-	AlertConditions map[string]graylog.AlertCondition        `json:"alert_conditions"`
-	Dashboards      map[string]graylog.Dashboard             `json:"dashboards"`
-	Inputs          map[string]graylog.Input                 `json:"inputs"`
-	IndexSets       []graylog.IndexSet                       `json:"index_sets"`
-	Roles           map[string]graylog.Role                  `json:"roles"`
-	Streams         map[string]graylog.Stream                `json:"streams"`
-	StreamRules     map[string]map[string]graylog.StreamRule `json:"stream_rules"`
-	Users           map[string]graylog.User                  `json:"users"`
+	Alerts          map[string]graylog.Alert          `json:"alerts"`
+	AlertConditions map[string]graylog.AlertCondition `json:"alert_conditions"`
+	Dashboards      map[string]graylog.Dashboard      `json:"dashboards"`
+	Inputs          map[string]graylog.Input          `json:"inputs"`
+	IndexSets       []graylog.IndexSet                `json:"index_sets"`
+	Roles           map[string]graylog.Role           `json:"roles"`
+	Streams         map[string]graylog.Stream         `json:"streams"`
+	Users           map[string]graylog.User           `json:"users"`
 
 	Tokens map[string]string `json:"tokens"`
 
@@ -56,7 +54,6 @@ func (store *Store) MarshalJSON() ([]byte, error) {
 		"index_sets":       store.indexSets,
 		"roles":            store.roles,
 		"streams":          store.streams,
-		"stream_rules":     store.streamRules,
 		"users":            store.users,
 
 		"tokens": store.tokens,
@@ -80,7 +77,6 @@ func (store *Store) UnmarshalJSON(b []byte) error {
 	store.roles = s.Roles
 	store.users = s.Users
 	store.streams = s.Streams
-	store.streamRules = s.StreamRules
 
 	store.tokens = s.Tokens
 
@@ -100,7 +96,6 @@ func NewStore(dataPath string) store.Store {
 		indexSets:       []graylog.IndexSet{},
 		roles:           map[string]graylog.Role{},
 		streams:         map[string]graylog.Stream{},
-		streamRules:     map[string]map[string]graylog.StreamRule{},
 		users:           map[string]graylog.User{},
 
 		tokens: map[string]string{},

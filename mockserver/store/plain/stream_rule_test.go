@@ -3,7 +3,6 @@ package plain_test
 import (
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver/store/plain"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
@@ -80,7 +79,13 @@ func TestAddStreamRule(t *testing.T) {
 	if err := store.AddStreamRule(nil); err == nil {
 		t.Fatal("rule is nil")
 	}
-	if err := store.AddStreamRule(&graylog.StreamRule{}); err != nil {
+	stream := testutil.Stream()
+	rule := testutil.StreamRule()
+	if err := store.AddStream(stream); err != nil {
+		t.Fatal(err)
+	}
+	rule.StreamID = stream.ID
+	if err := store.AddStreamRule(rule); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -110,8 +115,8 @@ func TestUpdateStreamRule(t *testing.T) {
 
 func TestDeleteStreamRule(t *testing.T) {
 	store := plain.NewStore("")
-	if err := store.DeleteStreamRule("", ""); err != nil {
-		t.Fatal(err)
+	if err := store.DeleteStreamRule("", ""); err == nil {
+		t.Fatal("stream id is empty")
 	}
 	stream := testutil.Stream()
 	rule := testutil.StreamRule()
