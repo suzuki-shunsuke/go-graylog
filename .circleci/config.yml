@@ -3,12 +3,12 @@ version: 2
 jobs:
   build:
     docker:
-    - image: suzukishunsuke/go-ci:0.2.0
+    - image: suzukishunsuke/go-ci:0.3.0
     working_directory: /go/src/github.com/suzuki-shunsuke/go-graylog
     steps:
     - checkout
     - run: npm i
-    - run: go get -t ./...
+    - run: dep-dl
     - run: bash script/commitlint-circleci.sh
     - run: npm run lint
     - run: bash script/codecov-test.sh
