@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.1"></a>
+## [0.5.1](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.5.0...v0.5.1) (2018-08-18)
+
+
+### Bug Fixes
+
+* fix terraform provider's user resource ([9740b33](https://github.com/suzuki-shunsuke/go-graylog/commit/9740b33))
+
+
+### Features
+
+* improve client's error message ([95f0f8f](https://github.com/suzuki-shunsuke/go-graylog/commit/95f0f8f))
+
+
+
 <a name="0.5.0"></a>
 # [0.5.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.4.2...v0.5.0) (2018-08-05)
 
