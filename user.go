@@ -37,7 +37,7 @@ type User struct {
 	// The Admin role grants access to everything in Graylog.
 	// ex. ["Admin"]
 	Roles       set.StrSet `json:"roles,omitempty"`
-	Permissions set.StrSet `json:"permissions,omitempty" v-create:"required"`
+	Permissions set.StrSet `json:"permissions" v-create:"required"`
 }
 
 // UserUpdateParams represents a user update API's parameter.

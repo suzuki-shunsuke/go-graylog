@@ -5,10 +5,9 @@ https://github.com/suzuki-shunsuke/terraform-provider-graylog/blob/master/resour
 ```
 resource "graylog_user" "zoo" {
   username = "zoo"
-  password = "password"
   email = "zoo@example.com"
   full_name = "zooull"
-  permissions = ["users:read:zoo"]
+  roles = ["Reader"]
 }
 ```
 
@@ -18,17 +17,17 @@ resource "graylog_user" "zoo" {
 
 name | type | etc
 --- | --- | ---
-username | string |
-password | string | sensitive
+username | string | force_new
 email | string |
-permissions | []string |
 full_name | string |
 
 ### Optional Argument
 
 name | default | type | etc
 --- | --- | --- | ---
-roles | [] | []string |
+password | string | sensitive
+permissions | string set | computed
+roles | [] | string set |
 timezone | "" | string | computed
 session_timeout_ms | | int | computed
 
@@ -37,8 +36,8 @@ session_timeout_ms | | int | computed
 name | type | etc
 --- | --- | ---
 user_id | string | computed
-client_address | | string | computed
 external | bool | computed
 read_only | bool | computed
+client_address | | string | computed
 session_active | bool | computed
 last_activity | string | computed

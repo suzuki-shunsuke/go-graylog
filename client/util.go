@@ -48,7 +48,8 @@ func (client *Client) callAPI(
 		req, err = http.NewRequest(method, endpoint, nil)
 	}
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to call http.NewRequest")
+		return nil, errors.Wrapf(
+			err, "failed to call http.NewRequest: %s %s", method, endpoint)
 	}
 	ei := &ErrorInfo{Request: req}
 	req.SetBasicAuth(client.Name(), client.Password())
@@ -58,23 +59,27 @@ func (client *Client) callAPI(
 	// request
 	resp, err := hc.Do(req)
 	if err != nil {
-		return ei, errors.Wrap(
-			err, fmt.Sprintf("failed to call Graylog API: %s %s", method, endpoint))
+		return ei, errors.Wrapf(
+			err, "failed to call Graylog API: %s %s", method, endpoint)
 	}
 	defer resp.Body.Close()
 	ei.Response = resp
 
 	if resp.StatusCode >= 400 {
 		if err := json.NewDecoder(resp.Body).Decode(ei); err != nil {
-			return ei, errors.Wrap(
-				err, "failed to parse response body as ErrorInfo")
+			return ei, errors.Wrapf(
+				err, "failed to parse response body as ErrorInfo: %s %s %d",
+				method, endpoint, resp.StatusCode)
 		}
-		return ei, errors.New(ei.Message)
+		return ei, fmt.Errorf(
+			"graylog API error: %s %s %d: %s",
+			method, endpoint, resp.StatusCode, ei.Message)
 	}
 	if output != nil {
 		if err := json.NewDecoder(ei.Response.Body).Decode(output); err != nil {
-			return ei, errors.Wrap(
-				err, "failed to decode response body")
+			return ei, errors.Wrapf(
+				err, "failed to decode graylog API response body: %s %s",
+				method, endpoint)
 		}
 	}
 	return ei, nil
