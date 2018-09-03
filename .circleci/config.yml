@@ -3,14 +3,15 @@ version: 2
 jobs:
   build:
     docker:
-    - image: suzukishunsuke/go-ci:0.3.0
+    - image: suzukishunsuke/go-ci:0.4.0
     working_directory: /go/src/github.com/suzuki-shunsuke/go-graylog
     steps:
     - checkout
     - run: npm i
     - run: dep-dl
     - run: bash script/commitlint-circleci.sh
-    - run: npm run lint
+    - run: gometalinter -j 2 ./...
+    - run: staticcheck ./... || echo "staticcheck failure is ignored"
     - run: bash script/codecov-test.sh
     - run: bash <(curl -s https://codecov.io/bash)
     - run: TAG="$CIRCLE_TAG" bash script/release.sh
