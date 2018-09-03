@@ -97,6 +97,14 @@ func NewRouter(lgc *logic.Logic) http.Handler {
 		"/api/system/indices/index_sets",
 		wrapEchoHandle(lgc, HandleCreateIndexSet))
 
+	// LDAP Setting
+	e.GET(
+		"/api/system/ldap/settings", wrapEchoHandle(lgc, HandleGetLDAPSetting))
+	e.PUT(
+		"/api/system/ldap/settings", wrapEchoHandle(lgc, HandleUpdateLDAPSetting))
+	e.DELETE(
+		"/api/system/ldap/settings", wrapEchoHandle(lgc, HandleDeleteLDAPSetting))
+
 	// User
 	e.GET("/api/users/:username", wrapEchoHandle(lgc, HandleGetUser))
 	e.GET("/api/users", wrapEchoHandle(lgc, HandleGetUsers))
