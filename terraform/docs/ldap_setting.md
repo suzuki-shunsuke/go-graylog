@@ -2,7 +2,6 @@
 
 https://github.com/suzuki-shunsuke/terraform-provider-graylog/blob/master/resource_ldap_setting.go
 
-
 ```
 resource "graylog_ldap_setting" "foo" {
   enabled = true
@@ -20,6 +19,13 @@ resource "graylog_ldap_setting" "foo" {
   group_id_attribute = ""
   group_search_pattern = ""
 }
+```
+
+Unlike other resources, LDAP settings has no id,
+so when you import the LDAP settings, please specify some string as id.
+
+```
+terraform import graylog_ldap_setting.foo bar
 ```
 
 ## Argument Reference
@@ -43,7 +49,7 @@ active_directory | false | bool |
 search_base | "" | string |
 search_pattern | "" | string |
 display_name_attribute | "" | string |
-default_group | "" | string |
 group_search_base | "" | string |
 group_id_attribute | "" | string |
 group_search_pattern | "" | string |
+default_group | "" | string | computed

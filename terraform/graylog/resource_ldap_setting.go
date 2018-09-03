@@ -66,6 +66,7 @@ func resourceLDAPSetting() *schema.Resource {
 			"default_group": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Computed: true,
 			},
 			"group_search_base": {
 				Type:     schema.TypeString,
