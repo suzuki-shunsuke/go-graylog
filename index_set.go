@@ -67,16 +67,16 @@ type IndexSet struct {
 // NewUpdateParams converts an IndexSet to IndexSetUpdateParams.
 func (is *IndexSet) NewUpdateParams() *IndexSetUpdateParams {
 	return &IndexSetUpdateParams{
-		Title:                  is.Title,
-		IndexPrefix:            is.IndexPrefix,
-		RotationStrategyClass:  is.RotationStrategyClass,
-		RotationStrategy:       is.RotationStrategy,
-		RetentionStrategyClass: is.RetentionStrategyClass,
-		RetentionStrategy:      is.RetentionStrategy,
-		IndexAnalyzer:          is.IndexAnalyzer,
-		Shards:                 is.Shards,
+		Title:                           is.Title,
+		IndexPrefix:                     is.IndexPrefix,
+		RotationStrategyClass:           is.RotationStrategyClass,
+		RotationStrategy:                is.RotationStrategy,
+		RetentionStrategyClass:          is.RetentionStrategyClass,
+		RetentionStrategy:               is.RetentionStrategy,
+		IndexAnalyzer:                   is.IndexAnalyzer,
+		Shards:                          is.Shards,
 		IndexOptimizationMaxNumSegments: is.IndexOptimizationMaxNumSegments,
-		ID: is.ID,
+		ID:                              is.ID,
 
 		Description:               ptr.PStr(is.Description),
 		Replicas:                  ptr.PInt(is.Replicas),
