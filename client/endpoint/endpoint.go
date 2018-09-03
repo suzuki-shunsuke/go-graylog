@@ -23,6 +23,7 @@ type Endpoints struct {
 	roles           *url.URL
 	streams         *url.URL
 	users           *url.URL
+	ldapSetting     string
 }
 
 // NewEndpoints returns a new Endpoints.
@@ -74,6 +75,10 @@ func NewEndpoints(endpoint string) (*Endpoints, error) {
 	if err != nil {
 		return nil, err
 	}
+	ldapSetting, err := urlJoin(ep, "system/ldap/settings")
+	if err != nil {
+		return nil, err
+	}
 	users, err := urlJoin(ep, "users")
 	if err != nil {
 		return nil, err
@@ -90,5 +95,6 @@ func NewEndpoints(endpoint string) (*Endpoints, error) {
 		roles:           roles,
 		streams:         streams,
 		users:           users,
+		ldapSetting:     ldapSetting.String(),
 	}, nil
 }
