@@ -22,6 +22,7 @@ type Store struct {
 	roles           map[string]graylog.Role
 	streams         map[string]graylog.Stream
 	users           map[string]graylog.User
+	ldapSetting     *graylog.LDAPSetting
 
 	tokens map[string]string
 
@@ -41,6 +42,7 @@ type plainStore struct {
 	Roles           map[string]graylog.Role           `json:"roles"`
 	Streams         map[string]graylog.Stream         `json:"streams"`
 	Users           map[string]graylog.User           `json:"users"`
+	LDAPSetting     *graylog.LDAPSetting              `json:"ldap_setting"`
 
 	Tokens map[string]string `json:"tokens"`
 
@@ -58,6 +60,7 @@ func (store *Store) MarshalJSON() ([]byte, error) {
 		"roles":            store.roles,
 		"streams":          store.streams,
 		"users":            store.users,
+		"ldap_setting":     store.ldapSetting,
 
 		"tokens": store.tokens,
 
@@ -81,6 +84,7 @@ func (store *Store) UnmarshalJSON(b []byte) error {
 	store.roles = s.Roles
 	store.users = s.Users
 	store.streams = s.Streams
+	store.ldapSetting = s.LDAPSetting
 
 	store.tokens = s.Tokens
 
@@ -102,6 +106,7 @@ func NewStore(dataPath string) store.Store {
 		roles:           map[string]graylog.Role{},
 		streams:         map[string]graylog.Stream{},
 		users:           map[string]graylog.User{},
+		ldapSetting:     defaultLDAPSetting(),
 
 		tokens: map[string]string{},
 

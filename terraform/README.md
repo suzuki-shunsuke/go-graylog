@@ -66,3 +66,4 @@ auth_password | GRAYLOG_AUTH_PASSWORD |
 * [role](docs/role.md)
 * [stream](docs/stream.md)
 * [user](docs/user.md)
+* [ldap_setting](docs/ldap_setting.md)

@@ -79,4 +79,8 @@ type Store interface {
 	UpdateDashboard(*graylog.Dashboard) error
 
 	GetAlarmCallbacks() ([]graylog.AlarmCallback, int, error)
+
+	GetLDAPSetting() (*graylog.LDAPSetting, error)
+	UpdateLDAPSetting(*graylog.LDAPSettingUpdateParams) error
+	DeleteLDAPSetting() error
 }
