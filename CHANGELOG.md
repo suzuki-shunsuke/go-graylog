@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.1"></a>
+## [0.6.1](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.6.0...v0.6.1) (2018-09-04)
+
+
+### Bug Fixes
+
+* make LDAP Setting's user password sensitive ([7ca7177](https://github.com/suzuki-shunsuke/go-graylog/commit/7ca7177))
+* **client:** fix wrong usage of net/http.Request#WithContext ([224a6ca](https://github.com/suzuki-shunsuke/go-graylog/commit/224a6ca))
+
+
+
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.5.1...v0.6.0) (2018-09-03)
 
