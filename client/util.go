@@ -53,7 +53,7 @@ func (client *Client) callAPI(
 	}
 	ei := &ErrorInfo{Request: req}
 	req.SetBasicAuth(client.Name(), client.Password())
-	req.WithContext(ctx)
+	req = req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/json")
 	hc := &http.Client{}
 	// request

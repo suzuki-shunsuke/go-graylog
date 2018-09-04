@@ -41,7 +41,6 @@ name | default | type | description
 description | "" | string |
 enabled | false | bool |
 system_username | "" | string |
-system_password | "" | string |
 ldap_uri | "ldap://localhost:389" | string |
 use_start_tls | false | bool |
 trust_all_certificates | false | bool |
@@ -52,4 +51,5 @@ display_name_attribute | "" | string |
 group_search_base | "" | string |
 group_id_attribute | "" | string |
 group_search_pattern | "" | string |
+system_password | "" | string | sensitive
 default_group | "" | string | computed
