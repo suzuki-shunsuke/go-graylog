@@ -43,10 +43,6 @@ func resourceLDAPSetting() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"system_password": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
 			"ldap_uri": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -63,11 +59,6 @@ func resourceLDAPSetting() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"default_group": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Computed: true,
-			},
 			"group_search_base": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -79,6 +70,20 @@ func resourceLDAPSetting() *schema.Resource {
 			"group_search_pattern": {
 				Type:     schema.TypeString,
 				Optional: true,
+			},
+
+			// sensitive
+			"system_password": {
+				Type:      schema.TypeString,
+				Optional:  true,
+				Sensitive: true,
+			},
+
+			// computed
+			"default_group": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
 			},
 		},
 	}
