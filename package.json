@@ -11,7 +11,8 @@
     "fmt": "bash script/fmt.sh",
     "coverage": "bash script/coverage.sh",
     "install-local-terraform": "bash script/install_local_terraform.sh",
-    "commitlint-travis": "commitlint-travis"
+    "commitlint-travis": "commitlint-travis",
+    "tag": "bash script/tag.sh"
   },
   "devDependencies": {
     "@commitlint/cli": "^6.1.3",
