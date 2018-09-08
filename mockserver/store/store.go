@@ -35,6 +35,13 @@ type Store interface {
 	DeleteInput(id string) error
 	HasInput(id string) (bool, error)
 
+	HasCollectorConfiguration(id string) (bool, error)
+	DeleteCollectorConfiguration(id string) error
+	AddCollectorConfiguration(*graylog.CollectorConfiguration) error
+	RenameCollectorConfiguration(id, name string) (*graylog.CollectorConfiguration, error)
+	GetCollectorConfiguration(id string) (*graylog.CollectorConfiguration, error)
+	GetCollectorConfigurations() ([]graylog.CollectorConfiguration, int, error)
+
 	AddIndexSet(*graylog.IndexSet) error
 	GetIndexSet(id string) (*graylog.IndexSet, error)
 	GetIndexSets(skip, limit int) ([]graylog.IndexSet, int, error)
