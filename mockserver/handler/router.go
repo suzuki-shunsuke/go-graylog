@@ -34,7 +34,7 @@ func NewRouter(lgc *logic.Logic) http.Handler {
 		wrapEchoHandle(lgc, HandleCreateCollectorConfiguration))
 	e.PUT(
 		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID/name",
-		wrapEchoHandle(lgc, HandleUpdateCollectorConfigurationName))
+		wrapEchoHandle(lgc, HandleRenameCollectorConfiguration))
 	e.GET(
 		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID",
 		wrapEchoHandle(lgc, HandleGetCollectorConfiguration))

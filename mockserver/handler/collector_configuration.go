@@ -66,8 +66,8 @@ func HandleCreateCollectorConfiguration(
 	return cfg, sc, nil
 }
 
-// HandleUpdateCollectorConfigurationName is the handler of Update a CollectorConfiguration name API.
-func HandleUpdateCollectorConfigurationName(
+// HandleRenameCollectorConfiguration is the handler of Rename a CollectorConfiguration API.
+func HandleRenameCollectorConfiguration(
 	user *graylog.User, lgc *logic.Logic, r *http.Request, ps Params,
 ) (interface{}, int, error) {
 	// PUT /plugins/org.graylog.plugins.collector/configurations/{id}/name Updates a collector configuration name
