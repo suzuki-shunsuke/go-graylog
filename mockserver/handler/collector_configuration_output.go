@@ -16,11 +16,13 @@ func HandleCreateCollectorConfigurationOutput(
 	user *graylog.User, lgc *logic.Logic, r *http.Request, ps Params,
 ) (interface{}, int, error) {
 	// TODO authorize
-	cfgID := ps.PathParam("collectorConfigurationOutputID")
+	cfgID := ps.PathParam("collectorConfigurationID")
+	// Known properties include: output_id, type, name, backend, properties
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
-			Required:     set.NewStrSet("tags", "outputs", "outputs", "snippets"),
-			Optional:     nil,
+			Required:     set.NewStrSet("type", "name", "backend"),
+			Optional:     set.NewStrSet("properties"),
+			Ignored:      set.NewStrSet("output_id"),
 			ExtForbidden: true,
 		})
 	if err != nil {

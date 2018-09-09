@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
+	"github.com/suzuki-shunsuke/go-set"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 )
@@ -22,14 +23,17 @@ func (client *Client) CreateCollectorConfigurationContext(
 	if cfg == nil {
 		return nil, fmt.Errorf("collector configuration is nil")
 	}
-	if len(cfg.Inputs) == 0 {
+	if cfg.Inputs == nil {
 		cfg.Inputs = []graylog.CollectorConfigurationInput{}
 	}
-	if len(cfg.Outputs) == 0 {
+	if cfg.Outputs == nil {
 		cfg.Outputs = []graylog.CollectorConfigurationOutput{}
 	}
-	if len(cfg.Snippets) == 0 {
+	if cfg.Snippets == nil {
 		cfg.Snippets = []graylog.CollectorConfigurationSnippet{}
+	}
+	if cfg.Tags == nil {
+		cfg.Tags = set.StrSet{}
 	}
 	return client.callPost(ctx, client.Endpoints().CollectorConfigurations(), cfg, cfg)
 }

@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	// "github.com/pkg/errors"
-
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
@@ -32,6 +30,7 @@ func (client *Client) CreateCollectorConfigurationInputContext(
 	if err != nil {
 		return nil, err
 	}
+	// 202 no content
 	return client.callPost(ctx, u.String(), input, nil)
 }
 
