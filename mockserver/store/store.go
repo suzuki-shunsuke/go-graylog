@@ -52,6 +52,11 @@ type Store interface {
 	UpdateCollectorConfigurationOutput(cfgID, outputID string, output *graylog.CollectorConfigurationOutput) error
 	DeleteCollectorConfigurationOutput(cfgID, outputID string) error
 
+	HasCollectorConfigurationSnippet(cfgID, snippetID string) (bool, error)
+	AddCollectorConfigurationSnippet(cfgID string, snippet *graylog.CollectorConfigurationSnippet) error
+	UpdateCollectorConfigurationSnippet(cfgID, snippetID string, snippet *graylog.CollectorConfigurationSnippet) error
+	DeleteCollectorConfigurationSnippet(cfgID, snippetID string) error
+
 	AddIndexSet(*graylog.IndexSet) error
 	GetIndexSet(id string) (*graylog.IndexSet, error)
 	GetIndexSets(skip, limit int) ([]graylog.IndexSet, int, error)
