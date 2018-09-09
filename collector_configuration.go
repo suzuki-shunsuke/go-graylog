@@ -22,7 +22,10 @@ type (
 	}
 
 	// CollectorConfigurationInputProperty represents a Graylog's Collector Configuration Input properties.
-	CollectorConfigurationInputProperty struct {
+	CollectorConfigurationInputProperty interface{}
+
+	// CollectorConfigurationInputFileProperty represents a Graylog's Collector Configuration file type Input properties.
+	CollectorConfigurationInputFileProperty struct {
 		Paths         string `json:"paths"`
 		ExcludeFiles  string `json:"exclude_files"`
 		ScanFrequency string `json:"scan_frequency"`
@@ -32,6 +35,11 @@ type (
 		ExcludeLines  string `json:"exclude_lines"`
 		IncludeLines  string `json:"include_lines"`
 		TailFiles     bool   `json:"tail_files"`
+	}
+
+	// CollectorConfigurationInputWindowsEventLogProperty represents a Graylog's Collector Configuration windows event log type Input properties.
+	CollectorConfigurationInputWindowsEventLogProperty struct {
+		Event string `json:"event"`
 	}
 
 	// CollectorConfigurationOutput represents a Graylog's Collector Configuration Output.
