@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.7.0"></a>
+# [0.7.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.6.1...v0.7.0) (2018-09-09)
+
+
+### Bug Fixes
+
+* fix collector configuration client and mockserver ([e70a6ae](https://github.com/suzuki-shunsuke/go-graylog/commit/e70a6ae))
+* give up support of some terraform resources ([b84d574](https://github.com/suzuki-shunsuke/go-graylog/commit/b84d574))
+* make collector configuration output properties interface ([cd7e69a](https://github.com/suzuki-shunsuke/go-graylog/commit/cd7e69a))
+
+
+### Features
+
+* **client:** support Collector Configuration APIs ([b236665](https://github.com/suzuki-shunsuke/go-graylog/commit/b236665))
+* **mockserver:** support collector configuration APIs ([4182322](https://github.com/suzuki-shunsuke/go-graylog/commit/4182322))
+* **mockserver:** support collector configuration input APIs ([cfded83](https://github.com/suzuki-shunsuke/go-graylog/commit/cfded83))
+* **mockserver:** support collector configuration output APIs ([be0d622](https://github.com/suzuki-shunsuke/go-graylog/commit/be0d622))
+* **mockserver:** support collector configuration snippet APIs ([9419321](https://github.com/suzuki-shunsuke/go-graylog/commit/9419321))
+* **terraform:** support collector configuration ([d05bd78](https://github.com/suzuki-shunsuke/go-graylog/commit/d05bd78))
+
+
+
 <a name="0.6.1"></a>
 ## [0.6.1](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.6.0...v0.6.1) (2018-09-04)
 
