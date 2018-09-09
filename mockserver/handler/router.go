@@ -53,6 +53,17 @@ func NewRouter(lgc *logic.Logic) http.Handler {
 		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID/inputs/:collectorConfigurationInputID",
 		wrapEchoHandle(lgc, HandleDeleteCollectorConfigurationInput))
 
+	// Collector Configuration Output
+	e.POST(
+		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID/outputs",
+		wrapEchoHandle(lgc, HandleCreateCollectorConfigurationOutput))
+	e.PUT(
+		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID/outputs/:collectorConfigurationOutputID",
+		wrapEchoHandle(lgc, HandleUpdateCollectorConfigurationOutput))
+	e.DELETE(
+		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID/outputs/:collectorConfigurationOutputID",
+		wrapEchoHandle(lgc, HandleDeleteCollectorConfigurationOutput))
+
 	// Role
 	e.GET("/api/roles/:rolename", wrapEchoHandle(lgc, HandleGetRole))
 	e.GET("/api/roles", wrapEchoHandle(lgc, HandleGetRoles))
