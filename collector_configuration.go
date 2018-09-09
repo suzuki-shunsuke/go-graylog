@@ -52,9 +52,7 @@ type (
 	}
 
 	// CollectorConfigurationOutputProperty represents a Graylog's Collector Configuration Output properties.
-	CollectorConfigurationOutputProperty struct {
-		Hosts string `json:"hosts"`
-	}
+	CollectorConfigurationOutputProperty interface{}
 
 	// CollectorConfigurationSnippet represents a Graylog's Collector Configuration Snippet.
 	CollectorConfigurationSnippet struct {
