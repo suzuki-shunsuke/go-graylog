@@ -67,3 +67,7 @@ auth_password | GRAYLOG_AUTH_PASSWORD |
 * [stream](docs/stream.md)
 * [user](docs/user.md)
 * [ldap_setting](docs/ldap_setting.md)
+* [collector configuration](docs/collector_configuration.md)
+* [collector configuration input](docs/collector_configuration_input.md)
+* [collector configuration output](docs/collector_configuration_output.md)
+* [collector configuration snippet](docs/collector_configuration_snippet.md)

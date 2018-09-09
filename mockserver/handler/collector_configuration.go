@@ -43,7 +43,7 @@ func HandleCreateCollectorConfiguration(
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
 			Required:     set.NewStrSet("tags", "inputs", "outputs", "snippets"),
-			Optional:     nil,
+			Optional:     set.NewStrSet("name", "id"),
 			ExtForbidden: true,
 		})
 	if err != nil {
@@ -76,7 +76,7 @@ func HandleRenameCollectorConfiguration(
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
 			Required:     set.NewStrSet("tags", "inputs", "outputs", "snippets"),
-			Optional:     nil,
+			Optional:     set.NewStrSet("name", "id"),
 			ExtForbidden: true,
 		})
 	if err != nil {

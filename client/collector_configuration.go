@@ -22,7 +22,16 @@ func (client *Client) CreateCollectorConfigurationContext(
 	if cfg == nil {
 		return nil, fmt.Errorf("collector configuration is nil")
 	}
-	return client.callPost(ctx, client.Endpoints().CollectorConfigurations(), cfg, nil)
+	if len(cfg.Inputs) == 0 {
+		cfg.Inputs = []graylog.CollectorConfigurationInput{}
+	}
+	if len(cfg.Outputs) == 0 {
+		cfg.Outputs = []graylog.CollectorConfigurationOutput{}
+	}
+	if len(cfg.Snippets) == 0 {
+		cfg.Snippets = []graylog.CollectorConfigurationSnippet{}
+	}
+	return client.callPost(ctx, client.Endpoints().CollectorConfigurations(), cfg, cfg)
 }
 
 // GetCollectorConfigurations returns all collector configurations.
@@ -75,8 +84,13 @@ func (client *Client) RenameCollectorConfigurationContext(
 	if name == "" {
 		return nil, nil, fmt.Errorf("name is nil")
 	}
-	input := graylog.CollectorConfiguration{Name: name}
-	u, err := client.Endpoints().CollectorConfiguration(id)
+	input := graylog.CollectorConfiguration{
+		Name:     name,
+		Inputs:   []graylog.CollectorConfigurationInput{},
+		Outputs:  []graylog.CollectorConfigurationOutput{},
+		Snippets: []graylog.CollectorConfigurationSnippet{},
+	}
+	u, err := client.Endpoints().CollectorConfigurationName(id)
 	if err != nil {
 		return nil, nil, err
 	}

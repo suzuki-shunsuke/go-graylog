@@ -1,11 +1,15 @@
 package graylog
 
+import (
+	"github.com/suzuki-shunsuke/go-set"
+)
+
 type (
 	// CollectorConfiguration represents a Graylog's Collector Configuration.
 	CollectorConfiguration struct {
-		ID   string `json:"id,omitempty" v-create:"isdefault"`
-		Name string `json:"name,omitempty" v-create:"required"`
-		// Tags string `json:"tags,omitempty" v-create:"isdefault"`
+		ID       string                          `json:"id,omitempty" v-create:"isdefault"`
+		Name     string                          `json:"name,omitempty" v-create:"required"`
+		Tags     set.StrSet                      `json:"tags"`
 		Inputs   []CollectorConfigurationInput   `json:"inputs"`
 		Outputs  []CollectorConfigurationOutput  `json:"outputs"`
 		Snippets []CollectorConfigurationSnippet `json:"snippets"`
