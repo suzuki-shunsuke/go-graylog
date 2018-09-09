@@ -35,6 +35,28 @@ type Store interface {
 	DeleteInput(id string) error
 	HasInput(id string) (bool, error)
 
+	HasCollectorConfiguration(id string) (bool, error)
+	DeleteCollectorConfiguration(id string) error
+	AddCollectorConfiguration(*graylog.CollectorConfiguration) error
+	RenameCollectorConfiguration(id, name string) (*graylog.CollectorConfiguration, error)
+	GetCollectorConfiguration(id string) (*graylog.CollectorConfiguration, error)
+	GetCollectorConfigurations() ([]graylog.CollectorConfiguration, int, error)
+
+	HasCollectorConfigurationInput(cfgID, inputID string) (bool, error)
+	AddCollectorConfigurationInput(cfgID string, input *graylog.CollectorConfigurationInput) error
+	UpdateCollectorConfigurationInput(cfgID, inputID string, input *graylog.CollectorConfigurationInput) error
+	DeleteCollectorConfigurationInput(cfgID, inputID string) error
+
+	HasCollectorConfigurationOutput(cfgID, outputID string) (bool, error)
+	AddCollectorConfigurationOutput(cfgID string, output *graylog.CollectorConfigurationOutput) error
+	UpdateCollectorConfigurationOutput(cfgID, outputID string, output *graylog.CollectorConfigurationOutput) error
+	DeleteCollectorConfigurationOutput(cfgID, outputID string) error
+
+	HasCollectorConfigurationSnippet(cfgID, snippetID string) (bool, error)
+	AddCollectorConfigurationSnippet(cfgID string, snippet *graylog.CollectorConfigurationSnippet) error
+	UpdateCollectorConfigurationSnippet(cfgID, snippetID string, snippet *graylog.CollectorConfigurationSnippet) error
+	DeleteCollectorConfigurationSnippet(cfgID, snippetID string) error
+
 	AddIndexSet(*graylog.IndexSet) error
 	GetIndexSet(id string) (*graylog.IndexSet, error)
 	GetIndexSets(skip, limit int) ([]graylog.IndexSet, int, error)

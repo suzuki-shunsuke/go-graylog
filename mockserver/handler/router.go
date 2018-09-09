@@ -25,6 +25,56 @@ func NewRouter(lgc *logic.Logic) http.Handler {
 	e.PUT("/api/dashboards/:dashboardID", wrapEchoHandle(lgc, HandleUpdateDashboard))
 	e.DELETE("/api/dashboards/:dashboardID", wrapEchoHandle(lgc, HandleDeleteDashboard))
 
+	// Collector Configuration
+	e.GET(
+		"/api/plugins/org.graylog.plugins.collector/configurations",
+		wrapEchoHandle(lgc, HandleGetCollectorConfigurations))
+	e.POST(
+		"/api/plugins/org.graylog.plugins.collector/configurations",
+		wrapEchoHandle(lgc, HandleCreateCollectorConfiguration))
+	e.PUT(
+		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID/name",
+		wrapEchoHandle(lgc, HandleRenameCollectorConfiguration))
+	e.GET(
+		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID",
+		wrapEchoHandle(lgc, HandleGetCollectorConfiguration))
+	e.DELETE(
+		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID",
+		wrapEchoHandle(lgc, HandleDeleteCollectorConfiguration))
+
+	// Collector Configuration Input
+	e.POST(
+		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID/inputs",
+		wrapEchoHandle(lgc, HandleCreateCollectorConfigurationInput))
+	e.PUT(
+		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID/inputs/:collectorConfigurationInputID",
+		wrapEchoHandle(lgc, HandleUpdateCollectorConfigurationInput))
+	e.DELETE(
+		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID/inputs/:collectorConfigurationInputID",
+		wrapEchoHandle(lgc, HandleDeleteCollectorConfigurationInput))
+
+	// Collector Configuration Output
+	e.POST(
+		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID/outputs",
+		wrapEchoHandle(lgc, HandleCreateCollectorConfigurationOutput))
+	e.PUT(
+		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID/outputs/:collectorConfigurationOutputID",
+		wrapEchoHandle(lgc, HandleUpdateCollectorConfigurationOutput))
+	e.DELETE(
+		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID/outputs/:collectorConfigurationOutputID",
+		wrapEchoHandle(lgc, HandleDeleteCollectorConfigurationOutput))
+
+	// Collector Configuration Snippet
+	e.POST(
+		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID/snippets",
+		wrapEchoHandle(lgc, HandleCreateCollectorConfigurationSnippet))
+	e.PUT(
+		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID/snippets/:collectorConfigurationSnippetID",
+		wrapEchoHandle(lgc, HandleUpdateCollectorConfigurationSnippet))
+	e.DELETE(
+		"/api/plugins/org.graylog.plugins.collector/configurations/:collectorConfigurationID/snippets/:collectorConfigurationSnippetID",
+		wrapEchoHandle(lgc, HandleDeleteCollectorConfigurationSnippet))
+
 	// Role
 	e.GET("/api/roles/:rolename", wrapEchoHandle(lgc, HandleGetRole))
 	e.GET("/api/roles", wrapEchoHandle(lgc, HandleGetRoles))

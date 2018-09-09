@@ -67,3 +67,17 @@ auth_password | GRAYLOG_AUTH_PASSWORD |
 * [stream](docs/stream.md)
 * [user](docs/user.md)
 * [ldap_setting](docs/ldap_setting.md)
+
+## Unsupported resources
+
+We can't support these resources for some reasons.
+
+### CollectorConfiguration (includes input, output snippet)
+
+We can't support these resources because graylog API doesn't return the created resource id (response body: no content).
+
+The following APIs doesn't return the created resource id (response body: no content).
+
+* POST /plugins/org.graylog.plugins.collector/configurations/{id}/inputs Create a configuration input
+* POST /plugins/org.graylog.plugins.collector/configurations/{id}/outputs Create a configuration output
+* POST /plugins/org.graylog.plugins.collector/configurations/{id}/snippets Create a configuration snippet

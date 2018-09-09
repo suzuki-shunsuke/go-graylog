@@ -13,16 +13,17 @@ import (
 
 // Store is the implementation of the Store interface with pure golang.
 type Store struct {
-	alarmCallbacks  map[string]graylog.AlarmCallback
-	alerts          map[string]graylog.Alert
-	alertConditions map[string]graylog.AlertCondition
-	dashboards      map[string]graylog.Dashboard
-	indexSets       []graylog.IndexSet
-	inputs          map[string]graylog.Input
-	roles           map[string]graylog.Role
-	streams         map[string]graylog.Stream
-	users           map[string]graylog.User
-	ldapSetting     *graylog.LDAPSetting
+	alarmCallbacks          map[string]graylog.AlarmCallback
+	alerts                  map[string]graylog.Alert
+	alertConditions         map[string]graylog.AlertCondition
+	collectorConfigurations map[string]graylog.CollectorConfiguration
+	dashboards              map[string]graylog.Dashboard
+	indexSets               []graylog.IndexSet
+	inputs                  map[string]graylog.Input
+	roles                   map[string]graylog.Role
+	streams                 map[string]graylog.Stream
+	users                   map[string]graylog.User
+	ldapSetting             *graylog.LDAPSetting
 
 	tokens map[string]string
 
@@ -33,16 +34,17 @@ type Store struct {
 }
 
 type plainStore struct {
-	AlarmCallbacks  map[string]graylog.AlarmCallback  `json:"alarm_callbacks"`
-	Alerts          map[string]graylog.Alert          `json:"alerts"`
-	AlertConditions map[string]graylog.AlertCondition `json:"alert_conditions"`
-	Dashboards      map[string]graylog.Dashboard      `json:"dashboards"`
-	Inputs          map[string]graylog.Input          `json:"inputs"`
-	IndexSets       []graylog.IndexSet                `json:"index_sets"`
-	Roles           map[string]graylog.Role           `json:"roles"`
-	Streams         map[string]graylog.Stream         `json:"streams"`
-	Users           map[string]graylog.User           `json:"users"`
-	LDAPSetting     *graylog.LDAPSetting              `json:"ldap_setting"`
+	AlarmCallbacks          map[string]graylog.AlarmCallback          `json:"alarm_callbacks"`
+	Alerts                  map[string]graylog.Alert                  `json:"alerts"`
+	AlertConditions         map[string]graylog.AlertCondition         `json:"alert_conditions"`
+	CollectorConfigurations map[string]graylog.CollectorConfiguration `json:"collector_configurations"`
+	Dashboards              map[string]graylog.Dashboard              `json:"dashboards"`
+	Inputs                  map[string]graylog.Input                  `json:"inputs"`
+	IndexSets               []graylog.IndexSet                        `json:"index_sets"`
+	Roles                   map[string]graylog.Role                   `json:"roles"`
+	Streams                 map[string]graylog.Stream                 `json:"streams"`
+	Users                   map[string]graylog.User                   `json:"users"`
+	LDAPSetting             *graylog.LDAPSetting                      `json:"ldap_setting"`
 
 	Tokens map[string]string `json:"tokens"`
 
@@ -52,15 +54,17 @@ type plainStore struct {
 // MarshalJSON is the implementation of the json.Marshaler interface.
 func (store *Store) MarshalJSON() ([]byte, error) {
 	data := map[string]interface{}{
-		"alarm_callbacks":  store.alarmCallbacks,
-		"alerts":           store.alerts,
-		"alert_conditions": store.alertConditions,
-		"inputs":           store.inputs,
-		"index_sets":       store.indexSets,
-		"roles":            store.roles,
-		"streams":          store.streams,
-		"users":            store.users,
-		"ldap_setting":     store.ldapSetting,
+		"alarm_callbacks":          store.alarmCallbacks,
+		"alerts":                   store.alerts,
+		"alert_conditions":         store.alertConditions,
+		"collector_configurations": store.collectorConfigurations,
+		"dashboards":               store.dashboards,
+		"inputs":                   store.inputs,
+		"index_sets":               store.indexSets,
+		"roles":                    store.roles,
+		"streams":                  store.streams,
+		"users":                    store.users,
+		"ldap_setting":             store.ldapSetting,
 
 		"tokens": store.tokens,
 
@@ -78,6 +82,7 @@ func (store *Store) UnmarshalJSON(b []byte) error {
 	store.alarmCallbacks = s.AlarmCallbacks
 	store.alerts = s.Alerts
 	store.alertConditions = s.AlertConditions
+	store.collectorConfigurations = s.CollectorConfigurations
 	store.dashboards = s.Dashboards
 	store.inputs = s.Inputs
 	store.indexSets = s.IndexSets
@@ -97,16 +102,17 @@ func (store *Store) UnmarshalJSON(b []byte) error {
 // If `dataPath` is empty, the data aren't written to the file.
 func NewStore(dataPath string) store.Store {
 	return &Store{
-		alarmCallbacks:  map[string]graylog.AlarmCallback{},
-		alerts:          map[string]graylog.Alert{},
-		alertConditions: map[string]graylog.AlertCondition{},
-		dashboards:      map[string]graylog.Dashboard{},
-		inputs:          map[string]graylog.Input{},
-		indexSets:       []graylog.IndexSet{},
-		roles:           map[string]graylog.Role{},
-		streams:         map[string]graylog.Stream{},
-		users:           map[string]graylog.User{},
-		ldapSetting:     defaultLDAPSetting(),
+		alarmCallbacks:          map[string]graylog.AlarmCallback{},
+		alerts:                  map[string]graylog.Alert{},
+		alertConditions:         map[string]graylog.AlertCondition{},
+		collectorConfigurations: map[string]graylog.CollectorConfiguration{},
+		dashboards:              map[string]graylog.Dashboard{},
+		inputs:                  map[string]graylog.Input{},
+		indexSets:               []graylog.IndexSet{},
+		roles:                   map[string]graylog.Role{},
+		streams:                 map[string]graylog.Stream{},
+		users:                   map[string]graylog.User{},
+		ldapSetting:             defaultLDAPSetting(),
 
 		tokens: map[string]string{},
 
