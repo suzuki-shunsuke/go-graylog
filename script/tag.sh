@@ -27,11 +27,12 @@ cd `dirname $0`/..
 
 echo "create version.go"
 cat << EOS > version.go
-package domain
+package graylog
 
 // Version is the go-graylog's version.
 const Version = "$VERSION"
 EOS
 
 git add version.go
+git commit -m "build: update version to $VERSION"
 npm run release -- --release-as $TAG
