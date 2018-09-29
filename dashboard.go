@@ -17,11 +17,12 @@ type Dashboard struct {
 // Widget represents a Graylog's Dashboard Widget.
 type Widget struct {
 	// ex. "STREAM_SEARCH_RESULT_COUNT"
-	Type          string        `json:"type,omitempty"`
+	Type          string        `json:"type,omitempty" v-create:"required"`
+	Description   string        `json:"description,omitempty" v-create:"required"`
 	CreatorUserID string        `json:"creator_user_id,omitempty" v-create:"isdefault"`
 	ID            string        `json:"id,omitempty" v-create:"isdefault"`
 	CacheTime     int           `json:"cache_time,omitempty" v-create:"isdefault"`
-	Config        *WidgetConfig `json:"config,omitempty"`
+	Config        *WidgetConfig `json:"config,omitempty" v-create:"required"`
 }
 
 // WidgetConfig represents a Graylog's Dashboard Widget configuration.
