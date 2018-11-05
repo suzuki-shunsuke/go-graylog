@@ -2,6 +2,7 @@ package testutil
 
 import (
 	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-ptr"
 	"github.com/suzuki-shunsuke/go-set"
 )
 
@@ -137,7 +138,7 @@ func FullDashboard() *graylog.Dashboard {
 			{
 				Type:          "STREAM_SEARCH_RESULT_COUNT",
 				CreatorUserID: "admin",
-				CacheTime:     0,
+				CacheTime:     ptr.PInt(0),
 				Config: &graylog.WidgetConfig{
 					Timerange: &graylog.Timerange{
 						Type:  "",
