@@ -9,7 +9,7 @@ jobs:
     - checkout
     - run: npm i
     - run: dep-dl
-    - run: bash script/commitlint-circleci.sh
+    - run: bash scripts/commitlint-circleci.sh
     - run: gometalinter -j 2 ./...
     - run: staticcheck ./... || echo "staticcheck failure is ignored"
     - run: bash script/codecov-test.sh
