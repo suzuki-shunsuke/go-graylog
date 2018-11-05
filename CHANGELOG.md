@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.9.0-0"></a>
+# [0.9.0-0](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.8.0...v0.9.0-0) (2018-11-05)
+
+
+### Bug Fixes
+
+* fix dashboard widget API ([42314db](https://github.com/suzuki-shunsuke/go-graylog/commit/42314db))
+
+
+### BREAKING CHANGES
+
+* change Widget.CacheTime's type
+
+
+
 <a name="0.8.0"></a>
 # [0.8.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.7.0...v0.8.0) (2018-11-03)
 
