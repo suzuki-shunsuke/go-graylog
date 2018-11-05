@@ -12,6 +12,7 @@
     "coverage": "bash scripts/coverage.sh",
     "install-local-terraform": "bash scripts/install_local_terraform.sh",
     "tag": "bash scripts/tag.sh",
+    "ci-local": "circleci build -e LOCAL=true"
   },
   "husky": {
     "hooks": {
