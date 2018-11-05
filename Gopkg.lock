@@ -436,6 +436,14 @@
   version = "v0.8.0"
 
 [[projects]]
+  digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  pruneopts = "UT"
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:4d76324ccff5546792b4274c5fe1639bc5983c533c85d1b4be2168d57daabdf0"
   name = "github.com/posener/complete"
   packages = [
@@ -457,12 +465,20 @@
   version = "v1.0.4"
 
 [[projects]]
-  digest = "1:bb5dfdd9527f1ed766a057aeaf2e0ed7ca4eb28b21d3deb97034830f976b9e90"
+  digest = "1:18752d0b95816a1b777505a97f71c7467a8445b8ffb55631a7bf779f6ba4fa83"
+  name = "github.com/stretchr/testify"
+  packages = ["assert"]
+  pruneopts = "UT"
+  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
+  version = "v1.2.2"
+
+[[projects]]
+  digest = "1:86e3f479a52adcfd7ba6eea4318f0c85b6a0c83e5aaccfdb8feaeabf6077ad7c"
   name = "github.com/suzuki-shunsuke/go-ptr"
   packages = ["."]
   pruneopts = "UT"
-  revision = "974e4afeaf714a288594b077987a10416b15a03c"
-  version = "v0.1.0"
+  revision = "3d2798267fc13564e8697869e27676b177404f11"
+  version = "v1.0.0"
 
 [[projects]]
   digest = "1:4e7ac46b52ea90233d0d814ecb110874b2128240e4f71352390c6fec44722bdd"
@@ -641,6 +657,14 @@
   version = "v9.11.0"
 
 [[projects]]
+  digest = "1:36f30acc0fd0a7b34f4a13034c437d1383597070d963dab57cc458251ac1360d"
+  name = "gopkg.in/h2non/gock.v1"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "150f03e9bc914db1ba8c2a91c8985d4f21dd6005"
+  version = "v1.0.11"
+
+[[projects]]
   branch = "v2"
   digest = "1:9e8ac8aa4f4c5557ba0b03a55d407b07b7030ed552b437a9dc7e5ec90f16ab39"
   name = "gopkg.in/mgo.v2"
@@ -664,9 +688,11 @@
     "github.com/mitchellh/mapstructure",
     "github.com/pkg/errors",
     "github.com/sirupsen/logrus",
+    "github.com/stretchr/testify/assert",
     "github.com/suzuki-shunsuke/go-ptr",
     "github.com/suzuki-shunsuke/go-set",
     "gopkg.in/go-playground/validator.v9",
+    "gopkg.in/h2non/gock.v1",
     "gopkg.in/mgo.v2/bson",
   ]
   solver-name = "gps-cdcl"
