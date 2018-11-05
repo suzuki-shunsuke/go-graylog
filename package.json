@@ -2,8 +2,6 @@
   "version": "0.8.0",
   "scripts": {
     "release": "standard-version",
-    "precommit": "bash script/precommit.sh",
-    "commitmsg": "commitlint -e $GIT_PARAMS",
     "test": "bash scripts/test.sh",
     "golint": " go list ./... | xargs golint -set_exit_status",
     "lint": "bash scripts/lint.sh",
@@ -14,6 +12,12 @@
     "coverage": "bash scripts/coverage.sh",
     "install-local-terraform": "bash scripts/install_local_terraform.sh",
     "tag": "bash scripts/tag.sh",
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "bash scripts/precommit.sh",
+      "commit-msg": "commitlint -e $GIT_PARAMS"
+    }
   },
   "devDependencies": {
     "@commitlint/cli": "^7.2.1",
