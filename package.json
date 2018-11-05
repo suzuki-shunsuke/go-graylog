@@ -7,7 +7,6 @@
     "lint": "bash scripts/lint.sh",
     "vet": "go vet ./...",
     "metalint": "gometalinter ./...",
-    "commitlint-travis": "commitlint-travis",
     "fmt": "bash scripts/fmt.sh",
     "coverage": "bash scripts/coverage.sh",
     "install-local-terraform": "bash scripts/install_local_terraform.sh",
