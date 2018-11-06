@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.10.0"></a>
+# [0.10.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.9.0-0...v0.10.0) (2018-11-06)
+
+
+### Bug Fixes
+
+* fix UpdateLDAPSetting and terraform ldap_setting provider ([7883a76](https://github.com/suzuki-shunsuke/go-graylog/commit/7883a76))
+
+
+### Features
+
+* support LDAP Groups API ([efb9a96](https://github.com/suzuki-shunsuke/go-graylog/commit/efb9a96))
+
+
+### BREAKING CHANGES
+
+* * remove LDAPSettingUpdateParams
+* make some ldap_setting terraform resource's parameter required
+
+
+
 <a name="0.9.0-0"></a>
 # [0.9.0-0](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.8.0...v0.9.0-0) (2018-11-05)
 
