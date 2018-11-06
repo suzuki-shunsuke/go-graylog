@@ -24,7 +24,7 @@ func (client *Client) GetLDAPSettingContext(ctx context.Context) (
 }
 
 // UpdateLDAPSetting updates the LDAP setting.
-func (client *Client) UpdateLDAPSetting(ldapSetting *graylog.LDAPSettingUpdateParams) (
+func (client *Client) UpdateLDAPSetting(ldapSetting *graylog.LDAPSetting) (
 	*ErrorInfo, error,
 ) {
 	return client.UpdateLDAPSettingContext(context.Background(), ldapSetting)
@@ -32,7 +32,7 @@ func (client *Client) UpdateLDAPSetting(ldapSetting *graylog.LDAPSettingUpdatePa
 
 // UpdateLDAPSettingContext updates the LDAP setting with a context.
 func (client *Client) UpdateLDAPSettingContext(
-	ctx context.Context, prms *graylog.LDAPSettingUpdateParams,
+	ctx context.Context, prms *graylog.LDAPSetting,
 ) (*ErrorInfo, error) {
 	if prms == nil {
 		return nil, fmt.Errorf("ldap setting is nil")

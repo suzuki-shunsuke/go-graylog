@@ -1,7 +1,10 @@
 package graylog
 
 import (
+	"fmt"
+
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/suzuki-shunsuke/go-set"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
@@ -23,6 +26,38 @@ func resourceLDAPSetting() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
+			// required
+			"system_username": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"ldap_uri": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"search_base": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"search_pattern": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"display_name_attribute": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"system_password": {
+				Type:      schema.TypeString,
+				Required:  true,
+				Sensitive: true,
+			},
+			"default_group": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+
+			// optional
 			"enabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -39,26 +74,6 @@ func resourceLDAPSetting() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"system_username": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"ldap_uri": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"search_base": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"search_pattern": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"display_name_attribute": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
 			"group_search_base": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -71,41 +86,47 @@ func resourceLDAPSetting() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-
-			// sensitive
-			"system_password": {
-				Type:      schema.TypeString,
-				Optional:  true,
-				Sensitive: true,
-			},
-
-			// computed
-			"default_group": {
-				Type:     schema.TypeString,
+			"group_mapping": {
+				Type:     schema.TypeMap,
 				Optional: true,
-				Computed: true,
+			},
+			"additional_default_groups": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 		},
 	}
 }
 
-func newLDAPSetting(d *schema.ResourceData) *graylog.LDAPSetting {
-	return &graylog.LDAPSetting{
-		Enabled:              d.Get("enabled").(bool),
-		UseStartTLS:          d.Get("use_start_tls").(bool),
-		TrustAllCertificates: d.Get("trust_all_certificates").(bool),
-		ActiveDirectory:      d.Get("active_directory").(bool),
-		SystemUsername:       d.Get("system_username").(string),
-		SystemPassword:       d.Get("system_password").(string),
-		LDAPURI:              d.Get("ldap_uri").(string),
-		SearchBase:           d.Get("search_base").(string),
-		SearchPattern:        d.Get("search_pattern").(string),
-		DisplayNameAttribute: d.Get("display_name_attribute").(string),
-		DefaultGroup:         d.Get("default_group").(string),
-		GroupSearchBase:      d.Get("group_search_base").(string),
-		GroupIDAttribute:     d.Get("group_id_attribute").(string),
-		GroupSearchPattern:   d.Get("group_search_pattern").(string),
+func newLDAPSetting(d *schema.ResourceData) (*graylog.LDAPSetting, error) {
+	setting := &graylog.LDAPSetting{
+		Enabled:                 d.Get("enabled").(bool),
+		UseStartTLS:             d.Get("use_start_tls").(bool),
+		TrustAllCertificates:    d.Get("trust_all_certificates").(bool),
+		ActiveDirectory:         d.Get("active_directory").(bool),
+		SystemUsername:          d.Get("system_username").(string),
+		SystemPassword:          d.Get("system_password").(string),
+		LDAPURI:                 d.Get("ldap_uri").(string),
+		SearchBase:              d.Get("search_base").(string),
+		SearchPattern:           d.Get("search_pattern").(string),
+		DisplayNameAttribute:    d.Get("display_name_attribute").(string),
+		DefaultGroup:            d.Get("default_group").(string),
+		GroupSearchBase:         d.Get("group_search_base").(string),
+		GroupIDAttribute:        d.Get("group_id_attribute").(string),
+		GroupSearchPattern:      d.Get("group_search_pattern").(string),
+		AdditionalDefaultGroups: set.NewStrSet(getStringArray(d.Get("additional_default_groups").(*schema.Set).List())...),
 	}
+	mapping := map[string]string{}
+	for k, v := range d.Get("group_mapping").(map[string]interface{}) {
+		s, ok := v.(string)
+		if !ok {
+			return nil, fmt.Errorf("group_mapping's value must be string")
+		}
+		mapping[k] = s
+	}
+	setting.GroupMapping = mapping
+	return setting, nil
 }
 
 func resourceLDAPSettingCreate(d *schema.ResourceData, m interface{}) error {
@@ -116,8 +137,11 @@ func resourceLDAPSettingCreate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	ls := newLDAPSetting(d)
-	if _, err = cl.UpdateLDAPSetting(ls.NewUpdateParams()); err != nil {
+	ls, err := newLDAPSetting(d)
+	if err != nil {
+		return err
+	}
+	if _, err = cl.UpdateLDAPSetting(ls); err != nil {
 		return err
 	}
 	d.SetId(ldapSettingID)
@@ -150,6 +174,8 @@ func resourceLDAPSettingRead(d *schema.ResourceData, m interface{}) error {
 	setStrToRD(d, "group_search_base", ls.GroupSearchBase)
 	setStrToRD(d, "group_id_attribute", ls.GroupIDAttribute)
 	setStrToRD(d, "group_search_pattern", ls.GroupSearchPattern)
+	setStrListToRD(d, "additional_default_groups", ls.AdditionalDefaultGroups.ToList())
+	setMapStrToStrToRD(d, "group_mapping", ls.GroupMapping)
 
 	return nil
 }
@@ -161,8 +187,11 @@ func resourceLDAPSettingUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	ls := newLDAPSetting(d)
-	_, err = cl.UpdateLDAPSetting(ls.NewUpdateParams())
+	ls, err := newLDAPSetting(d)
+	if err != nil {
+		return err
+	}
+	_, err = cl.UpdateLDAPSetting(ls)
 	return err
 }
 

@@ -15,7 +15,7 @@ func (lgc *Logic) GetLDAPSetting() (*graylog.LDAPSetting, int, error) {
 }
 
 // UpdateLDAPSetting updates a LDAP Setting.
-func (lgc *Logic) UpdateLDAPSetting(prms *graylog.LDAPSettingUpdateParams) (int, error) {
+func (lgc *Logic) UpdateLDAPSetting(prms *graylog.LDAPSetting) (int, error) {
 	if err := validator.UpdateValidator.Struct(prms); err != nil {
 		return 400, err
 	}

@@ -5,19 +5,22 @@ https://github.com/suzuki-shunsuke/terraform-provider-graylog/blob/master/resour
 ```
 resource "graylog_ldap_setting" "foo" {
   enabled = true
-  system_username = ""
-  system_password = ""
+  system_username = "admin"
+  system_password = "password"
   ldap_uri = "ldap://localhost:389"
   use_start_tls = false
   trust_all_certificates = false
   active_directory = false
-  search_base = ""
-  search_pattern = ""
-  display_name_attribute = ""
-  default_group = ""
+  search_base = "OU=user,OU=foo,DC=example,DC=com"
+  search_pattern = "(cn={0})"
+  display_name_attribute = "displayname"
+  default_group = "Reader"
   group_search_base = ""
   group_id_attribute = ""
   group_search_pattern = ""
+  group_mapping = {
+    foo = "Reader"
+  }
 }
 ```
 
@@ -32,7 +35,15 @@ terraform import graylog_ldap_setting.foo bar
 
 ### Required Argument
 
-Nothing.
+name | default | type | description
+--- | --- | --- | ---
+system_username | "" | string |
+ldap_uri | "ldap://localhost:389" | string |
+search_base | "" | string |
+search_pattern | "" | string |
+display_name_attribute | "" | string |
+system_password | "" | string | sensitive
+default_group | "" | string |
 
 ### Optional Argument
 
@@ -40,16 +51,10 @@ name | default | type | description
 --- | --- | --- | ---
 description | "" | string |
 enabled | false | bool |
-system_username | "" | string |
-ldap_uri | "ldap://localhost:389" | string |
 use_start_tls | false | bool |
 trust_all_certificates | false | bool |
 active_directory | false | bool |
-search_base | "" | string |
-search_pattern | "" | string |
-display_name_attribute | "" | string |
 group_search_base | "" | string |
 group_id_attribute | "" | string |
 group_search_pattern | "" | string |
-system_password | "" | string | sensitive
-default_group | "" | string | computed
+group_mapping | | map[string]string |

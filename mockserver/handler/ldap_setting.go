@@ -29,13 +29,15 @@ func HandleUpdateLDAPSetting(
 	}
 	body, sc, err := validateRequestBody(
 		r.Body, &validateReqBodyPrms{
-			Required: nil,
+			Required: set.NewStrSet(
+				"display_name_attribute", "system_username", "search_base",
+				"system_password", "ldap_uri", "search_pattern", "default_group",
+			),
 			Optional: set.NewStrSet(
-				"enabled", "display_name_attribute", "system_username", "search_base",
-				"additional_default_groups", "system_password", "group_mapping",
-				"ldap_uri", "group_id_attribute", "search_pattern",
+				"enabled", "additional_default_groups", "group_mapping",
+				"group_id_attribute",
 				"trust_all_certificates", "use_start_tls", "group_search_base",
-				"active_directory", "group_search_pattern", "default_group"),
+				"active_directory", "group_search_pattern"),
 			Ignored:      nil,
 			ExtForbidden: true,
 		})
@@ -43,7 +45,7 @@ func HandleUpdateLDAPSetting(
 		return nil, sc, err
 	}
 
-	prms := &graylog.LDAPSettingUpdateParams{}
+	prms := &graylog.LDAPSetting{}
 	if err := util.MSDecode(body, prms); err != nil {
 		lgc.Logger().WithFields(log.Fields{
 			"body": body, "error": err,
