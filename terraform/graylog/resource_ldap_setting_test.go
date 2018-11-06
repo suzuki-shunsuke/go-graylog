@@ -78,23 +78,23 @@ func TestAccLDAPSetting(t *testing.T) {
 
 	createTf := `
 resource "graylog_ldap_setting" "test-terraform" {
-  enabled = true
-  system_username = ""
-  system_password = ""
+  system_username = "admin"
+  system_password = "password"
   ldap_uri = "ldap://localhost:389"
-  use_start_tls = false
-  trust_all_certificates = false
 	display_name_attribute = "displayname"
+	search_base = "OU=user,OU=foo,DC=example,DC=com"
+	search_pattern = "(cn={0})"
+	default_group = "Reader"
 }`
 	updateTf := `
 resource "graylog_ldap_setting" "test-terraform" {
-  enabled = false
-  system_username = ""
-  system_password = ""
+  system_username = "admin"
+  system_password = "password"
   ldap_uri = "ldap://localhost:389"
-  use_start_tls = false
-  trust_all_certificates = false
 	display_name_attribute = "displayname_updated"
+	search_base = "OU=user,OU=foo,DC=example,DC=com"
+	search_pattern = "(cn={0})"
+	default_group = "Reader"
 }`
 	if server != nil {
 		server.Start()

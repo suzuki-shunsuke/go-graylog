@@ -79,6 +79,10 @@ func setStrListToRD(d *schema.ResourceData, key string, val []string) error {
 	return d.Set(key, val)
 }
 
+func setMapStrToStrToRD(d *schema.ResourceData, key string, val map[string]string) error {
+	return d.Set(key, val)
+}
+
 func setStrToRD(d *schema.ResourceData, key, val string) error {
 	return d.Set(key, val)
 }

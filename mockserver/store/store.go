@@ -103,6 +103,6 @@ type Store interface {
 	GetAlarmCallbacks() ([]graylog.AlarmCallback, int, error)
 
 	GetLDAPSetting() (*graylog.LDAPSetting, error)
-	UpdateLDAPSetting(*graylog.LDAPSettingUpdateParams) error
+	UpdateLDAPSetting(*graylog.LDAPSetting) error
 	DeleteLDAPSetting() error
 }
