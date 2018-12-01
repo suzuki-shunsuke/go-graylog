@@ -1,6 +1,6 @@
 # graylog_role
 
-https://github.com/suzuki-shunsuke/terraform-provider-graylog/blob/master/resource_role.go
+https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_role.go
 
 ```
 resource "graylog_role" "foo" {

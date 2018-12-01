@@ -1,6 +1,6 @@
 # graylog_stream
 
-https://github.com/suzuki-shunsuke/terraform-provider-graylog/blob/master/resource_stream.go
+https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_stream.go
 
 ```
 resource "graylog_stream" "test-terraform" {

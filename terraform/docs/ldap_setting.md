@@ -1,6 +1,6 @@
 # graylog_ldap_setting
 
-https://github.com/suzuki-shunsuke/terraform-provider-graylog/blob/master/resource_ldap_setting.go
+https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_ldap_setting.go
 
 ```
 resource "graylog_ldap_setting" "foo" {
