@@ -1,6 +1,6 @@
 # graylog_index_set
 
-https://github.com/suzuki-shunsuke/terraform-provider-graylog/blob/master/resource_index_set.go
+https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_index_set.go
 
 ```
 resource "graylog_index_set" "test-index-set" {

@@ -1,6 +1,6 @@
 # graylog_user
 
-https://github.com/suzuki-shunsuke/terraform-provider-graylog/blob/master/resource_user.go
+https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_user.go
 
 ```
 resource "graylog_user" "zoo" {

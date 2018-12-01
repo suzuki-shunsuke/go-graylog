@@ -1,6 +1,6 @@
 # graylog_dashboard
 
-https://github.com/suzuki-shunsuke/terraform-provider-graylog/blob/master/resource_dashboard.go
+https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_dashboard.go
 
 ```
 resource "graylog_dashboard" "test-dashboard" {

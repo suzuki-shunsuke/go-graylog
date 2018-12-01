@@ -1,6 +1,6 @@
 # graylog_input
 
-https://github.com/suzuki-shunsuke/terraform-provider-graylog/blob/master/resource_input.go
+https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_input.go
 
 ```
 resource "graylog_input" "test" {
