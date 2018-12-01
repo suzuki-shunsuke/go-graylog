@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-    - image: suzukishunsuke/go-ci:0.5.0
+    - image: suzukishunsuke/go-ci:0.5.1
     working_directory: /go/src/github.com/suzuki-shunsuke/go-graylog
     steps:
     - checkout
