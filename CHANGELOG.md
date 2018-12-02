@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.11.0"></a>
+# [0.11.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.10.0...v0.11.0) (2018-12-02)
+
+
+### Bug Fixes
+
+* support the custom header "X-Requested-By" ([ff66bf1](https://github.com/suzuki-shunsuke/go-graylog/commit/ff66bf1)), closes [#42](https://github.com/suzuki-shunsuke/go-graylog/issues/42)
+
+
+
 <a name="0.10.0"></a>
 # [0.10.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.9.0-0...v0.10.0) (2018-11-06)
 
