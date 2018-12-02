@@ -52,11 +52,19 @@ resource "graylog_role" "my-role-2" {
 
 ## Variables
 
+### Required
+
 name | Environment variable | description
 --- | --- | ---
 web_endpoint_uri | GRAYLOG_WEB_ENDPOINT_URI |
 auth_name | GRAYLOG_AUTH_NAME |
 auth_password | GRAYLOG_AUTH_PASSWORD |
+
+### Optional
+
+name | Environment variable | default | description
+--- | --- | --- | ---
+x_requested_by | GRAYLOG_X_REQUESTED_BY | terraform-go-graylog | [X-Requested-By Header](https://github.com/Graylog2/graylog2-server/blob/370dd700bc8ada5448bf66459dec9a85fcd22d58/UPGRADING.rst#protecting-against-csrf-http-header-required)
 
 ## Resources
 
