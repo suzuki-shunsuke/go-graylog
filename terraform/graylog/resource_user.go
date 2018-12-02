@@ -7,7 +7,6 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/client"
 )
 
 func resourceUser() *schema.Resource {
@@ -120,9 +119,7 @@ func newUser(d *schema.ResourceData) *graylog.User {
 }
 
 func resourceUserCreate(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -139,9 +136,7 @@ func resourceUserCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceUserRead(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -166,9 +161,7 @@ func resourceUserRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceUserUpdate(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -178,9 +171,7 @@ func resourceUserUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceUserDelete(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}

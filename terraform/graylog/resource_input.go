@@ -6,7 +6,6 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/client"
 )
 
 func resourceInput() *schema.Resource {
@@ -109,9 +108,7 @@ func newInput(d *schema.ResourceData) (*graylog.Input, error) {
 }
 
 func resourceInputCreate(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -128,9 +125,7 @@ func resourceInputCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceInputRead(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -162,9 +157,7 @@ func resourceInputRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceInputUpdate(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -179,9 +172,7 @@ func resourceInputUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceInputDelete(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
