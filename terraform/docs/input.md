@@ -28,7 +28,7 @@ attributes | |
 
 name | default | type | description
 --- | --- | --- | ---
-global | "" | string |
+global | false | bool |
 node | "" | string |
 attributes.bind_address | string |
 attributes.port | int |
