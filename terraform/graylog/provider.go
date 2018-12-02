@@ -25,6 +25,12 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{
 					"GRAYLOG_AUTH_PASSWORD"}, nil),
 			},
+			"x_requested_by": {
+				Type:     schema.TypeString,
+				Optional: true,
+				DefaultFunc: schema.MultiEnvDefaultFunc([]string{
+					"GRAYLOG_X_REQUESTED_BY"}, "terraform-go-graylog"),
+			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"graylog_role":         resourceRole(),
@@ -40,13 +46,11 @@ func Provider() *schema.Provider {
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
-	endpoint := d.Get("web_endpoint_uri").(string)
-	authName := d.Get("auth_name").(string)
-	authPassword := d.Get("auth_password").(string)
 	config := Config{
-		Endpoint:     endpoint,
-		AuthName:     authName,
-		AuthPassword: authPassword,
+		Endpoint:     d.Get("web_endpoint_uri").(string),
+		AuthName:     d.Get("auth_name").(string),
+		AuthPassword: d.Get("auth_password").(string),
+		XRequestedBy: d.Get("x_requested_by").(string),
 	}
 
 	if err := config.loadAndValidate(); err != nil {

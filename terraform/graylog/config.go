@@ -5,6 +5,7 @@ type Config struct {
 	Endpoint     string
 	AuthName     string
 	AuthPassword string
+	XRequestedBy string
 }
 
 func (c *Config) loadAndValidate() error {

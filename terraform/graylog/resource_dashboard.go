@@ -4,7 +4,6 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/client"
 )
 
 func resourceDashboard() *schema.Resource {
@@ -73,9 +72,7 @@ func newDashboard(d *schema.ResourceData) (*graylog.Dashboard, error) {
 }
 
 func resourceDashboardCreate(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -91,9 +88,7 @@ func resourceDashboardCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceDashboardRead(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -108,9 +103,7 @@ func resourceDashboardRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceDashboardUpdate(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -126,9 +119,7 @@ func resourceDashboardUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceDashboardDelete(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}

@@ -19,6 +19,19 @@ func getStringArray(src []interface{}) []string {
 	return dest
 }
 
+func newClient(m interface{}) (*client.Client, error) {
+	config := m.(*Config)
+	cl, err := client.NewClient(
+		config.Endpoint, config.AuthName, config.AuthPassword)
+	if err != nil {
+		return cl, err
+	}
+	if config.XRequestedBy != "" {
+		cl.SetXRequestedBy(config.XRequestedBy)
+	}
+	return cl, nil
+}
+
 func setEnv() (*client.Client, *mockserver.Server, error) {
 	_, ok := os.LookupEnv("TF_ACC")
 	if !ok {

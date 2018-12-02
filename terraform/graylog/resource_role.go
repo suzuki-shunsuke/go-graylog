@@ -5,7 +5,6 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/client"
 )
 
 func resourceRole() *schema.Resource {
@@ -52,9 +51,7 @@ func newRole(d *schema.ResourceData) *graylog.Role {
 }
 
 func resourceRoleCreate(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -67,9 +64,7 @@ func resourceRoleCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceRoleRead(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -88,9 +83,7 @@ func resourceRoleUpdate(d *schema.ResourceData, m interface{}) error {
 	o, n := d.GetChange("name")
 	oldName := o.(string)
 	newName := n.(string)
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -101,9 +94,7 @@ func resourceRoleUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceRoleDelete(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}

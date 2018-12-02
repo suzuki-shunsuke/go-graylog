@@ -6,7 +6,6 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/client"
 	"github.com/suzuki-shunsuke/go-graylog/util"
 )
 
@@ -164,9 +163,7 @@ func newIndexSet(d *schema.ResourceData) (*graylog.IndexSet, error) {
 }
 
 func resourceIndexSetCreate(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -182,9 +179,7 @@ func resourceIndexSetCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -231,9 +226,7 @@ func resourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceIndexSetUpdate(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -249,9 +242,7 @@ func resourceIndexSetUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceIndexSetDelete(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}

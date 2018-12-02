@@ -7,7 +7,6 @@ import (
 	"github.com/suzuki-shunsuke/go-set"
 
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/client"
 )
 
 const (
@@ -130,9 +129,7 @@ func newLDAPSetting(d *schema.ResourceData) (*graylog.LDAPSetting, error) {
 }
 
 func resourceLDAPSettingCreate(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -149,9 +146,7 @@ func resourceLDAPSettingCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceLDAPSettingRead(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -181,9 +176,7 @@ func resourceLDAPSettingRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceLDAPSettingUpdate(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
@@ -196,9 +189,7 @@ func resourceLDAPSettingUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceLDAPSettingDelete(d *schema.ResourceData, m interface{}) error {
-	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
