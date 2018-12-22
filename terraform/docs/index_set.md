@@ -24,10 +24,10 @@ resource "graylog_index_set" "test-index-set" {
 
 ### Required Argument
 
-name | type | description
+name | type | etc
 --- | --- | ---
 title | string |
-index_prefix | string |
+index_prefix | string | `force new`
 rotation_strategy_class | string |
 rotation_strategy | |
 rotation_strategy.type | string |
