@@ -29,6 +29,7 @@ func resourceIndexSet() *schema.Resource {
 			"index_prefix": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"rotation_strategy_class": {
 				Type:     schema.TypeString,
