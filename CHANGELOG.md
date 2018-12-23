@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.12.1"></a>
+## [0.12.1](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.12.0...v0.12.1) (2018-12-23)
+
+
+### Bug Fixes
+
+* make index set prefix force new ([07c24b9](https://github.com/suzuki-shunsuke/go-graylog/commit/07c24b9))
+
+
+
 <a name="0.12.0"></a>
 # [0.12.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.11.0...v0.12.0) (2018-12-03)
 
