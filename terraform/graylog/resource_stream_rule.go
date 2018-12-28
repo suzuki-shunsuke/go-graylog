@@ -2,6 +2,7 @@ package graylog
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
+
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
