@@ -78,18 +78,36 @@ func resourceAlertCondition() *schema.Resource {
 }
 
 func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) {
-	params := &graylog.AlertConditionParameters{}
-	prms := d.Get("parameters").([]interface{})[0].(map[string]interface{})
-	if err := util.MSDecode(prms, params); err != nil {
-		return nil, err
+	cond := graylog.AlertCondition{
+		Title:   d.Get("title").(string),
+		InGrace: d.Get("in_grace").(bool),
+		ID:      d.Id(),
 	}
-	return &graylog.AlertCondition{
-		Type:       d.Get("type").(string),
-		Title:      d.Get("title").(string),
-		InGrace:    d.Get("in_grace").(bool),
-		ID:         d.Id(),
-		Parameters: params,
-	}, nil
+	prms := d.Get("parameters").([]interface{})[0].(map[string]interface{})
+	switch d.Get("type").(string) {
+	case "field_content_value":
+		p := graylog.FieldContentAlertConditionParameters{}
+		if err := util.MSDecode(prms, &p); err != nil {
+			return nil, err
+		}
+		cond.Parameters = p
+		return &cond, nil
+	case "field_value":
+		p := graylog.FieldAggregationAlertConditionParameters{}
+		if err := util.MSDecode(prms, &p); err != nil {
+			return nil, err
+		}
+		cond.Parameters = p
+		return &cond, nil
+	case "message_count":
+		p := graylog.MessageCountAlertConditionParameters{}
+		if err := util.MSDecode(prms, &p); err != nil {
+			return nil, err
+		}
+		cond.Parameters = p
+		return &cond, nil
+	}
+	return &cond, nil
 }
 
 func resourceAlertConditionCreate(d *schema.ResourceData, m interface{}) error {
@@ -119,7 +137,7 @@ func resourceAlertConditionRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	setStrToRD(d, "type", cond.Type)
+	setStrToRD(d, "type", cond.Type())
 	setStrToRD(d, "title", cond.Title)
 	setStrToRD(d, "stream_id", streamID)
 	setBoolToRD(d, "in_grace", cond.InGrace)
