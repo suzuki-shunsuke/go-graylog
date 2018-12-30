@@ -163,6 +163,7 @@ func (p GeneralAlertConditionParameters) AlertConditionType() string {
 	return p.Type
 }
 
+// MarshalJSON returns JSON encoding of GeneralAlertConditionParameters.
 func (p *GeneralAlertConditionParameters) MarshalJSON() ([]byte, error) {
 	return json.Marshal(p.Parameters)
 }

@@ -56,42 +56,53 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 		ID:      d.Id(),
 	}
 	prms := d.Get("parameters").(map[string]interface{})
+
+	graceKey := "grace"
+	backlogKey := "backlog"
+	repeatNotificationsKey := "repeat_notifications"
+	fieldKey := "field"
+	valueKey := "value"
+	queryKey := "query"
+	thresholdKey := "threshold"
+	thresholdTypeKey := "threshold_type"
+	timeKey := "time"
+
 	switch d.Get("type").(string) {
 	case "field_content_value":
 		p := graylog.FieldContentAlertConditionParameters{}
 		for k, v := range prms {
 			switch k {
-			case "grace":
+			case graceKey:
 				grace, err := convIntfStrToInt(v)
 				if err != nil {
 					return nil, errors.Wrap(err, "grace must be int")
 				}
 				p.Grace = grace
-			case "backlog":
+			case backlogKey:
 				backlog, err := convIntfStrToInt(v)
 				if err != nil {
 					return nil, errors.Wrap(err, "backlog must be int")
 				}
 				p.Backlog = backlog
-			case "repeat_notifications":
+			case repeatNotificationsKey:
 				rn, err := convIntfStrToBool(v)
 				if err != nil {
 					return nil, errors.Wrap(err, "repeat_notifications must be bool")
 				}
 				p.RepeatNotifications = rn
-			case "field":
+			case fieldKey:
 				field, ok := v.(string)
 				if !ok {
 					return nil, fmt.Errorf("field must be string")
 				}
 				p.Field = field
-			case "value":
+			case valueKey:
 				value, ok := v.(string)
 				if !ok {
 					return nil, fmt.Errorf("value must be string")
 				}
 				p.Value = value
-			case "query":
+			case queryKey:
 				query, ok := v.(string)
 				if !ok {
 					return nil, fmt.Errorf("query must be string")
@@ -107,31 +118,31 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 		p := graylog.FieldAggregationAlertConditionParameters{}
 		for k, v := range prms {
 			switch k {
-			case "repeat_notifications":
+			case repeatNotificationsKey:
 				rn, err := convIntfStrToBool(v)
 				if err != nil {
 					return nil, errors.Wrap(err, "repeat_notifications must be bool")
 				}
 				p.RepeatNotifications = rn
-			case "grace":
+			case graceKey:
 				grace, err := convIntfStrToInt(v)
 				if err != nil {
 					return nil, errors.Wrap(err, "grace must be int")
 				}
 				p.Grace = grace
-			case "backlog":
+			case backlogKey:
 				backlog, err := convIntfStrToInt(v)
 				if err != nil {
 					return nil, errors.Wrap(err, "backlog must be int")
 				}
 				p.Backlog = backlog
-			case "field":
+			case fieldKey:
 				field, ok := v.(string)
 				if !ok {
 					return nil, fmt.Errorf("field must be string")
 				}
 				p.Field = field
-			case "query":
+			case queryKey:
 				query, ok := v.(string)
 				if !ok {
 					return nil, fmt.Errorf("query must be string")
@@ -143,19 +154,19 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 					return nil, fmt.Errorf("type must be string")
 				}
 				p.Type = t
-			case "threshold":
+			case thresholdKey:
 				threshold, err := convIntfStrToInt(v)
 				if err != nil {
 					return nil, errors.Wrap(err, "threshold must be int")
 				}
 				p.Threshold = threshold
-			case "time":
+			case timeKey:
 				time, err := convIntfStrToInt(v)
 				if err != nil {
 					return nil, errors.Wrap(err, "time must be int")
 				}
 				p.Time = time
-			case "threshold_type":
+			case thresholdTypeKey:
 				thresholdType, ok := v.(string)
 				if !ok {
 					return nil, fmt.Errorf("threshold_type must be string")
@@ -171,43 +182,43 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 		p := graylog.MessageCountAlertConditionParameters{}
 		for k, v := range prms {
 			switch k {
-			case "repeat_notifications":
+			case repeatNotificationsKey:
 				rn, err := convIntfStrToBool(v)
 				if err != nil {
 					return nil, errors.Wrap(err, "repeat_notifications must be bool")
 				}
 				p.RepeatNotifications = rn
-			case "grace":
+			case graceKey:
 				grace, err := convIntfStrToInt(v)
 				if err != nil {
 					return nil, errors.Wrap(err, "grace must be int")
 				}
 				p.Grace = grace
-			case "backlog":
+			case backlogKey:
 				backlog, err := convIntfStrToInt(v)
 				if err != nil {
 					return nil, errors.Wrap(err, "backlog must be int")
 				}
 				p.Backlog = backlog
-			case "query":
+			case queryKey:
 				query, ok := v.(string)
 				if !ok {
 					return nil, fmt.Errorf("query must be string")
 				}
 				p.Query = query
-			case "threshold":
+			case thresholdKey:
 				threshold, err := convIntfStrToInt(v)
 				if err != nil {
 					return nil, errors.Wrap(err, "threshold must be int")
 				}
 				p.Threshold = threshold
-			case "time":
+			case timeKey:
 				time, err := convIntfStrToInt(v)
 				if err != nil {
 					return nil, errors.Wrap(err, "time must be int")
 				}
 				p.Time = time
-			case "threshold_type":
+			case thresholdTypeKey:
 				thresholdType, ok := v.(string)
 				if !ok {
 					return nil, fmt.Errorf("threshold_type must be string")
