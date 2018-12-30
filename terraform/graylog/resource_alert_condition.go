@@ -2,11 +2,12 @@ package graylog
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/pkg/errors"
 
 	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/util"
 )
 
 func resourceAlertCondition() *schema.Resource {
@@ -58,22 +59,163 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 	switch d.Get("type").(string) {
 	case "field_content_value":
 		p := graylog.FieldContentAlertConditionParameters{}
-		if err := util.MSDecode(prms, &p); err != nil {
-			return nil, err
+		for k, v := range prms {
+			switch k {
+			case "grace":
+				grace, err := convIntfStrToInt(v)
+				if err != nil {
+					return nil, errors.Wrap(err, "grace must be int")
+				}
+				p.Grace = grace
+			case "backlog":
+				backlog, err := convIntfStrToInt(v)
+				if err != nil {
+					return nil, errors.Wrap(err, "backlog must be int")
+				}
+				p.Backlog = backlog
+			case "repeat_notifications":
+				rn, err := convIntfStrToBool(v)
+				if err != nil {
+					return nil, errors.Wrap(err, "repeat_notifications must be bool")
+				}
+				p.RepeatNotifications = rn
+			case "field":
+				field, ok := v.(string)
+				if !ok {
+					return nil, fmt.Errorf("field must be string")
+				}
+				p.Field = field
+			case "value":
+				value, ok := v.(string)
+				if !ok {
+					return nil, fmt.Errorf("value must be string")
+				}
+				p.Value = value
+			case "query":
+				query, ok := v.(string)
+				if !ok {
+					return nil, fmt.Errorf("query must be string")
+				}
+				p.Query = query
+			default:
+				return nil, fmt.Errorf("invalid attribute for alert condition type `field_content_value`: `%s`", k)
+			}
 		}
 		cond.Parameters = p
 		return &cond, nil
 	case "field_value":
 		p := graylog.FieldAggregationAlertConditionParameters{}
-		if err := util.MSDecode(prms, &p); err != nil {
-			return nil, err
+		for k, v := range prms {
+			switch k {
+			case "repeat_notifications":
+				rn, err := convIntfStrToBool(v)
+				if err != nil {
+					return nil, errors.Wrap(err, "repeat_notifications must be bool")
+				}
+				p.RepeatNotifications = rn
+			case "grace":
+				grace, err := convIntfStrToInt(v)
+				if err != nil {
+					return nil, errors.Wrap(err, "grace must be int")
+				}
+				p.Grace = grace
+			case "backlog":
+				backlog, err := convIntfStrToInt(v)
+				if err != nil {
+					return nil, errors.Wrap(err, "backlog must be int")
+				}
+				p.Backlog = backlog
+			case "field":
+				field, ok := v.(string)
+				if !ok {
+					return nil, fmt.Errorf("field must be string")
+				}
+				p.Field = field
+			case "query":
+				query, ok := v.(string)
+				if !ok {
+					return nil, fmt.Errorf("query must be string")
+				}
+				p.Query = query
+			case "type":
+				t, ok := v.(string)
+				if !ok {
+					return nil, fmt.Errorf("type must be string")
+				}
+				p.Type = t
+			case "threshold":
+				threshold, err := convIntfStrToInt(v)
+				if err != nil {
+					return nil, errors.Wrap(err, "threshold must be int")
+				}
+				p.Threshold = threshold
+			case "time":
+				time, err := convIntfStrToInt(v)
+				if err != nil {
+					return nil, errors.Wrap(err, "time must be int")
+				}
+				p.Time = time
+			case "threshold_type":
+				thresholdType, ok := v.(string)
+				if !ok {
+					return nil, fmt.Errorf("threshold_type must be string")
+				}
+				p.ThresholdType = thresholdType
+			default:
+				return nil, fmt.Errorf("invalid attribute for alert condition type `field_content_value`: `%s`", k)
+			}
 		}
 		cond.Parameters = p
 		return &cond, nil
 	case "message_count":
 		p := graylog.MessageCountAlertConditionParameters{}
-		if err := util.MSDecode(prms, &p); err != nil {
-			return nil, err
+		for k, v := range prms {
+			switch k {
+			case "repeat_notifications":
+				rn, err := convIntfStrToBool(v)
+				if err != nil {
+					return nil, errors.Wrap(err, "repeat_notifications must be bool")
+				}
+				p.RepeatNotifications = rn
+			case "grace":
+				grace, err := convIntfStrToInt(v)
+				if err != nil {
+					return nil, errors.Wrap(err, "grace must be int")
+				}
+				p.Grace = grace
+			case "backlog":
+				backlog, err := convIntfStrToInt(v)
+				if err != nil {
+					return nil, errors.Wrap(err, "backlog must be int")
+				}
+				p.Backlog = backlog
+			case "query":
+				query, ok := v.(string)
+				if !ok {
+					return nil, fmt.Errorf("query must be string")
+				}
+				p.Query = query
+			case "threshold":
+				threshold, err := convIntfStrToInt(v)
+				if err != nil {
+					return nil, errors.Wrap(err, "threshold must be int")
+				}
+				p.Threshold = threshold
+			case "time":
+				time, err := convIntfStrToInt(v)
+				if err != nil {
+					return nil, errors.Wrap(err, "time must be int")
+				}
+				p.Time = time
+			case "threshold_type":
+				thresholdType, ok := v.(string)
+				if !ok {
+					return nil, fmt.Errorf("threshold_type must be string")
+				}
+				p.ThresholdType = thresholdType
+			default:
+				return nil, fmt.Errorf("invalid attribute for alert condition type `field_content_value`: `%s`", k)
+			}
 		}
 		cond.Parameters = p
 		return &cond, nil
@@ -121,7 +263,9 @@ func resourceAlertConditionRead(d *schema.ResourceData, m interface{}) error {
 		if err := json.Unmarshal(b, &dest); err != nil {
 			return err
 		}
-		d.Set("parameters", dest)
+		for k, v := range dest {
+			d.Set(fmt.Sprintf("parameters.%s", k), v)
+		}
 	}
 	return nil
 }

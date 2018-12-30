@@ -100,14 +100,21 @@ func (client *Client) UpdateStreamAlertConditionContext(
 	if cond == nil {
 		return nil, fmt.Errorf("%s: alert condition is nil", errMsg)
 	}
-	if cond.ID == "" {
+	condID := cond.ID
+	if condID == "" {
 		return nil, fmt.Errorf("%s: alert condition id is empty", errMsg)
 	}
-	u, err := client.Endpoints().StreamAlertCondition(streamID, cond.ID)
+	u, err := client.Endpoints().StreamAlertCondition(streamID, condID)
 	if err != nil {
 		return nil, errors.Wrap(err, errMsg)
 	}
-	return client.callPut(ctx, u.String(), cond, nil)
+	cond.ID = ""
+	ei, err := client.callPut(ctx, u.String(), cond, nil)
+	cond.ID = condID
+	if err != nil {
+		return ei, errors.Wrap(err, errMsg)
+	}
+	return ei, nil
 }
 
 // DeleteStreamAlertCondition deletes an alert condition.

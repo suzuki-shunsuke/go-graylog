@@ -10,11 +10,11 @@ import (
 // AlertCondition represents an Alert Condition.
 // http://docs.graylog.org/en/2.4/pages/streams/alerts.html#conditions
 type AlertCondition struct {
-	ID            string                   `json:"id"`
-	CreatorUserID string                   `json:"creator_user_id"`
-	CreatedAt     string                   `json:"created_at"`
+	ID            string                   `json:"id,omitempty"`
+	CreatorUserID string                   `json:"creator_user_id,omitempty"`
+	CreatedAt     string                   `json:"created_at,omitempty"`
 	Title         string                   `json:"title" v-create:"required" v-update:"required"`
-	InGrace       bool                     `json:"in_grace"`
+	InGrace       bool                     `json:"in_grace,omitempty"`
 	Parameters    AlertConditionParameters `json:"parameters" v-create:"reqired" v-update:"required"`
 }
 
@@ -98,12 +98,12 @@ type AlertConditionParameters interface {
 
 // FieldContentAlertConditionParameters represents Field Content Alert Condition's parameters.
 type FieldContentAlertConditionParameters struct {
-	Grace               int    `json:"grace" v-create:"required"`
-	Backlog             int    `json:"backlog" v-create:"required"`
-	RepeatNotifications bool   `json:"repeat_notifications"`
-	Field               string `json:"field" v-create:"required"`
-	Value               string `json:"value" v-create:"required"`
-	Query               string `json:"query"`
+	Grace               int    `json:"grace"`
+	Backlog             int    `json:"backlog"`
+	RepeatNotifications bool   `json:"repeat_notifications,omitempty"`
+	Field               string `json:"field,omitempty" v-create:"required"`
+	Value               string `json:"value,omitempty" v-create:"required"`
+	Query               string `json:"query,omitempty"`
 }
 
 // AlertConditionType returns an alert condition type.
@@ -113,14 +113,15 @@ func (p FieldContentAlertConditionParameters) AlertConditionType() string {
 
 // FieldAggregationAlertConditionParameters represents Field Aggregation Alert Condition's parameters.
 type FieldAggregationAlertConditionParameters struct {
-	Grace               int    `json:"grace" v-create:"required"`
-	Backlog             int    `json:"backlog" v-create:"required"`
+	Grace               int    `json:"grace"`
+	Backlog             int    `json:"backlog"`
 	Threshold           int    `json:"threshold"`
-	Time                int    `json:"time"`
-	RepeatNotifications bool   `json:"repeat_notifications"`
-	Field               string `json:"field" v-create:"required"`
-	Query               string `json:"query"`
-	ThresholdType       string `json:"threshold_type"`
+	Time                int    `json:"time" v-create:"required"`
+	RepeatNotifications bool   `json:"repeat_notifications,omitempty"`
+	Field               string `json:"field,omitempty" v-create:"required"`
+	Query               string `json:"query,omitempty"`
+	ThresholdType       string `json:"threshold_type,omitempty" v-create:"required"`
+	Type                string `json:"type,omitempty" v-create:"required"`
 }
 
 // AlertConditionType returns an alert condition type.
@@ -130,13 +131,13 @@ func (p FieldAggregationAlertConditionParameters) AlertConditionType() string {
 
 // MessageCountAlertConditionParameters represents Field Aggregation Alert Condition's parameters.
 type MessageCountAlertConditionParameters struct {
-	Grace               int    `json:"grace" v-create:"required"`
-	Backlog             int    `json:"backlog" v-create:"required"`
+	Grace               int    `json:"grace"`
+	Backlog             int    `json:"backlog"`
 	Threshold           int    `json:"threshold"`
 	Time                int    `json:"time"`
-	RepeatNotifications bool   `json:"repeat_notifications"`
-	Query               string `json:"query"`
-	ThresholdType       string `json:"threshold_type"`
+	RepeatNotifications bool   `json:"repeat_notifications,omitempty"`
+	Query               string `json:"query,omitempty"`
+	ThresholdType       string `json:"threshold_type,omitempty" v-create:"required"`
 }
 
 // AlertConditionType returns an alert condition type.

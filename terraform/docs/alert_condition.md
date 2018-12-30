@@ -37,7 +37,6 @@ parameters | |
 name | default | type | description
 --- | --- | --- | ---
 in_grace | bool |
-parameters.repeat_notifications | bool |
 
 ## type: field_content_value 
 
@@ -45,8 +44,6 @@ parameters.repeat_notifications | bool |
 
 name | type | description
 --- | --- | ---
-parameters.grace | int |
-parameters.backlog | int |
 parameters.field | string |
 parameters.value | string |
 
@@ -54,7 +51,10 @@ parameters.value | string |
 
 name | default | type | description
 --- | --- | --- | ---
+parameters.grace | 0 | int |
+parameters.backlog | 0 | int |
 parameters.query | "" | string |
+parameters.repeat_notifications | false | bool |
 
 ## type: field_value 
 
@@ -62,18 +62,19 @@ parameters.query | "" | string |
 
 name | type | description
 --- | --- | ---
-parameters.grace | int |
-parameters.backlog | int |
 parameters.field | string |
+parameters.type | string |
+parameters.threshold_type | string |
 
 ### Optional Argument
 
 name | default | type | description
 --- | --- | --- | ---
+parameters.grace | 0 | int |
+parameters.backlog | 0 | int |
 parameters.query | "" | string |
 parameters.threshold | 0 | int |
 parameters.time | 0 | int |
-parameters.threshold_type | string |
 
 ## type: message_count 
 
@@ -81,14 +82,14 @@ parameters.threshold_type | string |
 
 name | type | description
 --- | --- | ---
-parameters.grace | int |
-parameters.backlog | int |
+parameters.threshold_type | string |
 
 ### Optional Argument
 
 name | default | type | description
 --- | --- | --- | ---
+parameters.grace | 0 | int |
+parameters.backlog | 0 | int |
 parameters.query | "" | string |
 parameters.threshold | 0 | int |
 parameters.time | 0 | int |
-parameters.threshold_type | string |
