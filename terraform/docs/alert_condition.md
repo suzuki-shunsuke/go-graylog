@@ -1,6 +1,7 @@
 # graylog_alert_condition
 
-https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_alert_condition.go
+* http://docs.graylog.org/en/2.5/pages/streams/alerts.html#conditions
+* https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_alert_condition.go
 
 ```
 resource "graylog_alert_condition" "test-terraform" {
@@ -21,6 +22,8 @@ resource "graylog_alert_condition" "test-terraform" {
 
 ## Argument Reference
 
+`parameters`'s fields depend on alert condition's type.
+
 ### Required Argument
 
 name | type | description
@@ -30,8 +33,6 @@ title | string |
 parameters | |
 parameters.backlog | int |
 parameters.grace | int |
-parameters.value | int |
-parameters.field | string |
 stream_id | string |
 
 ### Optional Argument
@@ -41,3 +42,5 @@ name | default | type | description
 in_grace | bool |
 parameters.repeat_notifications | bool |
 parameters.query | string |
+parameters.value | int |
+parameters.field | string |

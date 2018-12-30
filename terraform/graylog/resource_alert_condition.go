@@ -41,14 +41,7 @@ func resourceAlertCondition() *schema.Resource {
 				MinItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"field": {
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"value": {
-							Type:     schema.TypeString,
-							Required: true,
-						},
+						// Required
 						"backlog": {
 							Type:     schema.TypeInt,
 							Required: true,
@@ -57,12 +50,39 @@ func resourceAlertCondition() *schema.Resource {
 							Type:     schema.TypeInt,
 							Required: true,
 						},
+
+						// Optional
+						"value": {
+							// message_count doesn't have the parameter
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"field": {
+							// message_count doesn't have the parameter
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"time": {
+							// field_content_value doesn't have the parameter
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
 						"query": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
 						"repeat_notifications": {
 							Type:     schema.TypeBool,
+							Optional: true,
+						},
+						"threshold": {
+							// field_content_value doesn't have the parameter
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"threshold_type": {
+							// field_content_value doesn't have the parameter
+							Type:     schema.TypeString,
 							Optional: true,
 						},
 					},
