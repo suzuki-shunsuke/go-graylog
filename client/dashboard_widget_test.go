@@ -26,8 +26,8 @@ func TestCreateDashboardWidget(t *testing.T) {
 		client, err := client.NewClient(endpoint, authName, authPass)
 		assert.Nil(t, err)
 		data := []struct {
-			body       string
 			statusCode int
+			body       string
 			resp       string
 			widget     graylog.Widget
 			checkErr   func(assert.TestingT, interface{}, ...interface{}) bool

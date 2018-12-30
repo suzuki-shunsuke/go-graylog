@@ -3,13 +3,39 @@ package graylog
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/pkg/errors"
 
 	"github.com/suzuki-shunsuke/go-graylog/client"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver"
 )
+
+func convIntfStrToInt(a interface{}) (int, error) {
+	b, ok := a.(string)
+	if !ok {
+		return 0, fmt.Errorf("failed to convert into string: %v", b)
+	}
+	c, err := strconv.Atoi(b)
+	if err != nil {
+		return 0, errors.Wrapf(err, "faield to convert into int: %s", b)
+	}
+	return c, nil
+}
+
+func convIntfStrToBool(a interface{}) (bool, error) {
+	b, ok := a.(string)
+	if !ok {
+		return false, fmt.Errorf("failed to convert into string: %v", b)
+	}
+	c, err := strconv.ParseBool(b)
+	if err != nil {
+		return false, errors.Wrapf(err, "faield to convert into bool: %s", b)
+	}
+	return c, nil
+}
 
 func getStringArray(src []interface{}) []string {
 	dest := make([]string, len(src))
