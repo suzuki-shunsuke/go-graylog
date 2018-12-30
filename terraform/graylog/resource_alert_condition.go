@@ -121,7 +121,7 @@ func resourceAlertConditionRead(d *schema.ResourceData, m interface{}) error {
 		if err := json.Unmarshal(b, &dest); err != nil {
 			return err
 		}
-		d.Set("parameters", []map[string]interface{}{dest})
+		d.Set("parameters", dest)
 	}
 	return nil
 }

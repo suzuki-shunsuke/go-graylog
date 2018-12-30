@@ -24,23 +24,71 @@ resource "graylog_alert_condition" "test-terraform" {
 
 `parameters`'s fields depend on alert condition's type.
 
-### Required Argument
+### Common Required Argument
 
 name | type | description
 --- | --- | ---
 type | string |
 title | string |
 parameters | |
-parameters.backlog | int |
-parameters.grace | int |
-stream_id | string |
 
-### Optional Argument
+### Common Optional Argument
 
 name | default | type | description
 --- | --- | --- | ---
 in_grace | bool |
 parameters.repeat_notifications | bool |
-parameters.query | string |
-parameters.value | int |
+
+## type: field_content_value 
+
+### Required Argument
+
+name | type | description
+--- | --- | ---
+parameters.grace | int |
+parameters.backlog | int |
 parameters.field | string |
+parameters.value | string |
+
+### Optional Argument
+
+name | default | type | description
+--- | --- | --- | ---
+parameters.query | "" | string |
+
+## type: field_value 
+
+### Required Argument
+
+name | type | description
+--- | --- | ---
+parameters.grace | int |
+parameters.backlog | int |
+parameters.field | string |
+
+### Optional Argument
+
+name | default | type | description
+--- | --- | --- | ---
+parameters.query | "" | string |
+parameters.threshold | 0 | int |
+parameters.time | 0 | int |
+parameters.threshold_type | string |
+
+## type: message_count 
+
+### Required Argument
+
+name | type | description
+--- | --- | ---
+parameters.grace | int |
+parameters.backlog | int |
+
+### Optional Argument
+
+name | default | type | description
+--- | --- | --- | ---
+parameters.query | "" | string |
+parameters.threshold | 0 | int |
+parameters.time | 0 | int |
+parameters.threshold_type | string |
