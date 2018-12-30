@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.0-0"></a>
+# [1.0.0-0](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.12.1...v1.0.0-0) (2018-12-30)
+
+
+### Bug Fixes
+
+* change AlertConditionParameter to interface ([69daf46](https://github.com/suzuki-shunsuke/go-graylog/commit/69daf46))
+* fix resource_alert_condition ([fa70c3a](https://github.com/suzuki-shunsuke/go-graylog/commit/fa70c3a))
+* fix resource_alert_condition's arguments ([6c05135](https://github.com/suzuki-shunsuke/go-graylog/commit/6c05135))
+* fix resource_alert_condition's parameters ([b029d5b](https://github.com/suzuki-shunsuke/go-graylog/commit/b029d5b))
+
+
+### Features
+
+* add GeneralAlertConditionParameters ([3419450](https://github.com/suzuki-shunsuke/go-graylog/commit/3419450))
+* support Alert Condition API ([91238a3](https://github.com/suzuki-shunsuke/go-graylog/commit/91238a3))
+
+
+
 <a name="0.12.1"></a>
 ## [0.12.1](https://github.com/suzuki-shunsuke/go-graylog/compare/v0.12.0...v0.12.1) (2018-12-23)
 
