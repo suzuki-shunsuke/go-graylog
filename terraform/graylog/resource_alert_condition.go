@@ -35,58 +35,9 @@ func resourceAlertCondition() *schema.Resource {
 				Required: true,
 			},
 			"parameters": {
-				Type:     schema.TypeList,
+				// we can't resrict attributes of third party alert condition plugin, so parameters is schema.TypeMap .
+				Type:     schema.TypeMap,
 				Required: true,
-				MaxItems: 1,
-				MinItems: 1,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						// Required
-						"backlog": {
-							Type:     schema.TypeInt,
-							Required: true,
-						},
-						"grace": {
-							Type:     schema.TypeInt,
-							Required: true,
-						},
-
-						// Optional
-						"value": {
-							// message_count doesn't have the parameter
-							Type:     schema.TypeString,
-							Optional: true,
-						},
-						"field": {
-							// message_count doesn't have the parameter
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"time": {
-							// field_content_value doesn't have the parameter
-							Type:     schema.TypeInt,
-							Optional: true,
-						},
-						"query": {
-							Type:     schema.TypeString,
-							Optional: true,
-						},
-						"repeat_notifications": {
-							Type:     schema.TypeBool,
-							Optional: true,
-						},
-						"threshold": {
-							// field_content_value doesn't have the parameter
-							Type:     schema.TypeInt,
-							Optional: true,
-						},
-						"threshold_type": {
-							// field_content_value doesn't have the parameter
-							Type:     schema.TypeString,
-							Optional: true,
-						},
-					},
-				},
 			},
 
 			"in_grace": {
@@ -103,7 +54,7 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 		InGrace: d.Get("in_grace").(bool),
 		ID:      d.Id(),
 	}
-	prms := d.Get("parameters").([]interface{})[0].(map[string]interface{})
+	prms := d.Get("parameters").(map[string]interface{})
 	switch d.Get("type").(string) {
 	case "field_content_value":
 		p := graylog.FieldContentAlertConditionParameters{}
