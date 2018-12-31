@@ -51,7 +51,7 @@ OPTIONS:
 
 We use [the graylog's official Docker Image](https://hub.docker.com/r/graylog/graylog/) for development.
 
-The version is `2.4.6-1` .
+The version is `2.5.0` .
 
 ## Contribution
 
