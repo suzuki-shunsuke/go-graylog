@@ -78,6 +78,7 @@ x_requested_by | GRAYLOG_X_REQUESTED_BY | terraform-go-graylog | [X-Requested-By
 
 ## Resources
 
+* [alarm_callback](docs/alarm_callback.md)
 * [alert_condition](docs/alert_condition.md)
 * [dashboard](docs/dashboard.md)
 * [index_set](docs/index_set.md)

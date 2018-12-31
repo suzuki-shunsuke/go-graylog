@@ -34,6 +34,7 @@ func Provider() *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"graylog_alert_condition": resourceAlertCondition(),
+			"graylog_alarm_callback":  resourceAlarmCallback(),
 			"graylog_dashboard":       resourceDashboard(),
 			"graylog_index_set":       resourceIndexSet(),
 			"graylog_input":           resourceInput(),
