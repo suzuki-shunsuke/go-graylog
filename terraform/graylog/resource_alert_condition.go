@@ -67,47 +67,40 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 	thresholdTypeKey := "threshold_type"
 	timeKey := "time"
 
+	var (
+		err error
+		ok  bool
+	)
+
 	switch d.Get("type").(string) {
 	case "field_content_value":
 		p := graylog.FieldContentAlertConditionParameters{}
 		for k, v := range prms {
 			switch k {
 			case graceKey:
-				grace, err := convIntfStrToInt(v)
-				if err != nil {
-					return nil, errors.Wrap(err, "grace must be int")
+				if p.Grace, err = convIntfStrToInt(v); err != nil {
+					return nil, errors.Wrapf(err, "%s must be int", k)
 				}
-				p.Grace = grace
 			case backlogKey:
-				backlog, err := convIntfStrToInt(v)
-				if err != nil {
-					return nil, errors.Wrap(err, "backlog must be int")
+				if p.Backlog, err = convIntfStrToInt(v); err != nil {
+					return nil, errors.Wrapf(err, "%s must be int", k)
 				}
-				p.Backlog = backlog
 			case repeatNotificationsKey:
-				rn, err := convIntfStrToBool(v)
-				if err != nil {
-					return nil, errors.Wrap(err, "repeat_notifications must be bool")
+				if p.RepeatNotifications, err = convIntfStrToBool(v); err != nil {
+					return nil, errors.Wrapf(err, "%s must be bool", k)
 				}
-				p.RepeatNotifications = rn
 			case fieldKey:
-				field, ok := v.(string)
-				if !ok {
-					return nil, fmt.Errorf("field must be string")
+				if p.Field, ok = v.(string); !ok {
+					return nil, fmt.Errorf("%s must be string", k)
 				}
-				p.Field = field
 			case valueKey:
-				value, ok := v.(string)
-				if !ok {
-					return nil, fmt.Errorf("value must be string")
+				if p.Value, ok = v.(string); !ok {
+					return nil, fmt.Errorf("%s must be string", k)
 				}
-				p.Value = value
 			case queryKey:
-				query, ok := v.(string)
-				if !ok {
-					return nil, fmt.Errorf("query must be string")
+				if p.Query, ok = v.(string); !ok {
+					return nil, fmt.Errorf("%s must be string", k)
 				}
-				p.Query = query
 			default:
 				return nil, fmt.Errorf("invalid attribute for alert condition type `field_content_value`: `%s`", k)
 			}
@@ -119,59 +112,41 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 		for k, v := range prms {
 			switch k {
 			case repeatNotificationsKey:
-				rn, err := convIntfStrToBool(v)
-				if err != nil {
-					return nil, errors.Wrap(err, "repeat_notifications must be bool")
+				if p.RepeatNotifications, err = convIntfStrToBool(v); err != nil {
+					return nil, errors.Wrapf(err, "%s must be bool", k)
 				}
-				p.RepeatNotifications = rn
 			case graceKey:
-				grace, err := convIntfStrToInt(v)
-				if err != nil {
-					return nil, errors.Wrap(err, "grace must be int")
+				if p.Grace, err = convIntfStrToInt(v); err != nil {
+					return nil, errors.Wrapf(err, "%s must be int", k)
 				}
-				p.Grace = grace
 			case backlogKey:
-				backlog, err := convIntfStrToInt(v)
-				if err != nil {
-					return nil, errors.Wrap(err, "backlog must be int")
+				if p.Backlog, err = convIntfStrToInt(v); err != nil {
+					return nil, errors.Wrapf(err, "%s must be int", k)
 				}
-				p.Backlog = backlog
-			case fieldKey:
-				field, ok := v.(string)
-				if !ok {
-					return nil, fmt.Errorf("field must be string")
-				}
-				p.Field = field
-			case queryKey:
-				query, ok := v.(string)
-				if !ok {
-					return nil, fmt.Errorf("query must be string")
-				}
-				p.Query = query
-			case "type":
-				t, ok := v.(string)
-				if !ok {
-					return nil, fmt.Errorf("type must be string")
-				}
-				p.Type = t
 			case thresholdKey:
-				threshold, err := convIntfStrToInt(v)
-				if err != nil {
-					return nil, errors.Wrap(err, "threshold must be int")
+				if p.Threshold, err = convIntfStrToInt(v); err != nil {
+					return nil, errors.Wrapf(err, "%s must be int", k)
 				}
-				p.Threshold = threshold
 			case timeKey:
-				time, err := convIntfStrToInt(v)
-				if err != nil {
-					return nil, errors.Wrap(err, "time must be int")
+				if p.Time, err = convIntfStrToInt(v); err != nil {
+					return nil, errors.Wrapf(err, "%s must be int", k)
 				}
-				p.Time = time
+			case fieldKey:
+				if p.Field, ok = v.(string); !ok {
+					return nil, fmt.Errorf("%s must be string", k)
+				}
+			case queryKey:
+				if p.Query, ok = v.(string); !ok {
+					return nil, fmt.Errorf("%s must be string", k)
+				}
+			case "type":
+				if p.Type, ok = v.(string); !ok {
+					return nil, fmt.Errorf("%s must be string", k)
+				}
 			case thresholdTypeKey:
-				thresholdType, ok := v.(string)
-				if !ok {
-					return nil, fmt.Errorf("threshold_type must be string")
+				if p.ThresholdType, ok = v.(string); !ok {
+					return nil, fmt.Errorf("%s must be string", k)
 				}
-				p.ThresholdType = thresholdType
 			default:
 				return nil, fmt.Errorf("invalid attribute for alert condition type `field_content_value`: `%s`", k)
 			}
@@ -183,47 +158,33 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 		for k, v := range prms {
 			switch k {
 			case repeatNotificationsKey:
-				rn, err := convIntfStrToBool(v)
-				if err != nil {
-					return nil, errors.Wrap(err, "repeat_notifications must be bool")
+				if p.RepeatNotifications, err = convIntfStrToBool(v); err != nil {
+					return nil, errors.Wrapf(err, "%s must be bool", k)
 				}
-				p.RepeatNotifications = rn
 			case graceKey:
-				grace, err := convIntfStrToInt(v)
-				if err != nil {
-					return nil, errors.Wrap(err, "grace must be int")
+				if p.Grace, err = convIntfStrToInt(v); err != nil {
+					return nil, errors.Wrapf(err, "%s must be int", k)
 				}
-				p.Grace = grace
 			case backlogKey:
-				backlog, err := convIntfStrToInt(v)
-				if err != nil {
-					return nil, errors.Wrap(err, "backlog must be int")
+				if p.Backlog, err = convIntfStrToInt(v); err != nil {
+					return nil, errors.Wrapf(err, "%s must be int", k)
 				}
-				p.Backlog = backlog
-			case queryKey:
-				query, ok := v.(string)
-				if !ok {
-					return nil, fmt.Errorf("query must be string")
-				}
-				p.Query = query
 			case thresholdKey:
-				threshold, err := convIntfStrToInt(v)
-				if err != nil {
-					return nil, errors.Wrap(err, "threshold must be int")
+				if p.Threshold, err = convIntfStrToInt(v); err != nil {
+					return nil, errors.Wrapf(err, "%s must be int", k)
 				}
-				p.Threshold = threshold
 			case timeKey:
-				time, err := convIntfStrToInt(v)
-				if err != nil {
-					return nil, errors.Wrap(err, "time must be int")
+				if p.Time, err = convIntfStrToInt(v); err != nil {
+					return nil, errors.Wrapf(err, "%s must be int", k)
 				}
-				p.Time = time
+			case queryKey:
+				if p.Query, ok = v.(string); !ok {
+					return nil, fmt.Errorf("%s must be string", k)
+				}
 			case thresholdTypeKey:
-				thresholdType, ok := v.(string)
-				if !ok {
-					return nil, fmt.Errorf("threshold_type must be string")
+				if p.ThresholdType, ok = v.(string); !ok {
+					return nil, fmt.Errorf("%s must be string", k)
 				}
-				p.ThresholdType = thresholdType
 			default:
 				return nil, fmt.Errorf("invalid attribute for alert condition type `field_content_value`: `%s`", k)
 			}
