@@ -70,7 +70,7 @@ resource "graylog_alarm_callback" "test-terraform" {
 
 name | type | description
 --- | --- | ---
-email_configuration | string |
+email_configuration | |
 email_configuration.sender | string |
 email_configuration.subject | string |
 
@@ -123,7 +123,7 @@ slack_configuration.user_name | "" | string |
 slack_configuration.proxy_address | "" | string |
 slack_configuration.custom_message | "" | string |
 slack_configuration.backlog_items | 0 | int |
-slack_configuration.link_names | false | bool |
+slack_configuration.link_names | true | bool |
 slack_configuration.notify_channel | false | bool |
 
 ## type: other third party's Alarm Callback
