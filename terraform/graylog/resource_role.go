@@ -68,7 +68,7 @@ func resourceRoleRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	role, _, err := cl.GetRole(d.Get("name").(string))
+	role, _, err := cl.GetRole(d.Id())
 	if err != nil {
 		return err
 	}
@@ -98,7 +98,7 @@ func resourceRoleDelete(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	if _, err := cl.DeleteRole(d.Get("name").(string)); err != nil {
+	if _, err := cl.DeleteRole(d.Id()); err != nil {
 		return err
 	}
 	return nil
