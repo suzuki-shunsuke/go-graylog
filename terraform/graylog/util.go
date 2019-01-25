@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
@@ -12,6 +13,21 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/client"
 	"github.com/suzuki-shunsuke/go-graylog/mockserver"
 )
+
+func genImport(keys ...string) schema.StateFunc {
+	return func(d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+		a := strings.Split(d.Id(), "/")
+		size := len(keys)
+		if len(a) != size {
+			return nil, fmt.Errorf("format of import argument should be %s", strings.Join(keys, "/"))
+		}
+		for i, k := range keys[:size-1] {
+			setStrToRD(d, k, a[i])
+		}
+		d.SetId(a[size-1])
+		return []*schema.ResourceData{d}, nil
+	}
+}
 
 func convIntfStrToInt(a interface{}) (int, error) {
 	b, ok := a.(string)

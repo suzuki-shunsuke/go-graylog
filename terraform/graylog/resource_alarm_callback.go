@@ -2,7 +2,6 @@ package graylog
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/suzuki-shunsuke/go-set"
@@ -18,7 +17,7 @@ func resourceAlarmCallback() *schema.Resource {
 		Delete: resourceAlarmCallbackDelete,
 
 		Importer: &schema.ResourceImporter{
-			State: importAlarmCallback,
+			State: genImport("stream_id", "alarm_callback_id"),
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -176,16 +175,6 @@ func resourceAlarmCallback() *schema.Resource {
 			},
 		},
 	}
-}
-
-func importAlarmCallback(d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
-	a := strings.Split(d.Id(), "/")
-	if len(a) != 2 {
-		return nil, fmt.Errorf("format of import argument should be stream_id/alarm_callback_id: %s", d.Id())
-	}
-	setStrToRD(d, "stream_id", a[0])
-	d.SetId(a[1])
-	return []*schema.ResourceData{d}, nil
 }
 
 func newAlarmCallback(d *schema.ResourceData) (*graylog.AlarmCallback, error) {
