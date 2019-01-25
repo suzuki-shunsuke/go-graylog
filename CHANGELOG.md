@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.3.0"></a>
+# [1.3.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v1.2.0...v1.3.0) (2019-01-25)
+
+
+### Features
+
+* support terraform import of stream rule ([c68778a](https://github.com/suzuki-shunsuke/go-graylog/commit/c68778a)), closes [#57](https://github.com/suzuki-shunsuke/go-graylog/issues/57)
+
+
+
 <a name="1.2.0"></a>
 # [1.2.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v1.1.1...v1.2.0) (2019-01-25)
 
