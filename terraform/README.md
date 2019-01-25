@@ -1,7 +1,7 @@
 # terraform-provider-graylog
 
 [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/suzuki-shunsuke/go-graylog/terraform)
-[![Build Status](https://travis-ci.org/suzuki-shunsuke/go-graylog.svg?branch=master)](https://travis-ci.org/suzuki-shunsuke/go-graylog)
+[![CircleCI](https://circleci.com/gh/suzuki-shunsuke/go-graylog.svg?style=svg)](https://circleci.com/gh/suzuki-shunsuke/go-graylog)
 [![codecov](https://codecov.io/gh/suzuki-shunsuke/go-graylog/branch/master/graph/badge.svg)](https://codecov.io/gh/suzuki-shunsuke/go-graylog)
 [![Go Report Card](https://goreportcard.com/badge/github.com/suzuki-shunsuke/go-graylog)](https://goreportcard.com/report/github.com/suzuki-shunsuke/go-graylog)
 [![GitHub last commit](https://img.shields.io/github/last-commit/suzuki-shunsuke/go-graylog.svg)](https://github.com/suzuki-shunsuke/go-graylog)
@@ -14,7 +14,7 @@ This is sub project of [go-graylog](https://github.com/suzuki-shunsuke/go-graylo
 
 ## Motivation
 
-http://docs.graylog.org/en/2.4/pages/users_and_roles/permission_system.html
+http://docs.graylog.org/en/2.5/pages/users_and_roles/permission_system.html
 
 The Graylog permission system is extremely flexible but you can't utilize this flexibility from Web UI.
 By using this provider, you can utilize this flexibility and manage the infrastructure as code.
