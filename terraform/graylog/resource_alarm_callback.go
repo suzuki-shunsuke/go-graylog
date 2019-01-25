@@ -17,7 +17,7 @@ func resourceAlarmCallback() *schema.Resource {
 		Delete: resourceAlarmCallbackDelete,
 
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			State: genImport("stream_id", "alarm_callback_id"),
 		},
 
 		Schema: map[string]*schema.Schema{

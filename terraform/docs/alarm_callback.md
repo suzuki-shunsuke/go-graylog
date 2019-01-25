@@ -3,6 +3,14 @@
 * http://docs.graylog.org/en/2.5/pages/streams/alerts.html#notifications
 * https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_alarm_callback.go
 
+## How to import
+
+Specify `<stream id>/<alarm callback id>` as ID.
+
+```
+$ terraform import graylog_alarm_callback.test 5bb1b4b5c9e77bbbbbbbbbbb/5c4acaefc9e77bbbbbbbbbbb
+```
+
 ## Argument Reference
 
 ### Common Required Argument
