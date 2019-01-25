@@ -59,8 +59,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) .
 
 ## See also
 
-* http://docs.graylog.org/en/2.4/pages/configuration/rest_api.html
-* http://docs.graylog.org/en/2.4/pages/users_and_roles/permission_system.html
+* http://docs.graylog.org/en/2.5/pages/configuration/rest_api.html
+* http://docs.graylog.org/en/2.5/pages/users_and_roles/permission_system.html
 
 ## License
 
