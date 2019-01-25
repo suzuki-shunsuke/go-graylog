@@ -13,6 +13,14 @@ resource "graylog_stream_rule" "test-terraform" {
 }
 ```
 
+## How to import
+
+Specify `<stream id>/<stream rule id>` as ID.
+
+```
+$ terraform import graylog_stream_rule.test 5bb1b4b5c9e77bbbbbbbbbbb/5c4acaefc9e77bbbbbbbbbbb
+```
+
 ## Argument Reference
 
 ### Required Argument

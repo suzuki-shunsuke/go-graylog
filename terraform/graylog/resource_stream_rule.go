@@ -14,7 +14,7 @@ func resourceStreamRule() *schema.Resource {
 		Delete: resourceStreamRuleDelete,
 
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			State: genImport("stream_id", "stream_rule_id"),
 		},
 
 		Schema: map[string]*schema.Schema{
