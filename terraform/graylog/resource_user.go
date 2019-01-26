@@ -131,8 +131,7 @@ func resourceUserCreate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 	d.SetId(user.Username)
-	setStrToRD(d, "user_id", user.ID)
-	return nil
+	return setStrToRD(d, "user_id", user.ID)
 }
 
 func resourceUserRead(d *schema.ResourceData, m interface{}) error {
@@ -144,20 +143,43 @@ func resourceUserRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	setStrToRD(d, "username", user.Username)
-	setStrToRD(d, "email", user.Email)
-	setStrListToRD(d, "permissions", user.Permissions.ToList())
-	setStrToRD(d, "full_name", user.FullName)
-	setStrListToRD(d, "roles", user.Roles.ToList())
-	setStrToRD(d, "timezone", user.Timezone)
-	setIntToRD(d, "session_timeout_ms", user.SessionTimeoutMs)
-	setStrToRD(d, "user_id", user.ID)
-	setBoolToRD(d, "external", user.External)
-	setBoolToRD(d, "read_only", user.ReadOnly)
-	setStrToRD(d, "client_address", user.ClientAddress)
-	setBoolToRD(d, "session_active", user.SessionActive)
-	setStrToRD(d, "last_activity", user.LastActivity)
-	return nil
+	if err := setStrToRD(d, "username", user.Username); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "email", user.Email); err != nil {
+		return err
+	}
+	if err := setStrListToRD(d, "permissions", user.Permissions.ToList()); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "full_name", user.FullName); err != nil {
+		return err
+	}
+	if err := setStrListToRD(d, "roles", user.Roles.ToList()); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "timezone", user.Timezone); err != nil {
+		return err
+	}
+	if err := setIntToRD(d, "session_timeout_ms", user.SessionTimeoutMs); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "user_id", user.ID); err != nil {
+		return err
+	}
+	if err := setBoolToRD(d, "external", user.External); err != nil {
+		return err
+	}
+	if err := setBoolToRD(d, "read_only", user.ReadOnly); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "client_address", user.ClientAddress); err != nil {
+		return err
+	}
+	if err := setBoolToRD(d, "session_active", user.SessionActive); err != nil {
+		return err
+	}
+	return setStrToRD(d, "last_activity", user.LastActivity)
 }
 
 func resourceUserUpdate(d *schema.ResourceData, m interface{}) error {

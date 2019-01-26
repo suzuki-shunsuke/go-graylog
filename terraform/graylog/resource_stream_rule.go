@@ -87,13 +87,22 @@ func resourceStreamRuleRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	setStrToRD(d, "field", rule.Field)
-	setStrToRD(d, "value", rule.Value)
-	setStrToRD(d, "description", rule.Description)
-	setStrToRD(d, "stream_id", rule.StreamID)
-	setIntToRD(d, "type", rule.Type)
-	setBoolToRD(d, "inverted", rule.Inverted)
-	return nil
+	if err := setStrToRD(d, "field", rule.Field); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "value", rule.Value); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "description", rule.Description); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "stream_id", rule.StreamID); err != nil {
+		return err
+	}
+	if err := setIntToRD(d, "type", rule.Type); err != nil {
+		return err
+	}
+	return setBoolToRD(d, "inverted", rule.Inverted)
 }
 
 func resourceStreamRuleUpdate(d *schema.ResourceData, m interface{}) error {

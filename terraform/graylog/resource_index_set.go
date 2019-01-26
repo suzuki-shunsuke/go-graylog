@@ -211,19 +211,40 @@ func resourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("retention_strategy", []map[string]interface{}{dest})
 	}
 
-	setStrToRD(d, "title", is.Title)
-	setStrToRD(d, "index_prefix", is.IndexPrefix)
-	setStrToRD(d, "description", is.Description)
-	setIntToRD(d, "shards", is.Shards)
-	setIntToRD(d, "replicas", is.Replicas)
-	setStrToRD(d, "rotation_strategy_class", is.RotationStrategyClass)
-	setStrToRD(d, "retention_strategy_class", is.RetentionStrategyClass)
-	setStrToRD(d, "index_analyzer", is.IndexAnalyzer)
-	setIntToRD(d, "index_optimization_max_num_segments", is.IndexOptimizationMaxNumSegments)
-	setBoolToRD(d, "index_optimization_disabled", is.IndexOptimizationDisabled)
-	setBoolToRD(d, "writable", is.Writable)
-	setBoolToRD(d, "default", is.Default)
-	return nil
+	if err := setStrToRD(d, "title", is.Title); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "index_prefix", is.IndexPrefix); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "description", is.Description); err != nil {
+		return err
+	}
+	if err := setIntToRD(d, "shards", is.Shards); err != nil {
+		return err
+	}
+	if err := setIntToRD(d, "replicas", is.Replicas); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "rotation_strategy_class", is.RotationStrategyClass); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "retention_strategy_class", is.RetentionStrategyClass); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "index_analyzer", is.IndexAnalyzer); err != nil {
+		return err
+	}
+	if err := setIntToRD(d, "index_optimization_max_num_segments", is.IndexOptimizationMaxNumSegments); err != nil {
+		return err
+	}
+	if err := setBoolToRD(d, "index_optimization_disabled", is.IndexOptimizationDisabled); err != nil {
+		return err
+	}
+	if err := setBoolToRD(d, "writable", is.Writable); err != nil {
+		return err
+	}
+	return setBoolToRD(d, "default", is.Default)
 }
 
 func resourceIndexSetUpdate(d *schema.ResourceData, m interface{}) error {

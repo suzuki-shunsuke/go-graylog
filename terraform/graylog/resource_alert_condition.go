@@ -222,10 +222,18 @@ func resourceAlertConditionRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	setStrToRD(d, "type", cond.Type())
-	setStrToRD(d, "title", cond.Title)
-	setStrToRD(d, "stream_id", streamID)
-	setBoolToRD(d, "in_grace", cond.InGrace)
+	if err := setStrToRD(d, "type", cond.Type()); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "title", cond.Title); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "stream_id", streamID); err != nil {
+		return err
+	}
+	if err := setBoolToRD(d, "in_grace", cond.InGrace); err != nil {
+		return err
+	}
 	if cond.Parameters != nil {
 		b, err := json.Marshal(cond.Parameters)
 		if err != nil {
