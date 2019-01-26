@@ -148,12 +148,19 @@ func resourceInputRead(d *schema.ResourceData, m interface{}) error {
 		}
 		d.Set("attributes", []map[string]interface{}{dest})
 	}
-	setStrToRD(d, "title", input.Title)
-	setStrToRD(d, "type", input.Type())
-	setStrToRD(d, "node", input.Node)
-	setStrToRD(d, "creator_user_id", input.CreatorUserID)
-	setStrToRD(d, "created_at", input.CreatedAt)
-	return nil
+	if err := setStrToRD(d, "title", input.Title); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "type", input.Type()); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "node", input.Node); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "creator_user_id", input.CreatorUserID); err != nil {
+		return err
+	}
+	return setStrToRD(d, "created_at", input.CreatedAt)
 }
 
 func resourceInputUpdate(d *schema.ResourceData, m interface{}) error {

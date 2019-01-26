@@ -72,11 +72,16 @@ func resourceRoleRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	setStrToRD(d, "name", role.Name)
-	setStrListToRD(d, "permissions", role.Permissions.ToList())
-	setStrToRD(d, "description", role.Description)
-	setBoolToRD(d, "read_only", role.ReadOnly)
-	return nil
+	if err := setStrToRD(d, "name", role.Name); err != nil {
+		return err
+	}
+	if err := setStrListToRD(d, "permissions", role.Permissions.ToList()); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "description", role.Description); err != nil {
+		return err
+	}
+	return setBoolToRD(d, "read_only", role.ReadOnly)
 }
 
 func resourceRoleUpdate(d *schema.ResourceData, m interface{}) error {

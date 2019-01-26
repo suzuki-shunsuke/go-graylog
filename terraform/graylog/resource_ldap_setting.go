@@ -155,24 +155,52 @@ func resourceLDAPSettingRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	setBoolToRD(d, "enabled", ls.Enabled)
-	setBoolToRD(d, "use_start_tls", ls.UseStartTLS)
-	setBoolToRD(d, "trust_all_certificates", ls.TrustAllCertificates)
-	setBoolToRD(d, "active_directory", ls.ActiveDirectory)
-	setStrToRD(d, "system_username", ls.SystemUsername)
-	setStrToRD(d, "system_password", ls.SystemPassword)
-	setStrToRD(d, "ldap_uri", ls.LDAPURI)
-	setStrToRD(d, "search_base", ls.SearchBase)
-	setStrToRD(d, "search_pattern", ls.SearchPattern)
-	setStrToRD(d, "display_name_attribute", ls.DisplayNameAttribute)
-	setStrToRD(d, "default_group", ls.DefaultGroup)
-	setStrToRD(d, "group_search_base", ls.GroupSearchBase)
-	setStrToRD(d, "group_id_attribute", ls.GroupIDAttribute)
-	setStrToRD(d, "group_search_pattern", ls.GroupSearchPattern)
-	setStrListToRD(d, "additional_default_groups", ls.AdditionalDefaultGroups.ToList())
-	setMapStrToStrToRD(d, "group_mapping", ls.GroupMapping)
-
-	return nil
+	if err := setBoolToRD(d, "enabled", ls.Enabled); err != nil {
+		return err
+	}
+	if err := setBoolToRD(d, "use_start_tls", ls.UseStartTLS); err != nil {
+		return err
+	}
+	if err := setBoolToRD(d, "trust_all_certificates", ls.TrustAllCertificates); err != nil {
+		return err
+	}
+	if err := setBoolToRD(d, "active_directory", ls.ActiveDirectory); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "system_username", ls.SystemUsername); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "system_password", ls.SystemPassword); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "ldap_uri", ls.LDAPURI); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "search_base", ls.SearchBase); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "search_pattern", ls.SearchPattern); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "display_name_attribute", ls.DisplayNameAttribute); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "default_group", ls.DefaultGroup); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "group_search_base", ls.GroupSearchBase); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "group_id_attribute", ls.GroupIDAttribute); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "group_search_pattern", ls.GroupSearchPattern); err != nil {
+		return err
+	}
+	if err := setStrListToRD(d, "additional_default_groups", ls.AdditionalDefaultGroups.ToList()); err != nil {
+		return err
+	}
+	return setMapStrToStrToRD(d, "group_mapping", ls.GroupMapping)
 }
 
 func resourceLDAPSettingUpdate(d *schema.ResourceData, m interface{}) error {

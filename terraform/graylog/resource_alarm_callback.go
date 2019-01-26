@@ -308,9 +308,15 @@ func resourceAlarmCallbackRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	setStrToRD(d, "type", ac.Type())
-	setStrToRD(d, "title", ac.Title)
-	setStrToRD(d, "stream_id", streamID)
+	if err := setStrToRD(d, "type", ac.Type()); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "title", ac.Title); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "stream_id", streamID); err != nil {
+		return err
+	}
 	if ac.Configuration != nil {
 		switch ac.Type() {
 		case graylog.HTTPAlarmCallbackType:

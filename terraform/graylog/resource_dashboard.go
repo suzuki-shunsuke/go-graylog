@@ -96,10 +96,13 @@ func resourceDashboardRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	setStrToRD(d, "title", db.Title)
-	setStrToRD(d, "description", db.Description)
-	setStrToRD(d, "created_at", db.CreatedAt)
-	return nil
+	if err := setStrToRD(d, "title", db.Title); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "description", db.Description); err != nil {
+		return err
+	}
+	return setStrToRD(d, "created_at", db.CreatedAt)
 }
 
 func resourceDashboardUpdate(d *schema.ResourceData, m interface{}) error {
