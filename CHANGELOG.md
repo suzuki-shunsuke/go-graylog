@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.3.1"></a>
+## [1.3.1](https://github.com/suzuki-shunsuke/go-graylog/compare/v1.3.0...v1.3.1) (2019-01-26)
+
+
+### Bug Fixes
+
+* handle error of terraform resource read ([4719ba3](https://github.com/suzuki-shunsuke/go-graylog/commit/4719ba3)), closes [#63](https://github.com/suzuki-shunsuke/go-graylog/issues/63)
+
+
+
 <a name="1.3.0"></a>
 # [1.3.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v1.2.0...v1.3.0) (2019-01-25)
 
