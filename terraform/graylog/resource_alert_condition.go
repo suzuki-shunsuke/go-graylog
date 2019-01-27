@@ -244,7 +244,9 @@ func resourceAlertConditionRead(d *schema.ResourceData, m interface{}) error {
 			return err
 		}
 		for k, v := range dest {
-			d.Set(fmt.Sprintf("parameters.%s", k), v)
+			if err := d.Set(fmt.Sprintf("parameters.%s", k), v); err != nil {
+				return err
+			}
 		}
 	}
 	return nil

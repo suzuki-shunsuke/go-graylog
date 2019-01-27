@@ -146,7 +146,9 @@ func resourceInputRead(d *schema.ResourceData, m interface{}) error {
 		if err := json.Unmarshal(b, &dest); err != nil {
 			return err
 		}
-		d.Set("attributes", []map[string]interface{}{dest})
+		if err := d.Set("attributes", []map[string]interface{}{dest}); err != nil {
+			return err
+		}
 	}
 	if err := setStrToRD(d, "title", input.Title); err != nil {
 		return err

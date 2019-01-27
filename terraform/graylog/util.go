@@ -22,7 +22,9 @@ func genImport(keys ...string) schema.StateFunc {
 			return nil, fmt.Errorf("format of import argument should be %s", strings.Join(keys, "/"))
 		}
 		for i, k := range keys[:size-1] {
-			setStrToRD(d, k, a[i])
+			if err := setStrToRD(d, k, a[i]); err != nil {
+				return nil, err
+			}
 		}
 		d.SetId(a[size-1])
 		return []*schema.ResourceData{d}, nil
