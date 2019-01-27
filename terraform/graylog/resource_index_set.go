@@ -197,7 +197,9 @@ func resourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 		if err := json.Unmarshal(b, &dest); err != nil {
 			return err
 		}
-		d.Set("rotation_strategy", []map[string]interface{}{dest})
+		if err := d.Set("rotation_strategy", []map[string]interface{}{dest}); err != nil {
+			return err
+		}
 	}
 	if is.RetentionStrategy != nil {
 		b, err := json.Marshal(is.RetentionStrategy)
@@ -208,7 +210,9 @@ func resourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 		if err := json.Unmarshal(b, &dest); err != nil {
 			return err
 		}
-		d.Set("retention_strategy", []map[string]interface{}{dest})
+		if err := d.Set("retention_strategy", []map[string]interface{}{dest}); err != nil {
+			return err
+		}
 	}
 
 	if err := setStrToRD(d, "title", is.Title); err != nil {

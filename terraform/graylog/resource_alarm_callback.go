@@ -324,29 +324,27 @@ func resourceAlarmCallbackRead(d *schema.ResourceData, m interface{}) error {
 			if !ok {
 				return fmt.Errorf("configuration is invalid type")
 			}
-			d.Set("http_configuration", []map[string]interface{}{
+			return d.Set("http_configuration", []map[string]interface{}{
 				{"url": cfg.URL},
 			})
-			return nil
 		case graylog.EmailAlarmCallbackType:
 			cfg, ok := ac.Configuration.(*graylog.EmailAlarmCallbackConfiguration)
 			if !ok {
 				return fmt.Errorf("configuration is invalid type")
 			}
-			d.Set("email_configuration", []map[string]interface{}{{
+			return d.Set("email_configuration", []map[string]interface{}{{
 				"sender":          cfg.Sender,
 				"subject":         cfg.Subject,
 				"body":            cfg.Body,
 				"user_receivers":  cfg.UserReceivers.ToList(),
 				"email_receivers": cfg.EmailReceivers.ToList(),
 			}})
-			return nil
 		case graylog.SlackAlarmCallbackType:
 			cfg, ok := ac.Configuration.(*graylog.SlackAlarmCallbackConfiguration)
 			if !ok {
 				return fmt.Errorf("configuration is invalid type")
 			}
-			d.Set("slack_configuration", []map[string]interface{}{{
+			return d.Set("slack_configuration", []map[string]interface{}{{
 				"color":          cfg.Color,
 				"webhook_url":    cfg.WebhookURL,
 				"channel":        cfg.Channel,
@@ -360,7 +358,6 @@ func resourceAlarmCallbackRead(d *schema.ResourceData, m interface{}) error {
 				"link_names":     cfg.LinkNames,
 				"notify_channel": cfg.NotifyChannel,
 			}})
-			return nil
 		}
 		cfg, ok := ac.Configuration.(*graylog.GeneralAlarmCallbackConfiguration)
 		if !ok {
@@ -369,15 +366,25 @@ func resourceAlarmCallbackRead(d *schema.ResourceData, m interface{}) error {
 		for k, v := range cfg.Configuration {
 			switch t := v.(type) {
 			case int:
-				d.Set(fmt.Sprintf("general_int_configuration.%s", k), t)
+				if err := d.Set(fmt.Sprintf("general_int_configuration.%s", k), t); err != nil {
+					return err
+				}
 			case bool:
-				d.Set(fmt.Sprintf("general_bool_configuration.%s", k), t)
+				if err := d.Set(fmt.Sprintf("general_bool_configuration.%s", k), t); err != nil {
+					return err
+				}
 			case float64:
-				d.Set(fmt.Sprintf("general_float_configuration.%s", k), t)
+				if err := d.Set(fmt.Sprintf("general_float_configuration.%s", k), t); err != nil {
+					return err
+				}
 			case float32:
-				d.Set(fmt.Sprintf("general_float_configuration.%s", k), t)
+				if err := d.Set(fmt.Sprintf("general_float_configuration.%s", k), t); err != nil {
+					return err
+				}
 			case string:
-				d.Set(fmt.Sprintf("general_string_configuration.%s", k), t)
+				if err := d.Set(fmt.Sprintf("general_string_configuration.%s", k), t); err != nil {
+					return err
+				}
 			}
 		}
 		return nil
