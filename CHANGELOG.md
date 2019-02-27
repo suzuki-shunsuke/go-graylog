@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.4.0"></a>
+# [1.4.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v1.3.2...v1.4.0) (2019-02-27)
+
+
+### Features
+
+* [#68](https://github.com/suzuki-shunsuke/go-graylog/issues/68) support create a pipeline rule API ([5134501](https://github.com/suzuki-shunsuke/go-graylog/commit/5134501))
+* [#68](https://github.com/suzuki-shunsuke/go-graylog/issues/68) support Get all pipeline rules API ([be29881](https://github.com/suzuki-shunsuke/go-graylog/commit/be29881))
+* [#68](https://github.com/suzuki-shunsuke/go-graylog/issues/68) support get pipeline rule API ([3b0439a](https://github.com/suzuki-shunsuke/go-graylog/commit/3b0439a))
+* [#68](https://github.com/suzuki-shunsuke/go-graylog/issues/68) support terraform pipeline_rule resource ([cea5ca7](https://github.com/suzuki-shunsuke/go-graylog/commit/cea5ca7))
+* [#68](https://github.com/suzuki-shunsuke/go-graylog/issues/68) support update pipeline API ([49e0221](https://github.com/suzuki-shunsuke/go-graylog/commit/49e0221))
+* support delete pipeline rule API ([5768980](https://github.com/suzuki-shunsuke/go-graylog/commit/5768980))
+
+
+
 <a name="1.3.2"></a>
 ## [1.3.2](https://github.com/suzuki-shunsuke/go-graylog/compare/v1.3.1...v1.3.2) (2019-01-27)
 
