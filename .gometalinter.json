@@ -4,8 +4,6 @@
     "vet",
     "nakedret",
     "misspell",
-    "gosimple",
-    "unused",
     "maligned",
     "interfacer",
     "unconvert",
@@ -13,6 +11,7 @@
     "gofmt",
 
     "varcheck",
+    "staticcheck",
     "structcheck",
     "goconst"
   ],

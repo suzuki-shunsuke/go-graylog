@@ -83,11 +83,12 @@ x_requested_by | GRAYLOG_X_REQUESTED_BY | terraform-go-graylog | [X-Requested-By
 * [dashboard](docs/dashboard.md)
 * [index_set](docs/index_set.md)
 * [input](docs/input.md)
+* [ldap_setting](docs/ldap_setting.md)
+* [pipeline_rule](docs/pipeline_rule.md)
 * [role](docs/role.md)
 * [stream](docs/stream.md)
 * [stream_rule](docs/stream_rule.md)
 * [user](docs/user.md)
-* [ldap_setting](docs/ldap_setting.md)
 
 ## Unsupported resources
 
