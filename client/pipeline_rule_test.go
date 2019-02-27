@@ -1,6 +1,7 @@
 package client_test
 
 import (
+	"fmt"
 	"testing"
 
 	"gopkg.in/h2non/gock.v1"
@@ -68,6 +69,50 @@ func TestGetPipelineRules(t *testing.T) {
 		} else {
 			require.Nil(t, err)
 			require.Equal(t, d.rules, rules)
+		}
+	}
+}
+
+func TestGetPipelineRule(t *testing.T) {
+	defer gock.Off()
+	client, err := client.NewClient(
+		"http://example.com/api", "admin", "password")
+	require.Nil(t, err)
+	data := []struct {
+		statusCode int
+		resp       string
+		rule       *graylog.PipelineRule
+		isErr      bool
+	}{{
+		statusCode: 200,
+		resp: `{
+  "title": "test",
+  "description": null,
+  "source": "rule \"test\"\nwhen\n    to_long($message.status) < 500\nthen\n    set_field(\"status_01\", 1);\nend",
+  "created_at": "2019-01-01T00:00:00.000Z",
+  "modified_at": "2019-01-02T00:00:00.000Z",
+  "errors": null,
+  "id": "5c7640000000000000000000"
+}`,
+		rule: &graylog.PipelineRule{
+			ID:          "5c7640000000000000000000",
+			Title:       "test",
+			Description: "",
+			Source:      "rule \"test\"\nwhen\n    to_long($message.status) < 500\nthen\n    set_field(\"status_01\", 1);\nend",
+		},
+		isErr: false,
+	}}
+	for _, d := range data {
+		gock.New("http://example.com").
+			Get(fmt.Sprintf("/api/plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/rule/%s", d.rule.ID)).
+			MatchType("json").Reply(d.statusCode).
+			BodyString(d.resp)
+		rule, _, err := client.GetPipelineRule(d.rule.ID)
+		if d.isErr {
+			require.NotNil(t, err)
+		} else {
+			require.Nil(t, err)
+			require.Equal(t, d.rule, rule)
 		}
 	}
 }
