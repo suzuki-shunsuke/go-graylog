@@ -21,12 +21,12 @@ func (client *Client) GetPipelineRulesContext(ctx context.Context) (
 	return rules, ei, err
 }
 
-// GetPipelineRule returns a pipeline rules.
+// GetPipelineRule returns a pipeline rule.
 func (client *Client) GetPipelineRule(id string) (*graylog.PipelineRule, *ErrorInfo, error) {
 	return client.GetPipelineRuleContext(context.Background(), id)
 }
 
-// GetPipelineRuleContext returns a pipeline rules with a context.
+// GetPipelineRuleContext returns a pipeline rule with a context.
 func (client *Client) GetPipelineRuleContext(ctx context.Context, id string) (
 	*graylog.PipelineRule, *ErrorInfo, error,
 ) {
