@@ -123,11 +123,11 @@ func setEnv() (*client.Client, *mockserver.Server, error) {
 func getIDFromTfState(tfState *terraform.State, key string) (string, error) {
 	rs, ok := tfState.RootModule().Resources[key]
 	if !ok {
-		return "", fmt.Errorf("Not found: %s", key)
+		return "", fmt.Errorf("not found: %s", key)
 	}
 	id := rs.Primary.ID
 	if id == "" {
-		return "", fmt.Errorf("No ID is set")
+		return "", fmt.Errorf("no ID is set")
 	}
 	return id, nil
 }
