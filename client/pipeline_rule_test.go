@@ -218,3 +218,30 @@ func TestUpdatePipelineRule(t *testing.T) {
 		}
 	}
 }
+
+func TestDeletePipelineRule(t *testing.T) {
+	defer gock.Off()
+	client, err := client.NewClient(
+		"http://example.com/api", "admin", "password")
+	require.Nil(t, err)
+	data := []struct {
+		statusCode int
+		id         string
+		isErr      bool
+	}{{
+		statusCode: 204,
+		id:         "5c7640000000000000000000",
+		isErr:      false,
+	}}
+	for _, d := range data {
+		gock.New("http://example.com").
+			Delete(fmt.Sprintf("/api/plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/rule/%s", d.id)).
+			MatchType("json").Reply(d.statusCode)
+		_, err := client.DeletePipelineRule(d.id)
+		if d.isErr {
+			require.NotNil(t, err)
+		} else {
+			require.Nil(t, err)
+		}
+	}
+}

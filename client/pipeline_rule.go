@@ -76,3 +76,19 @@ func (client *Client) UpdatePipelineRuleContext(
 	rule.ID = id
 	return ei, err
 }
+
+// DeletePipelineRule deletes a pipeline rule.
+func (client *Client) DeletePipelineRule(id string) (*ErrorInfo, error) {
+	return client.DeletePipelineRuleContext(context.Background(), id)
+}
+
+// DeletePipelineRuleContext deletes a pipeline rule with a context.
+func (client *Client) DeletePipelineRuleContext(
+	ctx context.Context, id string,
+) (*ErrorInfo, error) {
+	u, err := client.Endpoints().PipelineRule(id)
+	if err != nil {
+		return nil, err
+	}
+	return client.callDelete(ctx, u.String(), nil, nil)
+}
