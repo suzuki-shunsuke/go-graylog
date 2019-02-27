@@ -20,3 +20,19 @@ func (client *Client) GetPipelineRulesContext(ctx context.Context) (
 		ctx, client.Endpoints().PipelineRules(), nil, &rules)
 	return rules, ei, err
 }
+
+// CreatePipelineRule creates a pipeline rule.
+func (client *Client) CreatePipelineRule(
+	rule *graylog.PipelineRule,
+) (*ErrorInfo, error) {
+	return client.CreatePipelineRuleContext(context.Background(), rule)
+}
+
+// CreatePipelineRuleContext creates a pipeline rule with a context.
+func (client *Client) CreatePipelineRuleContext(
+	ctx context.Context, rule *graylog.PipelineRule,
+) (*ErrorInfo, error) {
+	ei, err := client.callPost(
+		ctx, client.Endpoints().PipelineRules(), rule, &rule)
+	return ei, err
+}
