@@ -167,3 +167,54 @@ func TestCreatePipelineRule(t *testing.T) {
 		}
 	}
 }
+
+func TestUpdatePipelineRule(t *testing.T) {
+	defer gock.Off()
+	client, err := client.NewClient(
+		"http://example.com/api", "admin", "password")
+	require.Nil(t, err)
+	data := []struct {
+		statusCode int
+		resp       string
+		req        *graylog.PipelineRule
+		rule       *graylog.PipelineRule
+		isErr      bool
+	}{{
+		statusCode: 200,
+		resp: `{
+  "title": "test",
+  "description": null,
+  "source": "rule \"test\"\nwhen\n    to_long($message.status) < 500\nthen\n    set_field(\"status_01\", 1);\nend",
+  "created_at": "2019-01-01T00:00:00.000Z",
+  "modified_at": "2019-01-02T00:00:00.000Z",
+  "errors": null,
+  "id": "5c7640000000000000000000"
+}`,
+		rule: &graylog.PipelineRule{
+			ID:     "5c7640000000000000000000",
+			Title:  "test",
+			Source: "rule \"test\"\nwhen\n    to_long($message.status) < 500\nthen\n    set_field(\"status_01\", 1);\nend",
+		},
+		req: &graylog.PipelineRule{
+			ID: "5c7640000000000000000000",
+			Source: `{
+"source": "rule \"test\"\nwhen\n    to_long($message.status) < 500\nthen\n    set_field(\"status_01\", 1);\nend"
+}`,
+		},
+		isErr: false,
+	}}
+	for _, d := range data {
+		gock.New("http://example.com").
+			Put(fmt.Sprintf("/api/plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/rule/%s", d.rule.ID)).
+			MatchType("json").Reply(d.statusCode).
+			BodyString(d.resp)
+		rule := d.req
+		_, err := client.UpdatePipelineRule(rule)
+		if d.isErr {
+			require.NotNil(t, err)
+		} else {
+			require.Nil(t, err)
+			require.Equal(t, d.rule, rule)
+		}
+	}
+}

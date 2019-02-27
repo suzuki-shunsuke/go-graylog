@@ -54,3 +54,25 @@ func (client *Client) CreatePipelineRuleContext(
 		ctx, client.Endpoints().PipelineRules(), rule, &rule)
 	return ei, err
 }
+
+// UpdatePipelineRule updates a pipeline rule.
+func (client *Client) UpdatePipelineRule(
+	rule *graylog.PipelineRule,
+) (*ErrorInfo, error) {
+	return client.UpdatePipelineRuleContext(context.Background(), rule)
+}
+
+// UpdatePipelineRuleContext updates a pipeline rule with a context.
+func (client *Client) UpdatePipelineRuleContext(
+	ctx context.Context, rule *graylog.PipelineRule,
+) (*ErrorInfo, error) {
+	id := rule.ID
+	rule.ID = ""
+	u, err := client.Endpoints().PipelineRule(id)
+	if err != nil {
+		return nil, err
+	}
+	ei, err := client.callPut(ctx, u.String(), rule, &rule)
+	rule.ID = id
+	return ei, err
+}
