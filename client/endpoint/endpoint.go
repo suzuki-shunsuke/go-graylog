@@ -18,6 +18,7 @@ type Endpoints struct {
 	collectorConfigurations *url.URL
 	dashboards              *url.URL
 	enabledStreams          *url.URL
+	extractors              *url.URL
 	indexSets               *url.URL
 	indexSetStats           *url.URL
 	inputs                  *url.URL
@@ -103,6 +104,10 @@ func NewEndpoints(endpoint string) (*Endpoints, error) {
 	if err != nil {
 		return nil, err
 	}
+	extractors, err := urlJoin(ep, "system/inputs")
+	if err != nil {
+		return nil, err
+	}
 	return &Endpoints{
 		alarmCallbacks:          alarmCallbacks,
 		alerts:                  alerts,
@@ -110,6 +115,7 @@ func NewEndpoints(endpoint string) (*Endpoints, error) {
 		collectorConfigurations: collectorConfigurations,
 		dashboards:              dashboards,
 		enabledStreams:          enabledStreams,
+		extractors:              extractors,
 		indexSets:               indexSets,
 		indexSetStats:           indexSetStats,
 		inputs:                  inputs,
