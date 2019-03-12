@@ -6,29 +6,29 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
-// GetInputExtractors returns all extractors of an input.
-func (client *Client) GetInputExtractors(inputID string) ([]graylog.Extractor, *ErrorInfo, error) {
-	return client.GetInputExtractorsContext(context.Background(), inputID)
+// GetExtractors returns all extractors of an input.
+func (client *Client) GetExtractors(inputID string) ([]graylog.Extractor, int, *ErrorInfo, error) {
+	return client.GetExtractorsContext(context.Background(), inputID)
 }
 
-// GetInputExtractorsContext returns all extractors of an input with a context.
-func (client *Client) GetInputExtractorsContext(ctx context.Context, inputID string) ([]graylog.Extractor, *ErrorInfo, error) {
+// GetExtractorsContext returns all extractors of an input with a context.
+func (client *Client) GetExtractorsContext(ctx context.Context, inputID string) ([]graylog.Extractor, int, *ErrorInfo, error) {
 	extractors := &graylog.ExtractorsBody{}
 	u, err := client.Endpoints().Extractors(inputID)
 	if err != nil {
-		return nil, nil, err
+		return nil, 0, nil, err
 	}
 	ei, err := client.callGet(ctx, u.String(), nil, extractors)
-	return extractors.Extractors, ei, err
+	return extractors.Extractors, extractors.Total, ei, err
 }
 
-// GetInputExtractor returns an extractors of an input.
-func (client *Client) GetInputExtractor(inputID string, extractorID string) (*graylog.Extractor, *ErrorInfo, error) {
-	return client.GetInputExtractorContext(context.Background(), inputID, extractorID)
+// GetExtractor returns an extractors of an input.
+func (client *Client) GetExtractor(inputID, extractorID string) (*graylog.Extractor, *ErrorInfo, error) {
+	return client.GetExtractorContext(context.Background(), inputID, extractorID)
 }
 
-// GetInputExtractorContext returns an extractor of an input with a context.
-func (client *Client) GetInputExtractorContext(ctx context.Context, inputID string, extractorID string) (*graylog.Extractor, *ErrorInfo, error) {
+// GetExtractorContext returns an extractor of an input with a context.
+func (client *Client) GetExtractorContext(ctx context.Context, inputID, extractorID string) (*graylog.Extractor, *ErrorInfo, error) {
 	extractor := &graylog.Extractor{}
 	u, err := client.Endpoints().Extractor(inputID, extractorID)
 	if err != nil {
@@ -38,13 +38,13 @@ func (client *Client) GetInputExtractorContext(ctx context.Context, inputID stri
 	return extractor, ei, err
 }
 
-// CreateInputExtractor creates multiple extractors of an input.
-func (client *Client) CreateInputExtractor(extractor *graylog.Extractor, inputID string) (*ErrorInfo, error) {
-	return client.CreateInputExtractorContext(context.Background(), extractor, inputID)
+// CreateExtractor creates multiple extractors of an input.
+func (client *Client) CreateExtractor(extractor *graylog.Extractor, inputID string) (*ErrorInfo, error) {
+	return client.CreateExtractorContext(context.Background(), extractor, inputID)
 }
 
-// CreateInputExtractorContext creates multiple extractors of an input with a context.
-func (client *Client) CreateInputExtractorContext(ctx context.Context, extractor *graylog.Extractor, inputID string) (*ErrorInfo, error) {
+// CreateExtractorContext creates multiple extractors of an input with a context.
+func (client *Client) CreateExtractorContext(ctx context.Context, extractor *graylog.Extractor, inputID string) (*ErrorInfo, error) {
 	u, err := client.Endpoints().Extractors(inputID)
 	if err != nil {
 		return nil, err
@@ -64,13 +64,13 @@ func (client *Client) CreateInputExtractorContext(ctx context.Context, extractor
 	return client.callPost(ctx, u.String(), d, nil)
 }
 
-// UpdateInputExtractor updates an extractor of an input.
-func (client *Client) UpdateInputExtractor(extractor *graylog.Extractor, inputID string) (*ErrorInfo, error) {
-	return client.UpdateInputExtractorContext(context.Background(), extractor, inputID)
+// UpdateExtractor updates an extractor of an input.
+func (client *Client) UpdateExtractor(extractor *graylog.Extractor, inputID string) (*ErrorInfo, error) {
+	return client.UpdateExtractorContext(context.Background(), extractor, inputID)
 }
 
-// UpdateInputExtractorContext updates an extractor of an input with context.
-func (client *Client) UpdateInputExtractorContext(ctx context.Context, extractor *graylog.Extractor, inputID string) (*ErrorInfo, error) {
+// UpdateExtractorContext updates an extractor of an input with context.
+func (client *Client) UpdateExtractorContext(ctx context.Context, extractor *graylog.Extractor, inputID string) (*ErrorInfo, error) {
 	u, err := client.Endpoints().Extractor(inputID, extractor.ID)
 	if err != nil {
 		return nil, err
@@ -91,13 +91,13 @@ func (client *Client) UpdateInputExtractorContext(ctx context.Context, extractor
 	return ei, err
 }
 
-// DeleteInputExtractor deletes an extractor of an input.
-func (client *Client) DeleteInputExtractor(inputID string, extractorID string) (*ErrorInfo, error) {
-	return client.DeleteInputExtractorContext(context.Background(), inputID, extractorID)
+// DeleteExtractor deletes an extractor of an input.
+func (client *Client) DeleteExtractor(inputID, extractorID string) (*ErrorInfo, error) {
+	return client.DeleteExtractorContext(context.Background(), inputID, extractorID)
 }
 
-// DeleteInputExtractorContext deletes an extractor of an input with context.
-func (client *Client) DeleteInputExtractorContext(ctx context.Context, inputID string, extractorID string) (*ErrorInfo, error) {
+// DeleteExtractorContext deletes an extractor of an input with context.
+func (client *Client) DeleteExtractorContext(ctx context.Context, inputID, extractorID string) (*ErrorInfo, error) {
 	u, err := client.Endpoints().Extractor(inputID, extractorID)
 	if err != nil {
 		return nil, err
