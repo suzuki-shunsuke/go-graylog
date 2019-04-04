@@ -5,7 +5,7 @@
 * [npm](https://www.npmjs.com/): to validate a commit message and generate the Change Log
 * [Golang](https://golang.org/)
 * [dep](https://golang.github.io/dep/)
-* [gometalinter](https://github.com/alecthomas/gometalinter)
+* [golangci-lint](https://github.com/golangci/golangci-lint)
 
 ```
 $ npm i
@@ -26,12 +26,6 @@ We validate the commit message with git's `commit-msg` hook using [commitlint](h
 ## Coding Guide
 
 * https://github.com/golang/go/wiki/CodeReviewComments
-* https://github.com/alecthomas/gometalinter
-
-```
-$ go get -u github.com/alecthomas/gometalinter
-$ gometalinter --install
-```
 
 ```
 $ npm run lint
@@ -40,7 +34,6 @@ $ npm run lint
 ## docker-compose.yml
 
 To run graylog using docker for development, we prepare the template of `docker-compose.yml`.
-
 
 ```
 $ cp docker-compose.yml.tmpl docker-compose.yml
