@@ -3,15 +3,13 @@
   "scripts": {
     "release": "standard-version",
     "test": "bash scripts/test.sh",
-    "golint": " go list ./... | xargs golint -set_exit_status",
-    "lint": "bash scripts/lint.sh",
+    "lint": "golangci-lint run",
     "vet": "go vet ./...",
-    "metalint": "gometalinter ./...",
     "fmt": "bash scripts/fmt.sh",
     "coverage": "bash scripts/coverage.sh",
     "install-local-terraform": "bash scripts/install_local_terraform.sh",
     "tag": "bash scripts/tag.sh",
-    "ci-local": "circleci build -e LOCAL=true"
+    "ci-local": "time drone exec --pipeline build --env-file scripts/drone-local-env --event pull_request"
   },
   "husky": {
     "hooks": {
