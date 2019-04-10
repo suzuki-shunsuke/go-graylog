@@ -7,16 +7,70 @@ import (
 	"github.com/pkg/errors"
 )
 
-// AlertCondition represents an Alert Condition.
-// http://docs.graylog.org/en/2.4/pages/streams/alerts.html#conditions
-type AlertCondition struct {
-	ID            string                   `json:"id,omitempty"`
-	CreatorUserID string                   `json:"creator_user_id,omitempty"`
-	CreatedAt     string                   `json:"created_at,omitempty"`
-	Title         string                   `json:"title" v-create:"required" v-update:"required"`
-	InGrace       bool                     `json:"in_grace,omitempty"`
-	Parameters    AlertConditionParameters `json:"parameters" v-create:"reqired" v-update:"required"`
-}
+type (
+	// AlertCondition represents an Alert Condition.
+	// http://docs.graylog.org/en/2.4/pages/streams/alerts.html#conditions
+	AlertCondition struct {
+		ID            string                   `json:"id,omitempty"`
+		CreatorUserID string                   `json:"creator_user_id,omitempty"`
+		CreatedAt     string                   `json:"created_at,omitempty"`
+		Title         string                   `json:"title" v-create:"required" v-update:"required"`
+		InGrace       bool                     `json:"in_grace,omitempty"`
+		Parameters    AlertConditionParameters `json:"parameters" v-create:"reqired" v-update:"required"`
+	}
+
+	// AlertConditionParameters represents Alert Condition's parameters.
+	AlertConditionParameters interface {
+		AlertConditionType() string
+	}
+
+	// FieldContentAlertConditionParameters represents Field Content Alert Condition's parameters.
+	FieldContentAlertConditionParameters struct {
+		Grace               int    `json:"grace"`
+		Backlog             int    `json:"backlog"`
+		RepeatNotifications bool   `json:"repeat_notifications,omitempty"`
+		Field               string `json:"field,omitempty" v-create:"required"`
+		Value               string `json:"value,omitempty" v-create:"required"`
+		Query               string `json:"query,omitempty"`
+	}
+
+	// FieldAggregationAlertConditionParameters represents Field Aggregation Alert Condition's parameters.
+	FieldAggregationAlertConditionParameters struct {
+		Grace               int    `json:"grace"`
+		Backlog             int    `json:"backlog"`
+		Threshold           int    `json:"threshold"`
+		Time                int    `json:"time" v-create:"required"`
+		RepeatNotifications bool   `json:"repeat_notifications,omitempty"`
+		Field               string `json:"field,omitempty" v-create:"required"`
+		Query               string `json:"query,omitempty"`
+		ThresholdType       string `json:"threshold_type,omitempty" v-create:"required"`
+		Type                string `json:"type,omitempty" v-create:"required"`
+	}
+
+	// MessageCountAlertConditionParameters represents Field Aggregation Alert Condition's parameters.
+	MessageCountAlertConditionParameters struct {
+		Grace               int    `json:"grace"`
+		Backlog             int    `json:"backlog"`
+		Threshold           int    `json:"threshold"`
+		Time                int    `json:"time"`
+		RepeatNotifications bool   `json:"repeat_notifications,omitempty"`
+		Query               string `json:"query,omitempty"`
+		ThresholdType       string `json:"threshold_type,omitempty" v-create:"required"`
+	}
+
+	// AlertConditionsBody represents Get Alert Conditions API's response body.
+	// Basically users don't use this struct, but this struct is public because some sub packages use this struct.
+	AlertConditionsBody struct {
+		AlertConditions []AlertCondition `json:"conditions"`
+		Total           int              `json:"total"`
+	}
+
+	// GeneralAlertConditionParameters is a general third party's alert condition parameters.
+	GeneralAlertConditionParameters struct {
+		Type       string
+		Parameters map[string]interface{}
+	}
+)
 
 // Type returns an alert condition type.
 func (cond AlertCondition) Type() string {
@@ -91,37 +145,9 @@ func (cond *AlertCondition) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-// AlertConditionParameters represents Alert Condition's parameters.
-type AlertConditionParameters interface {
-	AlertConditionType() string
-}
-
-// FieldContentAlertConditionParameters represents Field Content Alert Condition's parameters.
-type FieldContentAlertConditionParameters struct {
-	Grace               int    `json:"grace"`
-	Backlog             int    `json:"backlog"`
-	RepeatNotifications bool   `json:"repeat_notifications,omitempty"`
-	Field               string `json:"field,omitempty" v-create:"required"`
-	Value               string `json:"value,omitempty" v-create:"required"`
-	Query               string `json:"query,omitempty"`
-}
-
 // AlertConditionType returns an alert condition type.
 func (p FieldContentAlertConditionParameters) AlertConditionType() string {
 	return "field_content_value"
-}
-
-// FieldAggregationAlertConditionParameters represents Field Aggregation Alert Condition's parameters.
-type FieldAggregationAlertConditionParameters struct {
-	Grace               int    `json:"grace"`
-	Backlog             int    `json:"backlog"`
-	Threshold           int    `json:"threshold"`
-	Time                int    `json:"time" v-create:"required"`
-	RepeatNotifications bool   `json:"repeat_notifications,omitempty"`
-	Field               string `json:"field,omitempty" v-create:"required"`
-	Query               string `json:"query,omitempty"`
-	ThresholdType       string `json:"threshold_type,omitempty" v-create:"required"`
-	Type                string `json:"type,omitempty" v-create:"required"`
 }
 
 // AlertConditionType returns an alert condition type.
@@ -129,33 +155,9 @@ func (p FieldAggregationAlertConditionParameters) AlertConditionType() string {
 	return "field_value"
 }
 
-// MessageCountAlertConditionParameters represents Field Aggregation Alert Condition's parameters.
-type MessageCountAlertConditionParameters struct {
-	Grace               int    `json:"grace"`
-	Backlog             int    `json:"backlog"`
-	Threshold           int    `json:"threshold"`
-	Time                int    `json:"time"`
-	RepeatNotifications bool   `json:"repeat_notifications,omitempty"`
-	Query               string `json:"query,omitempty"`
-	ThresholdType       string `json:"threshold_type,omitempty" v-create:"required"`
-}
-
 // AlertConditionType returns an alert condition type.
 func (p MessageCountAlertConditionParameters) AlertConditionType() string {
 	return "message_count"
-}
-
-// AlertConditionsBody represents Get Alert Conditions API's response body.
-// Basically users don't use this struct, but this struct is public because some sub packages use this struct.
-type AlertConditionsBody struct {
-	AlertConditions []AlertCondition `json:"conditions"`
-	Total           int              `json:"total"`
-}
-
-// GeneralAlertConditionParameters is a general third party's alert condition parameters.
-type GeneralAlertConditionParameters struct {
-	Type       string
-	Parameters map[string]interface{}
 }
 
 // AlertConditionType returns an alert condition type.

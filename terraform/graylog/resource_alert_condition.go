@@ -1,10 +1,11 @@
 package graylog
 
 import (
-	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform/terraform"
 	"github.com/pkg/errors"
 
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -21,6 +22,9 @@ func resourceAlertCondition() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 
+		SchemaVersion: 1,
+		MigrateState:  alertConditionStateMigrateFunc,
+
 		Schema: map[string]*schema.Schema{
 			// Required
 			"type": {
@@ -35,10 +39,144 @@ func resourceAlertCondition() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"parameters": {
-				// we can't resrict attributes of third party alert condition plugin, so parameters is schema.TypeMap .
+			"field_content_value_parameters": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				MinItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"field": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"value": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"grace": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"backlog": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"query": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"repeat_notifications": {
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+					},
+				},
+			},
+			"field_value_parameters": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				MinItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"field": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"type": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"threshold_type": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"grace": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"backlog": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"query": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"threshold": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"time": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+					},
+				},
+			},
+			"message_count_parameters": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				MinItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"threshold_type": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"grace": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"backlog": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"query": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"threshold": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"time": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+					},
+				},
+			},
+
+			"general_string_parameters": {
 				Type:     schema.TypeMap,
-				Required: true,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"general_int_parameters": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeInt,
+				},
+			},
+			"general_float_parameters": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeFloat,
+				},
+			},
+			"general_bool_parameters": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeBool,
+				},
 			},
 
 			"in_grace": {
@@ -49,14 +187,56 @@ func resourceAlertCondition() *schema.Resource {
 	}
 }
 
+func alertConditionStateMigrateFunc(
+	v int, is *terraform.InstanceState, meta interface{},
+) (*terraform.InstanceState, error) {
+	if is.Empty() {
+		return is, nil
+	}
+
+	switch v {
+	case 0:
+		return migrateAlertConditionStateV0toV1(is)
+	default:
+		return is, fmt.Errorf("unexpected schema version: %d", v)
+	}
+}
+
+func migrateAlertConditionStateV0toV1(is *terraform.InstanceState) (*terraform.InstanceState, error) {
+	// parameters.backlog ->
+	prefix := ""
+	switch is.Attributes["type"] {
+	case "field_content_value":
+		is.Attributes["field_content_value_parameters.#"] = "1"
+		delete(is.Attributes, "parameters.%")
+		prefix = "field_content_value_parameters.0"
+	case "field_value":
+		is.Attributes["field_value_parameters.#"] = "1"
+		delete(is.Attributes, "parameters.%")
+		prefix = "field_value_parameters.0"
+	case "message_count":
+		is.Attributes["message_count_parameters.#"] = "1"
+		delete(is.Attributes, "parameters.%")
+		prefix = "message_count_parameters.0"
+	default:
+		prefix = "general_string_parameters"
+	}
+
+	for k, v := range is.Attributes {
+		if !strings.HasPrefix(k, "parameters.") {
+			continue
+		}
+		is.Attributes[strings.Replace(k, "parameters", prefix, 1)] = v
+	}
+	return is, nil
+}
+
 func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) {
 	cond := graylog.AlertCondition{
 		Title:   d.Get("title").(string),
 		InGrace: d.Get("in_grace").(bool),
 		ID:      d.Id(),
 	}
-	prms := d.Get("parameters").(map[string]interface{})
-
 	graceKey := "grace"
 	backlogKey := "backlog"
 	repeatNotificationsKey := "repeat_notifications"
@@ -75,7 +255,11 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 	switch d.Get("type").(string) {
 	case "field_content_value":
 		p := graylog.FieldContentAlertConditionParameters{}
-		for k, v := range prms {
+		prms := d.Get("field_content_value_parameters")
+		if prms == nil {
+			return nil, fmt.Errorf("field_content_value is required")
+		}
+		for k, v := range prms.([]interface{})[0].(map[string]interface{}) {
 			switch k {
 			case graceKey:
 				if p.Grace, err = convIntfStrToInt(v); err != nil {
@@ -109,7 +293,11 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 		return &cond, nil
 	case "field_value":
 		p := graylog.FieldAggregationAlertConditionParameters{}
-		for k, v := range prms {
+		prms := d.Get("field_value_parameters")
+		if prms == nil {
+			return nil, fmt.Errorf("field_value_parameters is required")
+		}
+		for k, v := range prms.([]interface{})[0].(map[string]interface{}) {
 			switch k {
 			case repeatNotificationsKey:
 				if p.RepeatNotifications, err = convIntfStrToBool(v); err != nil {
@@ -148,14 +336,18 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 					return nil, fmt.Errorf("%s must be string", k)
 				}
 			default:
-				return nil, fmt.Errorf("invalid attribute for alert condition type `field_content_value`: `%s`", k)
+				return nil, fmt.Errorf("invalid attribute for alert condition type `field_value`: `%s`", k)
 			}
 		}
 		cond.Parameters = p
 		return &cond, nil
 	case "message_count":
 		p := graylog.MessageCountAlertConditionParameters{}
-		for k, v := range prms {
+		prms := d.Get("message_count_parameters")
+		if prms == nil {
+			return nil, fmt.Errorf("message_count_parameters is required")
+		}
+		for k, v := range prms.([]interface{})[0].(map[string]interface{}) {
 			switch k {
 			case repeatNotificationsKey:
 				if p.RepeatNotifications, err = convIntfStrToBool(v); err != nil {
@@ -186,12 +378,25 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 					return nil, fmt.Errorf("%s must be string", k)
 				}
 			default:
-				return nil, fmt.Errorf("invalid attribute for alert condition type `field_content_value`: `%s`", k)
+				return nil, fmt.Errorf("invalid attribute for alert condition type `message_count`: `%s`", k)
 			}
 		}
 		cond.Parameters = p
 		return &cond, nil
 	}
+
+	gap := graylog.GeneralAlertConditionParameters{
+		Type:       d.Get("type").(string),
+		Parameters: map[string]interface{}{},
+	}
+	for _, k := range []string{"bool", "int", "string", "float"} {
+		if prms := d.Get(fmt.Sprintf("general_%s_parameters", k)); prms != nil {
+			for k, v := range prms.(map[string]interface{}) {
+				gap.Parameters[k] = v
+			}
+		}
+	}
+	cond.Parameters = &gap
 	return &cond, nil
 }
 
@@ -234,17 +439,83 @@ func resourceAlertConditionRead(d *schema.ResourceData, m interface{}) error {
 	if err := setBoolToRD(d, "in_grace", cond.InGrace); err != nil {
 		return err
 	}
-	if cond.Parameters != nil {
-		b, err := json.Marshal(cond.Parameters)
-		if err != nil {
-			return err
+	if cond.Parameters == nil {
+		return nil
+	}
+	switch cond.Type() {
+	case "field_content_value":
+		prms, ok := cond.Parameters.(graylog.FieldContentAlertConditionParameters)
+		if !ok {
+			return fmt.Errorf("parameters is invalid type as field_content_value: %v", cond.Parameters)
 		}
-		dest := map[string]interface{}{}
-		if err := json.Unmarshal(b, &dest); err != nil {
-			return err
+		return d.Set(
+			"field_content_value_parameters",
+			[]map[string]interface{}{{
+				"grace":   prms.Grace,
+				"backlog": prms.Backlog,
+				"field":   prms.Field,
+				"value":   prms.Value,
+				"query":   prms.Query,
+			}})
+	case "field_value":
+		prms, ok := cond.Parameters.(graylog.FieldAggregationAlertConditionParameters)
+		if !ok {
+			return fmt.Errorf("parameters is invalid type as field_value")
 		}
-		for k, v := range dest {
-			if err := d.Set(fmt.Sprintf("parameters.%s", k), v); err != nil {
+		return d.Set(
+			"field_value_parameters",
+			[]map[string]interface{}{{
+				"grace":                prms.Grace,
+				"backlog":              prms.Backlog,
+				"threshold":            prms.Threshold,
+				"time":                 prms.Time,
+				"repeat_notifications": prms.RepeatNotifications,
+				"field":                prms.Field,
+				"query":                prms.Query,
+				"threshold_type":       prms.ThresholdType,
+				"type":                 prms.Type,
+			}})
+	case "message_count":
+		prms, ok := cond.Parameters.(graylog.MessageCountAlertConditionParameters)
+		if !ok {
+			return fmt.Errorf("parameters is invalid type as message_count")
+		}
+		return d.Set(
+			"message_count_parameters",
+			[]map[string]interface{}{{
+				"grace":                prms.Grace,
+				"backlog":              prms.Backlog,
+				"threshold":            prms.Threshold,
+				"time":                 prms.Time,
+				"repeat_notifications": prms.RepeatNotifications,
+				"query":                prms.Query,
+				"threshold_type":       prms.ThresholdType,
+			}})
+	}
+	prms, ok := cond.Parameters.(graylog.GeneralAlertConditionParameters)
+	if !ok {
+		return fmt.Errorf("parameters is invalid type as GeneralAlertConditionParameters")
+	}
+	for k, v := range prms.Parameters {
+		switch t := v.(type) {
+		case int:
+			if err := d.Set(fmt.Sprintf("general_int_parameters.%s", k), t); err != nil {
+				return err
+			}
+		case bool:
+			if err := d.Set(fmt.Sprintf("general_bool_parameters.%s", k), t); err != nil {
+				return err
+			}
+		case float64:
+			if err := d.Set(fmt.Sprintf("general_float_parameters.%s", k), t); err != nil {
+				return err
+			}
+		case float32:
+			if err := d.Set(fmt.Sprintf("general_float_parameters.%s", k), t); err != nil {
+				return err
+			}
+		case string:
+			if err := d.Set(fmt.Sprintf("general_string_parameters.%s", k), t); err != nil {
 				return err
 			}
 		}
