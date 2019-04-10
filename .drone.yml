@@ -58,7 +58,7 @@ steps:
 - name: release
   image: suzukishunsuke/ghr
   commands:
-  - ghr -u suzuki-shunsuke ${DRONE_TAG} dist/${DRONE_TAG}
+  - ghr -u suzuki-shunsuke -r go-graylog ${DRONE_TAG} dist/${DRONE_TAG}
   environment:
     GITHUB_TOKEN:
       from_secret: github_token
