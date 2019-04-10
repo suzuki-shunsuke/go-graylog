@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.0.0-0"></a>
+# [2.0.0-0](https://github.com/suzuki-shunsuke/go-graylog/compare/v1.4.0...v2.0.0-0) (2019-04-10)
+
+
+### Features
+
+* migrate terraform AlertCondition resource ([23dc1eb](https://github.com/suzuki-shunsuke/go-graylog/commit/23dc1eb)), closes [#76](https://github.com/suzuki-shunsuke/go-graylog/issues/76)
+
+
+
 <a name="1.4.0"></a>
 # [1.4.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v1.3.2...v1.4.0) (2019-02-27)
 
