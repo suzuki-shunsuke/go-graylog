@@ -112,6 +112,10 @@ func resourceAlertCondition() *schema.Resource {
 							Type:     schema.TypeInt,
 							Optional: true,
 						},
+						"repeat_notifications": {
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
 					},
 				},
 			},
@@ -144,6 +148,10 @@ func resourceAlertCondition() *schema.Resource {
 						},
 						"time": {
 							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"repeat_notifications": {
+							Type:     schema.TypeBool,
 							Optional: true,
 						},
 					},
