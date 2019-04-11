@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.0.0-4"></a>
+# [2.0.0-4](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.0.0-3...v2.0.0-4) (2019-04-11)
+
+
+### Bug Fixes
+
+* add repeat_notifications to terraform's alert condition resource ([d7fbb04](https://github.com/suzuki-shunsuke/go-graylog/commit/d7fbb04)), closes [#82](https://github.com/suzuki-shunsuke/go-graylog/issues/82)
+
+
+
 <a name="2.0.0-3"></a>
 # [2.0.0-3](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.0.0-2...v2.0.0-3) (2019-04-11)
 
