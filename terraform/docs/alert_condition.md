@@ -94,6 +94,7 @@ field_value_parameters.backlog | 0 | int |
 field_value_parameters.query | "" | string |
 field_value_parameters.threshold | 0 | int |
 field_value_parameters.time | 0 | int |
+field_value_parameters.repeat_notifications | false | bool |
 
 ## type: message_count 
 
@@ -112,6 +113,7 @@ message_count_parameters.backlog | 0 | int |
 message_count_parameters.query | "" | string |
 message_count_parameters.threshold | 0 | int |
 message_count_parameters.time | 0 | int |
+message_count_parameters.repeat_notifications | false | bool |
 
 ## type: other third party's Alert Condition
 
