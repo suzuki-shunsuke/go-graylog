@@ -19,7 +19,7 @@ func resourceAlertCondition() *schema.Resource {
 		Delete: resourceAlertConditionDelete,
 
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			State: genImport("stream_id", "alert_condition_id"),
 		},
 
 		SchemaVersion: 1,
