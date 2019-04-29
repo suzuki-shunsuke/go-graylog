@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.0.0-5"></a>
+# [2.0.0-5](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.0.0-4...v2.0.0-5) (2019-04-29)
+
+
+### Bug Fixes
+
+* fix type conversion error ([d4b1777](https://github.com/suzuki-shunsuke/go-graylog/commit/d4b1777)), closes [#84](https://github.com/suzuki-shunsuke/go-graylog/issues/84)
+
+
+
 <a name="2.0.0-4"></a>
 # [2.0.0-4](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.0.0-3...v2.0.0-4) (2019-04-11)
 
