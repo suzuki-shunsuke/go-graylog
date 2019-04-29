@@ -6,7 +6,6 @@ import (
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/pkg/errors"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 )
@@ -256,8 +255,7 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 	timeKey := "time"
 
 	var (
-		err error
-		ok  bool
+		ok bool
 	)
 
 	switch d.Get("type").(string) {
@@ -270,16 +268,16 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 		for k, v := range prms.([]interface{})[0].(map[string]interface{}) {
 			switch k {
 			case graceKey:
-				if p.Grace, err = convIntfStrToInt(v); err != nil {
-					return nil, errors.Wrapf(err, "%s must be int", k)
+				if p.Grace, ok = v.(int); !ok {
+					return nil, fmt.Errorf("%s must be int: %v", k, v)
 				}
 			case backlogKey:
-				if p.Backlog, err = convIntfStrToInt(v); err != nil {
-					return nil, errors.Wrapf(err, "%s must be int", k)
+				if p.Backlog, ok = v.(int); !ok {
+					return nil, fmt.Errorf("%s must be int: %v", k, v)
 				}
 			case repeatNotificationsKey:
-				if p.RepeatNotifications, err = convIntfStrToBool(v); err != nil {
-					return nil, errors.Wrapf(err, "%s must be bool", k)
+				if p.RepeatNotifications, ok = v.(bool); !ok {
+					return nil, fmt.Errorf("%s must be bool: %v", k, v)
 				}
 			case fieldKey:
 				if p.Field, ok = v.(string); !ok {
@@ -308,24 +306,24 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 		for k, v := range prms.([]interface{})[0].(map[string]interface{}) {
 			switch k {
 			case repeatNotificationsKey:
-				if p.RepeatNotifications, err = convIntfStrToBool(v); err != nil {
-					return nil, errors.Wrapf(err, "%s must be bool", k)
+				if p.RepeatNotifications, ok = v.(bool); !ok {
+					return nil, fmt.Errorf("%s must be bool: %v", k, v)
 				}
 			case graceKey:
-				if p.Grace, err = convIntfStrToInt(v); err != nil {
-					return nil, errors.Wrapf(err, "%s must be int", k)
+				if p.Grace, ok = v.(int); !ok {
+					return nil, fmt.Errorf("%s must be int: %v", k, v)
 				}
 			case backlogKey:
-				if p.Backlog, err = convIntfStrToInt(v); err != nil {
-					return nil, errors.Wrapf(err, "%s must be int", k)
+				if p.Backlog, ok = v.(int); !ok {
+					return nil, fmt.Errorf("%s must be int: %v", k, v)
 				}
 			case thresholdKey:
-				if p.Threshold, err = convIntfStrToInt(v); err != nil {
-					return nil, errors.Wrapf(err, "%s must be int", k)
+				if p.Threshold, ok = v.(int); !ok {
+					return nil, fmt.Errorf("%s must be int: %v", k, v)
 				}
 			case timeKey:
-				if p.Time, err = convIntfStrToInt(v); err != nil {
-					return nil, errors.Wrapf(err, "%s must be int", k)
+				if p.Time, ok = v.(int); !ok {
+					return nil, fmt.Errorf("%s must be int: %v", k, v)
 				}
 			case fieldKey:
 				if p.Field, ok = v.(string); !ok {
@@ -358,24 +356,24 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 		for k, v := range prms.([]interface{})[0].(map[string]interface{}) {
 			switch k {
 			case repeatNotificationsKey:
-				if p.RepeatNotifications, err = convIntfStrToBool(v); err != nil {
-					return nil, errors.Wrapf(err, "%s must be bool", k)
+				if p.RepeatNotifications, ok = v.(bool); !ok {
+					return nil, fmt.Errorf("%s must be bool: %v", k, v)
 				}
 			case graceKey:
-				if p.Grace, err = convIntfStrToInt(v); err != nil {
-					return nil, errors.Wrapf(err, "%s must be int", k)
+				if p.Grace, ok = v.(int); !ok {
+					return nil, fmt.Errorf("%s must be int: %v", k, v)
 				}
 			case backlogKey:
-				if p.Backlog, err = convIntfStrToInt(v); err != nil {
-					return nil, errors.Wrapf(err, "%s must be int", k)
+				if p.Backlog, ok = v.(int); !ok {
+					return nil, fmt.Errorf("%s must be int: %v", k, v)
 				}
 			case thresholdKey:
-				if p.Threshold, err = convIntfStrToInt(v); err != nil {
-					return nil, errors.Wrapf(err, "%s must be int", k)
+				if p.Threshold, ok = v.(int); !ok {
+					return nil, fmt.Errorf("%s must be int: %v", k, v)
 				}
 			case timeKey:
-				if p.Time, err = convIntfStrToInt(v); err != nil {
-					return nil, errors.Wrapf(err, "%s must be int", k)
+				if p.Time, ok = v.(int); !ok {
+					return nil, fmt.Errorf("%s must be int: %v", k, v)
 				}
 			case queryKey:
 				if p.Query, ok = v.(string); !ok {
