@@ -3,7 +3,7 @@ kind: pipeline
 name: commitlint
 steps:
 - name: npm install
-  image: &node_image node:10.15.2-alpine
+  image: &node_image node:10.15.3-alpine
   commands:
   - npm i
 - name: tag/commitlint
@@ -33,11 +33,11 @@ steps:
   commands:
   - dep-dl
 - name: golangci-lint
-  image: golangci/golangci-lint:v1.15
+  image: golangci/golangci-lint:v1.16.0
   commands:
   - golangci-lint run
 - name: codecov
-  image: &image_go golang:1.12.1
+  image: &image_go golang:1.12.5
   commands:
   # bash and cgo seem to be required
   - bash scripts/codecov-test.sh
