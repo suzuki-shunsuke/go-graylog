@@ -66,15 +66,15 @@ func (client *Client) UpdatePipelineRule(
 func (client *Client) UpdatePipelineRuleContext(
 	ctx context.Context, rule *graylog.PipelineRule,
 ) (*ErrorInfo, error) {
-	id := rule.ID
-	rule.ID = ""
-	u, err := client.Endpoints().PipelineRule(id)
+	u, err := client.Endpoints().PipelineRule(rule.ID)
 	if err != nil {
 		return nil, err
 	}
-	ei, err := client.callPut(ctx, u.String(), rule, &rule)
-	rule.ID = id
-	return ei, err
+	defer func(id string) {
+		rule.ID = id
+	}(rule.ID)
+	rule.ID = ""
+	return client.callPut(ctx, u.String(), rule, rule)
 }
 
 // DeletePipelineRule deletes a pipeline rule.

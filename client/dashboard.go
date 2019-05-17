@@ -97,17 +97,15 @@ func (client *Client) UpdateDashboardContext(
 	if dashboard == nil {
 		return nil, fmt.Errorf("dashboard is nil")
 	}
-	id := dashboard.ID
-	if id == "" {
+	if dashboard.ID == "" {
 		return nil, fmt.Errorf("id is empty")
 	}
-	u, err := client.Endpoints().Dashboard(id)
+	u, err := client.Endpoints().Dashboard(dashboard.ID)
 	if err != nil {
 		return nil, err
 	}
-	d := &graylog.Dashboard{
+	return client.callPut(ctx, u.String(), &graylog.Dashboard{
 		Title:       dashboard.Title,
 		Description: dashboard.Description,
-	}
-	return client.callPut(ctx, u.String(), d, nil)
+	}, nil)
 }

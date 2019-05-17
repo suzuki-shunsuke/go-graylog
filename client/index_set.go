@@ -45,13 +45,12 @@ func (client *Client) GetIndexSetContext(
 	if id == "" {
 		return nil, nil, errors.New("id is empty")
 	}
-	is := &graylog.IndexSet{}
 	u, err := client.Endpoints().IndexSet(id)
 	if err != nil {
 		return nil, nil, err
 	}
-	ei, err := client.callGet(
-		ctx, u.String(), nil, is)
+	is := &graylog.IndexSet{}
+	ei, err := client.callGet(ctx, u.String(), nil, is)
 	return is, ei, err
 }
 

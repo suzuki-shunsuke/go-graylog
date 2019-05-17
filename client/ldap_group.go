@@ -13,8 +13,7 @@ func (client *Client) GetLDAPGroups() ([]string, *ErrorInfo, error) {
 func (client *Client) GetLDAPGroupsContext(ctx context.Context) ([]string, *ErrorInfo, error) {
 	// GET /system/ldap/groups Get the available LDAP groups
 	groups := []string{}
-	ei, err := client.callGet(
-		ctx, client.Endpoints().LDAPGroups(), nil, &groups)
+	ei, err := client.callGet(ctx, client.Endpoints().LDAPGroups(), nil, &groups)
 	return groups, ei, err
 }
 
