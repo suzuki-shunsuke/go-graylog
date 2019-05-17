@@ -51,7 +51,7 @@ func (client *Client) CreatePipelineRuleContext(
 	ctx context.Context, rule *graylog.PipelineRule,
 ) (*ErrorInfo, error) {
 	return client.callPost(
-		ctx, client.Endpoints().PipelineRules(), rule, &rule)
+		ctx, client.Endpoints().PipelineRules(), rule, rule)
 }
 
 // UpdatePipelineRule updates a pipeline rule.
