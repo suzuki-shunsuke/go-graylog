@@ -50,9 +50,8 @@ func (client *Client) CreatePipelineRule(
 func (client *Client) CreatePipelineRuleContext(
 	ctx context.Context, rule *graylog.PipelineRule,
 ) (*ErrorInfo, error) {
-	ei, err := client.callPost(
+	return client.callPost(
 		ctx, client.Endpoints().PipelineRules(), rule, &rule)
-	return ei, err
 }
 
 // UpdatePipelineRule updates a pipeline rule.

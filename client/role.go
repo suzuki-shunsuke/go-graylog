@@ -34,8 +34,7 @@ func (client *Client) GetRolesContext(ctx context.Context) (
 	[]graylog.Role, int, *ErrorInfo, error,
 ) {
 	roles := &graylog.RolesBody{}
-	ei, err := client.callGet(
-		ctx, client.Endpoints().Roles(), nil, roles)
+	ei, err := client.callGet(ctx, client.Endpoints().Roles(), nil, roles)
 	return roles.Roles, roles.Total, ei, err
 }
 
@@ -56,8 +55,7 @@ func (client *Client) GetRoleContext(
 		return nil, nil, err
 	}
 	role := &graylog.Role{}
-	ei, err := client.callGet(
-		ctx, u.String(), nil, role)
+	ei, err := client.callGet(ctx, u.String(), nil, role)
 	return role, ei, err
 }
 
