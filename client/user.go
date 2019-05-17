@@ -32,8 +32,7 @@ func (client *Client) GetUsers() ([]graylog.User, *ErrorInfo, error) {
 // GetUsersContext returns all users with a context.
 func (client *Client) GetUsersContext(ctx context.Context) ([]graylog.User, *ErrorInfo, error) {
 	users := &graylog.UsersBody{}
-	ei, err := client.callGet(
-		ctx, client.Endpoints().Users(), nil, users)
+	ei, err := client.callGet(ctx, client.Endpoints().Users(), nil, users)
 	return users.Users, ei, err
 }
 

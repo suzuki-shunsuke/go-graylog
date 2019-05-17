@@ -25,8 +25,7 @@ func (client *Client) GetRoleMembersContext(
 		return nil, nil, err
 	}
 	users := &graylog.UsersBody{}
-	ei, err := client.callGet(
-		ctx, u.String(), nil, users)
+	ei, err := client.callGet(ctx, u.String(), nil, users)
 	return users.Users, ei, err
 }
 

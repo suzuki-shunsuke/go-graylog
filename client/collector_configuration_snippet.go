@@ -54,8 +54,7 @@ func (client *Client) DeleteCollectorConfigurationSnippetContext(
 	if err != nil {
 		return nil, err
 	}
-	return client.callDelete(
-		ctx, u.String(), nil, nil)
+	return client.callDelete(ctx, u.String(), nil, nil)
 }
 
 // UpdateCollectorConfigurationSnippet updates a collector configuration snippet.
@@ -85,6 +84,5 @@ func (client *Client) UpdateCollectorConfigurationSnippetContext(
 	if err != nil {
 		return nil, err
 	}
-	return client.callPut(
-		ctx, u.String(), snippet, nil)
+	return client.callPut(ctx, u.String(), snippet, nil)
 }

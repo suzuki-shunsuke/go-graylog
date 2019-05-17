@@ -55,8 +55,7 @@ func (client *Client) DeleteCollectorConfigurationOutputContext(
 	if err != nil {
 		return nil, err
 	}
-	return client.callDelete(
-		ctx, u.String(), nil, nil)
+	return client.callDelete(ctx, u.String(), nil, nil)
 }
 
 // UpdateCollectorConfigurationOutput updates a collector configuration output.
@@ -86,6 +85,5 @@ func (client *Client) UpdateCollectorConfigurationOutputContext(
 	if err != nil {
 		return nil, err
 	}
-	return client.callPut(
-		ctx, u.String(), output, nil)
+	return client.callPut(ctx, u.String(), output, nil)
 }
