@@ -31,11 +31,8 @@ matching_type | | string |
 remove_matches_from_default_stream | | bool |
 is_default | | bool |
 pipelines | `[]` | []string | pipeline ids which connect to the stream
-sync_pipelines | false | bool | whether pipeline connection is synced
 
-If `sync_pipelines` is false and the size of `pipelines` is 0, pipeline connection isn't synchronized. 
-If the size of `pipelines` isn't 0, pipeline connection is synchronized even if `sync_pipelines` is false.
-
+If `pipelines` is set pipeline connection is synchronized, otherwise pipeline connctions isn't synchronized.
 There is no API to delete pipeline connections so we treat pipeline connections as not resource but attribute of streams.
 
 ## Attrs Reference

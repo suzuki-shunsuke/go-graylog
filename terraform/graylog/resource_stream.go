@@ -71,11 +71,6 @@ func resourceStream() *schema.Resource {
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-
-			"sync_pipeline": {
-				Type:     schema.TypeBool,
-				Optional: true,
-			},
 		},
 	}
 }
@@ -114,7 +109,7 @@ func resourceStreamCreate(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 	// create pipeline connection
-	if d.Get("sync_pipeline").(bool) {
+	if _, ok := d.GetOk("pipelines"); ok {
 		if _, err := cl.ConnectPipelinesToStream(&graylog.PipelineConnection{
 			PipelineIDs: pipelines,
 			StreamID:    stream.ID,
@@ -164,7 +159,7 @@ func resourceStreamRead(d *schema.ResourceData, m interface{}) error {
 	if err := setBoolToRD(d, "is_default", stream.IsDefault); err != nil {
 		return err
 	}
-	if d.Get("sync_pipeline").(bool) {
+	if _, ok := d.GetOk("pipelines"); ok {
 		pipelines := []string{}
 		conn, ei, err := cl.GetPipelineConnectionsOfStream(d.Id())
 		if err != nil {
@@ -196,7 +191,7 @@ func resourceStreamUpdate(d *schema.ResourceData, m interface{}) error {
 	if _, err := cl.UpdateStream(stream); err != nil {
 		return err
 	}
-	if d.Get("sync_pipeline").(bool) {
+	if _, ok := d.GetOk("pipelines"); ok {
 		if _, err := cl.ConnectPipelinesToStream(&graylog.PipelineConnection{
 			PipelineIDs: pipelines,
 			StreamID:    stream.ID,
