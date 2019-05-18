@@ -12,27 +12,40 @@ func urlJoin(ep *url.URL, arg string) (*url.URL, error) {
 
 // Endpoints represents each API's endpoint URLs.
 type Endpoints struct {
-	alarmCallbacks          *url.URL
-	alerts                  *url.URL
-	alertConditions         *url.URL
-	collectorConfigurations *url.URL
-	dashboards              *url.URL
-	enabledStreams          *url.URL
-	indexSets               *url.URL
-	indexSetStats           *url.URL
-	inputs                  *url.URL
-	pipelines               *url.URL
-	pipelineRules           *url.URL
-	roles                   *url.URL
-	streams                 *url.URL
-	users                   *url.URL
-	ldapSetting             string
-	ldapGroups              string
-	ldapGroupRoleMapping    string
+	alarmCallbacks           *url.URL
+	alerts                   *url.URL
+	alertConditions          *url.URL
+	collectorConfigurations  *url.URL
+	dashboards               *url.URL
+	enabledStreams           *url.URL
+	indexSets                *url.URL
+	indexSetStats            *url.URL
+	inputs                   *url.URL
+	pipelines                *url.URL
+	pipelineConnections      *url.URL
+	pipelineRules            *url.URL
+	roles                    *url.URL
+	streams                  *url.URL
+	users                    *url.URL
+	ldapSetting              string
+	ldapGroups               string
+	ldapGroupRoleMapping     string
+	connectStreamsToPipeline string
+	connectPipelinesToStream string
+	apiVersion               string
 }
 
 // NewEndpoints returns a new Endpoints.
 func NewEndpoints(endpoint string) (*Endpoints, error) {
+	return newEndpoints(endpoint, "")
+}
+
+// NewEndpointsV3 returns a new Endpoints for Graylog API v3.
+func NewEndpointsV3(endpoint string) (*Endpoints, error) {
+	return newEndpoints(endpoint, "v3")
+}
+
+func newEndpoints(endpoint, version string) (*Endpoints, error) {
 	if endpoint == "" {
 		return nil, fmt.Errorf("endpoint is required")
 	}
@@ -96,35 +109,84 @@ func NewEndpoints(endpoint string) (*Endpoints, error) {
 	if err != nil {
 		return nil, err
 	}
-	pipelines, err := urlJoin(ep, "plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/pipeline")
-	if err != nil {
-		return nil, err
-	}
-	pipelineRules, err := urlJoin(ep, "plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/rule")
-	if err != nil {
-		return nil, err
+	var pipelines, pipelineRules, pipelineConns, connectPipelinesToStream, connectStreamsToPipeline *url.URL
+	if version == "v3" {
+		// http://docs.graylog.org/en/3.0/pages/upgrade/graylog-3.0.html#plugins-merged-into-the-graylog-server
+		pipelines, err = urlJoin(ep, "system/pipelines/pipeline")
+		if err != nil {
+			return nil, err
+		}
+		pipelineRules, err = urlJoin(ep, "system/pipelines/rule")
+		if err != nil {
+			return nil, err
+		}
+		pipelineConns, err = urlJoin(ep, "system/pipelines/connections")
+		if err != nil {
+			return nil, err
+		}
+		connectStreamsToPipeline, err = urlJoin(
+			ep, "system/pipelines/connections/to_pipeline")
+		if err != nil {
+			return nil, err
+		}
+		connectPipelinesToStream, err = urlJoin(
+			ep, "system/pipelines/connections/to_stream")
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		pipelines, err = urlJoin(
+			ep, "plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/pipeline")
+		if err != nil {
+			return nil, err
+		}
+		pipelineRules, err = urlJoin(
+			ep, "plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/rule")
+		if err != nil {
+			return nil, err
+		}
+		pipelineConns, err = urlJoin(
+			ep, "plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/connections")
+		if err != nil {
+			return nil, err
+		}
+		connectStreamsToPipeline, err = urlJoin(
+			ep, "plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/connections/to_pipeline")
+		if err != nil {
+			return nil, err
+		}
+		connectPipelinesToStream, err = urlJoin(
+			ep, "plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/connections/to_stream")
+		if err != nil {
+			return nil, err
+		}
+
 	}
 	users, err := urlJoin(ep, "users")
 	if err != nil {
 		return nil, err
 	}
 	return &Endpoints{
-		alarmCallbacks:          alarmCallbacks,
-		alerts:                  alerts,
-		alertConditions:         alertConditions,
-		collectorConfigurations: collectorConfigurations,
-		dashboards:              dashboards,
-		enabledStreams:          enabledStreams,
-		indexSets:               indexSets,
-		indexSetStats:           indexSetStats,
-		inputs:                  inputs,
-		ldapGroups:              ldapGroups.String(),
-		ldapGroupRoleMapping:    ldapGroupRoleMapping.String(),
-		ldapSetting:             ldapSetting.String(),
-		pipelines:               pipelines,
-		pipelineRules:           pipelineRules,
-		roles:                   roles,
-		streams:                 streams,
-		users:                   users,
+		alarmCallbacks:           alarmCallbacks,
+		alerts:                   alerts,
+		alertConditions:          alertConditions,
+		collectorConfigurations:  collectorConfigurations,
+		dashboards:               dashboards,
+		enabledStreams:           enabledStreams,
+		indexSets:                indexSets,
+		indexSetStats:            indexSetStats,
+		inputs:                   inputs,
+		ldapGroups:               ldapGroups.String(),
+		ldapGroupRoleMapping:     ldapGroupRoleMapping.String(),
+		ldapSetting:              ldapSetting.String(),
+		pipelines:                pipelines,
+		pipelineConnections:      pipelineConns,
+		connectStreamsToPipeline: connectStreamsToPipeline.String(),
+		connectPipelinesToStream: connectPipelinesToStream.String(),
+		pipelineRules:            pipelineRules,
+		roles:                    roles,
+		streams:                  streams,
+		users:                    users,
+		apiVersion:               version,
 	}, nil
 }

@@ -65,11 +65,22 @@ func resourceStream() *schema.Resource {
 			},
 			// alert_conditions
 			// alert_receivers
+
+			"pipelines": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
+
+			"sync_pipeline": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 		},
 	}
 }
 
-func newStream(d *schema.ResourceData) (*graylog.Stream, error) {
+func newStream(d *schema.ResourceData) (*graylog.Stream, []string, error) {
 	return &graylog.Stream{
 		IndexSetID:   d.Get("index_set_id").(string),
 		Title:        d.Get("title").(string),
@@ -78,7 +89,7 @@ func newStream(d *schema.ResourceData) (*graylog.Stream, error) {
 		RemoveMatchesFromDefaultStream: d.Get(
 			"remove_matches_from_default_stream").(bool),
 		ID: d.Id(),
-	}, nil
+	}, getStringArray(d.Get("pipelines").(*schema.Set).List()), nil
 }
 
 func resourceStreamCreate(d *schema.ResourceData, m interface{}) error {
@@ -86,7 +97,7 @@ func resourceStreamCreate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	stream, err := newStream(d)
+	stream, pipelines, err := newStream(d)
 	if err != nil {
 		return err
 	}
@@ -102,6 +113,16 @@ func resourceStreamCreate(d *schema.ResourceData, m interface{}) error {
 			return err
 		}
 	}
+	// create pipeline connection
+	if d.Get("sync_pipeline").(bool) {
+		if _, err := cl.ConnectPipelinesToStream(&graylog.PipelineConnection{
+			PipelineIDs: pipelines,
+			StreamID:    stream.ID,
+		}); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -140,7 +161,25 @@ func resourceStreamRead(d *schema.ResourceData, m interface{}) error {
 	if err := setBoolToRD(d, "disabled", stream.Disabled); err != nil {
 		return err
 	}
-	return setBoolToRD(d, "is_default", stream.IsDefault)
+	if err := setBoolToRD(d, "is_default", stream.IsDefault); err != nil {
+		return err
+	}
+	if d.Get("sync_pipeline").(bool) {
+		pipelines := []string{}
+		conn, ei, err := cl.GetPipelineConnectionsOfStream(d.Id())
+		if err != nil {
+			if ei == nil || ei.Response == nil || ei.Response.StatusCode != 404 {
+				return err
+			}
+		} else {
+			pipelines = conn.PipelineIDs
+		}
+		if err := setStrListToRD(d, "pipelines", pipelines); err != nil {
+			return err
+		}
+	}
+	return nil
+
 	// alert_receivers
 	// alert_conditions
 }
@@ -150,12 +189,20 @@ func resourceStreamUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	stream, err := newStream(d)
+	stream, pipelines, err := newStream(d)
 	if err != nil {
 		return err
 	}
 	if _, err := cl.UpdateStream(stream); err != nil {
 		return err
+	}
+	if d.Get("sync_pipeline").(bool) {
+		if _, err := cl.ConnectPipelinesToStream(&graylog.PipelineConnection{
+			PipelineIDs: pipelines,
+			StreamID:    stream.ID,
+		}); err != nil {
+			return err
+		}
 	}
 	return nil
 }

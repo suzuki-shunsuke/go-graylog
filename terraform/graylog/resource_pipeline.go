@@ -31,6 +31,7 @@ func resourcePipeline() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+
 			// We don't define the attribute "title",
 			// because the request parameter "title" is ignored in create and update API.
 		},
@@ -54,7 +55,7 @@ func resourcePipelineCreate(d *schema.ResourceData, m interface{}) error {
 	if pipe.Source == "" {
 		return fmt.Errorf("source is required to create a pipeline")
 	}
-	if _, err = cl.CreatePipeline(pipe); err != nil {
+	if _, err := cl.CreatePipeline(pipe); err != nil {
 		return err
 	}
 	d.SetId(pipe.ID)
