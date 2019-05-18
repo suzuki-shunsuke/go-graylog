@@ -84,6 +84,7 @@ x_requested_by | GRAYLOG_X_REQUESTED_BY | terraform-go-graylog | [X-Requested-By
 * [index_set](docs/index_set.md)
 * [input](docs/input.md)
 * [ldap_setting](docs/ldap_setting.md)
+* [pipeline](docs/pipeline.md)
 * [pipeline_rule](docs/pipeline_rule.md)
 * [role](docs/role.md)
 * [stream](docs/stream.md)

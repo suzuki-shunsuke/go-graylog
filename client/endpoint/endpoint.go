@@ -21,6 +21,7 @@ type Endpoints struct {
 	indexSets               *url.URL
 	indexSetStats           *url.URL
 	inputs                  *url.URL
+	pipelines               *url.URL
 	pipelineRules           *url.URL
 	roles                   *url.URL
 	streams                 *url.URL
@@ -95,6 +96,10 @@ func NewEndpoints(endpoint string) (*Endpoints, error) {
 	if err != nil {
 		return nil, err
 	}
+	pipelines, err := urlJoin(ep, "plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/pipeline")
+	if err != nil {
+		return nil, err
+	}
 	pipelineRules, err := urlJoin(ep, "plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/rule")
 	if err != nil {
 		return nil, err
@@ -116,6 +121,7 @@ func NewEndpoints(endpoint string) (*Endpoints, error) {
 		ldapGroups:              ldapGroups.String(),
 		ldapGroupRoleMapping:    ldapGroupRoleMapping.String(),
 		ldapSetting:             ldapSetting.String(),
+		pipelines:               pipelines,
 		pipelineRules:           pipelineRules,
 		roles:                   roles,
 		streams:                 streams,

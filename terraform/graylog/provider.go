@@ -39,6 +39,7 @@ func Provider() *schema.Provider {
 			"graylog_index_set":       resourceIndexSet(),
 			"graylog_input":           resourceInput(),
 			"graylog_ldap_setting":    resourceLDAPSetting(),
+			"graylog_pipeline":        resourcePipeline(),
 			"graylog_pipeline_rule":   resourcePipelineRule(),
 			"graylog_role":            resourceRole(),
 			"graylog_stream":          resourceStream(),
