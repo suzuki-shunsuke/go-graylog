@@ -75,6 +75,7 @@ auth_password | GRAYLOG_AUTH_PASSWORD |
 name | Environment variable | default | description
 --- | --- | --- | ---
 x_requested_by | GRAYLOG_X_REQUESTED_BY | terraform-go-graylog | [X-Requested-By Header](https://github.com/Graylog2/graylog2-server/blob/370dd700bc8ada5448bf66459dec9a85fcd22d58/UPGRADING.rst#protecting-against-csrf-http-header-required)
+api_version | GRAYLOG_API_VERSION | "v2" | Graylog's API version. The default value is "v2" for compatibility. If you use Graylog v3, please set "v3".
 
 ## Resources
 

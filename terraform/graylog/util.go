@@ -39,8 +39,17 @@ func getStringArray(src []interface{}) []string {
 
 func newClient(m interface{}) (*client.Client, error) {
 	config := m.(*Config)
-	cl, err := client.NewClient(
-		config.Endpoint, config.AuthName, config.AuthPassword)
+	var (
+		cl  *client.Client
+		err error
+	)
+	if config.APIVersion == "v3" {
+		cl, err = client.NewClientV3(
+			config.Endpoint, config.AuthName, config.AuthPassword)
+	} else {
+		cl, err = client.NewClient(
+			config.Endpoint, config.AuthName, config.AuthPassword)
+	}
 	if err != nil {
 		return cl, err
 	}
@@ -74,6 +83,7 @@ func setEnv() (*client.Client, *mockserver.Server, error) {
 	var (
 		server *mockserver.Server
 		err    error
+		cl     *client.Client
 	)
 	endpoint := os.Getenv("GRAYLOG_WEB_ENDPOINT_URI")
 	if endpoint == "" {
@@ -87,7 +97,11 @@ func setEnv() (*client.Client, *mockserver.Server, error) {
 			return nil, nil, err
 		}
 	}
-	cl, err := client.NewClient(endpoint, authName, authPass)
+	if os.Getenv("GRAYLOG_API_VERSION") == "v3" {
+		cl, err = client.NewClientV3(endpoint, authName, authPass)
+	} else {
+		cl, err = client.NewClient(endpoint, authName, authPass)
+	}
 	if err != nil {
 		return nil, nil, err
 	}
