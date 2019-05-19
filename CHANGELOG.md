@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.2.0"></a>
+# [2.2.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.1.0...v2.2.0) (2019-05-19)
+
+
+### Bug Fixes
+
+* add graylog_pipeline_connection resource ([c29afd5](https://github.com/suzuki-shunsuke/go-graylog/commit/c29afd5))
+* remove sync_pipelines ([6486d68](https://github.com/suzuki-shunsuke/go-graylog/commit/6486d68))
+
+
+### Features
+
+* add the parameter api_version to support v3 ([ab5fa4f](https://github.com/suzuki-shunsuke/go-graylog/commit/ab5fa4f))
+* support Plugins/Pipelines/Connections API ([5ac0342](https://github.com/suzuki-shunsuke/go-graylog/commit/5ac0342)), closes [#91](https://github.com/suzuki-shunsuke/go-graylog/issues/91)
+
+
+
 <a name="2.1.0"></a>
 # [2.1.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.0.1...v2.1.0) (2019-05-18)
 
