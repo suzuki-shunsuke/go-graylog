@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.3.0"></a>
+# [2.3.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.2.0...v2.3.0) (2019-05-19)
+
+
+### Features
+
+* add the field "field_type_refresh_interval" to IndexSet ([ab45d2d](https://github.com/suzuki-shunsuke/go-graylog/commit/ab45d2d)), closes [#92](https://github.com/suzuki-shunsuke/go-graylog/issues/92)
+
+
+
 <a name="2.2.0"></a>
 # [2.2.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.1.0...v2.2.0) (2019-05-19)
 
