@@ -31,20 +31,27 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{
 					"GRAYLOG_X_REQUESTED_BY"}, "terraform-go-graylog"),
 			},
+			"api_version": {
+				Type:     schema.TypeString,
+				Optional: true,
+				DefaultFunc: schema.MultiEnvDefaultFunc([]string{
+					"GRAYLOG_API_VERSION"}, "v2"),
+			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"graylog_alert_condition": resourceAlertCondition(),
-			"graylog_alarm_callback":  resourceAlarmCallback(),
-			"graylog_dashboard":       resourceDashboard(),
-			"graylog_index_set":       resourceIndexSet(),
-			"graylog_input":           resourceInput(),
-			"graylog_ldap_setting":    resourceLDAPSetting(),
-			"graylog_pipeline":        resourcePipeline(),
-			"graylog_pipeline_rule":   resourcePipelineRule(),
-			"graylog_role":            resourceRole(),
-			"graylog_stream":          resourceStream(),
-			"graylog_stream_rule":     resourceStreamRule(),
-			"graylog_user":            resourceUser(),
+			"graylog_alert_condition":     resourceAlertCondition(),
+			"graylog_alarm_callback":      resourceAlarmCallback(),
+			"graylog_dashboard":           resourceDashboard(),
+			"graylog_index_set":           resourceIndexSet(),
+			"graylog_input":               resourceInput(),
+			"graylog_ldap_setting":        resourceLDAPSetting(),
+			"graylog_pipeline":            resourcePipeline(),
+			"graylog_pipeline_rule":       resourcePipelineRule(),
+			"graylog_pipeline_connection": resourcePipelineConnection(),
+			"graylog_role":                resourceRole(),
+			"graylog_stream":              resourceStream(),
+			"graylog_stream_rule":         resourceStreamRule(),
+			"graylog_user":                resourceUser(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
@@ -56,6 +63,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		AuthName:     d.Get("auth_name").(string),
 		AuthPassword: d.Get("auth_password").(string),
 		XRequestedBy: d.Get("x_requested_by").(string),
+		APIVersion:   d.Get("api_version").(string),
 	}
 
 	if err := config.loadAndValidate(); err != nil {

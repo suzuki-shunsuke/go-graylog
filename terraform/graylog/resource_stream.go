@@ -141,6 +141,7 @@ func resourceStreamRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 	return setBoolToRD(d, "is_default", stream.IsDefault)
+
 	// alert_receivers
 	// alert_conditions
 }

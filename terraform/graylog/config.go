@@ -6,6 +6,7 @@ type Config struct {
 	AuthName     string
 	AuthPassword string
 	XRequestedBy string
+	APIVersion   string
 }
 
 func (c *Config) loadAndValidate() error {
