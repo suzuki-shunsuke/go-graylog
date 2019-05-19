@@ -9,6 +9,14 @@ resource "graylog_pipeline_connection" "test" {
 }
 ```
 
+## Import
+
+Specify the stream id as ID.
+
+```console
+$ terraform import graylog_pipeline_connection.test <stream id>
+```
+
 ## Argument Reference
 
 ### Required Argument
