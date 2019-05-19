@@ -53,6 +53,8 @@ type IndexSet struct {
 	IndexAnalyzer                   string `json:"index_analyzer,omitempty" v-create:"required"`
 	Shards                          int    `json:"shards,omitempty" v-create:"required"`
 	IndexOptimizationMaxNumSegments int    `json:"index_optimization_max_num_segments,omitempty" v-create:"required"`
+	// field_type_refresh_interval is added from Graylog API v3
+	FieldTypeRefreshInterval int `json:"field_type_refresh_interval,omitempty"`
 
 	ID string `json:"id,omitempty" v-create:"isdefault"`
 
@@ -76,7 +78,9 @@ func (is *IndexSet) NewUpdateParams() *IndexSetUpdateParams {
 		IndexAnalyzer:                   is.IndexAnalyzer,
 		Shards:                          is.Shards,
 		IndexOptimizationMaxNumSegments: is.IndexOptimizationMaxNumSegments,
-		ID:                              is.ID,
+		// field_type_refresh_interval is added from Graylog API v3
+		FieldTypeRefreshInterval: is.FieldTypeRefreshInterval,
+		ID:                       is.ID,
 
 		Description:               ptr.PStr(is.Description),
 		Replicas:                  ptr.PInt(is.Replicas),
@@ -97,7 +101,9 @@ type IndexSetUpdateParams struct {
 	IndexAnalyzer                   string             `json:"index_analyzer" v-update:"required"`
 	Shards                          int                `json:"shards" v-update:"required"`
 	IndexOptimizationMaxNumSegments int                `json:"index_optimization_max_num_segments" v-update:"required"`
-	ID                              string             `json:"id" v-update:"required,objectid"`
+	// field_type_refresh_interval is added from Graylog API v3
+	FieldTypeRefreshInterval int    `json:"field_type_refresh_interval"`
+	ID                       string `json:"id" v-update:"required,objectid"`
 
 	Description               *string `json:"description,omitempty"`
 	Replicas                  *int    `json:"replicas,omitempty"`

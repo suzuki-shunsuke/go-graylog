@@ -126,6 +126,11 @@ func resourceIndexSet() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
+			// field_type_refresh_interval is added from Graylog API v3
+			"field_type_refresh_interval": {
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -160,6 +165,7 @@ func newIndexSet(d *schema.ResourceData) (*graylog.IndexSet, error) {
 		Writable:                        d.Get("writable").(bool),
 		Default:                         d.Get("default").(bool),
 		CreationDate:                    d.Get("creation_date").(string),
+		FieldTypeRefreshInterval:        d.Get("field_type_refresh_interval").(int),
 	}, nil
 }
 
@@ -247,6 +253,12 @@ func resourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 	}
 	if err := setBoolToRD(d, "writable", is.Writable); err != nil {
 		return err
+	}
+
+	if cfg := m.(*Config); cfg.APIVersion == "v3" {
+		if err := setIntToRD(d, "field_type_refresh_interval", is.FieldTypeRefreshInterval); err != nil {
+			return err
+		}
 	}
 	return setBoolToRD(d, "default", is.Default)
 }
