@@ -33,6 +33,7 @@ var (
 		NewInputJSONPathAttrs,
 		NewInputNetFlowUDPAttrs,
 		NewInputRawAMQPAttrs,
+		NewInputRawKafkaAttrs,
 		NewInputSyslogAMQPAttrs,
 		NewInputSyslogKafkaAttrs,
 		NewInputSyslogTCPAttrs,
