@@ -2,7 +2,7 @@
 
 https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_stream_rule.go
 
-```
+```hcl
 resource "graylog_stream_rule" "test-terraform" {
   field = "tag"
   value = "${graylog_index_set.test-terraform.id}"
@@ -17,7 +17,7 @@ resource "graylog_stream_rule" "test-terraform" {
 
 Specify `<stream id>/<stream rule id>` as ID.
 
-```
+```console
 $ terraform import graylog_stream_rule.test 5bb1b4b5c9e77bbbbbbbbbbb/5c4acaefc9e77bbbbbbbbbbb
 ```
 

@@ -2,7 +2,7 @@
 
 https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_user.go
 
-```
+```hcl
 resource "graylog_user" "zoo" {
   username = "zoo"
   email = "zoo@example.com"

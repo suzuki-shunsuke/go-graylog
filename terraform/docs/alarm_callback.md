@@ -7,7 +7,7 @@
 
 Specify `<stream id>/<alarm callback id>` as ID.
 
-```
+```console
 $ terraform import graylog_alarm_callback.test 5bb1b4b5c9e77bbbbbbbbbbb/5c4acaefc9e77bbbbbbbbbbb
 ```
 
@@ -29,7 +29,7 @@ None.
 
 `org.graylog2.alarmcallbacks.HTTPAlarmCallback`
 
-```
+```hcl
 resource "graylog_alarm_callback" "test-terraform" {
   type = "org.graylog2.alarmcallbacks.HTTPAlarmCallback"
   stream_id = "${graylog_stream.test-terraform.id}"
@@ -55,7 +55,7 @@ None.
 
 `org.graylog2.alarmcallbacks.EmailAlarmCallback`
 
-```
+```hcl
 resource "graylog_alarm_callback" "test-terraform" {
   type = "org.graylog2.alarmcallbacks.EmailAlarmCallback"
   stream_id = "${graylog_stream.test-terraform.id}"
@@ -94,7 +94,7 @@ email_configuration.email_receivers | [] | []string |
 
 `org.graylog2.plugins.slack.callback.SlackAlarmCallback`
 
-```
+```hcl
 resource "graylog_alarm_callback" "test-terraform" {
   type = "org.graylog2.plugins.slack.callback.SlackAlarmCallback"
   stream_id = "${graylog_stream.test-terraform.id}"
@@ -147,7 +147,7 @@ we provide some additional attributes.
 
 For example, you can use the [HipChat Plugin](https://marketplace.graylog.org/addons/e316cbfc-663f-4718-aa54-8aff97749449) although we don't support it officially.
 
-```
+```hcl
 resource "graylog_alarm_callback" "hipchat" {
   type = "org.graylog2.alarmcallbacks.hipchat.HipChatAlarmCallback"
   stream_id = "000000000000000000000001"

@@ -2,7 +2,7 @@
 
 https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_ldap_setting.go
 
-```
+```hcl
 resource "graylog_ldap_setting" "foo" {
   enabled = true
   system_username = "admin"

@@ -25,7 +25,7 @@ https://godoc.org/github.com/suzuki-shunsuke/go-graylog/client
 
 Download a binary from [the release page](https://github.com/suzuki-shunsuke/go-graylog/releases).
 
-```
+```console
 $ graylog-mock-server --help
 graylog-mock-server - Run Graylog mock server.
 

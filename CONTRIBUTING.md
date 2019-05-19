@@ -7,13 +7,13 @@
 * [dep](https://golang.github.io/dep/)
 * [golangci-lint](https://github.com/golangci/golangci-lint)
 
-```
+```console
 $ npm i
 ```
 
 ## Test
 
-```
+```console
 $ npm t
 ```
 
@@ -27,7 +27,7 @@ We validate the commit message with git's `commit-msg` hook using [commitlint](h
 
 * https://github.com/golang/go/wiki/CodeReviewComments
 
-```
+```console
 $ npm run lint
 ```
 
@@ -35,7 +35,7 @@ $ npm run lint
 
 To run graylog using docker for development, we prepare the template of `docker-compose.yml`.
 
-```
+```console
 $ cp docker-compose.yml.tmpl docker-compose.yml
 $ docker-compose up -d
 ```
@@ -44,7 +44,7 @@ $ docker-compose up -d
 
 To set environment variables for development, we prepare the template of `setenv.sh` .
 
-```
+```console
 $ cp env.sh.tmpl env.sh
 ```
 

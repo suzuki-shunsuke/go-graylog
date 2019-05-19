@@ -2,7 +2,7 @@
 
 https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_stream.go
 
-```
+```hcl
 resource "graylog_stream" "test-terraform" {
   title = "test-terraform"
   index_set_id = "${graylog_index_set.test-terraform.id}"
