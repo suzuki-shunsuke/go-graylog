@@ -2,7 +2,7 @@
 
 https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_input.go
 
-```
+```hcl
 resource "graylog_input" "test" {
   title = "terraform test"
   type = "org.graylog2.inputs.syslog.udp.SyslogUDPInput"

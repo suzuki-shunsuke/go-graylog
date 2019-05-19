@@ -2,7 +2,7 @@
 
 https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_index_set.go
 
-```
+```hcl
 resource "graylog_index_set" "test-index-set" {
   title = "terraform test index set"
   index_prefix = "terraform-test"

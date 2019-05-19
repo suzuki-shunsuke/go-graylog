@@ -2,7 +2,7 @@
 
 https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_pipeline_connection.go
 
-```
+```hcl
 resource "graylog_pipeline_connection" "test" {
   stream_id      = "000000000000000000000000"
   pipeline_ids = ["000000000000000000000000"]

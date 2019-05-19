@@ -2,7 +2,7 @@
 
 https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_role.go
 
-```
+```hcl
 resource "graylog_role" "foo" {
   name = "foo"
   description = "user foo"

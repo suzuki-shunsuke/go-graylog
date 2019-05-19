@@ -2,7 +2,7 @@
 
 https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_dashboard.go
 
-```
+```hcl
 resource "graylog_dashboard" "test-dashboard" {
   title = "test-dashboard"
   description = "test dashboard"

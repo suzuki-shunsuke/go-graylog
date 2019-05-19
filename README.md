@@ -25,7 +25,7 @@ https://godoc.org/github.com/suzuki-shunsuke/go-graylog/client
 
 Download a binary from [the release page](https://github.com/suzuki-shunsuke/go-graylog/releases).
 
-```
+```console
 $ graylog-mock-server --help
 graylog-mock-server - Run Graylog mock server.
 
@@ -52,6 +52,15 @@ OPTIONS:
 We use [the graylog's official Docker Image](https://hub.docker.com/r/graylog/graylog/) for development.
 
 The version is `2.5.0` .
+
+### Support of Graylog v3
+
+* https://github.com/suzuki-shunsuke/go-graylog/issues/66
+* https://github.com/suzuki-shunsuke/go-graylog/milestone/1
+
+Use `client.NewClientV3` instead of `client.NewClient` .
+
+In the terraform provider, please set the variable `api_version` to `v3`.
 
 ## Contribution
 

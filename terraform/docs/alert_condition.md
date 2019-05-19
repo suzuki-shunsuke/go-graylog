@@ -3,7 +3,7 @@
 * http://docs.graylog.org/en/2.5/pages/streams/alerts.html#conditions
 * https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_alert_condition.go
 
-```
+```hcl
 resource "graylog_alert_condition" "test-terraform" {
   type = "field_content_value"
   stream_id = "${graylog_stream.test-terraform.id}"
@@ -41,7 +41,7 @@ in_grace | bool |
 
 ## type: field_content_value 
 
-```
+```hcl
 resource "graylog_alert_condition" "test-terraform" {
   type = "field_content_value"
   stream_id = "${graylog_stream.test-terraform.id}"

@@ -25,7 +25,7 @@ By using this provider, you can utilize this flexibility and manage the infrastr
 
 https://www.terraform.io/docs/configuration/providers.html#third-party-plugins
 
-```
+```console
 $ GO_GRAYLOG_VERSION=0.11.0
 $ GO_GRAYLOG_ARCH=darwin_amd64
 $ wget https://github.com/suzuki-shunsuke/go-graylog/releases/download/v${GO_GRAYLOG_VERSION}/terraform-provider-graylog_v${GO_GRAYLOG_VERSION}_${GO_GRAYLOG_ARCH}.gz
@@ -43,7 +43,7 @@ Docker image which is installed terraform and terraform-provider-graylog on alpi
 
 ## Example
 
-```
+```hcl
 provider "graylog" {
   web_endpoint_uri = "${var.web_endpoint_uri}"
   auth_name = "${var.auth_name}"

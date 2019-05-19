@@ -2,7 +2,7 @@
 
 https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_pipeline.go
 
-```
+```hcl
 resource "graylog_pipeline" "test" {
   source      = "source": "pipeline \"test\"\nstage 0 match either\nend"
   description = "description"
@@ -13,7 +13,7 @@ In HCL, you can use here document.
 
 https://github.com/hashicorp/hcl#syntax
 
-```
+```hcl
 resource "graylog_pipeline" "test" {
   source = <<EOF
 pipeline "test4"
