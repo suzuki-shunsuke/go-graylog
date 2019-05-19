@@ -87,8 +87,9 @@ api_version | GRAYLOG_API_VERSION | "v2" | Graylog's API version. The default va
 * [ldap_setting](docs/ldap_setting.md)
 * [pipeline](docs/pipeline.md)
 * [pipeline_rule](docs/pipeline_rule.md)
+* [pipeline_connection](docs/pipeline_connection.md)
 * [role](docs/role.md)
-* [stream and pipeline connection](docs/stream.md)
+* [stream](docs/stream.md)
 * [stream_rule](docs/stream_rule.md)
 * [user](docs/user.md)
 
