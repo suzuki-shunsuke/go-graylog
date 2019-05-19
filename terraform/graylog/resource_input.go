@@ -159,6 +159,9 @@ func resourceInputRead(d *schema.ResourceData, m interface{}) error {
 	if err := setStrToRD(d, "node", input.Node); err != nil {
 		return err
 	}
+	if err := setBoolToRD(d, "global", input.Global); err != nil {
+		return err
+	}
 	if err := setStrToRD(d, "creator_user_id", input.CreatorUserID); err != nil {
 		return err
 	}
