@@ -30,6 +30,7 @@ func resourceStreamRule() *schema.Resource {
 			"stream_id": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 
 			// Optional

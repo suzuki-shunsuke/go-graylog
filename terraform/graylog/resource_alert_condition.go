@@ -37,6 +37,7 @@ func resourceAlertCondition() *schema.Resource {
 			"stream_id": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"field_content_value_parameters": {
 				Type:     schema.TypeList,

@@ -22,6 +22,7 @@ func resourcePipelineConnection() *schema.Resource {
 			"stream_id": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"pipeline_ids": {
 				Type:     schema.TypeSet,
@@ -78,16 +79,6 @@ func resourcePipelineConnectionUpdate(d *schema.ResourceData, m interface{}) err
 		return err
 	}
 	conn := newPipelineConnection(d)
-	if d.HasChange("stream_id") {
-		oldStreamID, _ := d.GetChange("stream_id")
-		if _, err := cl.ConnectPipelinesToStream(&graylog.PipelineConnection{
-			StreamID:    oldStreamID.(string),
-			PipelineIDs: []string{},
-		}); err != nil {
-			return err
-		}
-		d.SetId(conn.StreamID)
-	}
 	if _, err := cl.ConnectPipelinesToStream(conn); err != nil {
 		return err
 	}
