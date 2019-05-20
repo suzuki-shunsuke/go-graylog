@@ -22,6 +22,7 @@ func resourcePipelineConnection() *schema.Resource {
 			"stream_id": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"pipeline_ids": {
 				Type:     schema.TypeSet,

@@ -25,6 +25,7 @@ func resourceStream() *schema.Resource {
 			"index_set_id": {
 				Type:     schema.TypeString,
 				Required: true,
+				// Not ForceNew
 			},
 
 			// Optional

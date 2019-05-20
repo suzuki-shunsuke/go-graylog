@@ -33,6 +33,7 @@ func resourceAlarmCallback() *schema.Resource {
 			"stream_id": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 
 			"general_string_configuration": {
