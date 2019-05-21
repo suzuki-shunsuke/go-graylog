@@ -476,6 +476,14 @@
   version = "v1.2.2"
 
 [[projects]]
+  digest = "1:0df841370be1177bf2aea867feb694896af78003aa367cbcde7cf1c8fd9d4c08"
+  name = "github.com/suzuki-shunsuke/go-jsoneq"
+  packages = ["jsoneq"]
+  pruneopts = "UT"
+  revision = "593ccb8d52c90f94cca0e751162de54bb0e6f53e"
+  version = "v0.1.1"
+
+[[projects]]
   digest = "1:86e3f479a52adcfd7ba6eea4318f0c85b6a0c83e5aaccfdb8feaeabf6077ad7c"
   name = "github.com/suzuki-shunsuke/go-ptr"
   packages = ["."]
@@ -693,6 +701,7 @@
     "github.com/sirupsen/logrus",
     "github.com/stretchr/testify/assert",
     "github.com/stretchr/testify/require",
+    "github.com/suzuki-shunsuke/go-jsoneq/jsoneq",
     "github.com/suzuki-shunsuke/go-ptr",
     "github.com/suzuki-shunsuke/go-set",
     "gopkg.in/go-playground/validator.v9",

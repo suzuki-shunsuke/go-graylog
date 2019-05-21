@@ -6,17 +6,17 @@ type (
 		Title               string               `json:"title,omitempty"`
 		Type                string               `json:"type,omitempty"`
 		Converters          []ExtractorConverter `json:"converters,omitempty"`
-		Order               int                  `json:"order,omitempty"`
+		Order               int                  `json:"order"`
 		Exceptions          int                  `json:"exceptions,omitempty"`
 		ConverterExceptions int                  `json:"converter_exceptions,omitempty"`
 		Metrics             *ExtractorMetrics    `json:"metrics,omitempty"`
 		CursorStrategy      string               `json:"cursor_strategy,omitempty"`
 		SourceField         string               `json:"source_field,omitempty"`
-		TargetField         string               `json:"target_field,omitempty"`
+		TargetField         string               `json:"target_field"`
 		ExtractorConfig     *ExtractorConfig     `json:"extractor_config,omitempty"`
 		CreatorUserID       string               `json:"creator_user_id,omitempty"`
 		ConditionType       string               `json:"condition_type,omitempty"`
-		ConditionValue      string               `json:"condition_value,omitempty"`
+		ConditionValue      string               `json:"condition_value"`
 	}
 
 	ExtractorConverter struct {
@@ -35,7 +35,7 @@ type (
 		KVSeparator              string `json:"kv_separator,omitempty"`
 		KeyPrefix                string `json:"key_prefix,omitempty"`
 		KeySeparator             string `json:"key_separator,omitempty"`
-		ReplaceKeyWhitespace     bool   `json:"replace_key_whitespace,omitempty"`
+		ReplaceKeyWhitespace     bool   `json:"replace_key_whitespace"`
 		KeyWhitespaceReplacement string `json:"key_whitespace_replacement,omitempty"`
 	}
 
