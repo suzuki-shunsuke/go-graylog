@@ -1,5 +1,9 @@
 package graylog
 
+import (
+	"encoding/json"
+)
+
 type (
 	Extractor struct {
 		ID                  string               `json:"id,omitempty"`
@@ -13,7 +17,7 @@ type (
 		CursorStrategy      string               `json:"cursor_strategy,omitempty"`
 		SourceField         string               `json:"source_field,omitempty"`
 		TargetField         string               `json:"target_field"`
-		ExtractorConfig     *ExtractorConfig     `json:"extractor_config,omitempty"`
+		ExtractorConfig     interface{}          `json:"extractor_config,omitempty"`
 		CreatorUserID       string               `json:"creator_user_id,omitempty"`
 		ConditionType       string               `json:"condition_type,omitempty"`
 		ConditionValue      string               `json:"condition_value"`
@@ -30,13 +34,21 @@ type (
 		Locale     string `json:"locale,omitempty"`
 	}
 
-	ExtractorConfig struct {
+	ExtractorTypeJSONConfig struct {
 		ListSeparator            string `json:"list_separator,omitempty"`
 		KVSeparator              string `json:"kv_separator,omitempty"`
 		KeyPrefix                string `json:"key_prefix,omitempty"`
 		KeySeparator             string `json:"key_separator,omitempty"`
 		ReplaceKeyWhitespace     bool   `json:"replace_key_whitespace"`
 		KeyWhitespaceReplacement string `json:"key_whitespace_replacement,omitempty"`
+	}
+
+	ExtractorTypeGrokConfig struct {
+		GrokPattern string `json:"grok_pattern"`
+	}
+
+	ExtractorTypeRegexConfig struct {
+		RegexValue string `json:"regex_value"`
 	}
 
 	ExtractorMetrics struct {
@@ -56,17 +68,21 @@ type (
 	}
 
 	ExtractorMetricTime struct {
-		Min            int `json:"min,omitempty"`
-		Max            int `json:"max,omitempty"`
-		Mean           int `json:"mean,omitempty"`
-		StdDev         int `json:"std_dev,omitempty"`
-		Percentile95th int `json:"95th_percentile,omitempty"`
-		Percentile98th int `json:"98th_percentile,omitempty"`
-		Percentile99th int `json:"99th_percentile,omitempty"`
+		// in Graylog, the type of these fields are double.
+		// https://github.com/Graylog2/graylog2-server/blob/484fdf0940718cb6bf23f812d000fd07f165eb92/graylog2-server/src/main/java/org/graylog2/rest/models/metrics/responses/TimerMetricsResponse.java#L25-L39
+		Min            float64 `json:"min,omitempty"`
+		Max            float64 `json:"max,omitempty"`
+		Mean           float64 `json:"mean,omitempty"`
+		StdDev         float64 `json:"std_dev,omitempty"`
+		Percentile95th float64 `json:"95th_percentile,omitempty"`
+		Percentile98th float64 `json:"98th_percentile,omitempty"`
+		Percentile99th float64 `json:"99th_percentile,omitempty"`
 	}
 
 	ExtractorMetricRate struct {
-		Total         int     `json:"total,omitempty"`
+		// in Graylog, the type of these fields are double.
+		// https://github.com/Graylog2/graylog2-server/blob/484fdf0940718cb6bf23f812d000fd07f165eb92/graylog2-server/src/main/java/org/graylog2/rest/models/metrics/responses/RateMetricsResponse.java#L25-L35
+		Total         float64 `json:"total,omitempty"`
 		Mean          float64 `json:"mean,omitempty"`
 		OneMinute     float64 `json:"one_minute,omitempty"`
 		FiveMinute    float64 `json:"five_minute,omitempty"`
@@ -80,3 +96,34 @@ type (
 		Extractors []Extractor `json:"extractors"`
 	}
 )
+
+func (extractor *Extractor) UnmarshalJSON(b []byte) error {
+	type alias Extractor
+	a := &struct {
+		*alias
+		ExtractorConfig json.RawMessage `json:"extractor_config,omitempty"`
+	}{
+		alias: (*alias)(extractor),
+	}
+	if err := json.Unmarshal(b, a); err != nil {
+		return err
+	}
+	cfgs := map[string]interface{}{
+		"json":  &ExtractorTypeJSONConfig{},
+		"grok":  &ExtractorTypeGrokConfig{},
+		"regex": &ExtractorTypeRegexConfig{},
+	}
+	if cfg, ok := cfgs[a.Type]; ok {
+		if err := json.Unmarshal(a.ExtractorConfig, cfg); err != nil {
+			return err
+		}
+		extractor.ExtractorConfig = cfg
+		return nil
+	}
+	cfg := map[string]interface{}{}
+	if err := json.Unmarshal(a.ExtractorConfig, &cfg); err != nil {
+		return err
+	}
+	extractor.ExtractorConfig = cfg
+	return nil
+}

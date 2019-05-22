@@ -67,6 +67,25 @@ func (client *Client) CreateExtractor(
 	return client.CreateExtractorContext(context.Background(), inputID, extractor)
 }
 
+func convertExtractorForPostAndPut(extractor *graylog.Extractor) interface{} {
+	converters := make(map[string]interface{}, len(extractor.Converters))
+	for _, converter := range extractor.Converters {
+		converters[converter.Type] = converter.Config
+	}
+	return map[string]interface{}{
+		"title":            extractor.Title,
+		"cut_or_copy":      extractor.CursorStrategy,
+		"source_field":     extractor.SourceField,
+		"target_field":     extractor.TargetField,
+		"extractor_type":   extractor.Type,
+		"extractor_config": extractor.ExtractorConfig,
+		"converters":       converters,
+		"condition_type":   extractor.ConditionType,
+		"condition_value":  extractor.ConditionValue,
+		"order":            extractor.Order,
+	}
+}
+
 // CreateExtractorContext adds an extractor to an input with a context.
 func (client *Client) CreateExtractorContext(
 	ctx context.Context, inputID string, extractor *graylog.Extractor,
@@ -81,18 +100,8 @@ func (client *Client) CreateExtractorContext(
 		return nil, err
 	}
 	resp := map[string]string{}
-	ei, err := client.callPost(ctx, u.String(), map[string]interface{}{
-		"title":            extractor.Title,
-		"cut_or_copy":      extractor.CursorStrategy,
-		"source_field":     extractor.SourceField,
-		"target_field":     extractor.TargetField,
-		"extractor_type":   extractor.Type,
-		"extractor_config": extractor.ExtractorConfig,
-		"converters":       extractor.Converters,
-		"condition_type":   extractor.ConditionType,
-		"condition_value":  extractor.ConditionValue,
-		"order":            extractor.Order,
-	}, &resp)
+	ei, err := client.callPost(
+		ctx, u.String(), convertExtractorForPostAndPut(extractor), &resp)
 	if err != nil {
 		return ei, err
 	}
@@ -126,22 +135,8 @@ func (client *Client) UpdateExtractorContext(
 	if err != nil {
 		return nil, err
 	}
-	ei, err := client.callPut(ctx, u.String(), map[string]interface{}{
-		"title":            extractor.Title,
-		"cut_or_copy":      extractor.CursorStrategy,
-		"source_field":     extractor.SourceField,
-		"target_field":     extractor.TargetField,
-		"extractor_type":   extractor.Type,
-		"extractor_config": extractor.ExtractorConfig,
-		"converters":       extractor.Converters,
-		"condition_type":   extractor.ConditionType,
-		"condition_value":  extractor.ConditionValue,
-		"order":            extractor.Order,
-	}, extractor)
-	if err != nil {
-		return ei, err
-	}
-	return ei, nil
+	return client.callPut(
+		ctx, u.String(), convertExtractorForPostAndPut(extractor), extractor)
 }
 
 // DeleteExtractor updates an extractor.

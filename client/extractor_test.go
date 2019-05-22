@@ -76,7 +76,7 @@ func sampleExtractor1() *graylog.Extractor {
 		},
 		CursorStrategy: "copy",
 		SourceField:    "visit",
-		ExtractorConfig: &graylog.ExtractorConfig{
+		ExtractorConfig: &graylog.ExtractorTypeJSONConfig{
 			ListSeparator:            ", ",
 			KVSeparator:              "=",
 			KeyPrefix:                "visit_",
@@ -400,7 +400,7 @@ func TestCreateExtractor(t *testing.T) {
 			Converters:     []graylog.ExtractorConverter{},
 			SourceField:    "visit",
 			Type:           "json",
-			ExtractorConfig: &graylog.ExtractorConfig{
+			ExtractorConfig: &graylog.ExtractorTypeJSONConfig{
 				ListSeparator:            ", ",
 				KVSeparator:              "=",
 				KeyPrefix:                "visit_",
@@ -417,7 +417,7 @@ func TestCreateExtractor(t *testing.T) {
 			Converters:     []graylog.ExtractorConverter{},
 			SourceField:    "visit",
 			Type:           "json",
-			ExtractorConfig: &graylog.ExtractorConfig{
+			ExtractorConfig: &graylog.ExtractorTypeJSONConfig{
 				ListSeparator:            ", ",
 				KVSeparator:              "=",
 				KeyPrefix:                "visit_",
@@ -430,7 +430,7 @@ func TestCreateExtractor(t *testing.T) {
 		req: `{
       "title": "test extractor title",
 			"cut_or_copy": "copy",
-      "converters": [],
+      "converters": {},
       "order": 0,
       "source_field": "visit",
       "target_field": "",
@@ -493,7 +493,7 @@ func TestUpdateExtractor(t *testing.T) {
 			Converters:     []graylog.ExtractorConverter{},
 			SourceField:    "visit",
 			Type:           "json",
-			ExtractorConfig: &graylog.ExtractorConfig{
+			ExtractorConfig: &graylog.ExtractorTypeJSONConfig{
 				ListSeparator:            ", ",
 				KVSeparator:              "=",
 				KeyPrefix:                "visit_",
@@ -506,7 +506,7 @@ func TestUpdateExtractor(t *testing.T) {
 		req: `{
       "title": "test extractor title",
 			"cut_or_copy": "copy",
-      "converters": [],
+      "converters": {},
       "order": 0,
       "source_field": "visit",
       "target_field": "",
@@ -674,58 +674,4 @@ func TestDeleteExtractor(t *testing.T) {
 		}
 		require.Nil(t, err)
 	}
-}
-
-func TestExtractor_MarshalJSON(t *testing.T) {
-	extractor := &graylog.Extractor{
-		Title:          "test extractor title",
-		CursorStrategy: "copy",
-		Converters:     []graylog.ExtractorConverter{},
-		SourceField:    "visit",
-		Type:           "json",
-		ExtractorConfig: &graylog.ExtractorConfig{
-			ListSeparator:            ", ",
-			KVSeparator:              "=",
-			KeyPrefix:                "visit_",
-			KeySeparator:             "_",
-			ReplaceKeyWhitespace:     false,
-			KeyWhitespaceReplacement: "_",
-		},
-		ConditionType: "none",
-	}
-	b, err := jsoneq.Equal(
-		map[string]interface{}{
-			"title":            extractor.Title,
-			"cut_or_copy":      extractor.CursorStrategy,
-			"source_field":     extractor.SourceField,
-			"target_field":     extractor.TargetField,
-			"extractor_type":   extractor.Type,
-			"extractor_config": extractor.ExtractorConfig,
-			"converters":       extractor.Converters,
-			"condition_type":   extractor.ConditionType,
-			"condition_value":  extractor.ConditionValue,
-			"order":            extractor.Order,
-		},
-		[]byte(`{
-      "title": "test extractor title",
-			"cut_or_copy": "copy",
-      "converters": [],
-      "order": 0,
-      "source_field": "visit",
-      "target_field": "",
-      "extractor_type": "json",
-      "extractor_config": {
-        "list_separator": ", ",
-        "kv_separator": "=",
-        "key_prefix": "visit_",
-        "key_separator": "_",
-        "replace_key_whitespace": false,
-        "key_whitespace_replacement": "_"
-      },
-      "condition_type": "none",
-      "condition_value": ""
-    }`),
-	)
-	require.Nil(t, err)
-	require.True(t, b)
 }
