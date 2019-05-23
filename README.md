@@ -49,9 +49,12 @@ OPTIONS:
 
 ## Supported Graylog version
 
-We use [the graylog's official Docker Image](https://hub.docker.com/r/graylog/graylog/) for development.
+We support the following versions.
 
-The version is `2.5.0` .
+* v2.5
+* v3
+
+We use [the graylog's official Docker Image](https://hub.docker.com/r/graylog/graylog/) for development.
 
 ### Support of Graylog v3
 
