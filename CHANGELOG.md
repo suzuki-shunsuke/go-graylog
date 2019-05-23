@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.4.0"></a>
+# [2.4.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.3.3...v2.4.0) (2019-05-23)
+
+
+### Bug Fixes
+
+* fix Extractor API ([b865d5e](https://github.com/suzuki-shunsuke/go-graylog/commit/b865d5e))
+* fix Extractor API and add tests ([dc5ecfd](https://github.com/suzuki-shunsuke/go-graylog/commit/dc5ecfd))
+
+
+### Features
+
+* [#69](https://github.com/suzuki-shunsuke/go-graylog/issues/69) support Extractor API ([ebfab91](https://github.com/suzuki-shunsuke/go-graylog/commit/ebfab91))
+
+
+
 <a name="2.3.3"></a>
 ## [2.3.3](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.3.2...v2.3.3) (2019-05-20)
 
