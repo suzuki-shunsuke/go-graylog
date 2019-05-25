@@ -98,7 +98,6 @@ resource "graylog_index_set" "test" {
     type = "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig"
   }
   index_analyzer = "standard"
-  shards = 4
   index_optimization_max_num_segments = 1
 }`
 
