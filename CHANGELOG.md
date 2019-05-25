@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.5.0"></a>
+# [2.5.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.4.0...v2.5.0) (2019-05-25)
+
+
+### Features
+
+* support Terraform 0.12 ([7dba535](https://github.com/suzuki-shunsuke/go-graylog/commit/7dba535)), closes [#103](https://github.com/suzuki-shunsuke/go-graylog/issues/103)
+
+
+
 <a name="2.4.0"></a>
 # [2.4.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.3.3...v2.4.0) (2019-05-23)
 
