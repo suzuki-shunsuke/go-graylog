@@ -72,7 +72,7 @@ func TestAccInput(t *testing.T) {
 resource "graylog_input" "test" {
   title = "%s"
   type = "org.graylog2.inputs.syslog.udp.SyslogUDPInput"
-  attributes = {
+  attributes {
     bind_address = "0.0.0.0"
     port = 514
     recv_buffer_size = 262144

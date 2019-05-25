@@ -20,6 +20,19 @@ resource "graylog_index_set" "test-index-set" {
 }
 ```
 
+In case Terraform 0.12, `rotation_strategy` and `retention_strategy` should be block type.
+
+https://www.terraform.io/upgrade-guides/0-12.html#attributes-vs-blocks
+
+```hcl
+rotation_strategy {
+  type = "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig"
+}
+retention_strategy {
+  type = "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig"
+}
+```
+
 ## Argument Reference
 
 ### Required Argument

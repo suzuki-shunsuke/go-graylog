@@ -90,11 +90,11 @@ resource "graylog_index_set" "test" {
 	shards = 4
 	replicas = 0
   rotation_strategy_class = "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy"
-  rotation_strategy = {
+  rotation_strategy {
     type = "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig"
   }
   retention_strategy_class = "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy"
-  retention_strategy = {
+  retention_strategy {
     type = "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig"
   }
   index_analyzer = "standard"
