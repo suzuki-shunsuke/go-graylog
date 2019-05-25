@@ -14,6 +14,18 @@ resource "graylog_input" "test" {
 }
 ```
 
+In case Terraform 0.12, `attributes` should be block type.
+
+https://www.terraform.io/upgrade-guides/0-12.html#attributes-vs-blocks
+
+```hcl
+attributes {
+  bind_address = "0.0.0.0"
+  port = 514
+  recv_buffer_size = 262144
+}
+```
+
 ## Argument Reference
 
 ### Required Argument
