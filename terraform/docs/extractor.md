@@ -56,8 +56,6 @@ resource "graylog_extractor" "test" {
   grok_type_extractor_config = {
     grok_pattern = "%{DATA}"
   }
-
-  converters = []
 }
 ```
 
@@ -94,7 +92,6 @@ resource "graylog_extractor" "test" {
     replace_key_whitespace     = false
     key_whitespace_replacement = "_"
   }
-  converters = []
 }
 ```
 
