@@ -3,7 +3,7 @@ kind: pipeline
 name: commitlint
 steps:
 - name: npm install
-  image: &node_image node:10.15.3-alpine
+  image: &node_image node:10.16.0-alpine
   commands:
   - npm i
 - name: tag/commitlint
@@ -28,22 +28,23 @@ workspace:
   base: /go
   path: src/github.com/suzuki-shunsuke/go-graylog
 steps:
-- name: dep-dl
-  image: suzukishunsuke/dep-dl:0.1.0
-  commands:
-  - dep-dl
 - name: golangci-lint
-  image: golangci/golangci-lint:v1.16.0
+  image: golangci/golangci-lint:v1.17.1
   commands:
   - golangci-lint run
+  environment:
+    GO111MODULE: on
+    GOPATH: /go
 - name: codecov
-  image: &image_go golang:1.12.5
+  image: &image_go golang:1.12.6
   commands:
   # bash and cgo seem to be required
   - bash scripts/codecov-test.sh
   - curl -s https://codecov.io/bash > /tmp/codecov.sh
-  - test "$LOCAL" == "true" || bash /tmp/codecov.sh
+  - test "$LOCAL" = "true" -o "$DRONE_BUILD_EVENT" = "pull_request" || bash /tmp/codecov.sh
   environment:
+    GO111MODULE: on
+    GOPATH: /go
     CODECOV_TOKEN:
       from_secret: codecov_token
 - name: build
@@ -52,6 +53,9 @@ steps:
   - gox -output="dist/${DRONE_TAG}/graylog-mock-server_${DRONE_TAG}_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./mockserver/exec
   - gox -output="dist/${DRONE_TAG}/terraform-provider-graylog_${DRONE_TAG}_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./terraform/
   - ls dist/${DRONE_TAG} | xargs -I {} gzip dist/${DRONE_TAG}/{}
+  environment:
+    GOPATH: /go
+    GO111MODULE: on
   when:
     event:
     - tag
