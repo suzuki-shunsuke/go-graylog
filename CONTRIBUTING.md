@@ -4,7 +4,6 @@
 
 * [npm](https://www.npmjs.com/): to validate a commit message and generate the Change Log
 * [Golang](https://golang.org/)
-* [dep](https://golang.github.io/dep/)
 * [golangci-lint](https://github.com/golangci/golangci-lint)
 
 ```console

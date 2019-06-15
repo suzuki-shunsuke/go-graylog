@@ -24,18 +24,13 @@ steps:
 ---
 kind: pipeline
 name: build
-workspace:
-  base: /go
-  path: src/github.com/suzuki-shunsuke/go-graylog
 steps:
-- name: dep-dl
-  image: suzukishunsuke/dep-dl:0.1.0
-  commands:
-  - dep-dl
 - name: golangci-lint
   image: golangci/golangci-lint:v1.16.0
   commands:
   - golangci-lint run
+  environment:
+    GO111MODULE: on
 - name: codecov
   image: &image_go golang:1.12.5
   commands:
@@ -44,6 +39,7 @@ steps:
   - curl -s https://codecov.io/bash > /tmp/codecov.sh
   - test "$LOCAL" == "true" || bash /tmp/codecov.sh
   environment:
+    GO111MODULE: on
     CODECOV_TOKEN:
       from_secret: codecov_token
 - name: build
@@ -52,6 +48,8 @@ steps:
   - gox -output="dist/${DRONE_TAG}/graylog-mock-server_${DRONE_TAG}_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./mockserver/exec
   - gox -output="dist/${DRONE_TAG}/terraform-provider-graylog_${DRONE_TAG}_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./terraform/
   - ls dist/${DRONE_TAG} | xargs -I {} gzip dist/${DRONE_TAG}/{}
+  environment:
+    GO111MODULE: on
   when:
     event:
     - tag
