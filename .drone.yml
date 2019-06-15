@@ -24,6 +24,9 @@ steps:
 ---
 kind: pipeline
 name: build
+workspace:
+  base: /go
+  path: src/github.com/suzuki-shunsuke/go-graylog
 steps:
 - name: golangci-lint
   image: golangci/golangci-lint:v1.17.1
@@ -31,6 +34,7 @@ steps:
   - golangci-lint run
   environment:
     GO111MODULE: on
+    GOPATH: /go
 - name: codecov
   image: &image_go golang:1.12.6
   commands:
@@ -40,6 +44,7 @@ steps:
   - test "$LOCAL" = "true" -o "$DRONE_BUILD_EVENT" = "pull_request" || bash /tmp/codecov.sh
   environment:
     GO111MODULE: on
+    GOPATH: /go
     CODECOV_TOKEN:
       from_secret: codecov_token
 - name: build
@@ -49,7 +54,11 @@ steps:
   - gox -output="dist/${DRONE_TAG}/terraform-provider-graylog_${DRONE_TAG}_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./terraform/
   - ls dist/${DRONE_TAG} | xargs -I {} gzip dist/${DRONE_TAG}/{}
   environment:
+    GOPATH: /go
     GO111MODULE: on
+  when:
+    event:
+    - tag
 - name: release
   image: suzukishunsuke/ghr
   commands:
