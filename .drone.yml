@@ -37,7 +37,7 @@ steps:
   # bash and cgo seem to be required
   - bash scripts/codecov-test.sh
   - curl -s https://codecov.io/bash > /tmp/codecov.sh
-  - test "$LOCAL" == "true" || bash /tmp/codecov.sh
+  - test "$LOCAL" = "true" -o "$DRONE_BUILD_EVENT" = "pull_request" || bash /tmp/codecov.sh
   environment:
     GO111MODULE: on
     CODECOV_TOKEN:
@@ -50,9 +50,6 @@ steps:
   - ls dist/${DRONE_TAG} | xargs -I {} gzip dist/${DRONE_TAG}/{}
   environment:
     GO111MODULE: on
-  when:
-    event:
-    - tag
 - name: release
   image: suzukishunsuke/ghr
   commands:
