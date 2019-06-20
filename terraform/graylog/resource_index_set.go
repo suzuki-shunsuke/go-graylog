@@ -1,8 +1,6 @@
 package graylog
 
 import (
-	"encoding/json"
-
 	"github.com/hashicorp/terraform/helper/schema"
 
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -187,6 +185,7 @@ func resourceIndexSetCreate(d *schema.ResourceData, m interface{}) error {
 
 func resourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 	cl, err := newClient(m)
+	cfg := m.(*Config)
 	if err != nil {
 		return err
 	}
@@ -194,73 +193,7 @@ func resourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	if is.RotationStrategy != nil {
-		b, err := json.Marshal(is.RotationStrategy)
-		if err != nil {
-			return err
-		}
-		dest := map[string]interface{}{}
-		if err := json.Unmarshal(b, &dest); err != nil {
-			return err
-		}
-		if err := d.Set("rotation_strategy", []map[string]interface{}{dest}); err != nil {
-			return err
-		}
-	}
-	if is.RetentionStrategy != nil {
-		b, err := json.Marshal(is.RetentionStrategy)
-		if err != nil {
-			return err
-		}
-		dest := map[string]interface{}{}
-		if err := json.Unmarshal(b, &dest); err != nil {
-			return err
-		}
-		if err := d.Set("retention_strategy", []map[string]interface{}{dest}); err != nil {
-			return err
-		}
-	}
-
-	if err := setStrToRD(d, "title", is.Title); err != nil {
-		return err
-	}
-	if err := setStrToRD(d, "index_prefix", is.IndexPrefix); err != nil {
-		return err
-	}
-	if err := setStrToRD(d, "description", is.Description); err != nil {
-		return err
-	}
-	if err := setIntToRD(d, "shards", is.Shards); err != nil {
-		return err
-	}
-	if err := setIntToRD(d, "replicas", is.Replicas); err != nil {
-		return err
-	}
-	if err := setStrToRD(d, "rotation_strategy_class", is.RotationStrategyClass); err != nil {
-		return err
-	}
-	if err := setStrToRD(d, "retention_strategy_class", is.RetentionStrategyClass); err != nil {
-		return err
-	}
-	if err := setStrToRD(d, "index_analyzer", is.IndexAnalyzer); err != nil {
-		return err
-	}
-	if err := setIntToRD(d, "index_optimization_max_num_segments", is.IndexOptimizationMaxNumSegments); err != nil {
-		return err
-	}
-	if err := setBoolToRD(d, "index_optimization_disabled", is.IndexOptimizationDisabled); err != nil {
-		return err
-	}
-	if err := setBoolToRD(d, "writable", is.Writable); err != nil {
-		return err
-	}
-
-	if cfg := m.(*Config); cfg.APIVersion == "v3" {
-		if err := setIntToRD(d, "field_type_refresh_interval", is.FieldTypeRefreshInterval); err != nil {
-			return err
-		}
-	}
-	return setBoolToRD(d, "default", is.Default)
+	return setIndexSet(d, is, cfg)
 }
 
 func resourceIndexSetUpdate(d *schema.ResourceData, m interface{}) error {
