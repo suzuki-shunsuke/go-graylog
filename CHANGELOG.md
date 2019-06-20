@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.6.0"></a>
+# [2.6.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.5.0...v2.6.0) (2019-06-20)
+
+
+### Features
+
+* support data source of graylog_index_set ([d4ad234](https://github.com/suzuki-shunsuke/go-graylog/commit/d4ad234)), closes [#110](https://github.com/suzuki-shunsuke/go-graylog/issues/110)
+
+
+
 <a name="2.5.0"></a>
 # [2.5.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.4.0...v2.5.0) (2019-05-25)
 
