@@ -94,6 +94,10 @@ api_version | GRAYLOG_API_VERSION | "v2" | Graylog's API version. The default va
 * [stream_rule](docs/stream_rule.md)
 * [user](docs/user.md)
 
+## Data sources
+
+* [index_set](docs/data_source_index_set.md)
+
 ## Unsupported resources
 
 We can't support these resources for some reasons.
