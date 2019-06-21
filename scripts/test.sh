@@ -3,8 +3,6 @@ echo "pwd: $PWD" || exit 1
 
 source scripts/decho.sh || exit 1
 
-decho go test ./mockserver/... -covermode=atomic || exit 1
-
 if [ -f env.sh ]; then
   source env.sh
 fi
