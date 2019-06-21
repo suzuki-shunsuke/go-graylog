@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.1.0"></a>
+# [3.1.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v3.0.0...v3.1.0) (2019-06-21)
+
+
+### Features
+
+* add the data source of graylog_stream ([465e4a1](https://github.com/suzuki-shunsuke/go-graylog/commit/465e4a1)), closes [#113](https://github.com/suzuki-shunsuke/go-graylog/issues/113)
+
+
+
 <a name="3.0.0"></a>
 # [3.0.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.6.0...v3.0.0) (2019-06-21)
 
