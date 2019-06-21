@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.6.0...v3.0.0) (2019-06-21)
+
+
+### Code Refactoring
+
+* replace the package mockserver to graylog-mock-server ([cbb3545](https://github.com/suzuki-shunsuke/go-graylog/commit/cbb3545)), closes [#114](https://github.com/suzuki-shunsuke/go-graylog/issues/114)
+
+
+### BREAKING CHANGES
+
+* remove the package mockserver
+
+https://github.com/suzuki-shunsuke/graylog-mock-server
+
+
+
 <a name="2.6.0"></a>
 # [2.6.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v2.5.0...v2.6.0) (2019-06-20)
 
