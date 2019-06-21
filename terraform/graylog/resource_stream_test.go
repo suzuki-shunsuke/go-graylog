@@ -9,8 +9,8 @@ import (
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/suzuki-shunsuke/go-graylog/client"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
+	"github.com/suzuki-shunsuke/graylog-mock-server/mockserver"
 )
 
 func testDeleteStream(

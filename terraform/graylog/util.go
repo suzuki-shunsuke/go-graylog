@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 
 	"github.com/suzuki-shunsuke/go-graylog/client"
-	"github.com/suzuki-shunsuke/go-graylog/mockserver"
+	"github.com/suzuki-shunsuke/graylog-mock-server/mockserver"
 )
 
 func genImport(keys ...string) schema.StateFunc {
