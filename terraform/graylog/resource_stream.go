@@ -115,33 +115,7 @@ func resourceStreamRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	if err := setStrToRD(d, "index_set_id", stream.IndexSetID); err != nil {
-		return err
-	}
-	if err := setStrToRD(d, "title", stream.Title); err != nil {
-		return err
-	}
-	if err := setStrToRD(d, "description", stream.Description); err != nil {
-		return err
-	}
-	if err := setStrToRD(d, "matching_type", stream.MatchingType); err != nil {
-		return err
-	}
-	if err := setBoolToRD(d, "remove_matches_from_default_stream", stream.RemoveMatchesFromDefaultStream); err != nil {
-		return err
-	}
-	// rules
-	// content_pack
-	if err := setStrToRD(d, "creator_user_id", stream.CreatorUserID); err != nil {
-		return err
-	}
-	if err := setStrToRD(d, "created_at", stream.CreatedAt); err != nil {
-		return err
-	}
-	if err := setBoolToRD(d, "disabled", stream.Disabled); err != nil {
-		return err
-	}
-	return setBoolToRD(d, "is_default", stream.IsDefault)
+	return setStream(d, stream, m.(*Config))
 
 	// alert_receivers
 	// alert_conditions
