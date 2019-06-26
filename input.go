@@ -25,9 +25,9 @@ type Input struct {
 	// ex. 2018-02-24T03:02:26.001Z
 	CreatedAt string `json:"created_at,omitempty" v-create:"isdefault"`
 	// ex. "admin"
-	CreatorUserID string `json:"creator_user_id,omitempty" v-create:"isdefault"`
+	CreatorUserID string            `json:"creator_user_id,omitempty" v-create:"isdefault"`
+	StaticFields  map[string]string `json:"static_fields,omitempty"`
 	// ContextPack `json:"context_pack,omitempty"`
-	// StaticFields `json:"static_fields,omitempty"`
 }
 
 // Type returns the input's type.

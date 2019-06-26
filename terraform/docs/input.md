@@ -110,3 +110,4 @@ name | type | etc
 input_id | string | computed
 created_at | string | computed
 creator_user_id | string | computed
+static_fields | map[string]string | computed
