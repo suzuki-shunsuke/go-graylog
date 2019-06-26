@@ -30,6 +30,7 @@ type InputData struct {
 	CreatorUserID string                 `json:"creator_user_id,omitempty"`
 	Global        bool                   `json:"global,omitempty"`
 	Attrs         map[string]interface{} `json:"attributes,omitempty"`
+	StaticFields  map[string]string      `json:"static_fields,omitempty"`
 }
 
 // ToInputUpdateParams copies InputUpdateParamsData's data to InputUpdateParams.
@@ -65,6 +66,7 @@ func (d *InputData) ToInput(input *Input) error {
 	input.Node = d.Node
 	input.CreatedAt = d.CreatedAt
 	input.CreatorUserID = d.CreatorUserID
+	input.StaticFields = d.StaticFields
 	attrs := NewInputAttrsByType(d.Type)
 	if _, ok := attrs.(*InputUnknownAttrs); ok {
 		input.Attrs = &InputUnknownAttrs{inputType: input.Type(), Data: d.Attrs}
