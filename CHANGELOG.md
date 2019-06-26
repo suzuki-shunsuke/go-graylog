@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.2.0"></a>
+# [3.2.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v3.1.0...v3.2.0) (2019-06-26)
+
+
+### Features
+
+* add a "static_fields" to Input ([79123e5](https://github.com/suzuki-shunsuke/go-graylog/commit/79123e5)), closes [#118](https://github.com/suzuki-shunsuke/go-graylog/issues/118)
+
+
+
 <a name="3.1.0"></a>
 # [3.1.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v3.0.0...v3.1.0) (2019-06-21)
 
