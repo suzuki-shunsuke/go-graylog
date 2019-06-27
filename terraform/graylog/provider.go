@@ -45,6 +45,7 @@ func Provider() *schema.Provider {
 			"graylog_extractor":           resourceExtractor(),
 			"graylog_index_set":           resourceIndexSet(),
 			"graylog_input":               resourceInput(),
+			"graylog_input_static_fields": resourceInputStaticFields(),
 			"graylog_ldap_setting":        resourceLDAPSetting(),
 			"graylog_pipeline":            resourcePipeline(),
 			"graylog_pipeline_rule":       resourcePipelineRule(),

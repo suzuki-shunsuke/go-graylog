@@ -85,6 +85,7 @@ api_version | GRAYLOG_API_VERSION | "v2" | Graylog's API version. The default va
 * [extractor](docs/extractor.md)
 * [index_set](docs/index_set.md)
 * [input](docs/input.md)
+* [input_static_fields](docs/input_static_fields.md)
 * [ldap_setting](docs/ldap_setting.md)
 * [pipeline](docs/pipeline.md)
 * [pipeline_rule](docs/pipeline_rule.md)
