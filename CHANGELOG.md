@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.3.0"></a>
+# [3.3.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v3.2.0...v3.3.0) (2019-06-27)
+
+
+### Features
+
+* support StaticFields API ([b96fe9a](https://github.com/suzuki-shunsuke/go-graylog/commit/b96fe9a)), closes [#119](https://github.com/suzuki-shunsuke/go-graylog/issues/119)
+
+
+
 <a name="3.2.0"></a>
 # [3.2.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v3.1.0...v3.2.0) (2019-06-26)
 
