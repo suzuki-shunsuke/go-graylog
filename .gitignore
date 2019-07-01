@@ -11,3 +11,5 @@ env.sh
 .vendor-new
 
 .git-rm-branch.yml
+
+.idea/
