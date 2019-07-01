@@ -1,0 +1,13 @@
+---
+# configuration file of durl, which is a CLI tool to check whether dead urls are included in files.
+# https://github.com/suzuki-shunsuke/durl
+ignore_urls:
+- https://github.com/suzuki-shunsuke/go-graylog/releases/download/v${GO_GRAYLOG_VERSION}/terraform-provider-graylog_v${GO_GRAYLOG_VERSION}_${GO_GRAYLOG_ARCH}.gz
+ignore_hosts:
+- graylog.example.com
+- hooks.slack.com
+- api.hipchat.com
+http_method: head,get
+max_request_count: 10
+max_failed_request_count: 5
+http_request_timeout: 10

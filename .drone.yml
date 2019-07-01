@@ -23,6 +23,14 @@ steps:
     - pull_request
 ---
 kind: pipeline
+name: durl
+steps:
+- name: durl
+  image: quay.io/suzuki_shunsuke/durl:1.0.0
+  commands:
+  - sh scripts/durl.sh
+---
+kind: pipeline
 name: build
 workspace:
   base: /go
