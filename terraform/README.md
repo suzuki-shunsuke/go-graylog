@@ -26,7 +26,7 @@ By using this provider, you can utilize this flexibility and manage the infrastr
 https://www.terraform.io/docs/configuration/providers.html#third-party-plugins
 
 ```console
-$ GO_GRAYLOG_VERSION=0.11.0
+$ GO_GRAYLOG_VERSION=3.3.0
 $ GO_GRAYLOG_ARCH=darwin_amd64
 $ wget https://github.com/suzuki-shunsuke/go-graylog/releases/download/v${GO_GRAYLOG_VERSION}/terraform-provider-graylog_v${GO_GRAYLOG_VERSION}_${GO_GRAYLOG_ARCH}.gz
 $ gzip -d terraform-provider-graylog_v${GO_GRAYLOG_VERSION}_${GO_GRAYLOG_ARCH}.gz
@@ -37,7 +37,7 @@ $ chmod +x ~/.terraform.d/plugins/terraform-provider-graylog_v${GO_GRAYLOG_VERSI
 
 ## Docker Image
 
-https://hub.docker.com/r/suzukishunsuke/terraform-graylog/
+https://quay.io/repository/suzuki_shunsuke/terraform-graylog
 
 Docker image which is installed terraform and terraform-provider-graylog on alpine.
 
@@ -66,9 +66,9 @@ And please see https://github.com/suzuki-shunsuke/example/tree/master/graylog-te
 
 name | Environment variable | description
 --- | --- | ---
-web_endpoint_uri | GRAYLOG_WEB_ENDPOINT_URI |
-auth_name | GRAYLOG_AUTH_NAME |
-auth_password | GRAYLOG_AUTH_PASSWORD |
+web_endpoint_uri | GRAYLOG_WEB_ENDPOINT_URI | API endpoint, for example https://graylog.example.com/api
+auth_name | GRAYLOG_AUTH_NAME | Username
+auth_password | GRAYLOG_AUTH_PASSWORD | Password or [API token](http://docs.graylog.org/en/3.0/pages/configuration/rest_api.html#creating-and-using-access-token)
 
 ### Optional
 
