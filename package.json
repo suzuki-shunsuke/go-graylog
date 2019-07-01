@@ -6,6 +6,7 @@
     "lint": "golangci-lint run",
     "vet": "go vet ./...",
     "fmt": "bash scripts/fmt.sh",
+    "durl": "bash scripts/durl.sh",
     "coverage": "bash scripts/coverage.sh",
     "install-local-terraform": "bash scripts/install_local_terraform.sh",
     "tag": "bash scripts/tag.sh",
