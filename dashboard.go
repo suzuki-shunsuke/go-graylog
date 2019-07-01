@@ -1,7 +1,7 @@
 package graylog
 
 // Dashboard represents a Graylog's Dashboard.
-// http://docs.graylog.org/en/latest/pages/dashboards.html
+// https://docs.graylog.org/en/latest/pages/dashboards.html
 type Dashboard struct {
 	// required
 	Title       string `json:"title,omitempty" v-create:"required"`
