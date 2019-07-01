@@ -19,7 +19,7 @@ const (
 
 type (
 	// AlarmCallback represents an Alarm Callback.
-	// http://docs.graylog.org/en/latest/pages/streams/alerts.html#alert-notifications-types-explained
+	// https://docs.graylog.org/en/latest/pages/streams/alerts.html#alert-notifications-types-explained
 	AlarmCallback struct {
 		// ex. "org.graylog2.alarmcallbacks.HTTPAlarmCallback"
 		ID            string                     `json:"id,omitempty" v-create:"isdefault"`

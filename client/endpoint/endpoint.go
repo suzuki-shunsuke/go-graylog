@@ -111,7 +111,7 @@ func newEndpoints(endpoint, version string) (*Endpoints, error) {
 	}
 	var pipelines, pipelineRules, pipelineConns, connectPipelinesToStream, connectStreamsToPipeline *url.URL
 	if version == "v3" {
-		// http://docs.graylog.org/en/3.0/pages/upgrade/graylog-3.0.html#plugins-merged-into-the-graylog-server
+		// https://docs.graylog.org/en/3.0/pages/upgrade/graylog-3.0.html#plugins-merged-into-the-graylog-server
 		pipelines, err = urlJoin(ep, "system/pipelines/pipeline")
 		if err != nil {
 			return nil, err

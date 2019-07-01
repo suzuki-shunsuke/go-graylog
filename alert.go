@@ -1,7 +1,7 @@
 package graylog
 
 // Alert represents an Alert.
-// http://docs.graylog.org/en/2.4/pages/streams/alerts.html
+// https://docs.graylog.org/en/2.4/pages/streams/alerts.html
 type Alert struct {
 	ID                  string                    `json:"id"`
 	Description         string                    `json:"description"`
