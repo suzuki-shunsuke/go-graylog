@@ -19,8 +19,8 @@ $ npm t
 ## Commit Message Format
 
 The commit message format of this project conforms to the [AngularJS Commit Message Format](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#commit-message-format).
-By conforming its format, we can generate the [Change Log](CHANGELOG.md) and conform the [semantic versioning](http://semver.org/) automatically by [standard-version](https://www.npmjs.com/package/standard-version).
-We validate the commit message with git's `commit-msg` hook using [commitlint](http://marionebl.github.io/commitlint/#/) and [husky](https://www.npmjs.com/package/husky).
+By conforming its format, we can generate the [Change Log](CHANGELOG.md) and conform the [semantic versioning](https://semver.org/) automatically by [standard-version](https://www.npmjs.com/package/standard-version).
+We validate the commit message with git's `commit-msg` hook using [commitlint](https://commitlint.js.org/#/) and [husky](https://www.npmjs.com/package/husky).
 
 ## Coding Guide
 
