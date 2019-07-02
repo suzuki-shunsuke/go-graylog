@@ -108,3 +108,53 @@ func (client *Client) GetDashboardWidgetContext(
 	ei, err := client.callGet(ctx, u.String(), nil, &widget)
 	return widget, ei, err
 }
+
+// UpdateDashboardWidgetCacheTime updates an existing dashboard widget cache time.
+func (client *Client) UpdateDashboardWidgetCacheTime(dashboardID, widgetID string, cacheTime int) (*ErrorInfo, error) {
+	return client.UpdateDashboardWidgetCacheTimeContext(context.Background(), dashboardID, widgetID, cacheTime)
+}
+
+// UpdateDashboardWidgetCacheTimeContext updates an existing dashboard widget cache time with a context.
+func (client *Client) UpdateDashboardWidgetCacheTimeContext(
+	ctx context.Context, dashboardID, widgetID string, cacheTime int,
+) (*ErrorInfo, error) {
+	if dashboardID == "" {
+		return nil, fmt.Errorf("dashboard id is required")
+	}
+	if widgetID == "" {
+		return nil, fmt.Errorf("dashboard widget id is required")
+	}
+
+	u, err := client.Endpoints().DashboardWidgetCacheTime(dashboardID, widgetID)
+	if err != nil {
+		return nil, err
+	}
+	return client.callPut(ctx, u.String(), map[string]interface{}{
+		"cache_time": cacheTime,
+	}, nil)
+}
+
+// UpdateDashboardWidgetDescription updates an existing dashboard widget description.
+func (client *Client) UpdateDashboardWidgetDescription(dashboardID, widgetID, description string) (*ErrorInfo, error) {
+	return client.UpdateDashboardWidgetDescriptionContext(context.Background(), dashboardID, widgetID, description)
+}
+
+// UpdateDashboardWidgetDescriptionContext updates an existing dashboard widget description with a context.
+func (client *Client) UpdateDashboardWidgetDescriptionContext(
+	ctx context.Context, dashboardID, widgetID, description string,
+) (*ErrorInfo, error) {
+	if dashboardID == "" {
+		return nil, fmt.Errorf("dashboard id is required")
+	}
+	if widgetID == "" {
+		return nil, fmt.Errorf("dashboard widget id is required")
+	}
+
+	u, err := client.Endpoints().DashboardWidgetDescription(dashboardID, widgetID)
+	if err != nil {
+		return nil, err
+	}
+	return client.callPut(ctx, u.String(), map[string]interface{}{
+		"description": description,
+	}, nil)
+}
