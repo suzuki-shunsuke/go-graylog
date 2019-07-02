@@ -36,6 +36,33 @@ func (client *Client) CreateDashboardWidgetContext(
 	return widget, ei, fmt.Errorf(`response doesn't have the field "widget_id"`)
 }
 
+// UpdateDashboardWidget updates an existing dashboard widget.
+func (client *Client) UpdateDashboardWidget(dashboardID string, widget graylog.Widget) (*ErrorInfo, error) {
+	return client.UpdateDashboardWidgetContext(context.Background(), dashboardID, widget)
+}
+
+// UpdateDashboardWidgetContext creates an existing dashboard widget with a context.
+func (client *Client) UpdateDashboardWidgetContext(
+	ctx context.Context, dashboardID string, widget graylog.Widget,
+) (*ErrorInfo, error) {
+	if dashboardID == "" {
+		return nil, fmt.Errorf("dashboard id is required")
+	}
+	if widget.ID == "" {
+		return nil, fmt.Errorf("dashboard widget id is required")
+	}
+
+	u, err := client.Endpoints().DashboardWidget(dashboardID, widget.ID)
+	if err != nil {
+		return nil, err
+	}
+	return client.callPut(ctx, u.String(), map[string]interface{}{
+		"description": widget.Description,
+		"type":        widget.Type,
+		"config":      widget.Config,
+	}, nil)
+}
+
 // DeleteDashboardWidget deletes a given dashboard widget.
 func (client *Client) DeleteDashboardWidget(dashboardID, widgetID string) (*ErrorInfo, error) {
 	return client.DeleteDashboardWidgetContext(context.Background(), dashboardID, widgetID)
