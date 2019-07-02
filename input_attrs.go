@@ -43,6 +43,29 @@ var (
 	attrsSet = &inputAttrsSet{}
 )
 
+type (
+	// GetUnknownTypeInputAttrsIntf returns an unknown type InputAttrs.
+	GetUnknownTypeInputAttrsIntf func(map[string]NewInputAttrs, string) InputAttrs
+
+	// GetInputAttrsByTypeIntf returns a given type InputAttrs.
+	GetInputAttrsByTypeIntf func(map[string]NewInputAttrs, string) InputAttrs
+
+	// NewInputAttrs is the constructor of InputAttrs.
+	NewInputAttrs func() InputAttrs
+
+	// InputAttrs represents Input Attributes.
+	// A receiver must be a pointer.
+	InputAttrs interface {
+		InputType() string
+	}
+
+	inputAttrsSet struct {
+		data           map[string]NewInputAttrs
+		GetUnknownType GetUnknownTypeInputAttrsIntf
+		GetByType      GetInputAttrsByTypeIntf
+	}
+)
+
 func init() {
 	attrsSet = &inputAttrsSet{
 		data: map[string]NewInputAttrs{},
@@ -83,12 +106,6 @@ func init() {
 		}
 	}
 }
-
-// GetUnknownTypeInputAttrsIntf returns an unknown type InputAttrs.
-type GetUnknownTypeInputAttrsIntf func(map[string]NewInputAttrs, string) InputAttrs
-
-// GetInputAttrsByTypeIntf returns a given type InputAttrs.
-type GetInputAttrsByTypeIntf func(map[string]NewInputAttrs, string) InputAttrs
 
 // SetFuncGetUnknownTypeInputAttrs customizes NewInputAttrsByType's behavior.
 func SetFuncGetUnknownTypeInputAttrs(f GetUnknownTypeInputAttrsIntf) {
@@ -150,19 +167,4 @@ func SetInputAttrs(args ...NewInputAttrs) error {
 		attrsSet.data[a.InputType()] = f
 	}
 	return nil
-}
-
-// NewInputAttrs is the constructor of InputAttrs.
-type NewInputAttrs func() InputAttrs
-
-// InputAttrs represents Input Attributes.
-// A receiver must be a pointer.
-type InputAttrs interface {
-	InputType() string
-}
-
-type inputAttrsSet struct {
-	data           map[string]NewInputAttrs
-	GetUnknownType GetUnknownTypeInputAttrsIntf
-	GetByType      GetInputAttrsByTypeIntf
 }

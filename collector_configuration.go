@@ -65,11 +65,11 @@ type (
 		Snippet   string `json:"snippet"`
 		SnippetID string `json:"snippet_id"`
 	}
-)
 
-// CollectorConfigurationsBody represents Get Collector Configurations API's response body.
-// Basically users don't use this struct, but this struct is public because some sub packages use this struct.
-type CollectorConfigurationsBody struct {
-	Configurations []CollectorConfiguration `json:"configurations"`
-	Total          int                      `json:"total"`
-}
+	// CollectorConfigurationsBody represents Get Collector Configurations API's response body.
+	// Basically users don't use this struct, but this struct is public because some sub packages use this struct.
+	CollectorConfigurationsBody struct {
+		Configurations []CollectorConfiguration `json:"configurations"`
+		Total          int                      `json:"total"`
+	}
+)
