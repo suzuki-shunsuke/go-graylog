@@ -139,3 +139,12 @@ func setIntToRD(d *schema.ResourceData, key string, val int) error {
 func setBoolToRD(d *schema.ResourceData, key string, val bool) error {
 	return d.Set(key, val)
 }
+
+func hasChange(d *schema.ResourceData, keys ...string) bool {
+	for _, k := range keys {
+		if d.HasChange(k) {
+			return true
+		}
+	}
+	return false
+}
