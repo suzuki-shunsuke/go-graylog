@@ -25,7 +25,7 @@ func (client *Client) CreateDashboardWidgetContext(
 	if err != nil {
 		return widget, nil, err
 	}
-	ei, err := client.callPost(ctx, u.String(), widget, &ret)
+	ei, err := client.callPost(ctx, u.String(), &widget, &ret)
 	if err != nil {
 		return widget, ei, err
 	}
@@ -58,7 +58,7 @@ func (client *Client) UpdateDashboardWidgetContext(
 	}
 	return client.callPut(ctx, u.String(), map[string]interface{}{
 		"description": widget.Description,
-		"type":        widget.Type,
+		"type":        widget.Type(),
 		"config":      widget.Config,
 	}, nil)
 }
