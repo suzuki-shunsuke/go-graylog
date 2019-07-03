@@ -6,32 +6,34 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/util"
 )
 
-// InputUpdateParamsData represents InputUpdateParams's data.
-// This is used for data conversion of InputUpdateParams.
-// ex. json.Unmarshal
-type InputUpdateParamsData struct {
-	ID     string                 `json:"id,omitempty"`
-	Title  string                 `json:"title,omitempty"`
-	Type   string                 `json:"type,omitempty"`
-	Node   string                 `json:"node,omitempty"`
-	Global *bool                  `json:"global,omitempty"`
-	Attrs  map[string]interface{} `json:"attributes,omitempty"`
-}
+type (
+	// InputUpdateParamsData represents InputUpdateParams's data.
+	// This is used for data conversion of InputUpdateParams.
+	// ex. json.Unmarshal
+	InputUpdateParamsData struct {
+		ID     string                 `json:"id,omitempty"`
+		Title  string                 `json:"title,omitempty"`
+		Type   string                 `json:"type,omitempty"`
+		Node   string                 `json:"node,omitempty"`
+		Global *bool                  `json:"global,omitempty"`
+		Attrs  map[string]interface{} `json:"attributes,omitempty"`
+	}
 
-// InputData represents data of Input.
-// This is used for data conversion of Input.
-// ex. json.Unmarshal
-type InputData struct {
-	Title         string                 `json:"title,omitempty"`
-	Type          string                 `json:"type,omitempty"`
-	ID            string                 `json:"id,omitempty"`
-	Node          string                 `json:"node,omitempty"`
-	CreatedAt     string                 `json:"created_at,omitempty"`
-	CreatorUserID string                 `json:"creator_user_id,omitempty"`
-	Global        bool                   `json:"global,omitempty"`
-	Attrs         map[string]interface{} `json:"attributes,omitempty"`
-	StaticFields  map[string]string      `json:"static_fields,omitempty"`
-}
+	// InputData represents data of Input.
+	// This is used for data conversion of Input.
+	// ex. json.Unmarshal
+	InputData struct {
+		Title         string                 `json:"title,omitempty"`
+		Type          string                 `json:"type,omitempty"`
+		ID            string                 `json:"id,omitempty"`
+		Node          string                 `json:"node,omitempty"`
+		CreatedAt     string                 `json:"created_at,omitempty"`
+		CreatorUserID string                 `json:"creator_user_id,omitempty"`
+		Global        bool                   `json:"global,omitempty"`
+		Attrs         map[string]interface{} `json:"attributes,omitempty"`
+		StaticFields  map[string]string      `json:"static_fields,omitempty"`
+	}
+)
 
 // ToInputUpdateParams copies InputUpdateParamsData's data to InputUpdateParams.
 func (d *InputUpdateParamsData) ToInputUpdateParams(input *InputUpdateParams) error {

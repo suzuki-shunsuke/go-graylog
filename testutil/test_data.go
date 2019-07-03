@@ -136,10 +136,9 @@ func FullDashboard() *graylog.Dashboard {
 		CreatedAt:   "2018-02-20T11:37:19.305Z",
 		Widgets: []graylog.Widget{
 			{
-				Type:          "STREAM_SEARCH_RESULT_COUNT",
 				CreatorUserID: "admin",
 				CacheTime:     ptr.PInt(0),
-				Config: &graylog.WidgetConfig{
+				Config: &graylog.WidgetConfigStreamSearchResultCount{
 					Timerange: &graylog.Timerange{
 						Type:  "",
 						Range: 0,
