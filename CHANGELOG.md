@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.0.0"></a>
+# [4.0.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v3.3.0...v4.0.0) (2019-07-03)
+
+
+### Features
+
+* add graylog_dashboard_widget resource ([ebf7443](https://github.com/suzuki-shunsuke/go-graylog/commit/ebf7443))
+* support terraform resource graylog_dashboard_widget ([6188000](https://github.com/suzuki-shunsuke/go-graylog/commit/6188000)), closes [#20](https://github.com/suzuki-shunsuke/go-graylog/issues/20)
+* support update dashboard cache time and description API ([6be8303](https://github.com/suzuki-shunsuke/go-graylog/commit/6be8303))
+* support update dashboard widget API ([11ce42f](https://github.com/suzuki-shunsuke/go-graylog/commit/11ce42f))
+
+
+### BREAKING CHANGES
+
+* the type of DashboardWidget and Widget.Config change
+
+
+
 <a name="3.3.0"></a>
 # [3.3.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v3.2.0...v3.3.0) (2019-06-27)
 
