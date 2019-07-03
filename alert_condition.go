@@ -9,7 +9,7 @@ import (
 
 type (
 	// AlertCondition represents an Alert Condition.
-	// https://docs.graylog.org/en/2.4/pages/streams/alerts.html#conditions
+	// https://docs.graylog.org/en/latest/pages/streams/alerts.html#conditions
 	AlertCondition struct {
 		ID            string                   `json:"id,omitempty"`
 		CreatorUserID string                   `json:"creator_user_id,omitempty"`

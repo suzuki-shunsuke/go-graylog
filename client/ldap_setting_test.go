@@ -6,7 +6,7 @@ import (
 
 	"gopkg.in/h2non/gock.v1"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/go-set"
 
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -22,12 +22,12 @@ func TestGetLDAPSetting(t *testing.T) {
 		defer gock.Off()
 		endpoint = "http://example.com/api"
 		client, err := client.NewClient(endpoint, authName, authPass)
-		assert.Nil(t, err)
+		require.Nil(t, err)
 		data := []struct {
 			statusCode int
 			resp       string
 			setting    *graylog.LDAPSetting
-			checkErr   func(assert.TestingT, interface{}, ...interface{}) bool
+			checkErr   func(require.TestingT, interface{}, ...interface{})
 		}{{
 			statusCode: 200,
 			resp: `{
@@ -62,7 +62,7 @@ func TestGetLDAPSetting(t *testing.T) {
 				GroupMapping:            map[string]string{"foo": "Reader"},
 				AdditionalDefaultGroups: set.StrSet{},
 			},
-			checkErr: assert.Nil,
+			checkErr: require.Nil,
 		}}
 		for _, d := range data {
 			gock.New("http://example.com").
@@ -70,7 +70,7 @@ func TestGetLDAPSetting(t *testing.T) {
 				MatchType("json").Reply(d.statusCode).BodyString(d.resp)
 			m, _, err := client.GetLDAPSetting()
 			if err != nil {
-				assert.Equal(t, d.setting, m)
+				require.Equal(t, d.setting, m)
 			}
 			d.checkErr(t, err)
 		}
@@ -86,12 +86,12 @@ func TestUpdateLDAPSetting(t *testing.T) {
 		defer gock.Off()
 		endpoint = "http://example.com/api"
 		client, err := client.NewClient(endpoint, authName, authPass)
-		assert.Nil(t, err)
+		require.Nil(t, err)
 		data := []struct {
 			statusCode int
 			body       string
 			setting    *graylog.LDAPSetting
-			checkErr   func(assert.TestingT, interface{}, ...interface{}) bool
+			checkErr   func(require.TestingT, interface{}, ...interface{})
 		}{{
 			statusCode: 204,
 			body: `{
@@ -118,7 +118,7 @@ func TestUpdateLDAPSetting(t *testing.T) {
 				DefaultGroup:         "Reader",
 				GroupMapping:         map[string]string{"foo": "Reader"},
 			},
-			checkErr: assert.Nil,
+			checkErr: require.Nil,
 		}}
 		for _, d := range data {
 			gock.New("http://example.com").

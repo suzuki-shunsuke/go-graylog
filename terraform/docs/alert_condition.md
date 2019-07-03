@@ -1,6 +1,6 @@
 # graylog_alert_condition
 
-* https://docs.graylog.org/en/2.5/pages/streams/alerts.html#conditions
+* https://docs.graylog.org/en/latest/pages/streams/alerts.html#conditions
 * https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_alert_condition.go
 
 ```hcl

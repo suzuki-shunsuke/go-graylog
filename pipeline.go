@@ -2,7 +2,7 @@ package graylog
 
 type (
 	// Pipeline represents a Graylog's Pipeline.
-	// https://docs.graylog.org/en/3.0/pages/pipelines/pipelines.html
+	// https://docs.graylog.org/en/latest/pages/pipelines/pipelines.html
 	Pipeline struct {
 		// required
 		Source string          `json:"source,omitempty" v-create:"required" v-update:"required"`

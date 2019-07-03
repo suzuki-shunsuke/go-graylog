@@ -37,7 +37,7 @@ const (
 
 type (
 	// IndexSet represents a Graylog's Index Set.
-	// https://docs.graylog.org/en/2.4/pages/configuration/index_model.html#index-set-configuration
+	// https://docs.graylog.org/en/latest/pages/configuration/index_model.html#index-set-configuration
 	IndexSet struct {
 		// required
 		Title string `json:"title,omitempty" v-create:"required"`
@@ -68,7 +68,7 @@ type (
 	}
 
 	// IndexSetUpdateParams represents a Graylog's Index Set Update API's parameter.
-	// https://docs.graylog.org/en/2.4/pages/configuration/index_model.html#index-set-configuration
+	// https://docs.graylog.org/en/latest/pages/configuration/index_model.html#index-set-configuration
 	IndexSetUpdateParams struct {
 		Title                           string             `json:"title" v-update:"required"`
 		IndexPrefix                     string             `json:"index_prefix" v-update:"required,indexprefixregexp"`
