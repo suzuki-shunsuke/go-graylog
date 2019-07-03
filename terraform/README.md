@@ -14,7 +14,7 @@ This is sub project of [go-graylog](https://github.com/suzuki-shunsuke/go-graylo
 
 ## Motivation
 
-https://docs.graylog.org/en/2.5/pages/users_and_roles/permission_system.html
+https://docs.graylog.org/en/latest/pages/users_and_roles/permission_system.html
 
 The Graylog permission system is extremely flexible but you can't utilize this flexibility from Web UI.
 By using this provider, you can utilize this flexibility and manage the infrastructure as code.
@@ -58,7 +58,7 @@ name | Environment variable | description
 --- | --- | ---
 web_endpoint_uri | GRAYLOG_WEB_ENDPOINT_URI | API endpoint, for example https://graylog.example.com/api
 auth_name | GRAYLOG_AUTH_NAME | Username
-auth_password | GRAYLOG_AUTH_PASSWORD | Password or [API token](https://docs.graylog.org/en/3.0/pages/configuration/rest_api.html#creating-and-using-access-token)
+auth_password | GRAYLOG_AUTH_PASSWORD | Password or [API token](https://docs.graylog.org/en/latest/pages/configuration/rest_api.html#creating-and-using-access-token)
 
 ### Optional
 

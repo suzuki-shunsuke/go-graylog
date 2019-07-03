@@ -1,6 +1,6 @@
 # graylog_alarm_callback
 
-* https://docs.graylog.org/en/2.5/pages/streams/alerts.html#notifications
+* https://docs.graylog.org/en/latest/pages/streams/alerts.html#notifications
 * https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_alarm_callback.go
 
 ## How to import

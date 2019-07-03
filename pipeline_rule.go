@@ -1,7 +1,7 @@
 package graylog
 
 // PipelineRule represents a Graylog's Pipeline Rule.
-// https://docs.graylog.org/en/3.0/pages/pipelines/rules.html
+// https://docs.graylog.org/en/latest/pages/pipelines/rules.html
 type PipelineRule struct {
 	// required
 	Source string `json:"source,omitempty" v-create:"required" v-update:"required"`

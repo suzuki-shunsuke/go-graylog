@@ -1,6 +1,6 @@
 # graylog_extractor
 
-* https://docs.graylog.org/en/3.0/pages/extractors.html
+* https://docs.graylog.org/en/latest/pages/extractors.html
 * https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_extractor.go
 
 ## How to import
