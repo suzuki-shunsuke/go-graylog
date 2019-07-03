@@ -21,25 +21,15 @@ By using this provider, you can utilize this flexibility and manage the infrastr
 
 ## Install
 
-[Download binary](https://github.com/suzuki-shunsuke/go-graylog/releases) and install under `~/.terraform.d/plugins`.
+[Download binary](https://github.com/suzuki-shunsuke/go-graylog/releases) and install it.
 
 https://www.terraform.io/docs/configuration/providers.html#third-party-plugins
-
-```console
-$ GO_GRAYLOG_VERSION=3.3.0
-$ GO_GRAYLOG_ARCH=darwin_amd64
-$ wget https://github.com/suzuki-shunsuke/go-graylog/releases/download/v${GO_GRAYLOG_VERSION}/terraform-provider-graylog_v${GO_GRAYLOG_VERSION}_${GO_GRAYLOG_ARCH}.gz
-$ gzip -d terraform-provider-graylog_v${GO_GRAYLOG_VERSION}_${GO_GRAYLOG_ARCH}.gz
-$ mkdir -p ~/.terraform.d/plugins
-$ mv terraform-provider-graylog_v${GO_GRAYLOG_VERSION}_${GO_GRAYLOG_ARCH} ~/.terraform.d/plugins/terraform-provider-graylog_v${GO_GRAYLOG_VERSION}
-$ chmod +x ~/.terraform.d/plugins/terraform-provider-graylog_v${GO_GRAYLOG_VERSION}
-```
 
 ## Docker Image
 
 https://quay.io/repository/suzuki_shunsuke/terraform-graylog
 
-Docker image which is installed terraform and terraform-provider-graylog on alpine.
+Docker image which is installed terraform and terraform-provider-graylog on Alpine.
 
 ## Example
 
