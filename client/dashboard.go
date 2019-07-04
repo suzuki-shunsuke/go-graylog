@@ -21,7 +21,11 @@ func (client *Client) CreateDashboardContext(
 	}
 
 	ret := map[string]string{}
-	ei, err := client.callPost(ctx, client.Endpoints().Dashboards(), dashboard, &ret)
+	ei, err := client.callPost(
+		ctx, client.Endpoints().Dashboards(), map[string]interface{}{
+			"title":       dashboard.Title,
+			"description": dashboard.Description,
+		}, &ret)
 	if err != nil {
 		return ei, err
 	}
@@ -104,8 +108,33 @@ func (client *Client) UpdateDashboardContext(
 	if err != nil {
 		return nil, err
 	}
-	return client.callPut(ctx, u.String(), &graylog.Dashboard{
-		Title:       dashboard.Title,
-		Description: dashboard.Description,
+	return client.callPut(ctx, u.String(), map[string]interface{}{
+		"title":       dashboard.Title,
+		"description": dashboard.Description,
+	}, nil)
+}
+
+// UpdateDashboardWidgetPositions updates the positions of dashboard widgets.
+func (client *Client) UpdateDashboardWidgetPositions(
+	dashboardID string, positions []graylog.DashboardWidgetPosition,
+) (*ErrorInfo, error) {
+	return client.UpdateDashboardWidgetPositionsContext(
+		context.Background(), dashboardID, positions)
+}
+
+// UpdateDashboardWidgetPositionsContext updates the positions of dashboard widgets.
+func (client *Client) UpdateDashboardWidgetPositionsContext(
+	ctx context.Context, dashboardID string,
+	positions []graylog.DashboardWidgetPosition,
+) (*ErrorInfo, error) {
+	if dashboardID == "" {
+		return nil, fmt.Errorf("id is empty")
+	}
+	u, err := client.Endpoints().DashboardWidgetsPosition(dashboardID)
+	if err != nil {
+		return nil, err
+	}
+	return client.callPut(ctx, u.String(), map[string]interface{}{
+		"positions": positions,
 	}, nil)
 }
