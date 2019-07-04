@@ -13,9 +13,8 @@ type (
 		Description string `json:"description,omitempty"`
 
 		// ex. "2018-02-20T11:37:19.305Z"
-		CreatedAt string `json:"created_at,omitempty"`
-		ID        string `json:"id,omitempty" v-create:"isdefault"`
-		// TODO support positions
+		CreatedAt     string                    `json:"created_at,omitempty"`
+		ID            string                    `json:"id,omitempty" v-create:"isdefault"`
 		Widgets       []Widget                  `json:"widgets,omitempty"`
 		Positions     []DashboardWidgetPosition `json:"positions"`
 		CreatorUserID string                    `json:"creator_user_id,omitempty"`
