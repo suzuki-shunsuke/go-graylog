@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="5.0.0"></a>
+# [5.0.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v4.1.0...v5.0.0) (2019-07-04)
+
+
+### Code Refactoring
+
+* chang Client signature ([eb4f813](https://github.com/suzuki-shunsuke/go-graylog/commit/eb4f813)), closes [#131](https://github.com/suzuki-shunsuke/go-graylog/issues/131)
+
+
+### BREAKING CHANGES
+
+* signatures of Client methods change
+
+
+
 <a name="4.1.0"></a>
 # [4.1.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v4.0.0...v4.1.0) (2019-07-04)
 
