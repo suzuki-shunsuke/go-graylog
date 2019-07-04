@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="4.1.0"></a>
+# [4.1.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v4.0.0...v4.1.0) (2019-07-04)
+
+
+### Features
+
+* support to update the positions of dashboard widgets ([3a9963f](https://github.com/suzuki-shunsuke/go-graylog/commit/3a9963f)), closes [#20](https://github.com/suzuki-shunsuke/go-graylog/issues/20)
+
+
+
 <a name="4.0.0"></a>
 # [4.0.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v3.3.0...v4.0.0) (2019-07-03)
 
