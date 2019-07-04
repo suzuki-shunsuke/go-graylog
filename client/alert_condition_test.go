@@ -1,12 +1,14 @@
 package client_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
 func TestGetAlertConditions(t *testing.T) {
+	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -15,7 +17,7 @@ func TestGetAlertConditions(t *testing.T) {
 		defer server.Close()
 	}
 
-	_, _, _, err = client.GetAlertConditions()
+	_, _, _, err = client.GetAlertConditions(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}

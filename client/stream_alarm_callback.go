@@ -10,14 +10,7 @@ import (
 )
 
 // GetStreamAlarmCallbacks gets all alarm callbacks of this stream.
-func (client *Client) GetStreamAlarmCallbacks(streamID string) (
-	acs []graylog.AlarmCallback, total int, ei *ErrorInfo, err error,
-) {
-	return client.GetStreamAlarmCallbacksContext(context.Background(), streamID)
-}
-
-// GetStreamAlarmCallbacksContext gets all alarm callbacks of this stream with a context.
-func (client *Client) GetStreamAlarmCallbacksContext(
+func (client *Client) GetStreamAlarmCallbacks(
 	ctx context.Context, streamID string,
 ) (acs []graylog.AlarmCallback, total int, ei *ErrorInfo, err error) {
 	errMsg := "failed to get stream's alarm callbacks"
@@ -32,13 +25,6 @@ func (client *Client) GetStreamAlarmCallbacksContext(
 
 // GetStreamAlarmCallback gets an alarm callback.
 func (client *Client) GetStreamAlarmCallback(
-	streamID, id string,
-) (graylog.AlarmCallback, *ErrorInfo, error) {
-	return client.GetStreamAlarmCallbackContext(context.Background(), streamID, id)
-}
-
-// GetStreamAlarmCallbackContext gets an alarm callback with a context.
-func (client *Client) GetStreamAlarmCallbackContext(
 	ctx context.Context, streamID, id string,
 ) (graylog.AlarmCallback, *ErrorInfo, error) {
 	ac := graylog.AlarmCallback{}
@@ -57,12 +43,7 @@ func (client *Client) GetStreamAlarmCallbackContext(
 }
 
 // CreateStreamAlarmCallback creates an alarm callback.
-func (client *Client) CreateStreamAlarmCallback(ac *graylog.AlarmCallback) (*ErrorInfo, error) {
-	return client.CreateStreamAlarmCallbackContext(context.Background(), ac)
-}
-
-// CreateStreamAlarmCallbackContext creates an alarm callback with a context.
-func (client *Client) CreateStreamAlarmCallbackContext(
+func (client *Client) CreateStreamAlarmCallback(
 	ctx context.Context, ac *graylog.AlarmCallback,
 ) (*ErrorInfo, error) {
 	errMsg := "failed to create an alarm callback"
@@ -94,12 +75,7 @@ func (client *Client) CreateStreamAlarmCallbackContext(
 }
 
 // UpdateStreamAlarmCallback modifies an alarm callback.
-func (client *Client) UpdateStreamAlarmCallback(ac *graylog.AlarmCallback) (*ErrorInfo, error) {
-	return client.UpdateStreamAlarmCallbackContext(context.Background(), ac)
-}
-
-// UpdateStreamAlarmCallbackContext modifies an alarm callback with a context.
-func (client *Client) UpdateStreamAlarmCallbackContext(
+func (client *Client) UpdateStreamAlarmCallback(
 	ctx context.Context, ac *graylog.AlarmCallback,
 ) (*ErrorInfo, error) {
 	errMsg := "failed to update an alarm callback"
@@ -132,12 +108,7 @@ func (client *Client) UpdateStreamAlarmCallbackContext(
 }
 
 // DeleteStreamAlarmCallback deletes an alarm callback.
-func (client *Client) DeleteStreamAlarmCallback(streamID, id string) (*ErrorInfo, error) {
-	return client.DeleteStreamAlarmCallbackContext(context.Background(), streamID, id)
-}
-
-// DeleteStreamAlarmCallbackContext deletes an alarm callback with a context.
-func (client *Client) DeleteStreamAlarmCallbackContext(
+func (client *Client) DeleteStreamAlarmCallback(
 	ctx context.Context, streamID, id string,
 ) (*ErrorInfo, error) {
 	errMsg := "failed to delete an alarm callback"

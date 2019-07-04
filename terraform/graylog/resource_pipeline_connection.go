@@ -1,6 +1,8 @@
 package graylog
 
 import (
+	"context"
+
 	"github.com/hashicorp/terraform/helper/schema"
 
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -41,12 +43,13 @@ func newPipelineConnection(d *schema.ResourceData) *graylog.PipelineConnection {
 }
 
 func resourcePipelineConnectionCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
 	conn := newPipelineConnection(d)
-	if _, err := cl.ConnectPipelinesToStream(conn); err != nil {
+	if _, err := cl.ConnectPipelinesToStream(ctx, conn); err != nil {
 		return err
 	}
 	d.SetId(conn.StreamID)
@@ -54,12 +57,13 @@ func resourcePipelineConnectionCreate(d *schema.ResourceData, m interface{}) err
 }
 
 func resourcePipelineConnectionRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
 	pipelines := []string{}
-	conn, ei, err := cl.GetPipelineConnectionsOfStream(d.Id())
+	conn, ei, err := cl.GetPipelineConnectionsOfStream(ctx, d.Id())
 	if err != nil {
 		if ei == nil || ei.Response == nil || ei.Response.StatusCode != 404 {
 			return err
@@ -74,24 +78,26 @@ func resourcePipelineConnectionRead(d *schema.ResourceData, m interface{}) error
 }
 
 func resourcePipelineConnectionUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
 	conn := newPipelineConnection(d)
-	if _, err := cl.ConnectPipelinesToStream(conn); err != nil {
+	if _, err := cl.ConnectPipelinesToStream(ctx, conn); err != nil {
 		return err
 	}
 	return nil
 }
 
 func resourcePipelineConnectionDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
 	conn := newPipelineConnection(d)
-	if _, err := cl.ConnectPipelinesToStream(&graylog.PipelineConnection{
+	if _, err := cl.ConnectPipelinesToStream(ctx, &graylog.PipelineConnection{
 		StreamID:    conn.StreamID,
 		PipelineIDs: []string{},
 	}); err != nil {

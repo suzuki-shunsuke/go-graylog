@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -119,6 +120,7 @@ func newUser(d *schema.ResourceData) *graylog.User {
 }
 
 func resourceUserCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -127,7 +129,7 @@ func resourceUserCreate(d *schema.ResourceData, m interface{}) error {
 	if user.Password == "" {
 		return fmt.Errorf("password is required to create a user")
 	}
-	if _, err = cl.CreateUser(user); err != nil {
+	if _, err = cl.CreateUser(ctx, user); err != nil {
 		return err
 	}
 	d.SetId(user.Username)
@@ -135,11 +137,12 @@ func resourceUserCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceUserRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	user, _, err := cl.GetUser(d.Id())
+	user, _, err := cl.GetUser(ctx, d.Id())
 	if err != nil {
 		return err
 	}
@@ -183,21 +186,23 @@ func resourceUserRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceUserUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
 	user := newUser(d)
-	_, err = cl.UpdateUser(user.NewUpdateParams())
+	_, err = cl.UpdateUser(ctx, user.NewUpdateParams())
 	return err
 }
 
 func resourceUserDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	if _, err := cl.DeleteUser(d.Id()); err != nil {
+	if _, err := cl.DeleteUser(ctx, d.Id()); err != nil {
 		return err
 	}
 	return nil

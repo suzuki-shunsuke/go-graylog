@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -261,6 +262,7 @@ func newExtractor(d *schema.ResourceData) (*graylog.Extractor, string, error) {
 }
 
 func resourceExtractorCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -270,7 +272,7 @@ func resourceExtractorCreate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	if _, err := cl.CreateExtractor(inputID, extractor); err != nil {
+	if _, err := cl.CreateExtractor(ctx, inputID, extractor); err != nil {
 		return err
 	}
 	d.SetId(extractor.ID)
@@ -278,11 +280,12 @@ func resourceExtractorCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceExtractorRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	extractor, _, err := cl.GetExtractor(d.Get("input_id").(string), d.Id())
+	extractor, _, err := cl.GetExtractor(ctx, d.Get("input_id").(string), d.Id())
 	if err != nil {
 		return err
 	}
@@ -380,6 +383,7 @@ func resourceExtractorRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceExtractorUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -388,18 +392,19 @@ func resourceExtractorUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	if _, err := cl.UpdateExtractor(inputID, extractor); err != nil {
+	if _, err := cl.UpdateExtractor(ctx, inputID, extractor); err != nil {
 		return err
 	}
 	return nil
 }
 
 func resourceExtractorDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	if _, err := cl.DeleteExtractor(d.Get("input_id").(string), d.Id()); err != nil {
+	if _, err := cl.DeleteExtractor(ctx, d.Get("input_id").(string), d.Id()); err != nil {
 		return err
 	}
 	return nil

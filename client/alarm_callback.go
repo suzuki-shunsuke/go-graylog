@@ -6,15 +6,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
-// GetAlarmCallbacks returns all alarm callbacks.
-func (client *Client) GetAlarmCallbacks() (
-	[]graylog.AlarmCallback, int, *ErrorInfo, error,
-) {
-	return client.GetAlarmCallbacksContext(context.Background())
-}
-
-// GetAlarmCallbacksContext returns all alarm callbacks with a context.
-func (client *Client) GetAlarmCallbacksContext(ctx context.Context) (
+// GetAlarmCallbacksContext returns all alarm callbacks.
+func (client *Client) GetAlarmCallbacks(ctx context.Context) (
 	[]graylog.AlarmCallback, int, *ErrorInfo, error,
 ) {
 	body := &graylog.AlarmCallbacksBody{}

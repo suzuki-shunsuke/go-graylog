@@ -13,13 +13,6 @@ import (
 
 // GetIndexSets returns a list of all index sets.
 func (client *Client) GetIndexSets(
-	skip, limit int, stats bool,
-) ([]graylog.IndexSet, map[string]graylog.IndexSetStats, int, *ErrorInfo, error) {
-	return client.GetIndexSetsContext(context.Background(), skip, limit, stats)
-}
-
-// GetIndexSetsContext returns a list of all index sets with a context.
-func (client *Client) GetIndexSetsContext(
 	ctx context.Context, skip, limit int, stats bool,
 ) ([]graylog.IndexSet, map[string]graylog.IndexSetStats, int, *ErrorInfo, error) {
 	indexSets := &graylog.IndexSetsBody{}
@@ -34,12 +27,7 @@ func (client *Client) GetIndexSetsContext(
 }
 
 // GetIndexSet returns a given index set.
-func (client *Client) GetIndexSet(id string) (*graylog.IndexSet, *ErrorInfo, error) {
-	return client.GetIndexSetContext(context.Background(), id)
-}
-
-// GetIndexSetContext returns a given index set with a context.
-func (client *Client) GetIndexSetContext(
+func (client *Client) GetIndexSet(
 	ctx context.Context, id string,
 ) (*graylog.IndexSet, *ErrorInfo, error) {
 	if id == "" {
@@ -55,12 +43,7 @@ func (client *Client) GetIndexSetContext(
 }
 
 // CreateIndexSet creates a Index Set.
-func (client *Client) CreateIndexSet(indexSet *graylog.IndexSet) (*ErrorInfo, error) {
-	return client.CreateIndexSetContext(context.Background(), indexSet)
-}
-
-// CreateIndexSetContext creates a Index Set with a context.
-func (client *Client) CreateIndexSetContext(
+func (client *Client) CreateIndexSet(
 	ctx context.Context, is *graylog.IndexSet,
 ) (*ErrorInfo, error) {
 	if is == nil {
@@ -72,12 +55,7 @@ func (client *Client) CreateIndexSetContext(
 }
 
 // UpdateIndexSet updates a given Index Set.
-func (client *Client) UpdateIndexSet(is *graylog.IndexSetUpdateParams) (*graylog.IndexSet, *ErrorInfo, error) {
-	return client.UpdateIndexSetContext(context.Background(), is)
-}
-
-// UpdateIndexSetContext updates a given Index Set with a context.
-func (client *Client) UpdateIndexSetContext(
+func (client *Client) UpdateIndexSet(
 	ctx context.Context, prms *graylog.IndexSetUpdateParams,
 ) (*graylog.IndexSet, *ErrorInfo, error) {
 	if prms == nil {
@@ -98,12 +76,7 @@ func (client *Client) UpdateIndexSetContext(
 }
 
 // DeleteIndexSet deletes a given Index Set.
-func (client *Client) DeleteIndexSet(id string) (*ErrorInfo, error) {
-	return client.DeleteIndexSetContext(context.Background(), id)
-}
-
-// DeleteIndexSetContext deletes a given Index Set with a context.
-func (client *Client) DeleteIndexSetContext(
+func (client *Client) DeleteIndexSet(
 	ctx context.Context, id string,
 ) (*ErrorInfo, error) {
 	if id == "" {
@@ -117,14 +90,7 @@ func (client *Client) DeleteIndexSetContext(
 }
 
 // SetDefaultIndexSet sets default Index Set.
-func (client *Client) SetDefaultIndexSet(id string) (
-	*graylog.IndexSet, *ErrorInfo, error,
-) {
-	return client.SetDefaultIndexSetContext(context.Background(), id)
-}
-
-// SetDefaultIndexSetContext sets default Index Set with a context.
-func (client *Client) SetDefaultIndexSetContext(
+func (client *Client) SetDefaultIndexSet(
 	ctx context.Context, id string,
 ) (*graylog.IndexSet, *ErrorInfo, error) {
 	if id == "" {

@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -119,6 +120,7 @@ func newInput(d *schema.ResourceData) (*graylog.Input, error) {
 }
 
 func resourceInputCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -128,7 +130,7 @@ func resourceInputCreate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	if _, err := cl.CreateInput(input); err != nil {
+	if _, err := cl.CreateInput(ctx, input); err != nil {
 		return err
 	}
 	d.SetId(input.ID)
@@ -136,11 +138,12 @@ func resourceInputCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceInputRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	input, ei, err := cl.GetInput(d.Id())
+	input, ei, err := cl.GetInput(ctx, d.Id())
 	if err != nil {
 		if ei != nil && ei.Response != nil && ei.Response.StatusCode == 404 {
 			d.SetId("")
@@ -183,6 +186,7 @@ func resourceInputRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceInputUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -191,18 +195,19 @@ func resourceInputUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	if _, _, err := cl.UpdateInput(input.NewUpdateParams()); err != nil {
+	if _, _, err := cl.UpdateInput(ctx, input.NewUpdateParams()); err != nil {
 		return err
 	}
 	return nil
 }
 
 func resourceInputDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	if _, err := cl.DeleteInput(d.Id()); err != nil {
+	if _, err := cl.DeleteInput(ctx, d.Id()); err != nil {
 		return err
 	}
 	return nil

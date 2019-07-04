@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -47,6 +48,7 @@ func newPipeline(d *schema.ResourceData) *graylog.Pipeline {
 }
 
 func resourcePipelineCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -55,7 +57,7 @@ func resourcePipelineCreate(d *schema.ResourceData, m interface{}) error {
 	if pipe.Source == "" {
 		return fmt.Errorf("source is required to create a pipeline")
 	}
-	if _, err := cl.CreatePipeline(pipe); err != nil {
+	if _, err := cl.CreatePipeline(ctx, pipe); err != nil {
 		return err
 	}
 	d.SetId(pipe.ID)
@@ -63,11 +65,12 @@ func resourcePipelineCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourcePipelineRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	pipe, _, err := cl.GetPipeline(d.Id())
+	pipe, _, err := cl.GetPipeline(ctx, d.Id())
 	if err != nil {
 		return err
 	}
@@ -78,21 +81,23 @@ func resourcePipelineRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourcePipelineUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
 	pipe := newPipeline(d)
-	_, err = cl.UpdatePipeline(pipe)
+	_, err = cl.UpdatePipeline(ctx, pipe)
 	return err
 }
 
 func resourcePipelineDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	if _, err := cl.DeletePipeline(d.Id()); err != nil {
+	if _, err := cl.DeletePipeline(ctx, d.Id()); err != nil {
 		return err
 	}
 	return nil

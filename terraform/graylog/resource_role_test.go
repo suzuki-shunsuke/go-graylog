@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"testing"
@@ -12,10 +13,10 @@ import (
 )
 
 func testDeleteRole(
-	cl *client.Client, name string,
+	ctx context.Context, cl *client.Client, name string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		if _, _, err := cl.GetRole(name); err == nil {
+		if _, _, err := cl.GetRole(ctx, name); err == nil {
 			return fmt.Errorf(`role "%s" must be deleted`, name)
 		}
 		return nil
@@ -23,19 +24,19 @@ func testDeleteRole(
 }
 
 func testCreateRole(
-	cl *client.Client, name string,
+	ctx context.Context, cl *client.Client, name string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		_, _, err := cl.GetRole(name)
+		_, _, err := cl.GetRole(ctx, name)
 		return err
 	}
 }
 
 func testUpdateRole(
-	cl *client.Client, name, description string,
+	ctx context.Context, cl *client.Client, name, description string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		role, _, err := cl.GetRole(name)
+		role, _, err := cl.GetRole(ctx, name)
 		if err != nil {
 			return err
 		}
@@ -47,6 +48,7 @@ func testUpdateRole(
 }
 
 func TestAccRole(t *testing.T) {
+	ctx := context.Background()
 	cl, server, err := setEnv()
 	if err != nil {
 		t.Fatal(err)
@@ -80,18 +82,18 @@ resource "graylog_role" "test-terraform" {
 	}
 	resource.Test(t, resource.TestCase{
 		Providers:    testAccProviders,
-		CheckDestroy: testDeleteRole(cl, name),
+		CheckDestroy: testDeleteRole(ctx, cl, name),
 		Steps: []resource.TestStep{
 			{
 				Config: roleTf,
 				Check: resource.ComposeTestCheckFunc(
-					testCreateRole(cl, name),
+					testCreateRole(ctx, cl, name),
 				),
 			},
 			{
 				Config: updateTf,
 				Check: resource.ComposeTestCheckFunc(
-					testUpdateRole(cl, name, description),
+					testUpdateRole(ctx, cl, name, description),
 				),
 			},
 		},

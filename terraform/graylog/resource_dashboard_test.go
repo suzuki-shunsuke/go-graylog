@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"testing"
@@ -12,14 +13,14 @@ import (
 )
 
 func testDeleteDashboard(
-	cl *client.Client, key string,
+	ctx context.Context, cl *client.Client, key string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
 		id, err := getIDFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}
-		if _, _, err := cl.GetDashboard(id); err == nil {
+		if _, _, err := cl.GetDashboard(ctx, id); err == nil {
 			return fmt.Errorf(`dashboard "%s" must be deleted`, id)
 		}
 		return nil
@@ -27,27 +28,27 @@ func testDeleteDashboard(
 }
 
 func testCreateDashboard(
-	cl *client.Client, key string,
+	ctx context.Context, cl *client.Client, key string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
 		id, err := getIDFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}
-		_, _, err = cl.GetDashboard(id)
+		_, _, err = cl.GetDashboard(ctx, id)
 		return err
 	}
 }
 
 func testUpdateDashboard(
-	cl *client.Client, key, title string,
+	ctx context.Context, cl *client.Client, key, title string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
 		id, err := getIDFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}
-		db, _, err := cl.GetDashboard(id)
+		db, _, err := cl.GetDashboard(ctx, id)
 		if err != nil {
 			return err
 		}
@@ -59,6 +60,7 @@ func testUpdateDashboard(
 }
 
 func TestAccDashboard(t *testing.T) {
+	ctx := context.Background()
 	cl, server, err := setEnv()
 	if err != nil {
 		t.Fatal(err)
@@ -92,18 +94,18 @@ resource "graylog_dashboard" "zoo" {
 	key := "graylog_dashboard.zoo"
 	resource.Test(t, resource.TestCase{
 		Providers:    testAccProviders,
-		CheckDestroy: testDeleteDashboard(cl, key),
+		CheckDestroy: testDeleteDashboard(ctx, cl, key),
 		Steps: []resource.TestStep{
 			{
 				Config: dbTf,
 				Check: resource.ComposeTestCheckFunc(
-					testCreateDashboard(cl, key),
+					testCreateDashboard(ctx, cl, key),
 				),
 			},
 			{
 				Config: updateTf,
 				Check: resource.ComposeTestCheckFunc(
-					testUpdateDashboard(cl, key, updatedTitle),
+					testUpdateDashboard(ctx, cl, key, updatedTitle),
 				),
 			},
 		},

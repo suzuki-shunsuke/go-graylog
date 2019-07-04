@@ -10,12 +10,7 @@ import (
 )
 
 // CreateRole creates a new role.
-func (client *Client) CreateRole(role *graylog.Role) (*ErrorInfo, error) {
-	return client.CreateRoleContext(context.Background(), role)
-}
-
-// CreateRoleContext creates a new role with a context.
-func (client *Client) CreateRoleContext(
+func (client *Client) CreateRole(
 	ctx context.Context, role *graylog.Role,
 ) (*ErrorInfo, error) {
 	if role == nil {
@@ -25,12 +20,7 @@ func (client *Client) CreateRoleContext(
 }
 
 // GetRoles returns all roles.
-func (client *Client) GetRoles() ([]graylog.Role, int, *ErrorInfo, error) {
-	return client.GetRolesContext(context.Background())
-}
-
-// GetRolesContext returns all roles with a context.
-func (client *Client) GetRolesContext(ctx context.Context) (
+func (client *Client) GetRoles(ctx context.Context) (
 	[]graylog.Role, int, *ErrorInfo, error,
 ) {
 	roles := &graylog.RolesBody{}
@@ -39,12 +29,7 @@ func (client *Client) GetRolesContext(ctx context.Context) (
 }
 
 // GetRole returns a given role.
-func (client *Client) GetRole(name string) (*graylog.Role, *ErrorInfo, error) {
-	return client.GetRoleContext(context.Background(), name)
-}
-
-// GetRoleContext returns a given role with a context.
-func (client *Client) GetRoleContext(
+func (client *Client) GetRole(
 	ctx context.Context, name string,
 ) (*graylog.Role, *ErrorInfo, error) {
 	if name == "" {
@@ -60,14 +45,7 @@ func (client *Client) GetRoleContext(
 }
 
 // UpdateRole updates a given role.
-func (client *Client) UpdateRole(name string, role *graylog.RoleUpdateParams) (
-	*graylog.Role, *ErrorInfo, error,
-) {
-	return client.UpdateRoleContext(context.Background(), name, role)
-}
-
-// UpdateRoleContext updates a given role with a context.
-func (client *Client) UpdateRoleContext(
+func (client *Client) UpdateRole(
 	ctx context.Context, name string, prms *graylog.RoleUpdateParams,
 ) (*graylog.Role, *ErrorInfo, error) {
 	if name == "" {
@@ -86,12 +64,7 @@ func (client *Client) UpdateRoleContext(
 }
 
 // DeleteRole deletes a given role.
-func (client *Client) DeleteRole(name string) (*ErrorInfo, error) {
-	return client.DeleteRoleContext(context.Background(), name)
-}
-
-// DeleteRoleContext deletes a given role with a context.
-func (client *Client) DeleteRoleContext(
+func (client *Client) DeleteRole(
 	ctx context.Context, name string,
 ) (*ErrorInfo, error) {
 	if name == "" {

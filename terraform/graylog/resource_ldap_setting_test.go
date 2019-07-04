@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"testing"
@@ -12,10 +13,10 @@ import (
 )
 
 func testDeleteLDAPSetting(
-	cl *client.Client,
+	ctx context.Context, cl *client.Client,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		ls, _, err := cl.GetLDAPSetting()
+		ls, _, err := cl.GetLDAPSetting(ctx)
 		if err != nil {
 			return err
 		}
@@ -29,10 +30,10 @@ func testDeleteLDAPSetting(
 }
 
 func testCreateLDAPSetting(
-	cl *client.Client, exp string,
+	ctx context.Context, cl *client.Client, exp string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		ls, _, err := cl.GetLDAPSetting()
+		ls, _, err := cl.GetLDAPSetting(ctx)
 		if err != nil {
 			return err
 		}
@@ -46,10 +47,10 @@ func testCreateLDAPSetting(
 }
 
 func testUpdateLDAPSetting(
-	cl *client.Client, exp string,
+	ctx context.Context, cl *client.Client, exp string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		ls, _, err := cl.GetLDAPSetting()
+		ls, _, err := cl.GetLDAPSetting(ctx)
 		if err != nil {
 			return err
 		}
@@ -63,6 +64,7 @@ func testUpdateLDAPSetting(
 }
 
 func TestAccLDAPSetting(t *testing.T) {
+	ctx := context.Background()
 	cl, server, err := setEnv()
 	if err != nil {
 		t.Fatal(err)
@@ -102,18 +104,18 @@ resource "graylog_ldap_setting" "test-terraform" {
 	}
 	resource.Test(t, resource.TestCase{
 		Providers:    testAccProviders,
-		CheckDestroy: testDeleteLDAPSetting(cl),
+		CheckDestroy: testDeleteLDAPSetting(ctx, cl),
 		Steps: []resource.TestStep{
 			{
 				Config: createTf,
 				Check: resource.ComposeTestCheckFunc(
-					testCreateLDAPSetting(cl, "displayname"),
+					testCreateLDAPSetting(ctx, cl, "displayname"),
 				),
 			},
 			{
 				Config: updateTf,
 				Check: resource.ComposeTestCheckFunc(
-					testUpdateLDAPSetting(cl, "displayname_updated"),
+					testUpdateLDAPSetting(ctx, cl, "displayname_updated"),
 				),
 			},
 		},

@@ -1,6 +1,8 @@
 package graylog
 
 import (
+	"context"
+
 	"github.com/hashicorp/terraform/helper/schema"
 
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -72,6 +74,7 @@ func newDashboard(d *schema.ResourceData) (*graylog.Dashboard, error) {
 }
 
 func resourceDashboardCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -80,7 +83,7 @@ func resourceDashboardCreate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	if _, err := cl.CreateDashboard(db); err != nil {
+	if _, err := cl.CreateDashboard(ctx, db); err != nil {
 		return err
 	}
 	d.SetId(db.ID)
@@ -88,11 +91,12 @@ func resourceDashboardCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceDashboardRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	db, _, err := cl.GetDashboard(d.Id())
+	db, _, err := cl.GetDashboard(ctx, d.Id())
 	if err != nil {
 		return err
 	}
@@ -106,6 +110,7 @@ func resourceDashboardRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceDashboardUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -115,18 +120,19 @@ func resourceDashboardUpdate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	if _, err = cl.UpdateDashboard(db); err != nil {
+	if _, err = cl.UpdateDashboard(ctx, db); err != nil {
 		return err
 	}
 	return nil
 }
 
 func resourceDashboardDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	if _, err := cl.DeleteDashboard(d.Id()); err != nil {
+	if _, err := cl.DeleteDashboard(ctx, d.Id()); err != nil {
 		return err
 	}
 	return nil

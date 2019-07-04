@@ -10,12 +10,7 @@ import (
 )
 
 // GetAlert returns an alert.
-func (client *Client) GetAlert(id string) (*graylog.Alert, *ErrorInfo, error) {
-	return client.GetAlertContext(context.Background(), id)
-}
-
-// GetAlertContext returns an alert with a context.
-func (client *Client) GetAlertContext(ctx context.Context, id string) (
+func (client *Client) GetAlert(ctx context.Context, id string) (
 	*graylog.Alert, *ErrorInfo, error,
 ) {
 	// GET /streams/alerts/{alertId} Get an alert by ID
@@ -33,14 +28,7 @@ func (client *Client) GetAlertContext(ctx context.Context, id string) (
 }
 
 // GetAlerts returns all alerts.
-func (client *Client) GetAlerts(
-	skip, limit int,
-) ([]graylog.Alert, int, *ErrorInfo, error) {
-	return client.GetAlertsContext(context.Background(), skip, limit)
-}
-
-// GetAlertsContext returns all alerts with a context.
-func (client *Client) GetAlertsContext(ctx context.Context, skip, limit int) (
+func (client *Client) GetAlerts(ctx context.Context, skip, limit int) (
 	[]graylog.Alert, int, *ErrorInfo, error,
 ) {
 	body := &graylog.AlertsBody{}

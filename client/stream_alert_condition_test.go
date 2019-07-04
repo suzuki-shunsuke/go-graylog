@@ -1,6 +1,7 @@
 package client_test
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
@@ -13,9 +14,9 @@ import (
 )
 
 func TestGetStreamAlertConditions(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	client, err := client.NewClient("http://example.com/api", "admin", "password")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -102,7 +103,7 @@ func TestGetStreamAlertConditions(t *testing.T) {
 			Get(fmt.Sprintf("/api/streams/%s/alerts/conditions", "xxxxx")).
 			MatchType("json").Reply(d.statusCode).
 			BodyString(d.resp)
-		conds, total, _, err := client.GetStreamAlertConditions("xxxxx")
+		conds, total, _, err := client.GetStreamAlertConditions(ctx, "xxxxx")
 		d.checkErr(t, err)
 		if err != nil {
 			require.Equal(t, d.conds, conds)
@@ -112,9 +113,9 @@ func TestGetStreamAlertConditions(t *testing.T) {
 }
 
 func TestGetStreamAlertCondition(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	client, err := client.NewClient("http://example.com/api", "admin", "password")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -161,7 +162,7 @@ func TestGetStreamAlertCondition(t *testing.T) {
 			Get(fmt.Sprintf("/api/streams/%s/alerts/conditions/%s", "xxxxx", d.cond.ID)).
 			MatchType("json").Reply(d.statusCode).
 			BodyString(d.resp)
-		cond, _, err := client.GetStreamAlertCondition("xxxxx", d.cond.ID)
+		cond, _, err := client.GetStreamAlertCondition(ctx, "xxxxx", d.cond.ID)
 		d.checkErr(t, err)
 		if err != nil {
 			require.Equal(t, d.cond, cond)
@@ -170,9 +171,9 @@ func TestGetStreamAlertCondition(t *testing.T) {
 }
 
 func TestCreateStreamAlertCondition(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	client, err := client.NewClient("http://example.com/api", "admin", "password")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -204,7 +205,7 @@ func TestCreateStreamAlertCondition(t *testing.T) {
 			BodyString(fmt.Sprintf(`{
   "alert_condition_id": "%s"
 }`, d.condID))
-		_, err := client.CreateStreamAlertCondition(streamID, &d.cond)
+		_, err := client.CreateStreamAlertCondition(ctx, streamID, &d.cond)
 		d.checkErr(t, err)
 		if err != nil {
 			require.Equal(t, d.cond.ID, d.condID)
@@ -213,9 +214,9 @@ func TestCreateStreamAlertCondition(t *testing.T) {
 }
 
 func TestUpdateStreamAlertCondition(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	client, err := client.NewClient("http://example.com/api", "admin", "password")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -243,15 +244,15 @@ func TestUpdateStreamAlertCondition(t *testing.T) {
 		gock.New("http://example.com").
 			Put(fmt.Sprintf("/api/streams/%s/alerts/conditions/%s", streamID, d.cond.ID)).
 			MatchType("json").Reply(d.statusCode)
-		_, err := client.UpdateStreamAlertCondition(streamID, &d.cond)
+		_, err := client.UpdateStreamAlertCondition(ctx, streamID, &d.cond)
 		d.checkErr(t, err)
 	}
 }
 
 func TestDeleteStreamAlertCondition(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	client, err := client.NewClient("http://example.com/api", "admin", "password")
 	require.Nil(t, err)
 	data := []struct {
 		statusCode int
@@ -266,7 +267,7 @@ func TestDeleteStreamAlertCondition(t *testing.T) {
 		gock.New("http://example.com").
 			Delete(fmt.Sprintf("/api/streams/%s/alerts/conditions/%s", streamID, condID)).
 			MatchType("json").Reply(d.statusCode)
-		_, err := client.DeleteStreamAlertCondition(streamID, condID)
+		_, err := client.DeleteStreamAlertCondition(ctx, streamID, condID)
 		d.checkErr(t, err)
 	}
 }

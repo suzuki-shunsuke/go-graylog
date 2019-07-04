@@ -1,6 +1,8 @@
 package graylog
 
 import (
+	"context"
+
 	"github.com/hashicorp/terraform/helper/schema"
 
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -63,6 +65,7 @@ func newStreamRule(d *schema.ResourceData) (*graylog.StreamRule, error) {
 }
 
 func resourceStreamRuleCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -72,7 +75,7 @@ func resourceStreamRuleCreate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	if _, err := cl.CreateStreamRule(rule); err != nil {
+	if _, err := cl.CreateStreamRule(ctx, rule); err != nil {
 		return err
 	}
 	d.SetId(rule.ID)
@@ -80,11 +83,12 @@ func resourceStreamRuleCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceStreamRuleRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	rule, _, err := cl.GetStreamRule(d.Get("stream_id").(string), d.Id())
+	rule, _, err := cl.GetStreamRule(ctx, d.Get("stream_id").(string), d.Id())
 	if err != nil {
 		return err
 	}
@@ -107,6 +111,7 @@ func resourceStreamRuleRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceStreamRuleUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -115,18 +120,19 @@ func resourceStreamRuleUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	if _, err := cl.UpdateStreamRule(rule); err != nil {
+	if _, err := cl.UpdateStreamRule(ctx, rule); err != nil {
 		return err
 	}
 	return nil
 }
 
 func resourceStreamRuleDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	if _, err := cl.DeleteStreamRule(d.Get("stream_id").(string), d.Id()); err != nil {
+	if _, err := cl.DeleteStreamRule(ctx, d.Get("stream_id").(string), d.Id()); err != nil {
 		return err
 	}
 	return nil

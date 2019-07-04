@@ -1,6 +1,7 @@
 package client_test
 
 import (
+	"context"
 	"os"
 	"testing"
 
@@ -14,6 +15,7 @@ import (
 )
 
 func TestGetLDAPSetting(t *testing.T) {
+	ctx := context.Background()
 	authName := os.Getenv("GRAYLOG_AUTH_NAME")
 	authPass := os.Getenv("GRAYLOG_AUTH_PASSWORD")
 	endpoint := os.Getenv("GRAYLOG_WEB_ENDPOINT_URI")
@@ -68,7 +70,7 @@ func TestGetLDAPSetting(t *testing.T) {
 			gock.New("http://example.com").
 				Get("/api/system/ldap/settings").
 				MatchType("json").Reply(d.statusCode).BodyString(d.resp)
-			m, _, err := client.GetLDAPSetting()
+			m, _, err := client.GetLDAPSetting(ctx)
 			if err != nil {
 				require.Equal(t, d.setting, m)
 			}
@@ -78,6 +80,7 @@ func TestGetLDAPSetting(t *testing.T) {
 }
 
 func TestUpdateLDAPSetting(t *testing.T) {
+	ctx := context.Background()
 	authName := os.Getenv("GRAYLOG_AUTH_NAME")
 	authPass := os.Getenv("GRAYLOG_AUTH_PASSWORD")
 	endpoint := os.Getenv("GRAYLOG_WEB_ENDPOINT_URI")
@@ -124,7 +127,7 @@ func TestUpdateLDAPSetting(t *testing.T) {
 			gock.New("http://example.com").
 				Put("/api/system/ldap/settings").
 				MatchType("json").BodyString(d.body).Reply(d.statusCode)
-			_, err := client.UpdateLDAPSetting(d.setting)
+			_, err := client.UpdateLDAPSetting(ctx, d.setting)
 			d.checkErr(t, err)
 		}
 	}

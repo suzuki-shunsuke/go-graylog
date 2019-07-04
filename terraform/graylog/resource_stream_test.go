@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"testing"
@@ -14,14 +15,14 @@ import (
 )
 
 func testDeleteStream(
-	cl *client.Client, key string,
+	ctx context.Context, cl *client.Client, key string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
 		id, err := getIDFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}
-		if _, _, err := cl.GetStream(id); err == nil {
+		if _, _, err := cl.GetStream(ctx, id); err == nil {
 			return fmt.Errorf(`stream "%s" must be deleted`, id)
 		}
 		return nil
@@ -29,7 +30,7 @@ func testDeleteStream(
 }
 
 func testCreateStream(
-	cl *client.Client, server *mockserver.Server, key string,
+	ctx context.Context, cl *client.Client, server *mockserver.Server, key string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
 		id, err := getIDFromTfState(tfState, key)
@@ -38,20 +39,20 @@ func testCreateStream(
 		}
 		testutil.WaitAfterCreateIndexSet(server)
 
-		_, _, err = cl.GetStream(id)
+		_, _, err = cl.GetStream(ctx, id)
 		return err
 	}
 }
 
 func testUpdateStream(
-	cl *client.Client, key, title string,
+	ctx context.Context, cl *client.Client, key, title string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
 		id, err := getIDFromTfState(tfState, key)
 		if err != nil {
 			return err
 		}
-		stream, _, err := cl.GetStream(id)
+		stream, _, err := cl.GetStream(ctx, id)
 		if err != nil {
 			return err
 		}
@@ -63,6 +64,7 @@ func testUpdateStream(
 }
 
 func TestAccStream(t *testing.T) {
+	ctx := context.Background()
 	cl, server, err := setEnv()
 	if err != nil {
 		t.Fatal(err)
@@ -116,18 +118,18 @@ resource "graylog_stream" "test" {
 	}
 	resource.Test(t, resource.TestCase{
 		Providers:    testAccProviders,
-		CheckDestroy: testDeleteStream(cl, key),
+		CheckDestroy: testDeleteStream(ctx, cl, key),
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(roleTf, prefix, createTitle),
 				Check: resource.ComposeTestCheckFunc(
-					testCreateStream(cl, server, key),
+					testCreateStream(ctx, cl, server, key),
 				),
 			},
 			{
 				Config: fmt.Sprintf(roleTf, prefix, updateTitle),
 				Check: resource.ComposeTestCheckFunc(
-					testUpdateStream(cl, key, updateTitle),
+					testUpdateStream(ctx, cl, key, updateTitle),
 				),
 			},
 		},

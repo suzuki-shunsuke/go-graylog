@@ -6,13 +6,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
-// GetPipelines returns all pipelines.
-func (client *Client) GetPipelines() ([]graylog.Pipeline, *ErrorInfo, error) {
-	return client.GetPipelinesContext(context.Background())
-}
-
-// GetPipelinesContext returns all pipeline with a context.
-func (client *Client) GetPipelinesContext(ctx context.Context) (
+// GetPipelines returns all pipeline.
+func (client *Client) GetPipelines(ctx context.Context) (
 	[]graylog.Pipeline, *ErrorInfo, error,
 ) {
 	pipe := []graylog.Pipeline{}
@@ -21,12 +16,7 @@ func (client *Client) GetPipelinesContext(ctx context.Context) (
 }
 
 // GetPipeline returns a pipeline.
-func (client *Client) GetPipeline(id string) (*graylog.Pipeline, *ErrorInfo, error) {
-	return client.GetPipelineContext(context.Background(), id)
-}
-
-// GetPipelineContext returns a pipeline with a context.
-func (client *Client) GetPipelineContext(ctx context.Context, id string) (
+func (client *Client) GetPipeline(ctx context.Context, id string) (
 	*graylog.Pipeline, *ErrorInfo, error,
 ) {
 	u, err := client.Endpoints().Pipeline(id)
@@ -40,13 +30,6 @@ func (client *Client) GetPipelineContext(ctx context.Context, id string) (
 
 // CreatePipeline creates a pipeline.
 func (client *Client) CreatePipeline(
-	pipeline *graylog.Pipeline,
-) (*ErrorInfo, error) {
-	return client.CreatePipelineContext(context.Background(), pipeline)
-}
-
-// CreatePipelineContext creates a pipeline with a context.
-func (client *Client) CreatePipelineContext(
 	ctx context.Context, pipeline *graylog.Pipeline,
 ) (*ErrorInfo, error) {
 	return client.callPost(
@@ -55,13 +38,6 @@ func (client *Client) CreatePipelineContext(
 
 // UpdatePipeline updates a pipeline.
 func (client *Client) UpdatePipeline(
-	pipeline *graylog.Pipeline,
-) (*ErrorInfo, error) {
-	return client.UpdatePipelineContext(context.Background(), pipeline)
-}
-
-// UpdatePipelineContext updates a pipeline with a context.
-func (client *Client) UpdatePipelineContext(
 	ctx context.Context, pipeline *graylog.Pipeline,
 ) (*ErrorInfo, error) {
 	u, err := client.Endpoints().Pipeline(pipeline.ID)
@@ -75,12 +51,7 @@ func (client *Client) UpdatePipelineContext(
 }
 
 // DeletePipeline deletes a pipeline.
-func (client *Client) DeletePipeline(id string) (*ErrorInfo, error) {
-	return client.DeletePipelineContext(context.Background(), id)
-}
-
-// DeletePipelineContext deletes a pipeline with a context.
-func (client *Client) DeletePipelineContext(
+func (client *Client) DeletePipeline(
 	ctx context.Context, id string,
 ) (*ErrorInfo, error) {
 	u, err := client.Endpoints().Pipeline(id)

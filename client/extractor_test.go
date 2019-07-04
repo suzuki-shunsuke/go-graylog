@@ -1,6 +1,7 @@
 package client_test
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
@@ -89,6 +90,7 @@ func sampleExtractor1() *graylog.Extractor {
 }
 
 func TestGetExtractors(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient(
 		"http://example.com/api", "admin", "password")
@@ -227,7 +229,7 @@ func TestGetExtractors(t *testing.T) {
 			Get(fmt.Sprintf("/api/system/inputs/%s/extractors", id)).
 			MatchType("json").Reply(d.statusCode).
 			BodyString(d.resp)
-		extractors, total, _, err := client.GetExtractors(id)
+		extractors, total, _, err := client.GetExtractors(ctx, id)
 		if d.isErr {
 			require.NotNil(t, err)
 			return
@@ -239,6 +241,7 @@ func TestGetExtractors(t *testing.T) {
 }
 
 func TestGetExtractor(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient(
 		"http://example.com/api", "admin", "password")
@@ -367,7 +370,7 @@ func TestGetExtractor(t *testing.T) {
 			Get(fmt.Sprintf("/api/system/inputs/%s/extractors/%s", inputID, extractorID)).
 			MatchType("json").Reply(d.statusCode).
 			BodyString(d.resp)
-		extractor, _, err := client.GetExtractor(inputID, extractorID)
+		extractor, _, err := client.GetExtractor(ctx, inputID, extractorID)
 		if d.isErr {
 			require.NotNil(t, err)
 			return
@@ -378,6 +381,7 @@ func TestGetExtractor(t *testing.T) {
 }
 
 func TestCreateExtractor(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient(
 		"http://example.com/api", "admin", "password")
@@ -457,7 +461,7 @@ func TestCreateExtractor(t *testing.T) {
 			Post(fmt.Sprintf("/api/system/inputs/%s/extractors", d.inputID)).
 			MatchType("json").JSON(req).Reply(d.statusCode).
 			BodyString(d.resp)
-		_, err = client.CreateExtractor(d.inputID, d.extractor)
+		_, err = client.CreateExtractor(ctx, d.inputID, d.extractor)
 		if d.isErr {
 			require.NotNil(t, err)
 			return
@@ -468,6 +472,7 @@ func TestCreateExtractor(t *testing.T) {
 }
 
 func TestUpdateExtractor(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient(
 		"http://example.com/api", "admin", "password")
@@ -638,7 +643,7 @@ func TestUpdateExtractor(t *testing.T) {
 		gock.New("http://example.com").
 			Put(fmt.Sprintf("/api/system/inputs/%s/extractors/%s", d.inputID, d.extractorID)).
 			MatchType("json").JSON(req).Reply(d.statusCode).BodyString(d.resp)
-		_, err = client.UpdateExtractor(d.inputID, d.extractor)
+		_, err = client.UpdateExtractor(ctx, d.inputID, d.extractor)
 		if d.isErr {
 			require.NotNil(t, err)
 			return
@@ -649,6 +654,7 @@ func TestUpdateExtractor(t *testing.T) {
 }
 
 func TestDeleteExtractor(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient(
 		"http://example.com/api", "admin", "password")
@@ -667,7 +673,7 @@ func TestDeleteExtractor(t *testing.T) {
 		gock.New("http://example.com").
 			Delete(fmt.Sprintf("/api/system/inputs/%s/extractors/%s", d.inputID, d.extractorID)).
 			MatchType("json").Reply(d.statusCode)
-		_, err := client.DeleteExtractor(d.inputID, d.extractorID)
+		_, err := client.DeleteExtractor(ctx, d.inputID, d.extractorID)
 		if d.isErr {
 			require.NotNil(t, err)
 			return

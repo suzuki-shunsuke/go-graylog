@@ -5,16 +5,8 @@ import (
 	"errors"
 )
 
-// CreateInputStaticFields creates an input static field.
-func (client *Client) CreateInputStaticField(inputID, key, value string) (
-	ei *ErrorInfo, err error,
-) {
-	return client.CreateInputStaticFieldContext(
-		context.Background(), inputID, key, value)
-}
-
-// CreateInputStaticFieldContext creates an input static field with a context.
-func (client *Client) CreateInputStaticFieldContext(
+// CreateInputStaticField creates an input static field.
+func (client *Client) CreateInputStaticField(
 	ctx context.Context, inputID, key, value string,
 ) (ei *ErrorInfo, err error) {
 	if inputID == "" {
@@ -38,12 +30,7 @@ func (client *Client) CreateInputStaticFieldContext(
 }
 
 // DeleteInputStaticField deletes an given input static field.
-func (client *Client) DeleteInputStaticField(inputID, key string) (*ErrorInfo, error) {
-	return client.DeleteInputStaticFieldContext(context.Background(), inputID, key)
-}
-
-// DeleteInputStaticFieldContext deletes an given input static field with a context.
-func (client *Client) DeleteInputStaticFieldContext(
+func (client *Client) DeleteInputStaticField(
 	ctx context.Context, inputID, key string,
 ) (*ErrorInfo, error) {
 	if inputID == "" {

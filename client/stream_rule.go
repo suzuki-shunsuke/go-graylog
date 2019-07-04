@@ -15,15 +15,8 @@ type streamRuleIDBody struct {
 	StreamRuleID string `json:"streamrule_id"`
 }
 
-// GetStreamRules returns a list of all stream rules
-func (client *Client) GetStreamRules(streamID string) (
-	streamRules []graylog.StreamRule, total int, ei *ErrorInfo, err error,
-) {
-	return client.GetStreamRulesContext(context.Background(), streamID)
-}
-
-// GetStreamRulesContext returns a list of all stream rules with a context.
-func (client *Client) GetStreamRulesContext(
+// GetStreamRules returns a list of all stream rules.
+func (client *Client) GetStreamRules(
 	ctx context.Context, streamID string,
 ) (streamRules []graylog.StreamRule, total int, ei *ErrorInfo, err error) {
 	// GET /streams/{streamid}/rules Get a list of all stream rules
@@ -36,13 +29,8 @@ func (client *Client) GetStreamRulesContext(
 	return body.StreamRules, body.Total, ei, err
 }
 
-// CreateStreamRule creates a stream
-func (client *Client) CreateStreamRule(rule *graylog.StreamRule) (*ErrorInfo, error) {
-	return client.CreateStreamRuleContext(context.Background(), rule)
-}
-
-// CreateStreamRuleContext creates a stream with a context
-func (client *Client) CreateStreamRuleContext(
+// CreateStreamRule creates a stream.
+func (client *Client) CreateStreamRule(
 	ctx context.Context, rule *graylog.StreamRule,
 ) (*ErrorInfo, error) {
 	// POST /streams/{streamid}/rules Create a stream rule
@@ -63,12 +51,7 @@ func (client *Client) CreateStreamRuleContext(
 }
 
 // UpdateStreamRule updates a stream rule
-func (client *Client) UpdateStreamRule(rule *graylog.StreamRule) (*ErrorInfo, error) {
-	return client.UpdateStreamRuleContext(context.Background(), rule)
-}
-
-// UpdateStreamRuleContext updates a stream rule
-func (client *Client) UpdateStreamRuleContext(
+func (client *Client) UpdateStreamRule(
 	ctx context.Context, rule *graylog.StreamRule,
 ) (*ErrorInfo, error) {
 	// PUT /streams/{streamid}/rules/{streamRuleID} Update a stream rule
@@ -91,13 +74,8 @@ func (client *Client) UpdateStreamRuleContext(
 	return client.callPut(ctx, u.String(), &cr, nil)
 }
 
-// DeleteStreamRule deletes a stream rule
-func (client *Client) DeleteStreamRule(streamID, ruleID string) (*ErrorInfo, error) {
-	return client.DeleteStreamRuleContext(context.Background(), streamID, ruleID)
-}
-
-// DeleteStreamRuleContext deletes a stream rule with a context
-func (client *Client) DeleteStreamRuleContext(
+// DeleteStreamRule deletes a stream rule.
+func (client *Client) DeleteStreamRule(
 	ctx context.Context, streamID, ruleID string,
 ) (*ErrorInfo, error) {
 	// DELETE /streams/{streamid}/rules/{streamRuleID} Delete a stream rule
@@ -114,13 +92,8 @@ func (client *Client) DeleteStreamRuleContext(
 	return client.callDelete(ctx, u.String(), nil, nil)
 }
 
-// GetStreamRule returns a stream rule
-func (client *Client) GetStreamRule(streamID, ruleID string) (*graylog.StreamRule, *ErrorInfo, error) {
-	return client.GetStreamRuleContext(context.Background(), streamID, ruleID)
-}
-
-// GetStreamRuleContext returns a stream rule with a context
-func (client *Client) GetStreamRuleContext(
+// GetStreamRule returns a stream rule.
+func (client *Client) GetStreamRule(
 	ctx context.Context, streamID, ruleID string,
 ) (*graylog.StreamRule, *ErrorInfo, error) {
 	// GET /streams/{streamid}/rules/{streamRuleID} Get a single stream rules

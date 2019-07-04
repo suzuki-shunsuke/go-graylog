@@ -11,12 +11,7 @@ import (
 )
 
 // CreateCollectorConfiguration creates a collector configuration.
-func (client *Client) CreateCollectorConfiguration(cfg *graylog.CollectorConfiguration) (*ErrorInfo, error) {
-	return client.CreateCollectorConfigurationContext(context.Background(), cfg)
-}
-
-// CreateCollectorConfigurationContext creates a collector configuration with a context.
-func (client *Client) CreateCollectorConfigurationContext(
+func (client *Client) CreateCollectorConfiguration(
 	ctx context.Context, cfg *graylog.CollectorConfiguration,
 ) (*ErrorInfo, error) {
 	// POST /plugins/org.graylog.plugins.collector/configurations Create new collector configuration
@@ -39,25 +34,15 @@ func (client *Client) CreateCollectorConfigurationContext(
 }
 
 // GetCollectorConfigurations returns all collector configurations.
-func (client *Client) GetCollectorConfigurations() ([]graylog.CollectorConfiguration, int, *ErrorInfo, error) {
-	return client.GetCollectorConfigurationsContext(context.Background())
-}
-
-// GetCollectorConfigurationsContext returns all collector configurations with a context.
-func (client *Client) GetCollectorConfigurationsContext(ctx context.Context) ([]graylog.CollectorConfiguration, int, *ErrorInfo, error) {
+func (client *Client) GetCollectorConfigurations(ctx context.Context) ([]graylog.CollectorConfiguration, int, *ErrorInfo, error) {
 	cfgs := &graylog.CollectorConfigurationsBody{}
 	ei, err := client.callGet(
 		ctx, client.Endpoints().CollectorConfigurations(), nil, cfgs)
 	return cfgs.Configurations, cfgs.Total, ei, err
 }
 
-// GetCollectorConfiguration returns a collector configuration.
-func (client *Client) GetCollectorConfiguration(id string) (*graylog.CollectorConfiguration, *ErrorInfo, error) {
-	return client.GetCollectorConfigurationContext(context.Background(), id)
-}
-
-// GetCollectorConfigurationContext returns a given user with a context.
-func (client *Client) GetCollectorConfigurationContext(
+// GetCollectorConfiguration returns a given user.
+func (client *Client) GetCollectorConfiguration(
 	ctx context.Context, id string,
 ) (*graylog.CollectorConfiguration, *ErrorInfo, error) {
 	// GET /api/plugins/org.graylog.plugins.collector/configurations/:id
@@ -74,12 +59,7 @@ func (client *Client) GetCollectorConfigurationContext(
 }
 
 // RenameCollectorConfiguration renames a collector configuration.
-func (client *Client) RenameCollectorConfiguration(id, name string) (*graylog.CollectorConfiguration, *ErrorInfo, error) {
-	return client.RenameCollectorConfigurationContext(context.Background(), id, name)
-}
-
-// RenameCollectorConfigurationContext renames a collector configuration with a context.
-func (client *Client) RenameCollectorConfigurationContext(
+func (client *Client) RenameCollectorConfiguration(
 	ctx context.Context, id, name string,
 ) (*graylog.CollectorConfiguration, *ErrorInfo, error) {
 	if id == "" {
@@ -104,12 +84,7 @@ func (client *Client) RenameCollectorConfigurationContext(
 }
 
 // DeleteCollectorConfiguration deletes a collector configuration.
-func (client *Client) DeleteCollectorConfiguration(id string) (*ErrorInfo, error) {
-	return client.DeleteCollectorConfigurationContext(context.Background(), id)
-}
-
-// DeleteCollectorConfigurationContext deletes a collector configuration with a context.
-func (client *Client) DeleteCollectorConfigurationContext(
+func (client *Client) DeleteCollectorConfiguration(
 	ctx context.Context, id string,
 ) (*ErrorInfo, error) {
 	if id == "" {

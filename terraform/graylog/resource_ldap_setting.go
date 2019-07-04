@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -129,6 +130,7 @@ func newLDAPSetting(d *schema.ResourceData) (*graylog.LDAPSetting, error) {
 }
 
 func resourceLDAPSettingCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -138,7 +140,7 @@ func resourceLDAPSettingCreate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	if _, err = cl.UpdateLDAPSetting(ls); err != nil {
+	if _, err = cl.UpdateLDAPSetting(ctx, ls); err != nil {
 		return err
 	}
 	d.SetId(ldapSettingID)
@@ -146,11 +148,12 @@ func resourceLDAPSettingCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceLDAPSettingRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	ls, _, err := cl.GetLDAPSetting()
+	ls, _, err := cl.GetLDAPSetting(ctx)
 	if err != nil {
 		return err
 	}
@@ -204,6 +207,7 @@ func resourceLDAPSettingRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceLDAPSettingUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -212,15 +216,16 @@ func resourceLDAPSettingUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	_, err = cl.UpdateLDAPSetting(ls)
+	_, err = cl.UpdateLDAPSetting(ctx, ls)
 	return err
 }
 
 func resourceLDAPSettingDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	_, err = cl.DeleteLDAPSetting()
+	_, err = cl.DeleteLDAPSetting(ctx)
 	return err
 }

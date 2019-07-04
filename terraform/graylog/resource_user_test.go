@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"testing"
@@ -12,10 +13,10 @@ import (
 )
 
 func testDeleteUser(
-	cl *client.Client, name string,
+	ctx context.Context, cl *client.Client, name string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		if _, _, err := cl.GetUser(name); err == nil {
+		if _, _, err := cl.GetUser(ctx, name); err == nil {
 			return fmt.Errorf(`user "%s" must be deleted`, name)
 		}
 		return nil
@@ -23,19 +24,19 @@ func testDeleteUser(
 }
 
 func testCreateUser(
-	cl *client.Client, name string,
+	ctx context.Context, cl *client.Client, name string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		_, _, err := cl.GetUser(name)
+		_, _, err := cl.GetUser(ctx, name)
 		return err
 	}
 }
 
 func testUpdateUser(
-	cl *client.Client, name, fullName string,
+	ctx context.Context, cl *client.Client, name, fullName string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
-		user, _, err := cl.GetUser(name)
+		user, _, err := cl.GetUser(ctx, name)
 		if err != nil {
 			return err
 		}
@@ -47,6 +48,7 @@ func testUpdateUser(
 }
 
 func TestAccUser(t *testing.T) {
+	ctx := context.Background()
 	cl, server, err := setEnv()
 	if err != nil {
 		t.Fatal(err)
@@ -94,18 +96,18 @@ resource "graylog_user" "zoo" {
 	}
 	resource.Test(t, resource.TestCase{
 		Providers:    testAccProviders,
-		CheckDestroy: testDeleteUser(cl, name),
+		CheckDestroy: testDeleteUser(ctx, cl, name),
 		Steps: []resource.TestStep{
 			{
 				Config: userTf,
 				Check: resource.ComposeTestCheckFunc(
-					testCreateUser(cl, name),
+					testCreateUser(ctx, cl, name),
 				),
 			},
 			{
 				Config: updateTf,
 				Check: resource.ComposeTestCheckFunc(
-					testUpdateUser(cl, name, fullName),
+					testUpdateUser(ctx, cl, name, fullName),
 				),
 			},
 		},

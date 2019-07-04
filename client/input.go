@@ -10,27 +10,16 @@ import (
 )
 
 // GetInputs returns all inputs.
-func (client *Client) GetInputs() ([]graylog.Input, int, *ErrorInfo, error) {
-	return client.GetInputsContext(context.Background())
-}
-
-// GetInputsContext returns all inputs with a context.
-func (client *Client) GetInputsContext(ctx context.Context) (
+func (client *Client) GetInputs(ctx context.Context) (
 	[]graylog.Input, int, *ErrorInfo, error,
 ) {
 	inputs := &graylog.InputsBody{}
-	ei, err := client.callGet(
-		ctx, client.Endpoints().Inputs(), nil, inputs)
+	ei, err := client.callGet(ctx, client.Endpoints().Inputs(), nil, inputs)
 	return inputs.Inputs, inputs.Total, ei, err
 }
 
 // GetInput returns a given input.
-func (client *Client) GetInput(id string) (*graylog.Input, *ErrorInfo, error) {
-	return client.GetInputContext(context.Background(), id)
-}
-
-// GetInputContext returns a given input with a context.
-func (client *Client) GetInputContext(
+func (client *Client) GetInput(
 	ctx context.Context, id string,
 ) (*graylog.Input, *ErrorInfo, error) {
 	if id == "" {
@@ -41,20 +30,12 @@ func (client *Client) GetInputContext(
 		return nil, nil, err
 	}
 	input := &graylog.Input{}
-	ei, err := client.callGet(
-		ctx, u.String(), nil, input)
+	ei, err := client.callGet(ctx, u.String(), nil, input)
 	return input, ei, err
 }
 
 // CreateInput creates an input.
-func (client *Client) CreateInput(input *graylog.Input) (
-	ei *ErrorInfo, err error,
-) {
-	return client.CreateInputContext(context.Background(), input)
-}
-
-// CreateInputContext creates an input with a context.
-func (client *Client) CreateInputContext(
+func (client *Client) CreateInput(
 	ctx context.Context, input *graylog.Input,
 ) (ei *ErrorInfo, err error) {
 	if input == nil {
@@ -79,12 +60,7 @@ func (client *Client) CreateInputContext(
 }
 
 // UpdateInput updates an given input.
-func (client *Client) UpdateInput(input *graylog.InputUpdateParams) (*graylog.Input, *ErrorInfo, error) {
-	return client.UpdateInputContext(context.Background(), input)
-}
-
-// UpdateInputContext updates an given input with a context.
-func (client *Client) UpdateInputContext(
+func (client *Client) UpdateInput(
 	ctx context.Context, prms *graylog.InputUpdateParams,
 ) (*graylog.Input, *ErrorInfo, error) {
 	if prms == nil {
@@ -114,12 +90,7 @@ func (client *Client) UpdateInputContext(
 }
 
 // DeleteInput deletes an given input.
-func (client *Client) DeleteInput(id string) (*ErrorInfo, error) {
-	return client.DeleteInputContext(context.Background(), id)
-}
-
-// DeleteInputContext deletes an given input with a context.
-func (client *Client) DeleteInputContext(
+func (client *Client) DeleteInput(
 	ctx context.Context, id string,
 ) (*ErrorInfo, error) {
 	if id == "" {

@@ -1,6 +1,7 @@
 package client_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/gofrs/uuid"
@@ -8,6 +9,7 @@ import (
 )
 
 func TestGetIndexSetStats(t *testing.T) {
+	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -16,7 +18,7 @@ func TestGetIndexSetStats(t *testing.T) {
 		defer server.Close()
 	}
 
-	iss, _, _, _, err := client.GetIndexSets(0, 0, false)
+	iss, _, _, _, err := client.GetIndexSets(ctx, 0, 0, false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -26,13 +28,13 @@ func TestGetIndexSetStats(t *testing.T) {
 	}
 	is := testutil.IndexSet(u.String())
 	if len(iss) == 0 {
-		if _, err := client.CreateIndexSet(is); err != nil {
+		if _, err := client.CreateIndexSet(ctx, is); err != nil {
 			t.Fatal(err)
 		}
 		testutil.WaitAfterCreateIndexSet(server)
 		// clean
 		defer func(id string) {
-			if _, err := client.DeleteIndexSet(id); err != nil {
+			if _, err := client.DeleteIndexSet(ctx, id); err != nil {
 				t.Fatal(err)
 			}
 			testutil.WaitAfterDeleteIndexSet(server)
@@ -41,10 +43,10 @@ func TestGetIndexSetStats(t *testing.T) {
 		is = &(iss[0])
 	}
 
-	if _, _, err := client.GetIndexSetStats(is.ID); err != nil {
+	if _, _, err := client.GetIndexSetStats(ctx, is.ID); err != nil {
 		t.Fatal(err)
 	}
-	if _, _, err := client.GetIndexSetStats(""); err == nil {
+	if _, _, err := client.GetIndexSetStats(ctx, ""); err == nil {
 		t.Fatal("index set id is required")
 	}
 	// if _, _, err := client.GetIndexSetStats("h"); err == nil {
@@ -53,6 +55,7 @@ func TestGetIndexSetStats(t *testing.T) {
 }
 
 func TestGetTotalIndexSetsStats(t *testing.T) {
+	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -65,14 +68,14 @@ func TestGetTotalIndexSetsStats(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	is, f, err := testutil.GetIndexSet(client, server, u.String())
+	is, f, err := testutil.GetIndexSet(ctx, client, server, u.String())
 	if err != nil {
 		t.Fatal(err)
 	}
 	if f != nil {
 		defer f(is.ID)
 	}
-	if _, _, err := client.GetTotalIndexSetsStats(); err != nil {
+	if _, _, err := client.GetTotalIndexSetsStats(ctx); err != nil {
 		t.Fatal(err)
 	}
 }

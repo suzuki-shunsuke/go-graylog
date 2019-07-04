@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"testing"
@@ -13,7 +14,7 @@ import (
 )
 
 func testDeleteStreamRule(
-	cl *client.Client, key string,
+	ctx context.Context, cl *client.Client, key string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
 		rs, ok := tfState.RootModule().Resources[key]
@@ -25,7 +26,7 @@ func testDeleteStreamRule(
 		if !ok {
 			return fmt.Errorf("stream_id is not found: %s", key)
 		}
-		if _, _, err := cl.GetStreamRule(streamID, id); err == nil {
+		if _, _, err := cl.GetStreamRule(ctx, streamID, id); err == nil {
 			return fmt.Errorf(`stream rule "%s" must be deleted`, id)
 		}
 		return nil
@@ -33,7 +34,7 @@ func testDeleteStreamRule(
 }
 
 func testCreateStreamRule(
-	cl *client.Client, server *mockserver.Server, key string,
+	ctx context.Context, cl *client.Client, server *mockserver.Server, key string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
 		rs, ok := tfState.RootModule().Resources[key]
@@ -46,13 +47,13 @@ func testCreateStreamRule(
 			return fmt.Errorf("stream_id is not found: %s", key)
 		}
 		testutil.WaitAfterCreateIndexSet(server)
-		_, _, err := cl.GetStreamRule(streamID, id)
+		_, _, err := cl.GetStreamRule(ctx, streamID, id)
 		return err
 	}
 }
 
 func testUpdateStreamRule(
-	cl *client.Client, key, desc string,
+	ctx context.Context, cl *client.Client, key, desc string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
 		rs, ok := tfState.RootModule().Resources[key]
@@ -64,7 +65,7 @@ func testUpdateStreamRule(
 		if !ok {
 			return fmt.Errorf("stream_id is not found: %s", key)
 		}
-		rule, _, err := cl.GetStreamRule(streamID, id)
+		rule, _, err := cl.GetStreamRule(ctx, streamID, id)
 		if err != nil {
 			return err
 		}
@@ -76,6 +77,7 @@ func testUpdateStreamRule(
 }
 
 func TestAccStreamRule(t *testing.T) {
+	ctx := context.Background()
 	cl, server, err := setEnv()
 	if err != nil {
 		t.Fatal(err)
@@ -132,18 +134,18 @@ resource "graylog_stream_rule" "test" {
 	}
 	resource.Test(t, resource.TestCase{
 		Providers:    testAccProviders,
-		CheckDestroy: testDeleteStreamRule(cl, key),
+		CheckDestroy: testDeleteStreamRule(ctx, cl, key),
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(roleTf, createDesc),
 				Check: resource.ComposeTestCheckFunc(
-					testCreateStreamRule(cl, server, key),
+					testCreateStreamRule(ctx, cl, server, key),
 				),
 			},
 			{
 				Config: fmt.Sprintf(roleTf, updateDesc),
 				Check: resource.ComposeTestCheckFunc(
-					testUpdateStreamRule(cl, key, updateDesc),
+					testUpdateStreamRule(ctx, cl, key, updateDesc),
 				),
 			},
 		},

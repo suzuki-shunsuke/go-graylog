@@ -9,12 +9,7 @@ import (
 )
 
 // GetRoleMembers returns a given role's members.
-func (client *Client) GetRoleMembers(name string) ([]graylog.User, *ErrorInfo, error) {
-	return client.GetRoleMembersContext(context.Background(), name)
-}
-
-// GetRoleMembersContext returns a given role's members with a context.
-func (client *Client) GetRoleMembersContext(
+func (client *Client) GetRoleMembers(
 	ctx context.Context, name string,
 ) ([]graylog.User, *ErrorInfo, error) {
 	if name == "" {
@@ -30,14 +25,7 @@ func (client *Client) GetRoleMembersContext(
 }
 
 // AddUserToRole adds a user to a role.
-func (client *Client) AddUserToRole(userName, roleName string) (
-	*ErrorInfo, error,
-) {
-	return client.AddUserToRoleContext(context.Background(), userName, roleName)
-}
-
-// AddUserToRoleContext adds a user to a role with a context.
-func (client *Client) AddUserToRoleContext(
+func (client *Client) AddUserToRole(
 	ctx context.Context, userName, roleName string,
 ) (*ErrorInfo, error) {
 	if userName == "" {
@@ -55,14 +43,6 @@ func (client *Client) AddUserToRoleContext(
 
 // RemoveUserFromRole removes a user from a role.
 func (client *Client) RemoveUserFromRole(
-	userName, roleName string,
-) (*ErrorInfo, error) {
-	return client.RemoveUserFromRoleContext(
-		context.Background(), userName, roleName)
-}
-
-// RemoveUserFromRoleContext removes a user from a role with a context.
-func (client *Client) RemoveUserFromRoleContext(
 	ctx context.Context, userName, roleName string,
 ) (*ErrorInfo, error) {
 	if userName == "" {

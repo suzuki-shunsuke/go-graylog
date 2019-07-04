@@ -1,6 +1,8 @@
 package graylog
 
 import (
+	"context"
+
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -44,6 +46,7 @@ func newInputStaticFields(d *schema.ResourceData) (string, map[string]string, er
 }
 
 func resourceInputStaticFieldsCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -52,7 +55,7 @@ func resourceInputStaticFieldsCreate(d *schema.ResourceData, m interface{}) erro
 	if err != nil {
 		return err
 	}
-	input, _, err := cl.GetInput(inputID)
+	input, _, err := cl.GetInput(ctx, inputID)
 	if err != nil {
 		return err
 	}
@@ -66,12 +69,12 @@ func resourceInputStaticFieldsCreate(d *schema.ResourceData, m interface{}) erro
 			if v == oldV {
 				continue
 			}
-			if _, err := cl.CreateInputStaticField(inputID, k, v); err != nil {
+			if _, err := cl.CreateInputStaticField(ctx, inputID, k, v); err != nil {
 				return err
 			}
 			continue
 		}
-		if _, err := cl.CreateInputStaticField(inputID, k, v); err != nil {
+		if _, err := cl.CreateInputStaticField(ctx, inputID, k, v); err != nil {
 			return err
 		}
 	}
@@ -79,7 +82,7 @@ func resourceInputStaticFieldsCreate(d *schema.ResourceData, m interface{}) erro
 		if _, ok := fields[k]; ok {
 			continue
 		}
-		if _, err := cl.DeleteInputStaticField(inputID, k); err != nil {
+		if _, err := cl.DeleteInputStaticField(ctx, inputID, k); err != nil {
 			return err
 		}
 	}
@@ -88,11 +91,12 @@ func resourceInputStaticFieldsCreate(d *schema.ResourceData, m interface{}) erro
 }
 
 func resourceInputStaticFieldsRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	input, _, err := cl.GetInput(d.Get("input_id").(string))
+	input, _, err := cl.GetInput(ctx, d.Get("input_id").(string))
 	if err != nil {
 		return err
 	}
@@ -100,6 +104,7 @@ func resourceInputStaticFieldsRead(d *schema.ResourceData, m interface{}) error 
 }
 
 func resourceInputStaticFieldsUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -123,13 +128,13 @@ func resourceInputStaticFieldsUpdate(d *schema.ResourceData, m interface{}) erro
 				continue
 			}
 			// update
-			if _, err := cl.CreateInputStaticField(inputID, k, newV); err != nil {
+			if _, err := cl.CreateInputStaticField(ctx, inputID, k, newV); err != nil {
 				return err
 			}
 			continue
 		}
 		// delete
-		if _, err := cl.DeleteInputStaticField(inputID, k); err != nil {
+		if _, err := cl.DeleteInputStaticField(ctx, inputID, k); err != nil {
 			return err
 		}
 	}
@@ -138,7 +143,7 @@ func resourceInputStaticFieldsUpdate(d *schema.ResourceData, m interface{}) erro
 			continue
 		}
 		// create
-		if _, err := cl.CreateInputStaticField(inputID, k, newV); err != nil {
+		if _, err := cl.CreateInputStaticField(ctx, inputID, k, newV); err != nil {
 			return err
 		}
 	}
@@ -146,6 +151,7 @@ func resourceInputStaticFieldsUpdate(d *schema.ResourceData, m interface{}) erro
 }
 
 func resourceInputStaticFieldsDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -155,7 +161,7 @@ func resourceInputStaticFieldsDelete(d *schema.ResourceData, m interface{}) erro
 		return err
 	}
 	for k := range fields {
-		if _, err := cl.DeleteInputStaticField(inputID, k); err != nil {
+		if _, err := cl.DeleteInputStaticField(ctx, inputID, k); err != nil {
 			return err
 		}
 	}

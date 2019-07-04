@@ -1,6 +1,7 @@
 package testutil
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"time"
@@ -16,8 +17,8 @@ const (
 )
 
 // GetNonAdminUser returns a user whose name is not "admin".
-func GetNonAdminUser(cl *client.Client) (*graylog.User, error) {
-	users, _, err := cl.GetUsers()
+func GetNonAdminUser(ctx context.Context, cl *client.Client) (*graylog.User, error) {
+	users, _, err := cl.GetUsers(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -31,8 +32,10 @@ func GetNonAdminUser(cl *client.Client) (*graylog.User, error) {
 
 // GetRoleOrCreate gets a given name's role.
 // If no role whose name is a given name exists, create a role with a given name and returns it.
-func GetRoleOrCreate(cl *client.Client, name string) (*graylog.Role, error) {
-	role, ei, err := cl.GetRole(name)
+func GetRoleOrCreate(
+	ctx context.Context, cl *client.Client, name string,
+) (*graylog.Role, error) {
+	role, ei, err := cl.GetRole(ctx, name)
 	if err == nil {
 		return role, nil
 	}
@@ -41,15 +44,17 @@ func GetRoleOrCreate(cl *client.Client, name string) (*graylog.Role, error) {
 	}
 	role = Role()
 	role.Name = name
-	if _, err := cl.CreateRole(role); err != nil {
+	if _, err := cl.CreateRole(ctx, role); err != nil {
 		return nil, err
 	}
 	return role, nil
 }
 
 // GetIndexSet returns an IndexSet.
-func GetIndexSet(cl *client.Client, server *mockserver.Server, prefix string) (*graylog.IndexSet, func(string), error) {
-	iss, _, _, _, err := cl.GetIndexSets(0, 0, false)
+func GetIndexSet(
+	ctx context.Context, cl *client.Client, server *mockserver.Server, prefix string,
+) (*graylog.IndexSet, func(string), error) {
+	iss, _, _, _, err := cl.GetIndexSets(ctx, 0, 0, false)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -57,20 +62,22 @@ func GetIndexSet(cl *client.Client, server *mockserver.Server, prefix string) (*
 		return &(iss[0]), nil, nil
 	}
 	is := IndexSet(prefix)
-	if _, err := cl.CreateIndexSet(is); err != nil {
+	if _, err := cl.CreateIndexSet(ctx, is); err != nil {
 		return nil, nil, err
 	}
 	WaitAfterCreateIndexSet(server)
 	return is, func(id string) {
-		if _, err := cl.DeleteIndexSet(id); err == nil {
+		if _, err := cl.DeleteIndexSet(ctx, id); err == nil {
 			WaitAfterDeleteIndexSet(server)
 		}
 	}, nil
 }
 
 // GetStream returns a stream.
-func GetStream(cl *client.Client, server *mockserver.Server, mode int) (*graylog.Stream, func(string), error) {
-	streams, _, _, err := cl.GetStreams()
+func GetStream(
+	ctx context.Context, cl *client.Client, server *mockserver.Server, mode int,
+) (*graylog.Stream, func(string), error) {
+	streams, _, _, err := cl.GetStreams(ctx)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -93,20 +100,20 @@ func GetStream(cl *client.Client, server *mockserver.Server, mode int) (*graylog
 		}
 		return &(streams[0]), nil, nil
 	}
-	is, f, err := GetIndexSet(cl, server, "hoge")
+	is, f, err := GetIndexSet(ctx, cl, server, "hoge")
 	if err != nil {
 		return nil, nil, err
 	}
 	stream := Stream()
 	stream.IndexSetID = is.ID
-	if _, err := cl.CreateStream(stream); err != nil {
+	if _, err := cl.CreateStream(ctx, stream); err != nil {
 		if f != nil {
 			f(is.ID)
 		}
 		return nil, nil, err
 	}
 	return stream, func(id string) {
-		cl.DeleteStream(id)
+		cl.DeleteStream(ctx, id)
 		if f != nil {
 			f(is.ID)
 		}
