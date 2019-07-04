@@ -10,14 +10,7 @@ import (
 )
 
 // GetStreams returns all streams.
-func (client *Client) GetStreams() (
-	streams []graylog.Stream, total int, ei *ErrorInfo, err error,
-) {
-	return client.GetStreamsContext(context.Background())
-}
-
-// GetStreamsContext returns all streams with a context.
-func (client *Client) GetStreamsContext(
+func (client *Client) GetStreams(
 	ctx context.Context,
 ) (streams []graylog.Stream, total int, ei *ErrorInfo, err error) {
 	streamsBody := &graylog.StreamsBody{}
@@ -27,12 +20,7 @@ func (client *Client) GetStreamsContext(
 }
 
 // GetStream returns a given stream.
-func (client *Client) GetStream(id string) (*graylog.Stream, *ErrorInfo, error) {
-	return client.GetStreamContext(context.Background(), id)
-}
-
-// GetStreamContext returns a given stream with a context.
-func (client *Client) GetStreamContext(
+func (client *Client) GetStream(
 	ctx context.Context, id string,
 ) (*graylog.Stream, *ErrorInfo, error) {
 	if id == "" {
@@ -48,12 +36,7 @@ func (client *Client) GetStreamContext(
 }
 
 // CreateStream creates a stream.
-func (client *Client) CreateStream(stream *graylog.Stream) (*ErrorInfo, error) {
-	return client.CreateStreamContext(context.Background(), stream)
-}
-
-// CreateStreamContext creates a stream with a context.
-func (client *Client) CreateStreamContext(
+func (client *Client) CreateStream(
 	ctx context.Context, stream *graylog.Stream,
 ) (*ErrorInfo, error) {
 	if stream == nil {
@@ -72,14 +55,7 @@ func (client *Client) CreateStreamContext(
 }
 
 // GetEnabledStreams returns all enabled streams.
-func (client *Client) GetEnabledStreams() (
-	streams []graylog.Stream, total int, ei *ErrorInfo, err error,
-) {
-	return client.GetEnabledStreamsContext(context.Background())
-}
-
-// GetEnabledStreamsContext returns all enabled streams with a context.
-func (client *Client) GetEnabledStreamsContext(
+func (client *Client) GetEnabledStreams(
 	ctx context.Context,
 ) (streams []graylog.Stream, total int, ei *ErrorInfo, err error) {
 	streamsBody := &graylog.StreamsBody{}
@@ -89,12 +65,7 @@ func (client *Client) GetEnabledStreamsContext(
 }
 
 // UpdateStream updates a stream.
-func (client *Client) UpdateStream(stream *graylog.Stream) (*ErrorInfo, error) {
-	return client.UpdateStreamContext(context.Background(), stream)
-}
-
-// UpdateStreamContext updates a stream with a context.
-func (client *Client) UpdateStreamContext(
+func (client *Client) UpdateStream(
 	ctx context.Context, stream *graylog.Stream,
 ) (*ErrorInfo, error) {
 	if stream == nil {
@@ -113,12 +84,7 @@ func (client *Client) UpdateStreamContext(
 }
 
 // DeleteStream deletes a stream.
-func (client *Client) DeleteStream(id string) (*ErrorInfo, error) {
-	return client.DeleteStreamContext(context.Background(), id)
-}
-
-// DeleteStreamContext deletes a stream with a context.
-func (client *Client) DeleteStreamContext(
+func (client *Client) DeleteStream(
 	ctx context.Context, id string,
 ) (*ErrorInfo, error) {
 	if id == "" {
@@ -132,12 +98,7 @@ func (client *Client) DeleteStreamContext(
 }
 
 // PauseStream pauses a stream.
-func (client *Client) PauseStream(id string) (*ErrorInfo, error) {
-	return client.PauseStreamContext(context.Background(), id)
-}
-
-// PauseStreamContext pauses a stream with a context.
-func (client *Client) PauseStreamContext(
+func (client *Client) PauseStream(
 	ctx context.Context, id string,
 ) (*ErrorInfo, error) {
 	if id == "" {
@@ -151,12 +112,7 @@ func (client *Client) PauseStreamContext(
 }
 
 // ResumeStream resumes a stream.
-func (client *Client) ResumeStream(id string) (*ErrorInfo, error) {
-	return client.ResumeStreamContext(context.Background(), id)
-}
-
-// ResumeStreamContext resumes a stream with a context.
-func (client *Client) ResumeStreamContext(
+func (client *Client) ResumeStream(
 	ctx context.Context, id string,
 ) (*ErrorInfo, error) {
 	if id == "" {

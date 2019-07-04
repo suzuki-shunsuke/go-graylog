@@ -1,6 +1,7 @@
 package client_test
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
@@ -13,9 +14,9 @@ import (
 )
 
 func TestGetPipelineRules(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	client, err := client.NewClient("http://example.com/api", "admin", "password")
 	require.Nil(t, err)
 	data := []struct {
 		statusCode int
@@ -63,7 +64,7 @@ func TestGetPipelineRules(t *testing.T) {
 			Get("/api/plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/rule").
 			MatchType("json").Reply(d.statusCode).
 			BodyString(d.resp)
-		rules, _, err := client.GetPipelineRules()
+		rules, _, err := client.GetPipelineRules(ctx)
 		if d.isErr {
 			require.NotNil(t, err)
 		} else {
@@ -74,6 +75,7 @@ func TestGetPipelineRules(t *testing.T) {
 }
 
 func TestGetPipelineRule(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient(
 		"http://example.com/api", "admin", "password")
@@ -107,7 +109,7 @@ func TestGetPipelineRule(t *testing.T) {
 			Get(fmt.Sprintf("/api/plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/rule/%s", d.rule.ID)).
 			MatchType("json").Reply(d.statusCode).
 			BodyString(d.resp)
-		rule, _, err := client.GetPipelineRule(d.rule.ID)
+		rule, _, err := client.GetPipelineRule(ctx, d.rule.ID)
 		if d.isErr {
 			require.NotNil(t, err)
 		} else {
@@ -118,9 +120,9 @@ func TestGetPipelineRule(t *testing.T) {
 }
 
 func TestCreatePipelineRule(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	client, err := client.NewClient("http://example.com/api", "admin", "password")
 	require.Nil(t, err)
 	data := []struct {
 		statusCode int
@@ -158,7 +160,7 @@ func TestCreatePipelineRule(t *testing.T) {
 			MatchType("json").JSON(d.req).Reply(d.statusCode).
 			BodyString(d.resp)
 		rule := d.req
-		_, err := client.CreatePipelineRule(rule)
+		_, err := client.CreatePipelineRule(ctx, rule)
 		if d.isErr {
 			require.NotNil(t, err)
 		} else {
@@ -169,9 +171,9 @@ func TestCreatePipelineRule(t *testing.T) {
 }
 
 func TestUpdatePipelineRule(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	client, err := client.NewClient("http://example.com/api", "admin", "password")
 	require.Nil(t, err)
 	data := []struct {
 		statusCode int
@@ -209,7 +211,7 @@ func TestUpdatePipelineRule(t *testing.T) {
 			MatchType("json").Reply(d.statusCode).
 			BodyString(d.resp)
 		rule := d.req
-		_, err := client.UpdatePipelineRule(rule)
+		_, err := client.UpdatePipelineRule(ctx, rule)
 		if d.isErr {
 			require.NotNil(t, err)
 		} else {
@@ -220,9 +222,9 @@ func TestUpdatePipelineRule(t *testing.T) {
 }
 
 func TestDeletePipelineRule(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	client, err := client.NewClient("http://example.com/api", "admin", "password")
 	require.Nil(t, err)
 	data := []struct {
 		statusCode int
@@ -237,7 +239,7 @@ func TestDeletePipelineRule(t *testing.T) {
 		gock.New("http://example.com").
 			Delete(fmt.Sprintf("/api/plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/rule/%s", d.id)).
 			MatchType("json").Reply(d.statusCode)
-		_, err := client.DeletePipelineRule(d.id)
+		_, err := client.DeletePipelineRule(ctx, d.id)
 		if d.isErr {
 			require.NotNil(t, err)
 		} else {

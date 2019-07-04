@@ -10,12 +10,7 @@ import (
 )
 
 // CreateUser creates a new user account.
-func (client *Client) CreateUser(user *graylog.User) (*ErrorInfo, error) {
-	return client.CreateUserContext(context.Background(), user)
-}
-
-// CreateUserContext creates a new user account with a context.
-func (client *Client) CreateUserContext(
+func (client *Client) CreateUser(
 	ctx context.Context, user *graylog.User,
 ) (*ErrorInfo, error) {
 	if user == nil {
@@ -25,24 +20,14 @@ func (client *Client) CreateUserContext(
 }
 
 // GetUsers returns all users.
-func (client *Client) GetUsers() ([]graylog.User, *ErrorInfo, error) {
-	return client.GetUsersContext(context.Background())
-}
-
-// GetUsersContext returns all users with a context.
-func (client *Client) GetUsersContext(ctx context.Context) ([]graylog.User, *ErrorInfo, error) {
+func (client *Client) GetUsers(ctx context.Context) ([]graylog.User, *ErrorInfo, error) {
 	users := &graylog.UsersBody{}
 	ei, err := client.callGet(ctx, client.Endpoints().Users(), nil, users)
 	return users.Users, ei, err
 }
 
 // GetUser returns a given user.
-func (client *Client) GetUser(name string) (*graylog.User, *ErrorInfo, error) {
-	return client.GetUserContext(context.Background(), name)
-}
-
-// GetUserContext returns a given user with a context.
-func (client *Client) GetUserContext(
+func (client *Client) GetUser(
 	ctx context.Context, name string,
 ) (*graylog.User, *ErrorInfo, error) {
 	if name == "" {
@@ -58,12 +43,7 @@ func (client *Client) GetUserContext(
 }
 
 // UpdateUser updates a given user.
-func (client *Client) UpdateUser(prms *graylog.UserUpdateParams) (*ErrorInfo, error) {
-	return client.UpdateUserContext(context.Background(), prms)
-}
-
-// UpdateUserContext updates a given user with a context.
-func (client *Client) UpdateUserContext(
+func (client *Client) UpdateUser(
 	ctx context.Context, prms *graylog.UserUpdateParams,
 ) (*ErrorInfo, error) {
 	if prms == nil {
@@ -80,12 +60,7 @@ func (client *Client) UpdateUserContext(
 }
 
 // DeleteUser deletes a given user.
-func (client *Client) DeleteUser(name string) (*ErrorInfo, error) {
-	return client.DeleteUserContext(context.Background(), name)
-}
-
-// DeleteUserContext deletes a given user with a context.
-func (client *Client) DeleteUserContext(
+func (client *Client) DeleteUser(
 	ctx context.Context, name string,
 ) (*ErrorInfo, error) {
 	if name == "" {

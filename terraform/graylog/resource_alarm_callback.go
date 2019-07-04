@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -283,6 +284,7 @@ func newAlarmCallback(d *schema.ResourceData) (*graylog.AlarmCallback, error) {
 }
 
 func resourceAlarmCallbackCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -292,7 +294,7 @@ func resourceAlarmCallbackCreate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	if _, err := cl.CreateStreamAlarmCallback(ac); err != nil {
+	if _, err := cl.CreateStreamAlarmCallback(ctx, ac); err != nil {
 		return err
 	}
 	d.SetId(ac.ID)
@@ -300,12 +302,13 @@ func resourceAlarmCallbackCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceAlarmCallbackRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
 	streamID := d.Get("stream_id").(string)
-	ac, _, err := cl.GetStreamAlarmCallback(streamID, d.Id())
+	ac, _, err := cl.GetStreamAlarmCallback(ctx, streamID, d.Id())
 	if err != nil {
 		return err
 	}
@@ -394,6 +397,7 @@ func resourceAlarmCallbackRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceAlarmCallbackUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -402,18 +406,19 @@ func resourceAlarmCallbackUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	if _, err := cl.UpdateStreamAlarmCallback(ac); err != nil {
+	if _, err := cl.UpdateStreamAlarmCallback(ctx, ac); err != nil {
 		return err
 	}
 	return nil
 }
 
 func resourceAlarmCallbackDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	if _, err := cl.DeleteStreamAlarmCallback(d.Get("stream_id").(string), d.Id()); err != nil {
+	if _, err := cl.DeleteStreamAlarmCallback(ctx, d.Get("stream_id").(string), d.Id()); err != nil {
 		return err
 	}
 	return nil

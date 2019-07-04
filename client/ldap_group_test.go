@@ -1,6 +1,7 @@
 package client_test
 
 import (
+	"context"
 	"os"
 	"testing"
 
@@ -12,6 +13,7 @@ import (
 )
 
 func TestGetLDAPGroups(t *testing.T) {
+	ctx := context.Background()
 	authName := os.Getenv("GRAYLOG_AUTH_NAME")
 	authPass := os.Getenv("GRAYLOG_AUTH_PASSWORD")
 	endpoint := os.Getenv("GRAYLOG_WEB_ENDPOINT_URI")
@@ -36,7 +38,7 @@ func TestGetLDAPGroups(t *testing.T) {
 			gock.New("http://example.com").
 				Get("/api/system/ldap/groups").
 				MatchType("json").Reply(d.statusCode).BodyString(d.resp)
-			m, _, err := client.GetLDAPGroups()
+			m, _, err := client.GetLDAPGroups(ctx)
 			if err != nil {
 				require.Equal(t, d.groups, m)
 			}
@@ -46,6 +48,7 @@ func TestGetLDAPGroups(t *testing.T) {
 }
 
 func TestGetLDAPGroupRoleMapping(t *testing.T) {
+	ctx := context.Background()
 	authName := os.Getenv("GRAYLOG_AUTH_NAME")
 	authPass := os.Getenv("GRAYLOG_AUTH_PASSWORD")
 	endpoint := os.Getenv("GRAYLOG_WEB_ENDPOINT_URI")
@@ -68,7 +71,7 @@ func TestGetLDAPGroupRoleMapping(t *testing.T) {
 			gock.New("http://example.com").
 				Get("/api/system/ldap/settings/groups").
 				MatchType("json").Reply(d.statusCode).BodyString(d.resp)
-			m, _, err := client.GetLDAPGroupRoleMapping()
+			m, _, err := client.GetLDAPGroupRoleMapping(ctx)
 			if err != nil {
 				require.Equal(t, d.resp, m)
 			}
@@ -78,6 +81,7 @@ func TestGetLDAPGroupRoleMapping(t *testing.T) {
 }
 
 func TestUpdateLDAPGroupRoleMapping(t *testing.T) {
+	ctx := context.Background()
 	authName := os.Getenv("GRAYLOG_AUTH_NAME")
 	authPass := os.Getenv("GRAYLOG_AUTH_PASSWORD")
 	endpoint := os.Getenv("GRAYLOG_WEB_ENDPOINT_URI")
@@ -102,7 +106,7 @@ func TestUpdateLDAPGroupRoleMapping(t *testing.T) {
 			gock.New("http://example.com").
 				Put("/api/system/ldap/settings/groups").
 				MatchType("json").BodyString(d.body).Reply(d.statusCode)
-			_, err := client.UpdateLDAPGroupRoleMapping(d.mapping)
+			_, err := client.UpdateLDAPGroupRoleMapping(ctx, d.mapping)
 			d.checkErr(t, err)
 		}
 	}

@@ -9,14 +9,7 @@ import (
 )
 
 // GetIndexSetStats returns a given Index Set statistics.
-func (client *Client) GetIndexSetStats(id string) (
-	*graylog.IndexSetStats, *ErrorInfo, error,
-) {
-	return client.GetIndexSetStatsContext(context.Background(), id)
-}
-
-// GetIndexSetStatsContext returns a given Index Set statistics with a context.
-func (client *Client) GetIndexSetStatsContext(
+func (client *Client) GetIndexSetStats(
 	ctx context.Context, id string,
 ) (*graylog.IndexSetStats, *ErrorInfo, error) {
 	if id == "" {
@@ -33,14 +26,7 @@ func (client *Client) GetIndexSetStatsContext(
 }
 
 // GetTotalIndexSetsStats returns stats of all Index Sets.
-func (client *Client) GetTotalIndexSetsStats() (
-	*graylog.IndexSetStats, *ErrorInfo, error,
-) {
-	return client.GetTotalIndexSetsStatsContext(context.Background())
-}
-
-// GetTotalIndexSetsStatsContext returns stats of all Index Sets with a context.
-func (client *Client) GetTotalIndexSetsStatsContext(
+func (client *Client) GetTotalIndexSetsStats(
 	ctx context.Context,
 ) (*graylog.IndexSetStats, *ErrorInfo, error) {
 	indexSetStats := &graylog.IndexSetStats{}

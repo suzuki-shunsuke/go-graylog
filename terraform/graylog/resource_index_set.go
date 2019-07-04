@@ -1,6 +1,8 @@
 package graylog
 
 import (
+	"context"
+
 	"github.com/hashicorp/terraform/helper/schema"
 
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -168,6 +170,7 @@ func newIndexSet(d *schema.ResourceData) (*graylog.IndexSet, error) {
 }
 
 func resourceIndexSetCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -176,7 +179,7 @@ func resourceIndexSetCreate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	if _, err := cl.CreateIndexSet(is); err != nil {
+	if _, err := cl.CreateIndexSet(ctx, is); err != nil {
 		return err
 	}
 	d.SetId(is.ID)
@@ -184,12 +187,13 @@ func resourceIndexSetCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	cfg := m.(*Config)
 	if err != nil {
 		return err
 	}
-	is, _, err := cl.GetIndexSet(d.Id())
+	is, _, err := cl.GetIndexSet(ctx, d.Id())
 	if err != nil {
 		return err
 	}
@@ -197,6 +201,7 @@ func resourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceIndexSetUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -206,18 +211,19 @@ func resourceIndexSetUpdate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	if _, _, err = cl.UpdateIndexSet(is.NewUpdateParams()); err != nil {
+	if _, _, err = cl.UpdateIndexSet(ctx, is.NewUpdateParams()); err != nil {
 		return err
 	}
 	return nil
 }
 
 func resourceIndexSetDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	if _, err := cl.DeleteIndexSet(d.Id()); err != nil {
+	if _, err := cl.DeleteIndexSet(ctx, d.Id()); err != nil {
 		return err
 	}
 	return nil

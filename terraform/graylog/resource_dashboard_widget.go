@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"errors"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -439,6 +440,7 @@ func newDashboardWidget(d *schema.ResourceData) (*graylog.Widget, string, error)
 }
 
 func resourceDashboardWidgetCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -448,7 +450,7 @@ func resourceDashboardWidgetCreate(d *schema.ResourceData, m interface{}) error 
 		return err
 	}
 
-	w, _, err := cl.CreateDashboardWidget(dashboardID, *widget)
+	w, _, err := cl.CreateDashboardWidget(ctx, dashboardID, *widget)
 	if err != nil {
 		return err
 	}
@@ -457,12 +459,13 @@ func resourceDashboardWidgetCreate(d *schema.ResourceData, m interface{}) error 
 }
 
 func resourceDashboardWidgetRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
 	widget, _, err := cl.GetDashboardWidget(
-		d.Get("dashboard_id").(string), d.Id())
+		ctx, d.Get("dashboard_id").(string), d.Id())
 	if err != nil {
 		return err
 	}
@@ -601,6 +604,7 @@ func resourceDashboardWidgetRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceDashboardWidgetUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -610,17 +614,17 @@ func resourceDashboardWidgetUpdate(d *schema.ResourceData, m interface{}) error 
 		return err
 	}
 	if d.HasChange("cache_time") {
-		if _, err := cl.UpdateDashboardWidgetCacheTime(dashboardID, widget.ID, d.Get("cache_time").(int)); err != nil {
+		if _, err := cl.UpdateDashboardWidgetCacheTime(ctx, dashboardID, widget.ID, d.Get("cache_time").(int)); err != nil {
 			return err
 		}
 	}
 	if d.HasChange("description") {
-		if _, err := cl.UpdateDashboardWidgetDescription(dashboardID, widget.ID, widget.Description); err != nil {
+		if _, err := cl.UpdateDashboardWidgetDescription(ctx, dashboardID, widget.ID, widget.Description); err != nil {
 			return err
 		}
 	}
 	if hasChange(d, "type", "quick_values_histogram_configuration", "quick_values_configuration", "stats_count_configuration", "search_result_chart_configuration", "stream_search_result_count_configuration", "field_chart_configuration") {
-		if _, err := cl.UpdateDashboardWidget(dashboardID, *widget); err != nil {
+		if _, err := cl.UpdateDashboardWidget(ctx, dashboardID, *widget); err != nil {
 			return err
 		}
 	}
@@ -628,11 +632,12 @@ func resourceDashboardWidgetUpdate(d *schema.ResourceData, m interface{}) error 
 }
 
 func resourceDashboardWidgetDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	if _, err := cl.DeleteDashboardWidget(d.Get("dashboard_id").(string), d.Id()); err != nil {
+	if _, err := cl.DeleteDashboardWidget(ctx, d.Get("dashboard_id").(string), d.Id()); err != nil {
 		return err
 	}
 	return nil

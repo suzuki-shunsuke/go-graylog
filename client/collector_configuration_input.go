@@ -9,14 +9,6 @@ import (
 
 // CreateCollectorConfigurationInput creates a collector configuration input.
 func (client *Client) CreateCollectorConfigurationInput(
-	id string, input *graylog.CollectorConfigurationInput,
-) (*ErrorInfo, error) {
-	return client.CreateCollectorConfigurationInputContext(
-		context.Background(), id, input)
-}
-
-// CreateCollectorConfigurationInputContext creates a collector configuration input with a context.
-func (client *Client) CreateCollectorConfigurationInputContext(
 	ctx context.Context, id string, input *graylog.CollectorConfigurationInput,
 ) (*ErrorInfo, error) {
 	// POST /plugins/org.graylog.plugins.collector/configurations/{id}/inputs Create a configuration input
@@ -35,13 +27,7 @@ func (client *Client) CreateCollectorConfigurationInputContext(
 }
 
 // DeleteCollectorConfigurationInput deletes a collector configuration input.
-func (client *Client) DeleteCollectorConfigurationInput(id, inputID string) (*ErrorInfo, error) {
-	return client.DeleteCollectorConfigurationInputContext(
-		context.Background(), id, inputID)
-}
-
-// DeleteCollectorConfigurationInputContext deletes a collector configuration input with a context.
-func (client *Client) DeleteCollectorConfigurationInputContext(
+func (client *Client) DeleteCollectorConfigurationInput(
 	ctx context.Context, id, inputID string,
 ) (*ErrorInfo, error) {
 	// DELETE /plugins/org.graylog.plugins.collector/configurations/{id}/inputs/{inputId} Delete input form configuration
@@ -60,14 +46,6 @@ func (client *Client) DeleteCollectorConfigurationInputContext(
 
 // UpdateCollectorConfigurationInput updates a collector configuration input.
 func (client *Client) UpdateCollectorConfigurationInput(
-	id, inputID string, input *graylog.CollectorConfigurationInput,
-) (*ErrorInfo, error) {
-	return client.UpdateCollectorConfigurationInputContext(
-		context.Background(), id, inputID, input)
-}
-
-// UpdateCollectorConfigurationInputContext updates a collector configuration input with a context.
-func (client *Client) UpdateCollectorConfigurationInputContext(
 	ctx context.Context, id, inputID string,
 	input *graylog.CollectorConfigurationInput,
 ) (*ErrorInfo, error) {

@@ -8,12 +8,7 @@ import (
 )
 
 // GetLDAPSetting returns the LDAP setting.
-func (client *Client) GetLDAPSetting() (*graylog.LDAPSetting, *ErrorInfo, error) {
-	return client.GetLDAPSettingContext(context.Background())
-}
-
-// GetLDAPSettingContext returns the LDAP setting with a context.
-func (client *Client) GetLDAPSettingContext(ctx context.Context) (
+func (client *Client) GetLDAPSetting(ctx context.Context) (
 	*graylog.LDAPSetting, *ErrorInfo, error,
 ) {
 	// GET /system/ldap/settings Get the LDAP configuration if it is configured
@@ -24,14 +19,7 @@ func (client *Client) GetLDAPSettingContext(ctx context.Context) (
 }
 
 // UpdateLDAPSetting updates the LDAP setting.
-func (client *Client) UpdateLDAPSetting(ldapSetting *graylog.LDAPSetting) (
-	*ErrorInfo, error,
-) {
-	return client.UpdateLDAPSettingContext(context.Background(), ldapSetting)
-}
-
-// UpdateLDAPSettingContext updates the LDAP setting with a context.
-func (client *Client) UpdateLDAPSettingContext(
+func (client *Client) UpdateLDAPSetting(
 	ctx context.Context, prms *graylog.LDAPSetting,
 ) (*ErrorInfo, error) {
 	if prms == nil {
@@ -41,13 +29,6 @@ func (client *Client) UpdateLDAPSettingContext(
 }
 
 // DeleteLDAPSetting deletes the LDAP setting.
-func (client *Client) DeleteLDAPSetting() (*ErrorInfo, error) {
-	return client.DeleteLDAPSettingContext(context.Background())
-}
-
-// DeleteLDAPSettingContext deletes the LDAP setting with a context.
-func (client *Client) DeleteLDAPSettingContext(
-	ctx context.Context,
-) (*ErrorInfo, error) {
+func (client *Client) DeleteLDAPSetting(ctx context.Context) (*ErrorInfo, error) {
 	return client.callDelete(ctx, client.Endpoints().LDAPSetting(), nil, nil)
 }

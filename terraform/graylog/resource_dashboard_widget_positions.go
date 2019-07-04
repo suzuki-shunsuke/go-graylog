@@ -1,6 +1,8 @@
 package graylog
 
 import (
+	"context"
+
 	"github.com/hashicorp/terraform/helper/schema"
 
 	"github.com/suzuki-shunsuke/go-graylog"
@@ -76,6 +78,7 @@ func newDashboardWidgetPositions(d *schema.ResourceData) (
 }
 
 func resourceDashboardWidgetPositionsCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -84,7 +87,7 @@ func resourceDashboardWidgetPositionsCreate(d *schema.ResourceData, m interface{
 	if err != nil {
 		return err
 	}
-	if _, err := cl.UpdateDashboardWidgetPositions(dID, positions); err != nil {
+	if _, err := cl.UpdateDashboardWidgetPositions(ctx, dID, positions); err != nil {
 		return err
 	}
 	d.SetId(dID)
@@ -92,11 +95,12 @@ func resourceDashboardWidgetPositionsCreate(d *schema.ResourceData, m interface{
 }
 
 func resourceDashboardWidgetPositionsRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	db, _, err := cl.GetDashboard(d.Id())
+	db, _, err := cl.GetDashboard(ctx, d.Id())
 	if err != nil {
 		return err
 	}
@@ -117,6 +121,7 @@ func resourceDashboardWidgetPositionsRead(d *schema.ResourceData, m interface{})
 }
 
 func resourceDashboardWidgetPositionsUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -125,18 +130,19 @@ func resourceDashboardWidgetPositionsUpdate(d *schema.ResourceData, m interface{
 	if err != nil {
 		return err
 	}
-	if _, err := cl.UpdateDashboardWidgetPositions(dID, positions); err != nil {
+	if _, err := cl.UpdateDashboardWidgetPositions(ctx, dID, positions); err != nil {
 		return err
 	}
 	return nil
 }
 
 func resourceDashboardWidgetPositionsDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	if _, err := cl.UpdateDashboardWidgetPositions(d.Id(), []graylog.DashboardWidgetPosition{}); err != nil {
+	if _, err := cl.UpdateDashboardWidgetPositions(ctx, d.Id(), []graylog.DashboardWidgetPosition{}); err != nil {
 		return err
 	}
 	return nil

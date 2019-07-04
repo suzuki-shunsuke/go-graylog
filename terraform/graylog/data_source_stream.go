@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"errors"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -102,6 +103,7 @@ func setStream(d *schema.ResourceData, stream *graylog.Stream, cfg *Config) erro
 }
 
 func dataSourceStreamRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -112,7 +114,7 @@ func dataSourceStreamRead(d *schema.ResourceData, m interface{}) error {
 		if _, ok := d.GetOk("title"); ok {
 			return errors.New("both stream_id and title must not be set")
 		}
-		stream, _, err := cl.GetStream(id.(string))
+		stream, _, err := cl.GetStream(ctx, id.(string))
 		if err != nil {
 			return err
 		}
@@ -121,7 +123,7 @@ func dataSourceStreamRead(d *schema.ResourceData, m interface{}) error {
 
 	if t, ok := d.GetOk("title"); ok {
 		title := t.(string)
-		streams, _, _, err := cl.GetStreams()
+		streams, _, _, err := cl.GetStreams(ctx)
 		if err != nil {
 			return err
 		}

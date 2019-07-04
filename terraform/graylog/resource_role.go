@@ -1,6 +1,8 @@
 package graylog
 
 import (
+	"context"
+
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/suzuki-shunsuke/go-set"
 
@@ -51,12 +53,13 @@ func newRole(d *schema.ResourceData) *graylog.Role {
 }
 
 func resourceRoleCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
 	role := newRole(d)
-	if _, err := cl.CreateRole(role); err != nil {
+	if _, err := cl.CreateRole(ctx, role); err != nil {
 		return err
 	}
 	d.SetId(role.Name)
@@ -64,11 +67,12 @@ func resourceRoleCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceRoleRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	role, _, err := cl.GetRole(d.Id())
+	role, _, err := cl.GetRole(ctx, d.Id())
 	if err != nil {
 		return err
 	}
@@ -85,6 +89,7 @@ func resourceRoleRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceRoleUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	o, n := d.GetChange("name")
 	oldName := o.(string)
 	newName := n.(string)
@@ -94,16 +99,17 @@ func resourceRoleUpdate(d *schema.ResourceData, m interface{}) error {
 	}
 	role := newRole(d)
 	role.Name = newName
-	_, _, err = cl.UpdateRole(oldName, role.NewUpdateParams())
+	_, _, err = cl.UpdateRole(ctx, oldName, role.NewUpdateParams())
 	return err
 }
 
 func resourceRoleDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	if _, err := cl.DeleteRole(d.Id()); err != nil {
+	if _, err := cl.DeleteRole(ctx, d.Id()); err != nil {
 		return err
 	}
 	return nil

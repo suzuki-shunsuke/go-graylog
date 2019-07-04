@@ -7,12 +7,7 @@ import (
 )
 
 // GetPipelineConnections returns all pipeline connections.
-func (client *Client) GetPipelineConnections() ([]graylog.PipelineConnection, *ErrorInfo, error) {
-	return client.GetPipelineConnectionsContext(context.Background())
-}
-
-// GetPipelineConnectionsContext returns all pipeline connections with a context.
-func (client *Client) GetPipelineConnectionsContext(ctx context.Context) (
+func (client *Client) GetPipelineConnections(ctx context.Context) (
 	[]graylog.PipelineConnection, *ErrorInfo, error,
 ) {
 	// GET /plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/connections
@@ -22,14 +17,7 @@ func (client *Client) GetPipelineConnectionsContext(ctx context.Context) (
 }
 
 // GetPipeline returns a pipeline connection for a given stream.
-func (client *Client) GetPipelineConnectionsOfStream(id string) (
-	*graylog.PipelineConnection, *ErrorInfo, error,
-) {
-	return client.GetPipelineConnectionsOfStreamContext(context.Background(), id)
-}
-
-// GetPipelineContext returns a pipeline connection for a given stream with a context.
-func (client *Client) GetPipelineConnectionsOfStreamContext(ctx context.Context, id string) (
+func (client *Client) GetPipelineConnectionsOfStream(ctx context.Context, id string) (
 	*graylog.PipelineConnection, *ErrorInfo, error,
 ) {
 	u, err := client.Endpoints().PipelineConnectionsOfStream(id)
@@ -43,13 +31,6 @@ func (client *Client) GetPipelineConnectionsOfStreamContext(ctx context.Context,
 
 // ConnectStreamsToPipeline connects streams to a pipeline.
 func (client *Client) ConnectStreamsToPipeline(
-	pipelineID string, streamIDs []string,
-) ([]graylog.PipelineConnection, *ErrorInfo, error) {
-	return client.ConnectStreamsToPipelineContext(context.Background(), pipelineID, streamIDs)
-}
-
-// ConnectStreamsToPipeline connects streams to a pipeline with a context.
-func (client *Client) ConnectStreamsToPipelineContext(
 	ctx context.Context, pipelineID string, streamIDs []string,
 ) ([]graylog.PipelineConnection, *ErrorInfo, error) {
 	// POST /plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/connections/to_pipeline Connect streams to a processing pipeline
@@ -64,13 +45,6 @@ func (client *Client) ConnectStreamsToPipelineContext(
 
 // ConnectStreamsToPipeline connects processing pipelines to a stream.
 func (client *Client) ConnectPipelinesToStream(
-	conn *graylog.PipelineConnection,
-) (*ErrorInfo, error) {
-	return client.ConnectPipelinesToStreamContext(context.Background(), conn)
-}
-
-// ConnectStreamsToPipelineContext connects processing pipelines to a stream with a context.
-func (client *Client) ConnectPipelinesToStreamContext(
 	ctx context.Context, conn *graylog.PipelineConnection,
 ) (*ErrorInfo, error) {
 	// POST /plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/connections/to_stream Connect processing pipelines to a stream

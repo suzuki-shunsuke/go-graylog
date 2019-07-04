@@ -8,12 +8,7 @@ import (
 )
 
 // CreateDashboard creates a new dashboard account.
-func (client *Client) CreateDashboard(dashboard *graylog.Dashboard) (*ErrorInfo, error) {
-	return client.CreateDashboardContext(context.Background(), dashboard)
-}
-
-// CreateDashboardContext creates a new dashboard account with a context.
-func (client *Client) CreateDashboardContext(
+func (client *Client) CreateDashboard(
 	ctx context.Context, dashboard *graylog.Dashboard,
 ) (*ErrorInfo, error) {
 	if dashboard == nil {
@@ -37,12 +32,7 @@ func (client *Client) CreateDashboardContext(
 }
 
 // DeleteDashboard deletes a given dashboard.
-func (client *Client) DeleteDashboard(id string) (*ErrorInfo, error) {
-	return client.DeleteDashboardContext(context.Background(), id)
-}
-
-// DeleteDashboardContext deletes a given dashboard with a context.
-func (client *Client) DeleteDashboardContext(
+func (client *Client) DeleteDashboard(
 	ctx context.Context, id string,
 ) (*ErrorInfo, error) {
 	if id == "" {
@@ -56,12 +46,7 @@ func (client *Client) DeleteDashboardContext(
 }
 
 // GetDashboard returns a given dashboard.
-func (client *Client) GetDashboard(id string) (*graylog.Dashboard, *ErrorInfo, error) {
-	return client.GetDashboardContext(context.Background(), id)
-}
-
-// GetDashboardContext returns a given dashboard with a context.
-func (client *Client) GetDashboardContext(
+func (client *Client) GetDashboard(
 	ctx context.Context, id string,
 ) (*graylog.Dashboard, *ErrorInfo, error) {
 	if id == "" {
@@ -77,12 +62,7 @@ func (client *Client) GetDashboardContext(
 }
 
 // GetDashboards returns all dashboards.
-func (client *Client) GetDashboards() ([]graylog.Dashboard, int, *ErrorInfo, error) {
-	return client.GetDashboardsContext(context.Background())
-}
-
-// GetDashboardsContext returns all dashboards with a context.
-func (client *Client) GetDashboardsContext(ctx context.Context) ([]graylog.Dashboard, int, *ErrorInfo, error) {
+func (client *Client) GetDashboards(ctx context.Context) ([]graylog.Dashboard, int, *ErrorInfo, error) {
 	dashboards := &graylog.DashboardsBody{}
 	ei, err := client.callGet(
 		ctx, client.Endpoints().Dashboards(), nil, dashboards)
@@ -90,12 +70,7 @@ func (client *Client) GetDashboardsContext(ctx context.Context) ([]graylog.Dashb
 }
 
 // UpdateDashboard updates a given dashboard.
-func (client *Client) UpdateDashboard(prms *graylog.Dashboard) (*ErrorInfo, error) {
-	return client.UpdateDashboardContext(context.Background(), prms)
-}
-
-// UpdateDashboardContext updates a given dashboard with a context.
-func (client *Client) UpdateDashboardContext(
+func (client *Client) UpdateDashboard(
 	ctx context.Context, dashboard *graylog.Dashboard,
 ) (*ErrorInfo, error) {
 	if dashboard == nil {
@@ -116,14 +91,6 @@ func (client *Client) UpdateDashboardContext(
 
 // UpdateDashboardWidgetPositions updates the positions of dashboard widgets.
 func (client *Client) UpdateDashboardWidgetPositions(
-	dashboardID string, positions []graylog.DashboardWidgetPosition,
-) (*ErrorInfo, error) {
-	return client.UpdateDashboardWidgetPositionsContext(
-		context.Background(), dashboardID, positions)
-}
-
-// UpdateDashboardWidgetPositionsContext updates the positions of dashboard widgets.
-func (client *Client) UpdateDashboardWidgetPositionsContext(
 	ctx context.Context, dashboardID string,
 	positions []graylog.DashboardWidgetPosition,
 ) (*ErrorInfo, error) {

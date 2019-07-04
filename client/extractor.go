@@ -7,15 +7,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog"
 )
 
-// GetExtractors returns all extractors of an input
-func (client *Client) GetExtractors(inputID string) (
-	[]graylog.Extractor, int, *ErrorInfo, error,
-) {
-	return client.GetExtractorsContext(context.Background(), inputID)
-}
-
-// GetExtractorsContext returns all extractors with a context.
-func (client *Client) GetExtractorsContext(ctx context.Context, inputID string) (
+// GetExtractors returns all extractors.
+func (client *Client) GetExtractors(ctx context.Context, inputID string) (
 	[]graylog.Extractor, int, *ErrorInfo, error,
 ) {
 	if inputID == "" {
@@ -31,14 +24,7 @@ func (client *Client) GetExtractorsContext(ctx context.Context, inputID string) 
 }
 
 // GetExtractor returns an extractor.
-func (client *Client) GetExtractor(inputID, extractorID string) (
-	*graylog.Extractor, *ErrorInfo, error,
-) {
-	return client.GetExtractorContext(context.Background(), inputID, extractorID)
-}
-
-// GetExtractorContext returns an extractor with a context.
-func (client *Client) GetExtractorContext(
+func (client *Client) GetExtractor(
 	ctx context.Context, inputID, extractorID string,
 ) (
 	*graylog.Extractor, *ErrorInfo, error,
@@ -56,15 +42,6 @@ func (client *Client) GetExtractorContext(
 	}
 	ei, err := client.callGet(ctx, u.String(), nil, ext)
 	return ext, ei, err
-}
-
-// CreateExtractor adds an extractor to an input.
-func (client *Client) CreateExtractor(
-	inputID string, extractor *graylog.Extractor,
-) (
-	*ErrorInfo, error,
-) {
-	return client.CreateExtractorContext(context.Background(), inputID, extractor)
 }
 
 func convertExtractorForPostAndPut(extractor *graylog.Extractor) interface{} {
@@ -86,8 +63,8 @@ func convertExtractorForPostAndPut(extractor *graylog.Extractor) interface{} {
 	}
 }
 
-// CreateExtractorContext adds an extractor to an input with a context.
-func (client *Client) CreateExtractorContext(
+// CreateExtractor adds an extractor to an input.
+func (client *Client) CreateExtractor(
 	ctx context.Context, inputID string, extractor *graylog.Extractor,
 ) (
 	*ErrorInfo, error,
@@ -115,15 +92,6 @@ func (client *Client) CreateExtractorContext(
 
 // UpdateExtractor updates an extractor.
 func (client *Client) UpdateExtractor(
-	inputID string, extractor *graylog.Extractor,
-) (
-	*ErrorInfo, error,
-) {
-	return client.UpdateExtractorContext(context.Background(), inputID, extractor)
-}
-
-// UpdateExtractorContext updates an extractor with a context.
-func (client *Client) UpdateExtractorContext(
 	ctx context.Context, inputID string, extractor *graylog.Extractor,
 ) (
 	*ErrorInfo, error,
@@ -141,15 +109,6 @@ func (client *Client) UpdateExtractorContext(
 
 // DeleteExtractor updates an extractor.
 func (client *Client) DeleteExtractor(
-	inputID, extractorID string,
-) (
-	*ErrorInfo, error,
-) {
-	return client.DeleteExtractorContext(context.Background(), inputID, extractorID)
-}
-
-// DeleteExtractorContext updates an extractor with a context.
-func (client *Client) DeleteExtractorContext(
 	ctx context.Context, inputID, extractorID string,
 ) (
 	*ErrorInfo, error,

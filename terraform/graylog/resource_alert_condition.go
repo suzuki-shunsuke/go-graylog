@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -408,6 +409,7 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 }
 
 func resourceAlertConditionCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -417,7 +419,7 @@ func resourceAlertConditionCreate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	if _, err := cl.CreateStreamAlertCondition(d.Get("stream_id").(string), cond); err != nil {
+	if _, err := cl.CreateStreamAlertCondition(ctx, d.Get("stream_id").(string), cond); err != nil {
 		return err
 	}
 	d.SetId(cond.ID)
@@ -425,12 +427,13 @@ func resourceAlertConditionCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceAlertConditionRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
 	streamID := d.Get("stream_id").(string)
-	cond, _, err := cl.GetStreamAlertCondition(streamID, d.Id())
+	cond, _, err := cl.GetStreamAlertCondition(ctx, streamID, d.Id())
 	if err != nil {
 		return err
 	}
@@ -531,6 +534,7 @@ func resourceAlertConditionRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceAlertConditionUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -539,18 +543,19 @@ func resourceAlertConditionUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	if _, err := cl.UpdateStreamAlertCondition(d.Get("stream_id").(string), cond); err != nil {
+	if _, err := cl.UpdateStreamAlertCondition(ctx, d.Get("stream_id").(string), cond); err != nil {
 		return err
 	}
 	return nil
 }
 
 func resourceAlertConditionDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	if _, err := cl.DeleteStreamAlertCondition(d.Get("stream_id").(string), d.Id()); err != nil {
+	if _, err := cl.DeleteStreamAlertCondition(ctx, d.Get("stream_id").(string), d.Id()); err != nil {
 		return err
 	}
 	return nil

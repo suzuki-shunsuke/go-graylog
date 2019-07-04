@@ -10,14 +10,7 @@ import (
 )
 
 // GetStreamAlertConditions gets all alert conditions of this stream.
-func (client *Client) GetStreamAlertConditions(streamID string) (
-	conds []graylog.AlertCondition, total int, ei *ErrorInfo, err error,
-) {
-	return client.GetStreamAlertConditionsContext(context.Background(), streamID)
-}
-
-// GetStreamAlertConditionsContext gets all alert conditions of this stream with a context.
-func (client *Client) GetStreamAlertConditionsContext(
+func (client *Client) GetStreamAlertConditions(
 	ctx context.Context, streamID string,
 ) (conds []graylog.AlertCondition, total int, ei *ErrorInfo, err error) {
 	errMsg := "failed to get stream's alert conditions"
@@ -32,12 +25,7 @@ func (client *Client) GetStreamAlertConditionsContext(
 }
 
 // GetStreamAlertCondition gets an alert condition.
-func (client *Client) GetStreamAlertCondition(streamID, id string) (graylog.AlertCondition, *ErrorInfo, error) {
-	return client.GetStreamAlertConditionContext(context.Background(), streamID, id)
-}
-
-// GetStreamAlertConditionContext gets an alert condition with a context.
-func (client *Client) GetStreamAlertConditionContext(
+func (client *Client) GetStreamAlertCondition(
 	ctx context.Context, streamID, id string,
 ) (graylog.AlertCondition, *ErrorInfo, error) {
 	cond := graylog.AlertCondition{}
@@ -56,12 +44,7 @@ func (client *Client) GetStreamAlertConditionContext(
 }
 
 // CreateStreamAlertCondition creates an alert condition.
-func (client *Client) CreateStreamAlertCondition(streamID string, cond *graylog.AlertCondition) (*ErrorInfo, error) {
-	return client.CreateStreamAlertConditionContext(context.Background(), streamID, cond)
-}
-
-// CreateStreamAlertConditionContext creates an alert condition with a context.
-func (client *Client) CreateStreamAlertConditionContext(
+func (client *Client) CreateStreamAlertCondition(
 	ctx context.Context, streamID string, cond *graylog.AlertCondition,
 ) (*ErrorInfo, error) {
 	errMsg := "failed to create an alert condition"
@@ -85,12 +68,7 @@ func (client *Client) CreateStreamAlertConditionContext(
 }
 
 // UpdateStreamAlertCondition modifies an alert condition.
-func (client *Client) UpdateStreamAlertCondition(streamID string, cond *graylog.AlertCondition) (*ErrorInfo, error) {
-	return client.UpdateStreamAlertConditionContext(context.Background(), streamID, cond)
-}
-
-// UpdateStreamAlertConditionContext modifies an alert condition with a context.
-func (client *Client) UpdateStreamAlertConditionContext(
+func (client *Client) UpdateStreamAlertCondition(
 	ctx context.Context, streamID string, cond *graylog.AlertCondition,
 ) (*ErrorInfo, error) {
 	errMsg := "failed to update an alert condition"
@@ -118,12 +96,7 @@ func (client *Client) UpdateStreamAlertConditionContext(
 }
 
 // DeleteStreamAlertCondition deletes an alert condition.
-func (client *Client) DeleteStreamAlertCondition(streamID, id string) (*ErrorInfo, error) {
-	return client.DeleteStreamAlertConditionContext(context.Background(), streamID, id)
-}
-
-// DeleteStreamAlertConditionContext deletes an alert condition with a context.
-func (client *Client) DeleteStreamAlertConditionContext(
+func (client *Client) DeleteStreamAlertCondition(
 	ctx context.Context, streamID, id string,
 ) (*ErrorInfo, error) {
 	errMsg := "failed to delete an alert condition"

@@ -1,12 +1,14 @@
 package testutil_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
 func TestGetNonAdminUser(t *testing.T) {
+	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -14,12 +16,13 @@ func TestGetNonAdminUser(t *testing.T) {
 	if server != nil {
 		defer server.Close()
 	}
-	if _, err := testutil.GetNonAdminUser(client); err != nil {
+	if _, err := testutil.GetNonAdminUser(ctx, client); err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestGetRoleOrCreate(t *testing.T) {
+	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
 		t.Fatal(err)
@@ -27,7 +30,7 @@ func TestGetRoleOrCreate(t *testing.T) {
 	if server != nil {
 		defer server.Close()
 	}
-	role, err := testutil.GetRoleOrCreate(client, "Admin")
+	role, err := testutil.GetRoleOrCreate(ctx, client, "Admin")
 	if err != nil {
 		t.Fatal(err)
 	}

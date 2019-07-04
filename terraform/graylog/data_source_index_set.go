@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 
@@ -218,6 +219,7 @@ func setIndexSet(d *schema.ResourceData, is *graylog.IndexSet, cfg *Config) erro
 }
 
 func dataSourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -231,7 +233,7 @@ func dataSourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 		if _, ok := d.GetOk("index_prefix"); ok {
 			return errors.New("only one of index_set_id or title or index_prefix must be set")
 		}
-		is, _, err := cl.GetIndexSet(id.(string))
+		is, _, err := cl.GetIndexSet(ctx, id.(string))
 		if err != nil {
 			return err
 		}
@@ -243,7 +245,7 @@ func dataSourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 			return errors.New("only one of index_set_id or title or index_prefix must be set")
 		}
 		title := t.(string)
-		indexSets, _, _, _, err := cl.GetIndexSets(0, 0, false)
+		indexSets, _, _, _, err := cl.GetIndexSets(ctx, 0, 0, false)
 		if err != nil {
 			return err
 		}
@@ -264,7 +266,7 @@ func dataSourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 
 	if p, ok := d.GetOk("index_prefix"); ok {
 		prefix := p.(string)
-		indexSets, _, _, _, err := cl.GetIndexSets(0, 0, false)
+		indexSets, _, _, _, err := cl.GetIndexSets(ctx, 0, 0, false)
 		if err != nil {
 			return err
 		}

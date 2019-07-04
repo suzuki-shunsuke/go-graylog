@@ -1,6 +1,7 @@
 package client_test
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
@@ -14,9 +15,9 @@ import (
 )
 
 func TestGetStreamAlarmCallbacks(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	client, err := client.NewClient("http://example.com/api", "admin", "password")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -172,7 +173,7 @@ func TestGetStreamAlarmCallbacks(t *testing.T) {
 			Get(fmt.Sprintf("/api/streams/%s/alarmcallbacks", "xxxxx")).
 			MatchType("json").Reply(d.statusCode).
 			BodyString(d.resp)
-		acs, total, _, err := client.GetStreamAlarmCallbacks("xxxxx")
+		acs, total, _, err := client.GetStreamAlarmCallbacks(ctx, "xxxxx")
 		d.checkErr(t, err)
 		if err != nil {
 			require.Equal(t, d.acs, acs)
@@ -182,9 +183,9 @@ func TestGetStreamAlarmCallbacks(t *testing.T) {
 }
 
 func TestGetStreamAlarmCallback(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	client, err := client.NewClient("http://example.com/api", "admin", "password")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -222,7 +223,7 @@ func TestGetStreamAlarmCallback(t *testing.T) {
 			Get(fmt.Sprintf("/api/streams/%s/alarmcallbacks/%s", "xxxxx", d.ac.ID)).
 			MatchType("json").Reply(d.statusCode).
 			BodyString(d.resp)
-		ac, _, err := client.GetStreamAlarmCallback("xxxxx", d.ac.ID)
+		ac, _, err := client.GetStreamAlarmCallback(ctx, "xxxxx", d.ac.ID)
 		d.checkErr(t, err)
 		if err != nil {
 			require.Equal(t, d.ac, ac)
@@ -231,9 +232,9 @@ func TestGetStreamAlarmCallback(t *testing.T) {
 }
 
 func TestCreateStreamAlarmCallback(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	client, err := client.NewClient("http://example.com/api", "admin", "password")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -359,7 +360,7 @@ func TestCreateStreamAlarmCallback(t *testing.T) {
 			Post(fmt.Sprintf("/api/streams/%s/alarmcallbacks", d.ac.StreamID)).
 			MatchType("json").JSON(d.req).Reply(d.statusCode).
 			JSON(map[string]string{"alarmcallback_id": d.acID})
-		_, err := client.CreateStreamAlarmCallback(&d.ac)
+		_, err := client.CreateStreamAlarmCallback(ctx, &d.ac)
 		d.checkErr(t, err)
 		if err != nil {
 			require.Equal(t, d.ac.ID, d.acID)
@@ -368,9 +369,9 @@ func TestCreateStreamAlarmCallback(t *testing.T) {
 }
 
 func TestUpdateStreamAlarmCallback(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	client, err := client.NewClient("http://example.com/api", "admin", "password")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -395,15 +396,15 @@ func TestUpdateStreamAlarmCallback(t *testing.T) {
 		gock.New("http://example.com").
 			Put(fmt.Sprintf("/api/streams/%s/alarmcallbacks/%s", d.ac.StreamID, d.ac.ID)).
 			MatchType("json").Reply(d.statusCode)
-		_, err := client.UpdateStreamAlarmCallback(&d.ac)
+		_, err := client.UpdateStreamAlarmCallback(ctx, &d.ac)
 		d.checkErr(t, err)
 	}
 }
 
 func TestDeleteStreamAlarmCallback(t *testing.T) {
+	ctx := context.Background()
 	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	client, err := client.NewClient("http://example.com/api", "admin", "password")
 	require.Nil(t, err)
 	data := []struct {
 		statusCode int
@@ -418,7 +419,7 @@ func TestDeleteStreamAlarmCallback(t *testing.T) {
 		gock.New("http://example.com").
 			Delete(fmt.Sprintf("/api/streams/%s/alarmcallbacks/%s", streamID, acID)).
 			MatchType("json").Reply(d.statusCode)
-		_, err := client.DeleteStreamAlarmCallback(streamID, acID)
+		_, err := client.DeleteStreamAlarmCallback(ctx, streamID, acID)
 		d.checkErr(t, err)
 	}
 }

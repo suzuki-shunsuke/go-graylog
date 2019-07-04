@@ -1,6 +1,8 @@
 package graylog
 
 import (
+	"context"
+
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/suzuki-shunsuke/go-graylog"
 )
@@ -83,6 +85,7 @@ func newStream(d *schema.ResourceData) (*graylog.Stream, error) {
 }
 
 func resourceStreamCreate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -92,14 +95,14 @@ func resourceStreamCreate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	if _, err := cl.CreateStream(stream); err != nil {
+	if _, err := cl.CreateStream(ctx, stream); err != nil {
 		return err
 	}
 	d.SetId(stream.ID)
 	// resume if needed
 	disabled := d.Get("disabled").(bool)
 	if !disabled {
-		if _, err := cl.ResumeStream(stream.ID); err != nil {
+		if _, err := cl.ResumeStream(ctx, stream.ID); err != nil {
 			return err
 		}
 	}
@@ -107,11 +110,12 @@ func resourceStreamCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceStreamRead(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	stream, _, err := cl.GetStream(d.Id())
+	stream, _, err := cl.GetStream(ctx, d.Id())
 	if err != nil {
 		return err
 	}
@@ -122,6 +126,7 @@ func resourceStreamRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceStreamUpdate(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
@@ -130,18 +135,19 @@ func resourceStreamUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	if _, err := cl.UpdateStream(stream); err != nil {
+	if _, err := cl.UpdateStream(ctx, stream); err != nil {
 		return err
 	}
 	return nil
 }
 
 func resourceStreamDelete(d *schema.ResourceData, m interface{}) error {
+	ctx := context.Background()
 	cl, err := newClient(m)
 	if err != nil {
 		return err
 	}
-	if _, err := cl.DeleteStream(d.Id()); err != nil {
+	if _, err := cl.DeleteStream(ctx, d.Id()); err != nil {
 		return err
 	}
 	return nil

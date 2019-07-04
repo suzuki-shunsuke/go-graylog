@@ -9,14 +9,6 @@ import (
 
 // CreateCollectorConfigurationSnippet creates a collector configuration snippet.
 func (client *Client) CreateCollectorConfigurationSnippet(
-	id string, snippet *graylog.CollectorConfigurationSnippet,
-) (*ErrorInfo, error) {
-	return client.CreateCollectorConfigurationSnippetContext(
-		context.Background(), id, snippet)
-}
-
-// CreateCollectorConfigurationSnippetContext creates a collector configuration snippet with a context.
-func (client *Client) CreateCollectorConfigurationSnippetContext(
 	ctx context.Context, id string, snippet *graylog.CollectorConfigurationSnippet,
 ) (*ErrorInfo, error) {
 	// POST /plugins/org.graylog.plugins.collector/configurations/{id}/snippets Create a configuration snippet
@@ -34,13 +26,7 @@ func (client *Client) CreateCollectorConfigurationSnippetContext(
 }
 
 // DeleteCollectorConfigurationSnippet deletes a collector configuration snippet.
-func (client *Client) DeleteCollectorConfigurationSnippet(id, snippetID string) (*ErrorInfo, error) {
-	return client.DeleteCollectorConfigurationSnippetContext(
-		context.Background(), id, snippetID)
-}
-
-// DeleteCollectorConfigurationSnippetContext deletes a collector configuration snippet with a context.
-func (client *Client) DeleteCollectorConfigurationSnippetContext(
+func (client *Client) DeleteCollectorConfigurationSnippet(
 	ctx context.Context, id, snippetID string,
 ) (*ErrorInfo, error) {
 	// DELETE /plugins/org.graylog.plugins.collector/configurations/{id}/snippets/{snippetId} Delete snippet form configuration
@@ -59,14 +45,6 @@ func (client *Client) DeleteCollectorConfigurationSnippetContext(
 
 // UpdateCollectorConfigurationSnippet updates a collector configuration snippet.
 func (client *Client) UpdateCollectorConfigurationSnippet(
-	id, snippetID string, snippet *graylog.CollectorConfigurationSnippet,
-) (*ErrorInfo, error) {
-	return client.UpdateCollectorConfigurationSnippetContext(
-		context.Background(), id, snippetID, snippet)
-}
-
-// UpdateCollectorConfigurationSnippetContext updates a collector configuration snippet with a context.
-func (client *Client) UpdateCollectorConfigurationSnippetContext(
 	ctx context.Context, id, snippetID string,
 	snippet *graylog.CollectorConfigurationSnippet,
 ) (*ErrorInfo, error) {

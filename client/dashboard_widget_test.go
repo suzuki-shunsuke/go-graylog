@@ -1,6 +1,7 @@
 package client_test
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"testing"
@@ -16,6 +17,7 @@ import (
 )
 
 func TestCreateDashboardWidget(t *testing.T) {
+	ctx := context.Background()
 	authName := os.Getenv("GRAYLOG_AUTH_NAME")
 	authPass := os.Getenv("GRAYLOG_AUTH_PASSWORD")
 	endpoint := os.Getenv("GRAYLOG_WEB_ENDPOINT_URI")
@@ -69,7 +71,7 @@ func TestCreateDashboardWidget(t *testing.T) {
 				Post(fmt.Sprintf("/api/dashboards/%s/widgets", dashboardID)).
 				MatchType("json").JSON(d.body).Reply(d.statusCode).
 				BodyString(d.resp)
-			w, _, err := client.CreateDashboardWidget(dashboardID, d.widget)
+			w, _, err := client.CreateDashboardWidget(ctx, dashboardID, d.widget)
 			d.checkErr(t, err)
 			if err == nil {
 				require.NotEqual(t, "", w.ID)

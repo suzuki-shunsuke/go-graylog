@@ -7,12 +7,7 @@ import (
 )
 
 // GetPipelineRules returns all pipeline rules.
-func (client *Client) GetPipelineRules() ([]graylog.PipelineRule, *ErrorInfo, error) {
-	return client.GetPipelineRulesContext(context.Background())
-}
-
-// GetPipelineRulesContext returns all pipeline rules with a context.
-func (client *Client) GetPipelineRulesContext(ctx context.Context) (
+func (client *Client) GetPipelineRules(ctx context.Context) (
 	[]graylog.PipelineRule, *ErrorInfo, error,
 ) {
 	rules := []graylog.PipelineRule{}
@@ -22,12 +17,7 @@ func (client *Client) GetPipelineRulesContext(ctx context.Context) (
 }
 
 // GetPipelineRule returns a pipeline rule.
-func (client *Client) GetPipelineRule(id string) (*graylog.PipelineRule, *ErrorInfo, error) {
-	return client.GetPipelineRuleContext(context.Background(), id)
-}
-
-// GetPipelineRuleContext returns a pipeline rule with a context.
-func (client *Client) GetPipelineRuleContext(ctx context.Context, id string) (
+func (client *Client) GetPipelineRule(ctx context.Context, id string) (
 	*graylog.PipelineRule, *ErrorInfo, error,
 ) {
 	rule := &graylog.PipelineRule{}
@@ -41,13 +31,6 @@ func (client *Client) GetPipelineRuleContext(ctx context.Context, id string) (
 
 // CreatePipelineRule creates a pipeline rule.
 func (client *Client) CreatePipelineRule(
-	rule *graylog.PipelineRule,
-) (*ErrorInfo, error) {
-	return client.CreatePipelineRuleContext(context.Background(), rule)
-}
-
-// CreatePipelineRuleContext creates a pipeline rule with a context.
-func (client *Client) CreatePipelineRuleContext(
 	ctx context.Context, rule *graylog.PipelineRule,
 ) (*ErrorInfo, error) {
 	return client.callPost(
@@ -56,13 +39,6 @@ func (client *Client) CreatePipelineRuleContext(
 
 // UpdatePipelineRule updates a pipeline rule.
 func (client *Client) UpdatePipelineRule(
-	rule *graylog.PipelineRule,
-) (*ErrorInfo, error) {
-	return client.UpdatePipelineRuleContext(context.Background(), rule)
-}
-
-// UpdatePipelineRuleContext updates a pipeline rule with a context.
-func (client *Client) UpdatePipelineRuleContext(
 	ctx context.Context, rule *graylog.PipelineRule,
 ) (*ErrorInfo, error) {
 	u, err := client.Endpoints().PipelineRule(rule.ID)
@@ -77,12 +53,7 @@ func (client *Client) UpdatePipelineRuleContext(
 }
 
 // DeletePipelineRule deletes a pipeline rule.
-func (client *Client) DeletePipelineRule(id string) (*ErrorInfo, error) {
-	return client.DeletePipelineRuleContext(context.Background(), id)
-}
-
-// DeletePipelineRuleContext deletes a pipeline rule with a context.
-func (client *Client) DeletePipelineRuleContext(
+func (client *Client) DeletePipelineRule(
 	ctx context.Context, id string,
 ) (*ErrorInfo, error) {
 	u, err := client.Endpoints().PipelineRule(id)

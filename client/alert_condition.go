@@ -7,12 +7,7 @@ import (
 )
 
 // GetAlertConditions returns all alert conditions.
-func (client *Client) GetAlertConditions() ([]graylog.AlertCondition, int, *ErrorInfo, error) {
-	return client.GetAlertConditionsContext(context.Background())
-}
-
-// GetAlertConditionsContext returns all alert conditions with a context.
-func (client *Client) GetAlertConditionsContext(ctx context.Context) (
+func (client *Client) GetAlertConditions(ctx context.Context) (
 	[]graylog.AlertCondition, int, *ErrorInfo, error,
 ) {
 	conditions := &graylog.AlertConditionsBody{}

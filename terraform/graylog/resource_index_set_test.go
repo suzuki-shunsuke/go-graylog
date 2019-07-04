@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"testing"
@@ -15,7 +16,7 @@ import (
 )
 
 func testDeleteIndexSet(
-	cl *client.Client, server *mockserver.Server, key string,
+	ctx context.Context, cl *client.Client, server *mockserver.Server, key string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
 		id, err := getIDFromTfState(tfState, key)
@@ -23,7 +24,7 @@ func testDeleteIndexSet(
 			return err
 		}
 		testutil.WaitAfterDeleteIndexSet(server)
-		if _, _, err := cl.GetIndexSet(id); err == nil {
+		if _, _, err := cl.GetIndexSet(ctx, id); err == nil {
 			return fmt.Errorf(`indexSet "%s" must be deleted`, id)
 		}
 		return nil
@@ -31,6 +32,7 @@ func testDeleteIndexSet(
 }
 
 func testCreateIndexSet(
+	ctx context.Context,
 	cl *client.Client, server *mockserver.Server, key string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
@@ -40,12 +42,13 @@ func testCreateIndexSet(
 		}
 		testutil.WaitAfterCreateIndexSet(server)
 
-		_, _, err = cl.GetIndexSet(id)
+		_, _, err = cl.GetIndexSet(ctx, id)
 		return err
 	}
 }
 
 func testUpdateIndexSet(
+	ctx context.Context,
 	cl *client.Client, key, title string,
 ) resource.TestCheckFunc {
 	return func(tfState *terraform.State) error {
@@ -53,7 +56,7 @@ func testUpdateIndexSet(
 		if err != nil {
 			return err
 		}
-		indexSet, _, err := cl.GetIndexSet(id)
+		indexSet, _, err := cl.GetIndexSet(ctx, id)
 		if err != nil {
 			return err
 		}
@@ -65,6 +68,7 @@ func testUpdateIndexSet(
 }
 
 func TestAccIndexSet(t *testing.T) {
+	ctx := context.Background()
 	cl, server, err := setEnv()
 	if err != nil {
 		t.Fatal(err)
@@ -109,18 +113,18 @@ resource "graylog_index_set" "test" {
 	}
 	resource.Test(t, resource.TestCase{
 		Providers:    testAccProviders,
-		CheckDestroy: testDeleteIndexSet(cl, server, key),
+		CheckDestroy: testDeleteIndexSet(ctx, cl, server, key),
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(roleTf, "terraform test index set title", prefix),
 				Check: resource.ComposeTestCheckFunc(
-					testCreateIndexSet(cl, server, key),
+					testCreateIndexSet(ctx, cl, server, key),
 				),
 			},
 			{
 				Config: fmt.Sprintf(roleTf, updateTitle, prefix),
 				Check: resource.ComposeTestCheckFunc(
-					testUpdateIndexSet(cl, key, updateTitle),
+					testUpdateIndexSet(ctx, cl, key, updateTitle),
 				),
 			},
 		},
