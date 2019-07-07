@@ -57,7 +57,10 @@ func (client *Client) callAPI(
 	req.Header.Set("Content-Type", "application/json")
 	// https://github.com/suzuki-shunsuke/go-graylog/issues/42
 	req.Header.Set("X-Requested-By", client.xRequestedBy)
-	hc := &http.Client{}
+	hc := client.httpClient
+	if hc == nil {
+		hc = http.DefaultClient
+	}
 	// request
 	resp, err := hc.Do(req)
 	if err != nil {
