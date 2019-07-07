@@ -72,6 +72,7 @@ github.com/dylanmei/iso8601 v0.1.0/go.mod h1:w9KhXSgIyROl1DefbMYIE7UVSIvELTbMrCf
 github.com/dylanmei/winrmtest v0.0.0-20190225150635-99b7fe2fddf1/go.mod h1:lcy9/2gH1jn/VCLouHA6tOEwLoNVd4GW6zhuKLmHC2Y=
 github.com/fatih/color v1.7.0 h1:DkWD4oS2D8LGGgTQ6IvwJJXSL5Vp2ffcQg58nFV38Ys=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
+github.com/fatih/set v0.2.1/go.mod h1:+RKtMCH+favT2+3YecHGxcc0b4KyVWA1QWWJUs4E0CI=
 github.com/flynn/go-shlex v0.0.0-20150515145356-3f9db97f8568/go.mod h1:xEzjJPgXI435gkrCt3MPfRiAkVrwSbHsst4LCFVfpJc=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
@@ -272,6 +273,7 @@ github.com/prometheus/procfs v0.0.0-20180725123919-05ee40e3a273/go.mod h1:c3At6R
 github.com/russross/blackfriday v1.5.2/go.mod h1:JO/DiYxRf+HjHt06OyowR9PTA263kcR/rfWxYHBV53g=
 github.com/satori/go.uuid v1.2.0 h1:0uYX9dsZ2yD7q2RtLRtPSdGDWzjeM3TbMJP9utgA0ww=
 github.com/satori/go.uuid v1.2.0/go.mod h1:dA0hQrYB0VpLJoorglMZABFdXlWrHn1NEOzdhQKdks0=
+github.com/scylladb/go-set v1.0.2/go.mod h1:DkpGd78rljTxKAnTDPFqXSGxvETQnJyuSOQwsHycqfs=
 github.com/sean-/seed v0.0.0-20170313163322-e2103e2c3529/go.mod h1:DxrIzT+xaE7yg65j358z/aeFdxmN0P9QXhEzd20vsDc=
 github.com/sergi/go-diff v1.0.0/go.mod h1:0CfEIISq7TuYL3j771MWULgwwjU+GofnZX9QAmXWZgo=
 github.com/shurcooL/component v0.0.0-20170202220835-f88ec8f54cc4/go.mod h1:XhFIlyj5a1fBNx5aJTbKoIq0mNaPvOagO+HjB3EtxrY=
@@ -313,6 +315,9 @@ github.com/stretchr/objx v0.2.0/go.mod h1:qt09Ya8vawLte6SNmTgCsAVtYtaKzEcn8ATUoH
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
+github.com/suzuki-shunsuke/fagott v0.3.0 h1:6pGTyBL+cCaNByBb9oMx4uQoQuG2YNVawym3b+zTNwI=
+github.com/suzuki-shunsuke/fagott v0.3.0/go.mod h1:JVGowonJ6UMnndvWQVCo2oDlsroTKRIwY9QT0bIPwhE=
+github.com/suzuki-shunsuke/go-cliutil v0.0.0-20181211154308-176f852d9bca/go.mod h1:Vq3NkhgmA9DT/2UZ08x/3A34xxvzQ/vTMABnTWKoMbY=
 github.com/suzuki-shunsuke/go-graylog v2.5.0+incompatible/go.mod h1:+z9FAnkMp+N5llMe0nxwlYSvf6bep5zgB/0q2QEl9oQ=
 github.com/suzuki-shunsuke/go-jsoneq v0.1.1 h1:A9ik3qCfjjR2zbOTHwOIIt+N4ItZGZq9j8z//t5EhnQ=
 github.com/suzuki-shunsuke/go-jsoneq v0.1.1/go.mod h1:vbOEb6bPf8nD+QASKzxtQ/vfVGgAyfWHyItUaUTwJWk=
@@ -320,6 +325,7 @@ github.com/suzuki-shunsuke/go-ptr v1.0.0 h1:sVR6ICMJbdCyOpxzrflHErkO8KmItPFDu0E0
 github.com/suzuki-shunsuke/go-ptr v1.0.0/go.mod h1:4WKv+CJynv3Veutqvmt7yPUqEsZp0vezqFxVRukjga0=
 github.com/suzuki-shunsuke/go-set v6.0.0+incompatible h1:APxAhd/XeHGrrp3vR6a9Yiwgak+HlM+CVREvDAULM8w=
 github.com/suzuki-shunsuke/go-set v6.0.0+incompatible/go.mod h1:CZob7MsjSLZlWDHWKeRvDX/Q2eWA6qqbx+FXdy2FgnM=
+github.com/suzuki-shunsuke/gomic v0.5.6/go.mod h1:GEDQnxOB07p3mTZG/MiuclfyfcqnNqp0rt9AHgIzs7Q=
 github.com/suzuki-shunsuke/graylog-mock-server v1.0.0 h1:kvVQfNoZhl8TkDE3mqrk1GlYDoY46IcanuLaSTLGvBw=
 github.com/suzuki-shunsuke/graylog-mock-server v1.0.0/go.mod h1:7uVmBcYbjffvfThyQ6q1cbXNm/VvogFyjnoiuFywgv4=
 github.com/svanharmelen/jsonapi v0.0.0-20180618144545-0c0828c3f16d/go.mod h1:BSTlc8jOjh0niykqEGVXOLXdi9o0r0kR8tCYiMvjFgw=
@@ -329,6 +335,7 @@ github.com/tmc/grpc-websocket-proxy v0.0.0-20171017195756-830351dc03c6/go.mod h1
 github.com/ugorji/go v0.0.0-20180813092308-00b869d2f4a5/go.mod h1:hnLbHMwcvSihnDhEfx2/BzKp2xb0Y+ErdfYcrs9tkJQ=
 github.com/ulikunitz/xz v0.5.5 h1:pFrO0lVpTBXLpYw+pnLj6TbvHuyjXMfjGeCwSqCVwok=
 github.com/ulikunitz/xz v0.5.5/go.mod h1:2bypXElzHzzJZwzH67Y6wb67pO62Rzfn7BSiF4ABRW8=
+github.com/urfave/cli v1.20.0/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=
 github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
 github.com/valyala/fasttemplate v1.0.1 h1:tY9CJiPnMXf1ERmG2EyK7gNUd+c6RKGD0IfU8WdUSz8=

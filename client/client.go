@@ -1,6 +1,8 @@
 package client
 
 import (
+	"net/http"
+
 	"github.com/suzuki-shunsuke/go-graylog/client/endpoint"
 )
 
@@ -11,6 +13,7 @@ type Client struct {
 	xRequestedBy string
 	apiVersion   string
 	endpoints    *endpoint.Endpoints
+	httpClient   *http.Client
 }
 
 // NewClient returns a new Graylog API Client.
@@ -69,4 +72,10 @@ func (client *Client) Password() string {
 // The default value is "go-graylog".
 func (client *Client) SetXRequestedBy(x string) {
 	client.xRequestedBy = x
+}
+
+// SetHTTPClient sets a custom *http.Client.
+// If you don't set *http.Client by this method, the default value is http.DefaultClient.
+func (client *Client) SetHTTPClient(c *http.Client) {
+	client.httpClient = c
 }
