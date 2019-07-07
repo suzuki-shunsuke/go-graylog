@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="6.1.0"></a>
+# [6.1.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v5.0.0...v6.1.0) (2019-07-07)
+
+
+### Features
+
+* allow to customize *http.Client ([37c6b02](https://github.com/suzuki-shunsuke/go-graylog/commit/37c6b02))
+
+
+
 <a name="5.0.0"></a>
 # [5.0.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v4.1.0...v5.0.0) (2019-07-04)
 
