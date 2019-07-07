@@ -2,32 +2,67 @@ package client_test
 
 import (
 	"context"
+	"net/http"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+	"github.com/suzuki-shunsuke/fagott/fagott"
+
+	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/client"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
 func TestCreateDashboard(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	// nil check
-	if _, err := client.CreateDashboard(ctx, nil); err == nil {
-		t.Fatal("dashboard is nil")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	_, err = cl.CreateDashboard(ctx, nil)
+	require.NotNil(t, err, "dashboard should not be nil")
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &fagott.Transport{
+			T: t,
+			Services: []fagott.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []fagott.Route{
+						{
+							Matcher: &fagott.Matcher{
+								Method: "POST",
+								Path:   "/api/dashboards",
+							},
+							Tester: &fagott.Tester{
+								Header: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+								},
+								BodyJSONString: `{
+								  "title": "dashboard title",
+								  "description": "dashboard description"
+								}`,
+							},
+							Response: &fagott.Response{
+								StatusCode: 201,
+								BodyString: `{
+								  "dashboard_id": "5b39838b08813b0000000000"
+								}`,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	db := &graylog.Dashboard{
+		Title:       "dashboard title",
+		Description: "dashboard description",
 	}
-	// success
-	dashboard := testutil.Dashboard()
-	if _, err := client.CreateDashboard(ctx, dashboard); err != nil {
-		t.Fatal(err)
-	}
-	// clean
-	defer client.DeleteDashboard(ctx, dashboard.ID)
+	_, err = cl.CreateDashboard(ctx, db)
+	require.Nil(t, err)
+	require.Equal(t, "5b39838b08813b0000000000", db.ID)
 }
 
 func TestDeleteDashboard(t *testing.T) {
