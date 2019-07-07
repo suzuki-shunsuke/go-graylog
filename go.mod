@@ -9,7 +9,7 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.3.0
-	github.com/suzuki-shunsuke/fagott v0.3.0
+	github.com/suzuki-shunsuke/fagott v0.3.1
 	github.com/suzuki-shunsuke/go-jsoneq v0.1.1
 	github.com/suzuki-shunsuke/go-ptr v1.0.0
 	github.com/suzuki-shunsuke/go-set v6.0.0+incompatible
