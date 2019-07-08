@@ -1,4 +1,4 @@
-# graylog_dashboard_widet_positions
+# graylog_dashboard_widget_positions
 
 https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_dashboard_widget_positions.go
 
