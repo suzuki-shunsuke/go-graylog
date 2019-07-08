@@ -26,6 +26,7 @@ name | default | type | description
 --- | --- | --- | ---
 disabled | | bool |
 matching_type | | string |
+description | | string |
 remove_matches_from_default_stream | | bool |
 is_default | | bool |
 
