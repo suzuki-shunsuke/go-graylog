@@ -1,9 +1,9 @@
-# graylog_dashboard_widet_positions
+# graylog_dashboard_widget_positions
 
 https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_dashboard_widget_positions.go
 
 ```hcl
-resource "graylog_dashboard_widet_positions" "test" {
+resource "graylog_dashboard_widget_positions" "test" {
   dashboard_id = graylog_dashboard.test.id
   positions {
     widget_id = graylog_dashboard_widget.test1.id
