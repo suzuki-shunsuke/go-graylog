@@ -161,7 +161,7 @@ resource "graylog_alarm_callback" "hipchat" {
     room = "test"
   }
   general_bool_configuration = {
-    notify = true
+    notify = "true"
   }
 }
 ```

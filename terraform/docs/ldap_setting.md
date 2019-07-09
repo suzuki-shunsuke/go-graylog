@@ -4,13 +4,9 @@ https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/reso
 
 ```hcl
 resource "graylog_ldap_setting" "foo" {
-  enabled = true
   system_username = "admin"
   system_password = "password"
   ldap_uri = "ldap://localhost:389"
-  use_start_tls = false
-  trust_all_certificates = false
-  active_directory = false
   search_base = "OU=user,OU=foo,DC=example,DC=com"
   search_pattern = "(cn={0})"
   display_name_attribute = "displayname"

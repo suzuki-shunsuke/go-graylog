@@ -9,7 +9,6 @@ resource "graylog_stream_rule" "test-terraform" {
   stream_id = "${graylog_stream.test-terraform.id}"
   description = "test stream rule"
   type = 0
-  inverted = false
 }
 ```
 

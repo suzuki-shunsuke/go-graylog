@@ -12,8 +12,6 @@ resource "graylog_dashboard_widget" "test" {
       type = "relative"
       range = 300
     }
-    lower_is_better = true
-    trend = true
     stream_id = "5b3983000000000000000000"
     query = ""
   }
@@ -62,8 +60,6 @@ resource "graylog_dashboard_widget" "test" {
       type = "relative"
       range = 300
     }
-    lower_is_better = true
-    trend = true
     stream_id = "5b3983000000000000000000"
     query = ""
   }
@@ -102,8 +98,6 @@ resource "graylog_dashboard_widget" "test" {
     stream_id = "5b3983000000000000000000"
     query = ""
     field = "status"
-    show_data_table = true
-    show_pie_chart = true
     limit = 5
     sort_order = "desc"
     stacked_fields = ""
@@ -269,8 +263,6 @@ resource "graylog_dashboard_widget" "test" {
     }
     query = ""
     field = "status"
-    lower_is_better = false
-    trend = false
     stats_function = "cardinality"
     stream_id = "5b3983000000000000000000"
   }

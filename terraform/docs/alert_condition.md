@@ -7,15 +7,13 @@
 resource "graylog_alert_condition" "test-terraform" {
   type = "field_content_value"
   stream_id = "${graylog_stream.test-terraform.id}"
-  in_grace = false
   title = "test"
-  parameters = {
-    backlog = 1
-    repeat_notifications = false
+  field_content_value_parameters = {
     field = "message"
+    value = "hoge hoge"
+    backlog = 1
     query = "*"
     grace = 0
-    value = "hoge hoge"
   }
 }
 ```
@@ -45,13 +43,11 @@ in_grace | bool |
 resource "graylog_alert_condition" "test-terraform" {
   type = "field_content_value"
   stream_id = "${graylog_stream.test-terraform.id}"
-  in_grace = false
   title = "test"
   field_content_value_parameters = {
     field = "message"
     value = "hoge hoge"
     backlog = 1
-    repeat_notifications = false
     query = "*"
     grace = 0
   }

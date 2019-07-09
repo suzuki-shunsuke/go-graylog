@@ -89,7 +89,6 @@ resource "graylog_extractor" "test" {
     kv_separator               = "="
     key_prefix                 = "visit_"
     key_separator              = "_"
-    replace_key_whitespace     = false
     key_whitespace_replacement = "_"
   }
 }
