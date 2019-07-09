@@ -6,7 +6,6 @@ https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/reso
 resource "graylog_stream" "test-terraform" {
   title = "test-terraform"
   index_set_id = "${graylog_index_set.test-terraform.id}"
-  disabled = true
   matching_type = "AND"
 }
 ```
