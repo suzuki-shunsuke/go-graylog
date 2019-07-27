@@ -526,25 +526,17 @@ func resourceAlertConditionRead(d *schema.ResourceData, m interface{}) error {
 			return fmt.Errorf("%s is invalid type", k)
 		}
 	}
-	if len(intM) != 0 {
-		if err := d.Set("general_int_parameters", intM); err != nil {
-			return err
-		}
+	if err := d.Set("general_int_parameters", intM); err != nil {
+		return err
 	}
-	if len(strM) != 0 {
-		if err := d.Set("general_string_parameters", strM); err != nil {
-			return err
-		}
+	if err := d.Set("general_string_parameters", strM); err != nil {
+		return err
 	}
-	if len(floatM) != 0 {
-		if err := d.Set("general_float_parameters", floatM); err != nil {
-			return err
-		}
+	if err := d.Set("general_float_parameters", floatM); err != nil {
+		return err
 	}
-	if len(boolM) != 0 {
-		if err := d.Set("general_bool_parameters", boolM); err != nil {
-			return err
-		}
+	if err := d.Set("general_bool_parameters", boolM); err != nil {
+		return err
 	}
 	return nil
 }
