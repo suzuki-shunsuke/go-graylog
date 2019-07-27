@@ -367,29 +367,37 @@ func resourceAlarmCallbackRead(d *schema.ResourceData, m interface{}) error {
 		if !ok {
 			return fmt.Errorf("configuration is invalid type")
 		}
+		intM := map[string]interface{}{}
+		strM := map[string]interface{}{}
+		floatM := map[string]interface{}{}
+		boolM := map[string]interface{}{}
 		for k, v := range cfg.Configuration {
-			switch t := v.(type) {
+			switch v.(type) {
 			case int:
-				if err := d.Set(fmt.Sprintf("general_int_configuration.%s", k), t); err != nil {
-					return err
-				}
+				intM[k] = v
 			case bool:
-				if err := d.Set(fmt.Sprintf("general_bool_configuration.%s", k), t); err != nil {
-					return err
-				}
+				boolM[k] = v
 			case float64:
-				if err := d.Set(fmt.Sprintf("general_float_configuration.%s", k), t); err != nil {
-					return err
-				}
+				floatM[k] = v
 			case float32:
-				if err := d.Set(fmt.Sprintf("general_float_configuration.%s", k), t); err != nil {
-					return err
-				}
+				floatM[k] = v
 			case string:
-				if err := d.Set(fmt.Sprintf("general_string_configuration.%s", k), t); err != nil {
-					return err
-				}
+				strM[k] = v
+			default:
+				return fmt.Errorf("%s is invalid type", k)
 			}
+		}
+		if err := d.Set("general_int_configuration", intM); err != nil {
+			return err
+		}
+		if err := d.Set("general_string_configuration", strM); err != nil {
+			return err
+		}
+		if err := d.Set("general_float_configuration", floatM); err != nil {
+			return err
+		}
+		if err := d.Set("general_bool_configuration", boolM); err != nil {
+			return err
 		}
 		return nil
 	}
