@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="6.1.1"></a>
+## [6.1.1](https://github.com/suzuki-shunsuke/go-graylog/compare/v6.1.0...v6.1.1) (2019-07-27)
+
+
+### Bug Fixes
+
+* fix how to set the value to terraform's TypeMap field ([0ed09aa](https://github.com/suzuki-shunsuke/go-graylog/commit/0ed09aa)), closes [#139](https://github.com/suzuki-shunsuke/go-graylog/issues/139)
+* set the value to TypeMap even if the length of map is 0 ([4bde3df](https://github.com/suzuki-shunsuke/go-graylog/commit/4bde3df))
+
+
+
 <a name="6.1.0"></a>
 # [6.1.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v5.0.0...v6.1.0) (2019-07-07)
 
