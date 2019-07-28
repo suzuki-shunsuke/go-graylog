@@ -461,11 +461,12 @@ func resourceAlertConditionRead(d *schema.ResourceData, m interface{}) error {
 		return d.Set(
 			"field_content_value_parameters",
 			[]map[string]interface{}{{
-				"grace":   prms.Grace,
-				"backlog": prms.Backlog,
-				"field":   prms.Field,
-				"value":   prms.Value,
-				"query":   prms.Query,
+				"grace":                prms.Grace,
+				"backlog":              prms.Backlog,
+				"field":                prms.Field,
+				"value":                prms.Value,
+				"query":                prms.Query,
+				"repeat_notifications": prms.RepeatNotifications,
 			}})
 	case "field_value":
 		prms, ok := cond.Parameters.(graylog.FieldAggregationAlertConditionParameters)
