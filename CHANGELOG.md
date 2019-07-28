@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="6.1.2"></a>
+## [6.1.2](https://github.com/suzuki-shunsuke/go-graylog/compare/v6.1.1...v6.1.2) (2019-07-28)
+
+
+### Bug Fixes
+
+* set the field "repeat_notifications" when read alert_condition ([911a62c](https://github.com/suzuki-shunsuke/go-graylog/commit/911a62c))
+
+
+
 <a name="6.1.1"></a>
 ## [6.1.1](https://github.com/suzuki-shunsuke/go-graylog/compare/v6.1.0...v6.1.1) (2019-07-27)
 
