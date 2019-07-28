@@ -35,9 +35,10 @@ func TestCreateDashboard(t *testing.T) {
 								Path:   "/api/dashboards",
 							},
 							Tester: &flute.Tester{
-								Header: http.Header{
+								PartOfHeader: http.Header{
 									"Content-Type":   []string{"application/json"},
 									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
 								},
 								BodyJSONString: `{
 								  "title": "dashboard title",
