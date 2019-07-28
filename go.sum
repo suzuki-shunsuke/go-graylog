@@ -315,8 +315,8 @@ github.com/stretchr/objx v0.2.0/go.mod h1:qt09Ya8vawLte6SNmTgCsAVtYtaKzEcn8ATUoH
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
-github.com/suzuki-shunsuke/fagott v0.3.1 h1:nOh228IgHwgcbrjFq8tGcSri3bKpnrYgqXU5jEKuBSM=
-github.com/suzuki-shunsuke/fagott v0.3.1/go.mod h1:JVGowonJ6UMnndvWQVCo2oDlsroTKRIwY9QT0bIPwhE=
+github.com/suzuki-shunsuke/flute v0.6.0 h1:c6arvdWGSdKJfF+GIl4Nna7R5NxgyHX5uhSweB7mwio=
+github.com/suzuki-shunsuke/flute v0.6.0/go.mod h1:UZOMr3GyEuYSr7/zf0nHgaLP9ZhKDB+2pBeV1WFkohE=
 github.com/suzuki-shunsuke/go-cliutil v0.0.0-20181211154308-176f852d9bca/go.mod h1:Vq3NkhgmA9DT/2UZ08x/3A34xxvzQ/vTMABnTWKoMbY=
 github.com/suzuki-shunsuke/go-graylog v2.5.0+incompatible/go.mod h1:+z9FAnkMp+N5llMe0nxwlYSvf6bep5zgB/0q2QEl9oQ=
 github.com/suzuki-shunsuke/go-jsoneq v0.1.1 h1:A9ik3qCfjjR2zbOTHwOIIt+N4ItZGZq9j8z//t5EhnQ=
