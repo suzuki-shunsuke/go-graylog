@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/suzuki-shunsuke/fagott/fagott"
+	"github.com/suzuki-shunsuke/flute/flute"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
@@ -23,28 +23,29 @@ func TestCreateDashboard(t *testing.T) {
 	require.NotNil(t, err, "dashboard should not be nil")
 
 	cl.SetHTTPClient(&http.Client{
-		Transport: &fagott.Transport{
+		Transport: &flute.Transport{
 			T: t,
-			Services: []fagott.Service{
+			Services: []flute.Service{
 				{
 					Endpoint: "http://example.com",
-					Routes: []fagott.Route{
+					Routes: []flute.Route{
 						{
-							Matcher: &fagott.Matcher{
+							Matcher: &flute.Matcher{
 								Method: "POST",
 								Path:   "/api/dashboards",
 							},
-							Tester: &fagott.Tester{
-								Header: http.Header{
+							Tester: &flute.Tester{
+								PartOfHeader: http.Header{
 									"Content-Type":   []string{"application/json"},
 									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
 								},
 								BodyJSONString: `{
 								  "title": "dashboard title",
 								  "description": "dashboard description"
 								}`,
 							},
-							Response: &fagott.Response{
+							Response: &flute.Response{
 								StatusCode: 201,
 								BodyString: `{
 								  "dashboard_id": "5b39838b08813b0000000000"
