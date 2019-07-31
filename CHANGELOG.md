@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="6.1.3-0"></a>
+## [6.1.3-0](https://github.com/suzuki-shunsuke/go-graylog/compare/v6.1.2...v6.1.3-0) (2019-07-31)
+
+
+### Bug Fixes
+
+* build the binary with the environment variable CGO_ENABLED=0 ([68ba03f](https://github.com/suzuki-shunsuke/go-graylog/commit/68ba03f)), closes [#144](https://github.com/suzuki-shunsuke/go-graylog/issues/144)
+
+
+
 <a name="6.1.2"></a>
 ## [6.1.2](https://github.com/suzuki-shunsuke/go-graylog/compare/v6.1.1...v6.1.2) (2019-07-28)
 
