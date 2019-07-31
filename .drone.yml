@@ -68,6 +68,7 @@ steps:
   - gox -output="dist/${DRONE_TAG}/terraform-provider-graylog_${DRONE_TAG}_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./terraform/
   - ls dist/${DRONE_TAG} | xargs -I {} gzip dist/${DRONE_TAG}/{}
   environment:
+    CGO_ENABLED: "0"
     GOPATH: /go
     GO111MODULE: on
   when:
@@ -79,6 +80,7 @@ steps:
   - gox -output="dist/v0.1.0/terraform-provider-graylog_v0.1.0_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./terraform/
   - ls dist/v0.1.0 | xargs -I {} gzip dist/v0.1.0/{}
   environment:
+    CGO_ENABLED: "0"
     GOPATH: /go
     GO111MODULE: on
   when:
