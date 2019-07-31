@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="6.1.3"></a>
+## [6.1.3](https://github.com/suzuki-shunsuke/go-graylog/compare/v6.1.3-0...v6.1.3) (2019-07-31)
+
+
+
 <a name="6.1.3-0"></a>
 ## [6.1.3-0](https://github.com/suzuki-shunsuke/go-graylog/compare/v6.1.2...v6.1.3-0) (2019-07-31)
 
