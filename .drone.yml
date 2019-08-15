@@ -14,7 +14,7 @@ volumes:
   temp: {}
 steps:
 - name: download go modules
-  image: &image_go golang:1.12.6
+  image: &image_go golang:1.12.8
   commands:
   - go mod download
   volumes: &volumes
