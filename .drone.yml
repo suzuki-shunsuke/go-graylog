@@ -9,23 +9,25 @@ steps:
 ---
 kind: pipeline
 name: build
-workspace:
-  base: /go
-  path: src/github.com/suzuki-shunsuke/go-graylog
+volumes:
+- name: gopath
+  temp: {}
 steps:
 - name: download go modules
   image: &image_go golang:1.12.6
   commands:
   - go mod download
+  volumes: &volumes
+  - name: gopath
+    path: /go
   environment:
-    GO111MODULE: on
     GOPATH: /go
 - name: golangci-lint
   image: golangci/golangci-lint:v1.17.1
   commands:
   - golangci-lint run
+  volumes: *volumes
   environment:
-    GO111MODULE: on
     GOPATH: /go
 - name: codecov
   image: *image_go
@@ -34,8 +36,8 @@ steps:
   - bash scripts/codecov-test.sh
   - curl -s https://codecov.io/bash > /tmp/codecov.sh
   - test "$LOCAL" = "true" -o "$DRONE_BUILD_EVENT" = "pull_request" || bash /tmp/codecov.sh
+  volumes: *volumes
   environment:
-    GO111MODULE: on
     GOPATH: /go
     CODECOV_TOKEN:
       from_secret: codecov_token
@@ -44,10 +46,10 @@ steps:
   commands:
   - gox -output="dist/${DRONE_TAG}/terraform-provider-graylog_${DRONE_TAG}_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./terraform/
   - ls dist/${DRONE_TAG} | xargs -I {} gzip dist/${DRONE_TAG}/{}
+  volumes: *volumes
   environment:
     CGO_ENABLED: "0"
     GOPATH: /go
-    GO111MODULE: on
   when:
     event:
     - tag
@@ -56,10 +58,10 @@ steps:
   commands:
   - gox -output="dist/v0.1.0/terraform-provider-graylog_v0.1.0_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./terraform/
   - ls dist/v0.1.0 | xargs -I {} gzip dist/v0.1.0/{}
+  volumes: *volumes
   environment:
     CGO_ENABLED: "0"
     GOPATH: /go
-    GO111MODULE: on
   when:
     event:
     - push
