@@ -1,28 +1,5 @@
 ---
 kind: pipeline
-name: commitlint
-steps:
-- name: npm install
-  image: &node_image node:10.16.0-alpine
-  commands:
-  - npm i
-- name: tag/commitlint
-  image: *node_image
-  commands:
-  - npx commitlint --from HEAD~1 --to HEAD
-  when:
-    event:
-    - tag
-    - push
-- name: pr/commitlint
-  image: *node_image
-  commands:
-  - npx commitlint --from master --to HEAD || exit 1
-  when:
-    event:
-    - pull_request
----
-kind: pipeline
 name: durl
 steps:
 - name: durl
