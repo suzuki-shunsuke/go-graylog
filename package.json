@@ -1,5 +1,5 @@
 {
-  "version": "6.1.4",
+  "version": "6.1.5",
   "scripts": {
     "release": "standard-version",
     "test": "bash scripts/test.sh",

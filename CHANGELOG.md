@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="6.1.5"></a>
+## [6.1.5](https://github.com/suzuki-shunsuke/go-graylog/compare/v6.1.4...v6.1.5) (2019-08-15)
+
+
+### Features
+
+* upgrade golang ([5aaaed5](https://github.com/suzuki-shunsuke/go-graylog/commit/5aaaed5))
+
+
+
 <a name="6.1.4"></a>
 ## [6.1.4](https://github.com/suzuki-shunsuke/go-graylog/compare/v6.1.3...v6.1.4) (2019-08-15)
 
