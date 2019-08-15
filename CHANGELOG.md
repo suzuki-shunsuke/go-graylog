@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="6.1.4"></a>
+## [6.1.4](https://github.com/suzuki-shunsuke/go-graylog/compare/v6.1.3...v6.1.4) (2019-08-15)
+
+
+### Bug Fixes
+
+* remove "omitempty" from repeat_notifications ([7f1c779](https://github.com/suzuki-shunsuke/go-graylog/commit/7f1c779)), closes [#147](https://github.com/suzuki-shunsuke/go-graylog/issues/147)
+
+
+
 <a name="6.1.3"></a>
 ## [6.1.3](https://github.com/suzuki-shunsuke/go-graylog/compare/v6.1.3-0...v6.1.3) (2019-07-31)
 
