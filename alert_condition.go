@@ -28,7 +28,7 @@ type (
 	FieldContentAlertConditionParameters struct {
 		Grace               int    `json:"grace"`
 		Backlog             int    `json:"backlog"`
-		RepeatNotifications bool   `json:"repeat_notifications,omitempty"`
+		RepeatNotifications bool   `json:"repeat_notifications"`
 		Field               string `json:"field,omitempty" v-create:"required"`
 		Value               string `json:"value,omitempty" v-create:"required"`
 		Query               string `json:"query,omitempty"`
@@ -40,7 +40,7 @@ type (
 		Backlog             int    `json:"backlog"`
 		Threshold           int    `json:"threshold"`
 		Time                int    `json:"time" v-create:"required"`
-		RepeatNotifications bool   `json:"repeat_notifications,omitempty"`
+		RepeatNotifications bool   `json:"repeat_notifications"`
 		Field               string `json:"field,omitempty" v-create:"required"`
 		Query               string `json:"query,omitempty"`
 		ThresholdType       string `json:"threshold_type,omitempty" v-create:"required"`
@@ -53,7 +53,7 @@ type (
 		Backlog             int    `json:"backlog"`
 		Threshold           int    `json:"threshold"`
 		Time                int    `json:"time"`
-		RepeatNotifications bool   `json:"repeat_notifications,omitempty"`
+		RepeatNotifications bool   `json:"repeat_notifications"`
 		Query               string `json:"query,omitempty"`
 		ThresholdType       string `json:"threshold_type,omitempty" v-create:"required"`
 	}
