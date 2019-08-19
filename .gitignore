@@ -5,7 +5,7 @@ node_modules
 *.log
 graylog-mock-server
 dist
-docker-compose.yml
+/docker-compose.yml
 env.sh
 .vendor-new
 
