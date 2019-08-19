@@ -48,7 +48,7 @@ resource "graylog_role" "my-role-2" {
 }
 ```
 
-And please see https://github.com/suzuki-shunsuke/example/tree/master/graylog-terraform also.
+And please see [example v0.11](example/v0.11) and [example v0.12](example/v0.12) also.
 
 ## Variables
 
