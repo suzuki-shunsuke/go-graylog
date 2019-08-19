@@ -57,8 +57,33 @@ And please see [example v0.11](example/v0.11) and [example v0.12](example/v0.12)
 name | Environment variable | description
 --- | --- | ---
 web_endpoint_uri | GRAYLOG_WEB_ENDPOINT_URI | API endpoint, for example https://graylog.example.com/api
-auth_name | GRAYLOG_AUTH_NAME | Username
-auth_password | GRAYLOG_AUTH_PASSWORD | Password or [API token](https://docs.graylog.org/en/latest/pages/configuration/rest_api.html#creating-and-using-access-token)
+auth_name | GRAYLOG_AUTH_NAME | Username or API token or Session Token
+auth_password | GRAYLOG_AUTH_PASSWORD | Password or the literal `"token"` or `"session"`
+
+About `auth_name` and `auth_password`, please see the [Graylog's Documentation](https://docs.graylog.org/en/latest/pages/configuration/rest_api.html).
+
+You can authenticate with either password or access token or session token.
+
+password
+
+```
+auth_name = "<user name>"
+auth_password = "<password>"
+```
+
+access token
+
+```
+auth_name = "<access token>"
+auth_password = "token"
+```
+
+session token
+
+```
+auth_name = "<session token>"
+auth_password = "session"
+```
 
 ### Optional
 
