@@ -5,7 +5,3 @@ resource "graylog_stream" "test" {
   matching_type = "AND"
   description   = "test"
 }
-
-# data "graylog_stream" "test" {
-#   title = "test"
-# }

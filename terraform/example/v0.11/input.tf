@@ -18,14 +18,3 @@ resource "graylog_input_static_fields" "gelf_udp" {
     foo = "bar"
   }
 }
-
-# resource "graylog_input" "test2" {
-#   title = "terraform test input title updated"
-#   type  = "org.graylog2.inputs.syslog.udp.SyslogUDPInput"
-#   attributes {
-#     bind_address     = "0.0.0.0"
-#     port             = 514
-#     recv_buffer_size = 262144
-#   }
-# }
-
