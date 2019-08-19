@@ -42,7 +42,7 @@ steps:
     CODECOV_TOKEN:
       from_secret: codecov_token
 - name: build
-  image: &image_gox suzukishunsuke/gox:1.0.1__0.1.0
+  image: &image_gox suzukishunsuke/gox:1.0.1__0.2.0
   commands:
   - gox -output="dist/${DRONE_TAG}/terraform-provider-graylog_${DRONE_TAG}_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./terraform/
   - ls dist/${DRONE_TAG} | xargs -I {} gzip dist/${DRONE_TAG}/{}
