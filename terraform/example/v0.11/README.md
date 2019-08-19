@@ -2,7 +2,7 @@
 
 ## Requirement
 
-* Terraform v0.12
+* Terraform v0.11
 * terraform-provider-graylog
 * Docker Engine
 * Docker Compose

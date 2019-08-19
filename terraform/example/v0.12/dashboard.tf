@@ -14,7 +14,7 @@ resource "graylog_dashboard_widget" "test" {
     }
     lower_is_better = true
     trend           = true
-    stream_id       = "000000000000000000000001"
+    stream_id       = graylog_stream.test.id
     query           = ""
   }
   cache_time = 10
@@ -29,7 +29,7 @@ resource "graylog_dashboard_widget" "test2" {
       type  = "relative"
       range = 300
     }
-    stream_id        = "000000000000000000000001"
+    stream_id        = graylog_stream.test.id
     query            = ""
     field            = "status"
     show_data_table  = true
