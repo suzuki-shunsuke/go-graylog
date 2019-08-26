@@ -285,9 +285,9 @@ func resourceExtractorRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	extractor, _, err := cl.GetExtractor(ctx, d.Get("input_id").(string), d.Id())
+	extractor, ei, err := cl.GetExtractor(ctx, d.Get("input_id").(string), d.Id())
 	if err != nil {
-		return err
+		return handleGetResourceError(d, ei, err)
 	}
 	if err := setStrToRD(d, "title", extractor.Title); err != nil {
 		return err

@@ -96,9 +96,9 @@ func resourceDashboardRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	db, _, err := cl.GetDashboard(ctx, d.Id())
+	db, ei, err := cl.GetDashboard(ctx, d.Id())
 	if err != nil {
-		return err
+		return handleGetResourceError(d, ei, err)
 	}
 	if err := setStrToRD(d, "title", db.Title); err != nil {
 		return err

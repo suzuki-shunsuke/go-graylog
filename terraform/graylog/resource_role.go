@@ -72,9 +72,9 @@ func resourceRoleRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	role, _, err := cl.GetRole(ctx, d.Id())
+	role, ei, err := cl.GetRole(ctx, d.Id())
 	if err != nil {
-		return err
+		return handleGetResourceError(d, ei, err)
 	}
 	if err := setStrToRD(d, "name", role.Name); err != nil {
 		return err

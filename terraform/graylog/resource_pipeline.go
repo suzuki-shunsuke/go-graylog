@@ -70,9 +70,9 @@ func resourcePipelineRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	pipe, _, err := cl.GetPipeline(ctx, d.Id())
+	pipe, ei, err := cl.GetPipeline(ctx, d.Id())
 	if err != nil {
-		return err
+		return handleGetResourceError(d, ei, err)
 	}
 	if err := setStrToRD(d, "source", pipe.Source); err != nil {
 		return err

@@ -115,9 +115,9 @@ func resourceStreamRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	stream, _, err := cl.GetStream(ctx, d.Id())
+	stream, ei, err := cl.GetStream(ctx, d.Id())
 	if err != nil {
-		return err
+		return handleGetResourceError(d, ei, err)
 	}
 	return setStream(d, stream, m.(*Config))
 

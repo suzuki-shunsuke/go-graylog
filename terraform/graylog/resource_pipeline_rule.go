@@ -69,9 +69,9 @@ func resourcePipelineRuleRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	rule, _, err := cl.GetPipelineRule(ctx, d.Id())
+	rule, ei, err := cl.GetPipelineRule(ctx, d.Id())
 	if err != nil {
-		return err
+		return handleGetResourceError(d, ei, err)
 	}
 	if err := setStrToRD(d, "source", rule.Source); err != nil {
 		return err
