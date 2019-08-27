@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="7.0.0"></a>
+# [7.0.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v6.1.5...v7.0.0) (2019-08-27)
+
+
+### Features
+
+* remove resource from state file if resource isn't found ([183e1ad](https://github.com/suzuki-shunsuke/go-graylog/commit/183e1ad)), closes [#154](https://github.com/suzuki-shunsuke/go-graylog/issues/154)
+* upgrade Golang to v1.12.9 ([68997ad](https://github.com/suzuki-shunsuke/go-graylog/commit/68997ad))
+
+
+### BREAKING CHANGES
+
+* remove the resource from the Terraform state file if it is failed to get the resource by refresh
+
+AS-IS: Raise an error if it is failed to get the resource by `terraform refresh`
+
+TO-BE: if it is failed to get the resource by `terraform refresh` and
+the response status code is 404, remove the resource from Terraform state file
+
+
+
 <a name="6.1.5"></a>
 ## [6.1.5](https://github.com/suzuki-shunsuke/go-graylog/compare/v6.1.4...v6.1.5) (2019-08-15)
 
