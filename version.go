@@ -1,4 +1,4 @@
 package graylog
 
 // Version is the go-graylog's version.
-const Version = "6.1.5"
+const Version = "7.0.0"
