@@ -142,9 +142,9 @@ func resourceUserRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	user, _, err := cl.GetUser(ctx, d.Id())
+	user, ei, err := cl.GetUser(ctx, d.Id())
 	if err != nil {
-		return err
+		return handleGetResourceError(d, ei, err)
 	}
 	if err := setStrToRD(d, "username", user.Username); err != nil {
 		return err

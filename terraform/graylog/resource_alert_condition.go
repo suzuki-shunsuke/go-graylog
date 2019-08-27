@@ -433,9 +433,9 @@ func resourceAlertConditionRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 	streamID := d.Get("stream_id").(string)
-	cond, _, err := cl.GetStreamAlertCondition(ctx, streamID, d.Id())
+	cond, ei, err := cl.GetStreamAlertCondition(ctx, streamID, d.Id())
 	if err != nil {
-		return err
+		return handleGetResourceError(d, ei, err)
 	}
 	if err := setStrToRD(d, "type", cond.Type()); err != nil {
 		return err

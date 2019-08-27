@@ -29,6 +29,16 @@ func genImport(keys ...string) schema.StateFunc {
 	}
 }
 
+func handleGetResourceError(
+	d *schema.ResourceData, ei *client.ErrorInfo, err error,
+) error {
+	if ei != nil && ei.Response != nil && ei.Response.StatusCode == 404 {
+		d.SetId("")
+		return nil
+	}
+	return err
+}
+
 func getStringArray(src []interface{}) []string {
 	dest := make([]string, len(src))
 	for i, p := range src {

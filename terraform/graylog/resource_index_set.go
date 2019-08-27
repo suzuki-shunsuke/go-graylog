@@ -193,9 +193,9 @@ func resourceIndexSetRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	is, _, err := cl.GetIndexSet(ctx, d.Id())
+	is, ei, err := cl.GetIndexSet(ctx, d.Id())
 	if err != nil {
-		return err
+		return handleGetResourceError(d, ei, err)
 	}
 	return setIndexSet(d, is, cfg)
 }

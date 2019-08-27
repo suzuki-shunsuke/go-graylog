@@ -308,9 +308,9 @@ func resourceAlarmCallbackRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 	streamID := d.Get("stream_id").(string)
-	ac, _, err := cl.GetStreamAlarmCallback(ctx, streamID, d.Id())
+	ac, ei, err := cl.GetStreamAlarmCallback(ctx, streamID, d.Id())
 	if err != nil {
-		return err
+		return handleGetResourceError(d, ei, err)
 	}
 	if err := setStrToRD(d, "type", ac.Type()); err != nil {
 		return err

@@ -145,11 +145,7 @@ func resourceInputRead(d *schema.ResourceData, m interface{}) error {
 	}
 	input, ei, err := cl.GetInput(ctx, d.Id())
 	if err != nil {
-		if ei != nil && ei.Response != nil && ei.Response.StatusCode == 404 {
-			d.SetId("")
-			return nil
-		}
-		return err
+		return handleGetResourceError(d, ei, err)
 	}
 	if input.Attrs != nil {
 		b, err := json.Marshal(input.Attrs)

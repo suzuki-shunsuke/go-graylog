@@ -88,9 +88,9 @@ func resourceStreamRuleRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	rule, _, err := cl.GetStreamRule(ctx, d.Get("stream_id").(string), d.Id())
+	rule, ei, err := cl.GetStreamRule(ctx, d.Get("stream_id").(string), d.Id())
 	if err != nil {
-		return err
+		return handleGetResourceError(d, ei, err)
 	}
 	if err := setStrToRD(d, "field", rule.Field); err != nil {
 		return err
