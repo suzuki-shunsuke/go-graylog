@@ -43,8 +43,8 @@ type (
 		Field          string     `json:"field,omitempty"`
 		SortOrder      string     `json:"sort_order,omitempty"`
 		StackedFields  string     `json:"stacked_fields,omitempty"`
-		ShowDataTable  bool       `json:"show_data_table,omitempty"`
-		ShowPieChart   bool       `json:"show_pie_chart,omitempty"`
+		ShowDataTable  bool       `json:"show_data_table"`
+		ShowPieChart   bool       `json:"show_pie_chart"`
 		Limit          int        `json:"limit,omitempty"`
 		DataTableLimit int        `json:"data_table_limit,omitempty"`
 	}
@@ -78,8 +78,8 @@ type (
 		Query         string     `json:"query"`
 		Field         string     `json:"field,omitempty"`
 		StatsFunction string     `json:"stats_function,omitempty"`
-		LowerIsBetter bool       `json:"lower_is_better,omitempty"`
-		Trend         bool       `json:"trend,omitempty"`
+		LowerIsBetter bool       `json:"lower_is_better"`
+		Trend         bool       `json:"trend"`
 	}
 
 	WidgetConfigUnknownType struct {

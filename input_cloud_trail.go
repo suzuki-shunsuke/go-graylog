@@ -24,6 +24,6 @@ type InputAWSCloudTrailAttrs struct {
 	AWSSQSRegion      string `json:"aws_sqs_region,omitempty"`
 	AWSSQSQueueName   string `json:"aws_sqs_queue_name,omitempty"`
 	AWSS3Region       string `json:"aws_s3_region,omitempty"`
-	ThrottlingAllowed bool   `json:"throttling_allowed,omitempty"`
+	ThrottlingAllowed bool   `json:"throttling_allowed"`
 	OverrideSource    string `json:"override_source,omitempty"`
 }

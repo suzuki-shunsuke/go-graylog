@@ -18,7 +18,7 @@ func (attrs InputCEFUDPAttrs) InputType() string {
 // InputCEFUDPAttrs represents CEF UDP Input's attributes.
 type InputCEFUDPAttrs struct {
 	Locale         string `json:"locale,omitempty"`
-	UseFullNames   bool   `json:"use_full_names,omitempty"`
+	UseFullNames   bool   `json:"use_full_names"`
 	Timezone       string `json:"timezone,omitempty"`
 	BindAddress    string `json:"bind_address,omitempty" v-create:"required" v-update:"required"`
 	Port           int    `json:"port,omitempty" v-create:"required" v-update:"required"`

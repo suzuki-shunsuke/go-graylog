@@ -12,7 +12,7 @@ type (
 		Description string `json:"description,omitempty"`
 		// ex. ["clusterconfigentry:read", "users:edit"]
 		Permissions set.StrSet `json:"permissions,omitempty" v-create:"required" v-update:"required"`
-		ReadOnly    bool       `json:"read_only,omitempty"`
+		ReadOnly    bool       `json:"read_only"`
 	}
 
 	// RoleUpdateParams represents Update Role API's parameters.

@@ -29,12 +29,12 @@ type InputSyslogAMQPAttrs struct {
 	RoutingKey             string `json:"routing_key,omitempty"`
 	BrokerHostname         string `json:"broker_hostname,omitempty"`
 	Queue                  string `json:"queue,omitempty"`
-	ExchangeBind           bool   `json:"exchange_bind,omitempty"`
-	ForceRDNS              bool   `json:"force_rdns,omitempty"`
-	StoreFullMessage       bool   `json:"store_full_message,omitempty"`
-	ExpandStructuredData   bool   `json:"expand_structured_data,omitempty"`
-	ThrottlingAllowed      bool   `json:"throttling_allowed,omitempty"`
-	TLS                    bool   `json:"tls,omitempty"`
-	AllowOverrideDate      bool   `json:"allow_override_date,omitempty"`
-	RequeueInvalidMessages bool   `json:"requeue_invalid_messages,omitempty"`
+	ExchangeBind           bool   `json:"exchange_bind"`
+	ForceRDNS              bool   `json:"force_rdns"`
+	StoreFullMessage       bool   `json:"store_full_message"`
+	ExpandStructuredData   bool   `json:"expand_structured_data"`
+	ThrottlingAllowed      bool   `json:"throttling_allowed"`
+	TLS                    bool   `json:"tls"`
+	AllowOverrideDate      bool   `json:"allow_override_date"`
+	RequeueInvalidMessages bool   `json:"requeue_invalid_messages"`
 }

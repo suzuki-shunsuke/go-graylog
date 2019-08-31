@@ -21,5 +21,5 @@ type InputFakeHTTPMessageAttrs struct {
 	SleepDeviation    int    `json:"sleep_deviation,omitempty"`
 	Source            string `json:"source,omitempty"`
 	OverrideSource    string `json:"override_source,omitempty"`
-	ThrottlingAllowed bool   `json:"throttling_allowed,omitempty"`
+	ThrottlingAllowed bool   `json:"throttling_allowed"`
 }

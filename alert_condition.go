@@ -11,12 +11,14 @@ type (
 	// AlertCondition represents an Alert Condition.
 	// https://docs.graylog.org/en/latest/pages/streams/alerts.html#conditions
 	AlertCondition struct {
-		ID            string                   `json:"id,omitempty"`
-		CreatorUserID string                   `json:"creator_user_id,omitempty"`
-		CreatedAt     string                   `json:"created_at,omitempty"`
-		Title         string                   `json:"title" v-create:"required" v-update:"required"`
-		InGrace       bool                     `json:"in_grace,omitempty"`
-		Parameters    AlertConditionParameters `json:"parameters" v-create:"reqired" v-update:"required"`
+		ID            string `json:"id,omitempty"`
+		CreatorUserID string `json:"creator_user_id,omitempty"`
+		CreatedAt     string `json:"created_at,omitempty"`
+		Title         string `json:"title" v-create:"required" v-update:"required"`
+		// in_grace must be "omitempty". Without "omitempty", it is failed to create an Alert Condition.
+		// Unable to map property in_grace. Known properties include: title, type, parameters
+		InGrace    bool                     `json:"in_grace,omitempty"`
+		Parameters AlertConditionParameters `json:"parameters" v-create:"reqired" v-update:"required"`
 	}
 
 	// AlertConditionParameters represents Alert Condition's parameters.

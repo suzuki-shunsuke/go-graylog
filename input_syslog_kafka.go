@@ -17,11 +17,11 @@ func (attrs InputSyslogKafkaAttrs) InputType() string {
 
 // InputSyslogKafkaAttrs represents SyslogKafka Input's attributes.
 type InputSyslogKafkaAttrs struct {
-	ForceRDNS            bool   `json:"force_rdns,omitempty"`
-	StoreFullMessage     bool   `json:"store_full_message,omitempty"`
-	ExpandStructuredData bool   `json:"expand_structured_data,omitempty"`
-	AllowOverrideDate    bool   `json:"allow_override_date,omitempty"`
-	ThrottlingAllowed    bool   `json:"throttling_allowed,omitempty"`
+	ForceRDNS            bool   `json:"force_rdns"`
+	StoreFullMessage     bool   `json:"store_full_message"`
+	ExpandStructuredData bool   `json:"expand_structured_data"`
+	AllowOverrideDate    bool   `json:"allow_override_date"`
+	ThrottlingAllowed    bool   `json:"throttling_allowed"`
 	OverrideSource       string `json:"override_source,omitempty"`
 	TopicFilter          string `json:"topic_filter,omitempty"`
 	FetchWaitMax         int    `json:"fetch_wait_max,omitempty"`

@@ -17,10 +17,10 @@ func (attrs InputCEFTCPAttrs) InputType() string {
 
 // InputCEFTCPAttrs represents CEF TCP Input's attributes.
 type InputCEFTCPAttrs struct {
-	UseNullDelimiter      bool   `json:"use_null_delimiter,omitempty"`
-	UseFullNames          bool   `json:"use_full_names,omitempty"`
-	TLSEnable             bool   `json:"tls_enable,omitempty"`
-	TCPKeepAlive          bool   `json:"tcp_keepalive,omitempty"`
+	UseNullDelimiter      bool   `json:"use_null_delimiter"`
+	UseFullNames          bool   `json:"use_full_names"`
+	TLSEnable             bool   `json:"tls_enable"`
+	TCPKeepAlive          bool   `json:"tcp_keepalive"`
 	MaxMessageSize        int    `json:"max_message_size,omitempty"`
 	Port                  int    `json:"port,omitempty" v-create:"required" v-update:"required"`
 	RecvBufferSize        int    `json:"recv_buffer_size,omitempty" v-create:"required" v-update:"required"`

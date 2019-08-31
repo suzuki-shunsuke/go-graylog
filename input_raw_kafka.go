@@ -21,7 +21,7 @@ type InputRawKafkaAttrs struct {
 	FetchWaitMax      int    `json:"fetch_wait_max,omitempty"`
 	OffsetReset       string `json:"offset_reset,omitempty"`
 	Zookeeper         string `json:"zookeeper,omitempty"`
-	ThrottlingAllowed bool   `json:"throttling_allowed,omitempty"`
+	ThrottlingAllowed bool   `json:"throttling_allowed"`
 	FetchMinBytes     int    `json:"fetch_min_bytes,omitempty"`
 	Threads           int    `json:"threads,omitempty"`
 	OverrideSource    string `json:"override_source,omitempty"`

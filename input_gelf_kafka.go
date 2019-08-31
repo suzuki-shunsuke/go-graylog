@@ -20,7 +20,7 @@ type InputGELFKafkaAttrs struct {
 	OverrideSource      string `json:"override_source,omitempty"`
 	DecompressSizeLimit int    `json:"decompress_size_limit,omitempty"`
 	TopicFilter         string `json:"topic_filter,omitempty"`
-	ThrottlingAllowed   bool   `json:"throttling_allowed,omitempty"`
+	ThrottlingAllowed   bool   `json:"throttling_allowed"`
 	FetchWaitMax        int    `json:"fetch_wait_max,omitempty"`
 	FetchMinBytes       int    `json:"fetch_min_bytes,omitempty"`
 	OffsetReset         string `json:"offset_reset,omitempty"`

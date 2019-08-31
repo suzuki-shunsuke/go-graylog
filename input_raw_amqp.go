@@ -21,10 +21,10 @@ type InputRawAMQPAttrs struct {
 	HeartBeat              int    `json:"heartbeat,omitempty"`
 	BrokerPort             int    `json:"broker_port,omitempty"`
 	Prefetch               int    `json:"prefetch,omitempty"`
-	RequeueInvalidMessages bool   `json:"requeue_invalid_messages,omitempty"`
-	TLS                    bool   `json:"tls,omitempty"`
-	ExchangeBind           bool   `json:"exchange_bind,omitempty"`
-	ThrottlingAllowed      bool   `json:"throttling_allowed,omitempty"`
+	RequeueInvalidMessages bool   `json:"requeue_invalid_messages"`
+	TLS                    bool   `json:"tls"`
+	ExchangeBind           bool   `json:"exchange_bind"`
+	ThrottlingAllowed      bool   `json:"throttling_allowed"`
 	Exchange               string `json:"exchange,omitempty"`
 	RoutingKey             string `json:"routing_key,omitempty"`
 	BrokerHostname         string `json:"broker_hostname,omitempty"`

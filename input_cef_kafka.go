@@ -17,8 +17,8 @@ func (attrs InputCEFKafkaAttrs) InputType() string {
 
 // InputCEFKafkaAttrs represents CEF Kafka Input's attributes.
 type InputCEFKafkaAttrs struct {
-	ThrottlingAllowed bool   `json:"throttling_allowed,omitempty"`
-	UseFullNames      bool   `json:"use_full_names,omitempty"`
+	ThrottlingAllowed bool   `json:"throttling_allowed"`
+	UseFullNames      bool   `json:"use_full_names"`
 	Locale            string `json:"locale,omitempty"`
 	Zookeeper         string `json:"zookeeper,omitempty"`
 	Timezone          string `json:"timezone,omitempty"`

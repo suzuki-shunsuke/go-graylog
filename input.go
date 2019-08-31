@@ -19,7 +19,7 @@ type (
 		ID string `json:"id,omitempty" v-create:"isdefault"`
 
 		// Should this input start on all nodes
-		Global bool `json:"global,omitempty"`
+		Global bool `json:"global"`
 		// On which node should this input start
 		// ex. "2ad6b340-3e5f-4a96-ae81-040cfb8b6024"
 		Node string `json:"node,omitempty"`
