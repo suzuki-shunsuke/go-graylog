@@ -45,6 +45,7 @@ func Provider() *schema.Provider {
 			"graylog_dashboard_widget":           resourceDashboardWidget(),
 			"graylog_dashboard_widget_positions": resourceDashboardWidgetPositions(),
 			"graylog_extractor":                  resourceExtractor(),
+			"graylog_grok_pattern":               resourceGrokPattern(),
 			"graylog_index_set":                  resourceIndexSet(),
 			"graylog_input":                      resourceInput(),
 			"graylog_input_static_fields":        resourceInputStaticFields(),
