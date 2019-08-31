@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="7.0.1"></a>
+## [7.0.1](https://github.com/suzuki-shunsuke/go-graylog/compare/v7.0.0...v7.0.1) (2019-08-31)
+
+
+### Bug Fixes
+
+* make ldap password opitional ([7cad195](https://github.com/suzuki-shunsuke/go-graylog/commit/7cad195))
+* remove "omitempty" from bool fields ([c812591](https://github.com/suzuki-shunsuke/go-graylog/commit/c812591)), closes [#157](https://github.com/suzuki-shunsuke/go-graylog/issues/157)
+
+
+
 <a name="7.0.0"></a>
 # [7.0.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v6.1.5...v7.0.0) (2019-08-27)
 
