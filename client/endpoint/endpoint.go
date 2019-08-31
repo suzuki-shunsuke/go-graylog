@@ -27,6 +27,7 @@ type Endpoints struct {
 	roles                    *url.URL
 	streams                  *url.URL
 	users                    *url.URL
+	grokPatterns             *url.URL
 	ldapSetting              string
 	ldapGroups               string
 	ldapGroupRoleMapping     string
@@ -109,6 +110,11 @@ func newEndpoints(endpoint, version string) (*Endpoints, error) {
 	if err != nil {
 		return nil, err
 	}
+	grokPatterns, err := urlJoin(ep, "system/grok")
+	if err != nil {
+		return nil, err
+	}
+
 	var pipelines, pipelineRules, pipelineConns, connectPipelinesToStream, connectStreamsToPipeline *url.URL
 	if version == "v3" {
 		// https://docs.graylog.org/en/latest/pages/upgrade/graylog-3.0.html#plugins-merged-into-the-graylog-server
@@ -187,6 +193,7 @@ func newEndpoints(endpoint, version string) (*Endpoints, error) {
 		roles:                    roles,
 		streams:                  streams,
 		users:                    users,
+		grokPatterns:             grokPatterns,
 		apiVersion:               version,
 	}, nil
 }
