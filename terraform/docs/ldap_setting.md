@@ -38,8 +38,10 @@ ldap_uri | "ldap://localhost:389" | string |
 search_base | "" | string |
 search_pattern | "" | string |
 display_name_attribute | "" | string |
-system_password | "" | string | sensitive
 default_group | "" | string |
+
+Note that `system_passoword` is optional as Terraform schema but is required to create a LDAP setting.
+If we make `system_password` required as Terrafrom schema, we have to store `system_password` in the Terraform state file, which some users wouldn't want it.
 
 ### Optional Argument
 
@@ -54,3 +56,4 @@ group_search_base | "" | string |
 group_id_attribute | "" | string |
 group_search_pattern | "" | string |
 group_mapping | | map[string]string |
+system_password | "" | string | sensitive, computed
