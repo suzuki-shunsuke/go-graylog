@@ -13,7 +13,7 @@ type (
 		Value       string `json:"value,omitempty" v-create:"required"`
 		Description string `json:"description,omitempty"`
 		Type        int    `json:"type,omitempty"`
-		Inverted    bool   `json:"inverted,omitempty"`
+		Inverted    bool   `json:"inverted"`
 	}
 
 	// StreamRuleUpdateParams represents Update Stream API's paramteres.

@@ -21,14 +21,15 @@ type (
 		CreatorUserID string `json:"creator_user_id,omitempty" v-create:"isdefault"`
 		Description   string `json:"description,omitempty"`
 		// ex. "AND"
-		MatchingType                   string           `json:"matching_type,omitempty"`
-		Outputs                        []Output         `json:"outputs,omitempty" v-create:"isdefault"`
-		Rules                          []StreamRule     `json:"rules,omitempty"`
-		AlertConditions                []AlertCondition `json:"alert_conditions,omitempty" v-create:"isdefault"`
-		AlertReceivers                 *AlertReceivers  `json:"alert_receivers,omitempty" v-create:"isdefault"`
-		Disabled                       bool             `json:"disabled,omitempty" v-create:"isdefault"`
-		RemoveMatchesFromDefaultStream bool             `json:"remove_matches_from_default_stream,omitempty"`
-		IsDefault                      bool             `json:"is_default,omitempty" v-create:"isdefault"`
+		MatchingType    string           `json:"matching_type,omitempty"`
+		Outputs         []Output         `json:"outputs,omitempty" v-create:"isdefault"`
+		Rules           []StreamRule     `json:"rules,omitempty"`
+		AlertConditions []AlertCondition `json:"alert_conditions,omitempty" v-create:"isdefault"`
+		AlertReceivers  *AlertReceivers  `json:"alert_receivers,omitempty" v-create:"isdefault"`
+		// disabled and is_default must be "omitempty". Without "omitempty", it is failed to create an Stream.
+		Disabled                       bool `json:"disabled,omitempty" v-create:"isdefault"`
+		RemoveMatchesFromDefaultStream bool `json:"remove_matches_from_default_stream"`
+		IsDefault                      bool `json:"is_default,omitempty" v-create:"isdefault"`
 		// ContentPack `json:"content_pack,omitempty"`
 	}
 

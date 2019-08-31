@@ -28,7 +28,7 @@ type InputGELFTCPAttrs struct {
 	TLSClientAuthCertFile string `json:"tls_client_auth_cert_file,omitempty"`
 	TLSClientAuth         string `json:"tls_client_auth,omitempty"`
 	TLSCertFile           string `json:"tls_cert_file,omitempty"`
-	UseNullDelimiter      bool   `json:"use_null_delimiter,omitempty"`
-	TLSEnable             bool   `json:"tls_enable,omitempty"`
-	TCPKeepAlive          bool   `json:"tcp_keepalive,omitempty"`
+	UseNullDelimiter      bool   `json:"use_null_delimiter"`
+	TLSEnable             bool   `json:"tls_enable"`
+	TCPKeepAlive          bool   `json:"tcp_keepalive"`
 }

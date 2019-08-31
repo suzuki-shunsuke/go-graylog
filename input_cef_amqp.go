@@ -30,9 +30,9 @@ type InputCEFAMQPAttrs struct {
 	ParallelQueues         int    `json:"parallel_queues,omitempty"`
 	Prefetch               int    `json:"prefetch,omitempty"`
 	BrokerPort             int    `json:"broker_port,omitempty"`
-	ExchangeBind           bool   `json:"exchange_bind,omitempty"`
-	RequeueInvalidMessages bool   `json:"requeue_invalid_messages,omitempty"`
-	UseFullNames           bool   `json:"use_full_names,omitempty"`
-	TLS                    bool   `json:"tls,omitempty"`
-	ThrottlingAllowed      bool   `json:"throttling_allowed,omitempty"`
+	ExchangeBind           bool   `json:"exchange_bind"`
+	RequeueInvalidMessages bool   `json:"requeue_invalid_messages"`
+	UseFullNames           bool   `json:"use_full_names"`
+	TLS                    bool   `json:"tls"`
+	ThrottlingAllowed      bool   `json:"throttling_allowed"`
 }

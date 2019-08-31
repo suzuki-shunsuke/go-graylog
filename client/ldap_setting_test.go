@@ -99,6 +99,9 @@ func TestUpdateLDAPSetting(t *testing.T) {
 			statusCode: 204,
 			body: `{
   "enabled": true,
+  "use_start_tls": false,
+  "trust_all_certificates": false,
+  "active_directory": false,
   "system_username": "admin",
   "system_password": "***",
   "ldap_uri": "ldap://ldap.example.com:389/",

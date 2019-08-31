@@ -29,7 +29,7 @@ type (
 		Node          string                 `json:"node,omitempty"`
 		CreatedAt     string                 `json:"created_at,omitempty"`
 		CreatorUserID string                 `json:"creator_user_id,omitempty"`
-		Global        bool                   `json:"global,omitempty"`
+		Global        bool                   `json:"global"`
 		Attrs         map[string]interface{} `json:"attributes,omitempty"`
 		StaticFields  map[string]string      `json:"static_fields,omitempty"`
 	}

@@ -61,9 +61,9 @@ type (
 
 		Description               string         `json:"description,omitempty"`
 		Replicas                  int            `json:"replicas,omitempty"`
-		IndexOptimizationDisabled bool           `json:"index_optimization_disabled,omitempty"`
-		Writable                  bool           `json:"writable,omitempty"`
-		Default                   bool           `json:"default,omitempty"`
+		IndexOptimizationDisabled bool           `json:"index_optimization_disabled"`
+		Writable                  bool           `json:"writable"`
+		Default                   bool           `json:"default"`
 		Stats                     *IndexSetStats `json:"-"`
 	}
 

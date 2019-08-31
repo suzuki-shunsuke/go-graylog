@@ -17,10 +17,10 @@ func (attrs InputGELFAMQPAttrs) InputType() string {
 
 // InputGELFAMQPAttrs represents GELF AMQP Input's attributes.
 type InputGELFAMQPAttrs struct {
-	ExchangeBind           bool   `json:"exchange_bind,omitempty"`
-	ThrottlingAllowed      bool   `json:"throttling_allowed,omitempty"`
-	TLS                    bool   `json:"tls,omitempty"`
-	RequeueInvalidMessages bool   `json:"requeue_invalid_messages,omitempty"`
+	ExchangeBind           bool   `json:"exchange_bind"`
+	ThrottlingAllowed      bool   `json:"throttling_allowed"`
+	TLS                    bool   `json:"tls"`
+	RequeueInvalidMessages bool   `json:"requeue_invalid_messages"`
 	BrokerVHost            string `json:"broker_vhost,omitempty"`
 	BrokerUsername         string `json:"broker_username,omitempty"`
 	Queue                  string `json:"queue,omitempty"`

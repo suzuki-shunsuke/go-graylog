@@ -29,7 +29,7 @@ type InputGELFHTTPAttrs struct {
 	TLSKeyPassword        string `json:"tls_key_password,omitempty"`
 	TLSClientAuth         string `json:"tls_client_auth,omitempty"`
 	OverrideSource        string `json:"override_source,omitempty"`
-	TCPKeepAlive          bool   `json:"tcp_keepalive,omitempty"`
-	EnableCORS            bool   `json:"enable_cors,omitempty"`
-	TLSEnable             bool   `json:"tls_enable,omitempty"`
+	TCPKeepAlive          bool   `json:"tcp_keepalive"`
+	EnableCORS            bool   `json:"enable_cors"`
+	TLSEnable             bool   `json:"tls_enable"`
 }

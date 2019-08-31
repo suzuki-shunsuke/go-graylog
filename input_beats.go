@@ -24,8 +24,8 @@ type InputBeatsAttrs struct {
 	TLSClientAuthCertFile string `json:"tls_client_auth_cert_file,omitempty"`
 	TLSClientAuth         string `json:"tls_client_auth,omitempty"`
 	TLSCertFile           string `json:"tls_cert_file,omitempty"`
-	TLSEnable             bool   `json:"tls_enable,omitempty"`
-	TCPKeepAlive          bool   `json:"tcp_keepalive,omitempty"`
+	TLSEnable             bool   `json:"tls_enable"`
+	TCPKeepAlive          bool   `json:"tcp_keepalive"`
 	Port                  int    `json:"port,omitempty" v-create:"required" v-update:"required"`
 	RecvBufferSize        int    `json:"recv_buffer_size,omitempty" v-create:"required" v-update:"required"`
 }

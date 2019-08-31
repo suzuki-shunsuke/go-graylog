@@ -22,6 +22,6 @@ type InputAWSCloudWatchLogsAttrs struct {
 	AWSAccessKey      string `json:"aws_access_key,omitempty"`
 	AWSSecretKey      string `json:"aws_secret_key,omitempty"`
 	KinesisStreamName string `json:"kinesis_stream_name,omitempty"`
-	ThrottlingAllowed bool   `json:"throttling_allowed,omitempty"`
+	ThrottlingAllowed bool   `json:"throttling_allowed"`
 	OverrideSource    string `json:"override_source,omitempty"`
 }

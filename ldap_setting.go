@@ -6,10 +6,10 @@ import (
 
 // LDAPSetting represents a ldap settings.
 type LDAPSetting struct {
-	Enabled                 bool              `json:"enabled,omitempty"`
-	UseStartTLS             bool              `json:"use_start_tls,omitempty"`
-	TrustAllCertificates    bool              `json:"trust_all_certificates,omitempty"`
-	ActiveDirectory         bool              `json:"active_directory,omitempty"`
+	Enabled                 bool              `json:"enabled"`
+	UseStartTLS             bool              `json:"use_start_tls"`
+	TrustAllCertificates    bool              `json:"trust_all_certificates"`
+	ActiveDirectory         bool              `json:"active_directory"`
 	SystemUsername          string            `json:"system_username" v-create:"required" v-update:"required"`
 	SystemPassword          string            `json:"system_password" v-create:"required" v-update:"required"`
 	LDAPURI                 string            `json:"ldap_uri" v-create:"required" v-update:"required"`
