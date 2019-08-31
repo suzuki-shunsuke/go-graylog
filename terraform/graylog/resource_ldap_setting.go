@@ -47,17 +47,19 @@ func resourceLDAPSetting() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"system_password": {
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
-			},
 			"default_group": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
 
 			// optional
+			// system_password is required to create the resource
+			"system_password": {
+				Type:      schema.TypeString,
+				Optional:  true,
+				Sensitive: true,
+				Computed:  true,
+			},
 			"enabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
