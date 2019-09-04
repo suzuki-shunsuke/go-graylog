@@ -58,10 +58,11 @@ func (client *Client) UpdateIndexSet(
 	if prms.ID == "" {
 		return nil, nil, errors.New("id is empty")
 	}
+	u := client.Endpoints().IndexSet(prms.ID)
 	a := *prms
 	a.ID = ""
 	is := &graylog.IndexSet{}
-	ei, err := client.callPut(ctx, client.Endpoints().IndexSet(prms.ID), &a, is)
+	ei, err := client.callPut(ctx, u, &a, is)
 	return is, ei, err
 }
 

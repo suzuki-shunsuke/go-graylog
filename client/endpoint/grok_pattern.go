@@ -12,5 +12,5 @@ func (ep *Endpoints) GrokPattern(id string) string {
 
 // GrokPatternMembers returns /system/grok/test endpoint url.
 func (ep *Endpoints) GrokPatternTest() string {
-	return ep.grokPatterns + "/test"
+	return ep.grokPatternsTest
 }

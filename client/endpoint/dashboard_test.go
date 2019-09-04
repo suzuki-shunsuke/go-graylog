@@ -12,11 +12,11 @@ import (
 func TestDashboards(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
-	require.Equal(t, fmt.Sprintf("%s/%s", apiURL, "dashboards"), ep.Dashboards())
+	require.Equal(t, fmt.Sprintf("%s/dashboards", apiURL), ep.Dashboards())
 }
 
 func TestDashboard(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
-	require.Equal(t, fmt.Sprintf("%s/%s/%s", apiURL, "dashboards", ID), ep.Dashboard(ID))
+	require.Equal(t, fmt.Sprintf("%s/dashboards/%s", apiURL, ID), ep.Dashboard(ID))
 }

@@ -23,6 +23,7 @@ type Endpoints struct {
 	streams                  string
 	users                    string
 	grokPatterns             string
+	grokPatternsTest         string
 	ldapSetting              string
 	ldapGroups               string
 	ldapGroupRoleMapping     string
@@ -84,6 +85,7 @@ func newEndpoints(endpoint, version string) (*Endpoints, error) {
 		streams:                  endpoint + "/streams",
 		users:                    endpoint + "/users",
 		grokPatterns:             endpoint + "/system/grok",
+		grokPatternsTest:         endpoint + "/system/grok/test",
 		apiVersion:               version,
 	}, nil
 }

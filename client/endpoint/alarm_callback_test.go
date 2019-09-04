@@ -12,5 +12,5 @@ import (
 func TestAlarmCallbacks(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
-	require.Equal(t, fmt.Sprintf("%s/%s", apiURL, "alerts/callbacks"), ep.AlarmCallbacks())
+	require.Equal(t, fmt.Sprintf("%s/alerts/callbacks", apiURL), ep.AlarmCallbacks())
 }

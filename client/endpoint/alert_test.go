@@ -12,11 +12,11 @@ import (
 func TestAlerts(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
-	require.Equal(t, fmt.Sprintf("%s/%s", apiURL, "streams/alerts"), ep.Alerts())
+	require.Equal(t, fmt.Sprintf("%s/streams/alerts", apiURL), ep.Alerts())
 }
 
 func TestAlert(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
-	require.Equal(t, fmt.Sprintf("%s/%s/%s", apiURL, "streams/alerts", ID), ep.Alert(ID))
+	require.Equal(t, fmt.Sprintf("%s/streams/alerts/%s", apiURL, ID), ep.Alert(ID))
 }

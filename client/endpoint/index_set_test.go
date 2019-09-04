@@ -12,29 +12,29 @@ import (
 func TestIndexSets(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
-	require.Equal(t, fmt.Sprintf("%s/%s", apiURL, "system/indices/index_sets"), ep.IndexSets())
+	require.Equal(t, fmt.Sprintf("%s/system/indices/index_sets", apiURL), ep.IndexSets())
 }
 
 func TestIndexSet(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
-	require.Equal(t, fmt.Sprintf("%s/%s/%s", apiURL, "system/indices/index_sets", ID), ep.IndexSet(ID))
+	require.Equal(t, fmt.Sprintf("%s/system/indices/index_sets/%s", apiURL, ID), ep.IndexSet(ID))
 }
 
 func TestSetDefaultIndexSet(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
-	require.Equal(t, fmt.Sprintf("%s/%s/%s/default", apiURL, "system/indices/index_sets", ID), ep.SetDefaultIndexSet(ID))
+	require.Equal(t, fmt.Sprintf("%s/system/indices/index_sets/%s/default", apiURL, ID), ep.SetDefaultIndexSet(ID))
 }
 
 func TestIndexSetsStats(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
-	require.Equal(t, fmt.Sprintf("%s/%s", apiURL, "system/indices/index_sets/stats"), ep.IndexSetsStats())
+	require.Equal(t, fmt.Sprintf("%s/system/indices/index_sets/stats", apiURL), ep.IndexSetsStats())
 }
 
 func TestIndexSetStats(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
-	require.Equal(t, fmt.Sprintf("%s/%s/%s/stats", apiURL, "system/indices/index_sets", ID), ep.IndexSetStats(ID))
+	require.Equal(t, fmt.Sprintf("%s/system/indices/index_sets/%s/stats", apiURL, ID), ep.IndexSetStats(ID))
 }

@@ -12,11 +12,11 @@ import (
 func TestInputs(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
-	require.Equal(t, fmt.Sprintf("%s/%s", apiURL, "system/inputs"), ep.Inputs())
+	require.Equal(t, fmt.Sprintf("%s/system/inputs", apiURL), ep.Inputs())
 }
 
 func TestInput(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
-	require.Equal(t, fmt.Sprintf("%s/%s/%s", apiURL, "system/inputs", ID), ep.Input(ID))
+	require.Equal(t, fmt.Sprintf("%s/system/inputs/%s", apiURL, ID), ep.Input(ID))
 }

@@ -12,5 +12,5 @@ import (
 func TestAlertConditions(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
-	require.Equal(t, fmt.Sprintf("%s/%s", apiURL, "alerts/conditions"), ep.AlertConditions())
+	require.Equal(t, fmt.Sprintf("%s/alerts/conditions", apiURL), ep.AlertConditions())
 }
