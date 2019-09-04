@@ -2,8 +2,7 @@ package client
 
 import (
 	"context"
-
-	"github.com/pkg/errors"
+	"errors"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 )
@@ -16,12 +15,8 @@ func (client *Client) GetIndexSetStats(
 		return nil, nil, errors.New("id is empty")
 	}
 	indexSetStats := &graylog.IndexSetStats{}
-	u, err := client.Endpoints().IndexSetStats(id)
-	if err != nil {
-		return nil, nil, err
-	}
 	ei, err := client.callGet(
-		ctx, u.String(), nil, indexSetStats)
+		ctx, client.Endpoints().IndexSetStats(id), nil, indexSetStats)
 	return indexSetStats, ei, err
 }
 

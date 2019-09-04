@@ -2,7 +2,7 @@ package client
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 )
@@ -13,17 +13,14 @@ func (client *Client) CreateCollectorConfigurationInput(
 ) (*ErrorInfo, error) {
 	// POST /plugins/org.graylog.plugins.collector/configurations/{id}/inputs Create a configuration input
 	if id == "" {
-		return nil, fmt.Errorf("id is required")
+		return nil, errors.New("id is required")
 	}
 	if input == nil {
-		return nil, fmt.Errorf("collector configuration is nil")
-	}
-	u, err := client.Endpoints().CollectorConfigurationInputs(id)
-	if err != nil {
-		return nil, err
+		return nil, errors.New("collector configuration is nil")
 	}
 	// 202 no content
-	return client.callPost(ctx, u.String(), input, nil)
+	return client.callPost(
+		ctx, client.Endpoints().CollectorConfigurationInputs(id), input, nil)
 }
 
 // DeleteCollectorConfigurationInput deletes a collector configuration input.
@@ -32,16 +29,13 @@ func (client *Client) DeleteCollectorConfigurationInput(
 ) (*ErrorInfo, error) {
 	// DELETE /plugins/org.graylog.plugins.collector/configurations/{id}/inputs/{inputId} Delete input form configuration
 	if id == "" {
-		return nil, fmt.Errorf("id is required")
+		return nil, errors.New("id is required")
 	}
 	if inputID == "" {
-		return nil, fmt.Errorf("input id is required")
+		return nil, errors.New("input id is required")
 	}
-	u, err := client.Endpoints().CollectorConfigurationInput(id, inputID)
-	if err != nil {
-		return nil, err
-	}
-	return client.callDelete(ctx, u.String(), nil, nil)
+	return client.callDelete(
+		ctx, client.Endpoints().CollectorConfigurationInput(id, inputID), nil, nil)
 }
 
 // UpdateCollectorConfigurationInput updates a collector configuration input.
@@ -51,17 +45,14 @@ func (client *Client) UpdateCollectorConfigurationInput(
 ) (*ErrorInfo, error) {
 	// PUT /plugins/org.graylog.plugins.collector/configurations/{id}/inputs/{input_id} Update a configuration input
 	if id == "" {
-		return nil, fmt.Errorf("id is required")
+		return nil, errors.New("id is required")
 	}
 	if inputID == "" {
-		return nil, fmt.Errorf("input id is required")
+		return nil, errors.New("input id is required")
 	}
 	if input == nil {
-		return nil, fmt.Errorf("input is nil")
+		return nil, errors.New("input is nil")
 	}
-	u, err := client.Endpoints().CollectorConfigurationInput(id, inputID)
-	if err != nil {
-		return nil, err
-	}
-	return client.callPut(ctx, u.String(), input, nil)
+	return client.callPut(
+		ctx, client.Endpoints().CollectorConfigurationInput(id, inputID), input, nil)
 }

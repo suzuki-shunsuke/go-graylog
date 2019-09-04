@@ -2,7 +2,7 @@ package client
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 )
@@ -12,7 +12,7 @@ func (client *Client) CreateDashboard(
 	ctx context.Context, dashboard *graylog.Dashboard,
 ) (*ErrorInfo, error) {
 	if dashboard == nil {
-		return nil, fmt.Errorf("dashboard is nil")
+		return nil, errors.New("dashboard is nil")
 	}
 
 	ret := map[string]string{}
@@ -28,7 +28,7 @@ func (client *Client) CreateDashboard(
 		dashboard.ID = id
 		return ei, nil
 	}
-	return ei, fmt.Errorf(`response doesn't have the field "dashboard_id"`)
+	return ei, errors.New(`response doesn't have the field "dashboard_id"`)
 }
 
 // DeleteDashboard deletes a given dashboard.
@@ -36,13 +36,9 @@ func (client *Client) DeleteDashboard(
 	ctx context.Context, id string,
 ) (*ErrorInfo, error) {
 	if id == "" {
-		return nil, fmt.Errorf("id is empty")
+		return nil, errors.New("id is empty")
 	}
-	u, err := client.Endpoints().Dashboard(id)
-	if err != nil {
-		return nil, err
-	}
-	return client.callDelete(ctx, u.String(), nil, nil)
+	return client.callDelete(ctx, client.Endpoints().Dashboard(id), nil, nil)
 }
 
 // GetDashboard returns a given dashboard.
@@ -50,14 +46,10 @@ func (client *Client) GetDashboard(
 	ctx context.Context, id string,
 ) (*graylog.Dashboard, *ErrorInfo, error) {
 	if id == "" {
-		return nil, nil, fmt.Errorf("id is empty")
-	}
-	u, err := client.Endpoints().Dashboard(id)
-	if err != nil {
-		return nil, nil, err
+		return nil, nil, errors.New("id is empty")
 	}
 	dashboard := &graylog.Dashboard{}
-	ei, err := client.callGet(ctx, u.String(), nil, dashboard)
+	ei, err := client.callGet(ctx, client.Endpoints().Dashboard(id), nil, dashboard)
 	return dashboard, ei, err
 }
 
@@ -74,16 +66,12 @@ func (client *Client) UpdateDashboard(
 	ctx context.Context, dashboard *graylog.Dashboard,
 ) (*ErrorInfo, error) {
 	if dashboard == nil {
-		return nil, fmt.Errorf("dashboard is nil")
+		return nil, errors.New("dashboard is nil")
 	}
 	if dashboard.ID == "" {
-		return nil, fmt.Errorf("id is empty")
+		return nil, errors.New("id is empty")
 	}
-	u, err := client.Endpoints().Dashboard(dashboard.ID)
-	if err != nil {
-		return nil, err
-	}
-	return client.callPut(ctx, u.String(), map[string]interface{}{
+	return client.callPut(ctx, client.Endpoints().Dashboard(dashboard.ID), map[string]interface{}{
 		"title":       dashboard.Title,
 		"description": dashboard.Description,
 	}, nil)
@@ -95,13 +83,10 @@ func (client *Client) UpdateDashboardWidgetPositions(
 	positions []graylog.DashboardWidgetPosition,
 ) (*ErrorInfo, error) {
 	if dashboardID == "" {
-		return nil, fmt.Errorf("id is empty")
+		return nil, errors.New("id is empty")
 	}
-	u, err := client.Endpoints().DashboardWidgetsPosition(dashboardID)
-	if err != nil {
-		return nil, err
-	}
-	return client.callPut(ctx, u.String(), map[string]interface{}{
-		"positions": positions,
-	}, nil)
+	return client.callPut(
+		ctx, client.Endpoints().DashboardWidgetsPosition(dashboardID), map[string]interface{}{
+			"positions": positions,
+		}, nil)
 }

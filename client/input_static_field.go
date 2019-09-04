@@ -18,12 +18,8 @@ func (client *Client) CreateInputStaticField(
 	if value == "" {
 		return nil, errors.New("value is required")
 	}
-	u, err := client.Endpoints().InputStaticFields(inputID)
-	if err != nil {
-		return nil, err
-	}
 	return client.callPost(
-		ctx, u.String(), map[string]string{
+		ctx, client.Endpoints().InputStaticFields(inputID), map[string]string{
 			"key":   key,
 			"value": value,
 		}, nil)
@@ -39,9 +35,5 @@ func (client *Client) DeleteInputStaticField(
 	if key == "" {
 		return nil, errors.New("key is empty")
 	}
-	u, err := client.Endpoints().InputStaticField(inputID, key)
-	if err != nil {
-		return nil, err
-	}
-	return client.callDelete(ctx, u.String(), nil, nil)
+	return client.callDelete(ctx, client.Endpoints().InputStaticField(inputID, key), nil, nil)
 }

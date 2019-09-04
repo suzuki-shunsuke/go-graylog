@@ -2,9 +2,7 @@ package client
 
 import (
 	"context"
-	"fmt"
-
-	"github.com/pkg/errors"
+	"errors"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 )
@@ -14,7 +12,7 @@ func (client *Client) CreateRole(
 	ctx context.Context, role *graylog.Role,
 ) (*ErrorInfo, error) {
 	if role == nil {
-		return nil, fmt.Errorf("role is nil")
+		return nil, errors.New("role is nil")
 	}
 	return client.callPost(ctx, client.Endpoints().Roles(), role, role)
 }
@@ -35,12 +33,8 @@ func (client *Client) GetRole(
 	if name == "" {
 		return nil, nil, errors.New("name is empty")
 	}
-	u, err := client.Endpoints().Role(name)
-	if err != nil {
-		return nil, nil, err
-	}
 	role := &graylog.Role{}
-	ei, err := client.callGet(ctx, u.String(), nil, role)
+	ei, err := client.callGet(ctx, client.Endpoints().Role(name), nil, role)
 	return role, ei, err
 }
 
@@ -52,14 +46,10 @@ func (client *Client) UpdateRole(
 		return nil, nil, errors.New("name is empty")
 	}
 	if prms == nil {
-		return nil, nil, fmt.Errorf("role is nil")
-	}
-	u, err := client.Endpoints().Role(name)
-	if err != nil {
-		return nil, nil, err
+		return nil, nil, errors.New("role is nil")
 	}
 	role := &graylog.Role{}
-	ei, err := client.callPut(ctx, u.String(), prms, role)
+	ei, err := client.callPut(ctx, client.Endpoints().Role(name), prms, role)
 	return role, ei, err
 }
 
@@ -70,9 +60,5 @@ func (client *Client) DeleteRole(
 	if name == "" {
 		return nil, errors.New("name is empty")
 	}
-	u, err := client.Endpoints().Role(name)
-	if err != nil {
-		return nil, err
-	}
-	return client.callDelete(ctx, u.String(), nil, nil)
+	return client.callDelete(ctx, client.Endpoints().Role(name), nil, nil)
 }

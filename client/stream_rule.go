@@ -2,8 +2,7 @@ package client
 
 import (
 	"context"
-
-	"github.com/pkg/errors"
+	"errors"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 )
@@ -20,12 +19,8 @@ func (client *Client) GetStreamRules(
 	ctx context.Context, streamID string,
 ) (streamRules []graylog.StreamRule, total int, ei *ErrorInfo, err error) {
 	// GET /streams/{streamid}/rules Get a list of all stream rules
-	u, err := client.Endpoints().StreamRules(streamID)
-	if err != nil {
-		return nil, 0, nil, err
-	}
 	body := &graylog.StreamRulesBody{}
-	ei, err = client.callGet(ctx, u.String(), nil, body)
+	ei, err = client.callGet(ctx, client.Endpoints().StreamRules(streamID), nil, body)
 	return body.StreamRules, body.Total, ei, err
 }
 
@@ -37,15 +32,11 @@ func (client *Client) CreateStreamRule(
 	if rule == nil {
 		return nil, errors.New("rule is required")
 	}
-	u, err := client.Endpoints().StreamRules(rule.StreamID)
-	if err != nil {
-		return nil, err
-	}
 
 	cr := *rule
 	cr.StreamID = ""
 	body := &streamRuleIDBody{}
-	ei, err := client.callPost(ctx, u.String(), &cr, body)
+	ei, err := client.callPost(ctx, client.Endpoints().StreamRules(rule.StreamID), &cr, body)
 	rule.ID = body.StreamRuleID
 	return ei, err
 }
@@ -64,14 +55,11 @@ func (client *Client) UpdateStreamRule(
 	if rule.ID == "" {
 		return nil, errors.New("streamRuleID is empty")
 	}
-	u, err := client.Endpoints().StreamRule(rule.StreamID, rule.ID)
-	if err != nil {
-		return nil, err
-	}
+	u := client.Endpoints().StreamRule(rule.StreamID, rule.ID)
 	cr := *rule
 	cr.StreamID = ""
 	cr.ID = ""
-	return client.callPut(ctx, u.String(), &cr, nil)
+	return client.callPut(ctx, u, &cr, nil)
 }
 
 // DeleteStreamRule deletes a stream rule.
@@ -85,11 +73,7 @@ func (client *Client) DeleteStreamRule(
 	if ruleID == "" {
 		return nil, errors.New("stream rule id is required")
 	}
-	u, err := client.Endpoints().StreamRule(streamID, ruleID)
-	if err != nil {
-		return nil, err
-	}
-	return client.callDelete(ctx, u.String(), nil, nil)
+	return client.callDelete(ctx, client.Endpoints().StreamRule(streamID, ruleID), nil, nil)
 }
 
 // GetStreamRule returns a stream rule.
@@ -103,11 +87,7 @@ func (client *Client) GetStreamRule(
 	if ruleID == "" {
 		return nil, nil, errors.New("stream rule id is required")
 	}
-	u, err := client.Endpoints().StreamRule(streamID, ruleID)
-	if err != nil {
-		return nil, nil, err
-	}
 	rule := &graylog.StreamRule{}
-	ei, err := client.callGet(ctx, u.String(), nil, rule)
+	ei, err := client.callGet(ctx, client.Endpoints().StreamRule(streamID, ruleID), nil, rule)
 	return rule, ei, err
 }

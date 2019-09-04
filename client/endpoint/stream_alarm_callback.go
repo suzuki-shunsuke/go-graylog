@@ -1,18 +1,13 @@
 package endpoint
 
-import (
-	"net/url"
-	"path"
-)
-
 // StreamAlarmCallback returns Stream Alarm Callback API's endpoint url.
-func (ep *Endpoints) StreamAlarmCallback(streamID, id string) (*url.URL, error) {
+func (ep *Endpoints) StreamAlarmCallback(streamID, id string) string {
 	// /streams/{streamid}/alarmcallbacks/{alarmCallbackId}
-	return urlJoin(ep.streams, path.Join(streamID, "alarmcallbacks", id))
+	return ep.streams + "/" + streamID + "/alarmcallbacks/" + id
 }
 
 // StreamAlarmCallbacks returns Stream Alarm Callback API's endpoint url.
-func (ep *Endpoints) StreamAlarmCallbacks(streamID string) (*url.URL, error) {
+func (ep *Endpoints) StreamAlarmCallbacks(streamID string) string {
 	// /streams/{streamid}/alarmcallbacks
-	return urlJoin(ep.streams, path.Join(streamID, "alarmcallbacks"))
+	return ep.streams + "/" + streamID + "/alarmcallbacks"
 }

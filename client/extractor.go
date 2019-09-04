@@ -2,7 +2,7 @@ package client
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 )
@@ -12,14 +12,10 @@ func (client *Client) GetExtractors(ctx context.Context, inputID string) (
 	[]graylog.Extractor, int, *ErrorInfo, error,
 ) {
 	if inputID == "" {
-		return nil, 0, nil, fmt.Errorf("input id is required")
+		return nil, 0, nil, errors.New("input id is required")
 	}
 	body := &graylog.ExtractorsBody{}
-	u, err := client.Endpoints().Extractors(inputID)
-	if err != nil {
-		return nil, 0, nil, err
-	}
-	ei, err := client.callGet(ctx, u.String(), nil, body)
+	ei, err := client.callGet(ctx, client.Endpoints().Extractors(inputID), nil, body)
 	return body.Extractors, body.Total, ei, err
 }
 
@@ -30,17 +26,13 @@ func (client *Client) GetExtractor(
 	*graylog.Extractor, *ErrorInfo, error,
 ) {
 	if inputID == "" {
-		return nil, nil, fmt.Errorf("input id is required")
+		return nil, nil, errors.New("input id is required")
 	}
 	if extractorID == "" {
-		return nil, nil, fmt.Errorf("extractor id is required")
+		return nil, nil, errors.New("extractor id is required")
 	}
 	ext := &graylog.Extractor{}
-	u, err := client.Endpoints().Extractor(inputID, extractorID)
-	if err != nil {
-		return nil, nil, err
-	}
-	ei, err := client.callGet(ctx, u.String(), nil, ext)
+	ei, err := client.callGet(ctx, client.Endpoints().Extractor(inputID, extractorID), nil, ext)
 	return ext, ei, err
 }
 
@@ -70,21 +62,17 @@ func (client *Client) CreateExtractor(
 	*ErrorInfo, error,
 ) {
 	if inputID == "" {
-		return nil, fmt.Errorf("input id is required")
-	}
-	u, err := client.Endpoints().Extractors(inputID)
-	if err != nil {
-		return nil, err
+		return nil, errors.New("input id is required")
 	}
 	resp := map[string]string{}
 	ei, err := client.callPost(
-		ctx, u.String(), convertExtractorForPostAndPut(extractor), &resp)
+		ctx, client.Endpoints().Extractors(inputID), convertExtractorForPostAndPut(extractor), &resp)
 	if err != nil {
 		return ei, err
 	}
 	id, ok := resp["extractor_id"]
 	if !ok {
-		return ei, fmt.Errorf(`response doesn't have the field "extractor_id""`)
+		return ei, errors.New(`response doesn't have the field "extractor_id""`)
 	}
 	extractor.ID = id
 	return ei, nil
@@ -97,14 +85,11 @@ func (client *Client) UpdateExtractor(
 	*ErrorInfo, error,
 ) {
 	if inputID == "" {
-		return nil, fmt.Errorf("input id is required")
-	}
-	u, err := client.Endpoints().Extractor(inputID, extractor.ID)
-	if err != nil {
-		return nil, err
+		return nil, errors.New("input id is required")
 	}
 	return client.callPut(
-		ctx, u.String(), convertExtractorForPostAndPut(extractor), extractor)
+		ctx, client.Endpoints().Extractor(inputID, extractor.ID),
+		convertExtractorForPostAndPut(extractor), extractor)
 }
 
 // DeleteExtractor updates an extractor.
@@ -114,14 +99,10 @@ func (client *Client) DeleteExtractor(
 	*ErrorInfo, error,
 ) {
 	if inputID == "" {
-		return nil, fmt.Errorf("input id is required")
+		return nil, errors.New("input id is required")
 	}
 	if extractorID == "" {
-		return nil, fmt.Errorf("extractor id is required")
+		return nil, errors.New("extractor id is required")
 	}
-	u, err := client.Endpoints().Extractor(inputID, extractorID)
-	if err != nil {
-		return nil, err
-	}
-	return client.callDelete(ctx, u.String(), nil, nil)
+	return client.callDelete(ctx, client.Endpoints().Extractor(inputID, extractorID), nil, nil)
 }
