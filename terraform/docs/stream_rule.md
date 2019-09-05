@@ -5,10 +5,10 @@ https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/reso
 ```hcl
 resource "graylog_stream_rule" "test-terraform" {
   field = "tag"
-  value = "${graylog_index_set.test-terraform.id}"
+  value = "example.prod"
   stream_id = "${graylog_stream.test-terraform.id}"
   description = "test stream rule"
-  type = 0
+  type = 1
 }
 ```
 
