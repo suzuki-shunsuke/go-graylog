@@ -2,8 +2,7 @@ package client
 
 import (
 	"context"
-
-	"github.com/pkg/errors"
+	"errors"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 )
@@ -15,12 +14,8 @@ func (client *Client) GetRoleMembers(
 	if name == "" {
 		return nil, nil, errors.New("name is empty")
 	}
-	u, err := client.Endpoints().RoleMembers(name)
-	if err != nil {
-		return nil, nil, err
-	}
 	users := &graylog.UsersBody{}
-	ei, err := client.callGet(ctx, u.String(), nil, users)
+	ei, err := client.callGet(ctx, client.Endpoints().RoleMembers(name), nil, users)
 	return users.Users, ei, err
 }
 
@@ -34,11 +29,7 @@ func (client *Client) AddUserToRole(
 	if roleName == "" {
 		return nil, errors.New("roleName is empty")
 	}
-	u, err := client.Endpoints().RoleMember(userName, roleName)
-	if err != nil {
-		return nil, err
-	}
-	return client.callPut(ctx, u.String(), nil, nil)
+	return client.callPut(ctx, client.Endpoints().RoleMember(userName, roleName), nil, nil)
 }
 
 // RemoveUserFromRole removes a user from a role.
@@ -51,9 +42,5 @@ func (client *Client) RemoveUserFromRole(
 	if roleName == "" {
 		return nil, errors.New("roleName is empty")
 	}
-	u, err := client.Endpoints().RoleMember(userName, roleName)
-	if err != nil {
-		return nil, err
-	}
-	return client.callDelete(ctx, u.String(), nil, nil)
+	return client.callDelete(ctx, client.Endpoints().RoleMember(userName, roleName), nil, nil)
 }

@@ -2,9 +2,7 @@ package client
 
 import (
 	"context"
-	"fmt"
-
-	"github.com/pkg/errors"
+	"errors"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 )
@@ -14,7 +12,7 @@ func (client *Client) CreateUser(
 	ctx context.Context, user *graylog.User,
 ) (*ErrorInfo, error) {
 	if user == nil {
-		return nil, fmt.Errorf("user is nil")
+		return nil, errors.New("user is nil")
 	}
 	return client.callPost(ctx, client.Endpoints().Users(), user, nil)
 }
@@ -33,12 +31,8 @@ func (client *Client) GetUser(
 	if name == "" {
 		return nil, nil, errors.New("name is empty")
 	}
-	u, err := client.Endpoints().User(name)
-	if err != nil {
-		return nil, nil, err
-	}
 	user := &graylog.User{}
-	ei, err := client.callGet(ctx, u.String(), nil, user)
+	ei, err := client.callGet(ctx, client.Endpoints().User(name), nil, user)
 	return user, ei, err
 }
 
@@ -47,16 +41,12 @@ func (client *Client) UpdateUser(
 	ctx context.Context, prms *graylog.UserUpdateParams,
 ) (*ErrorInfo, error) {
 	if prms == nil {
-		return nil, fmt.Errorf("user is nil")
+		return nil, errors.New("user is nil")
 	}
 	if prms.Username == "" {
 		return nil, errors.New("name is empty")
 	}
-	u, err := client.Endpoints().User(prms.Username)
-	if err != nil {
-		return nil, err
-	}
-	return client.callPut(ctx, u.String(), prms, nil)
+	return client.callPut(ctx, client.Endpoints().User(prms.Username), prms, nil)
 }
 
 // DeleteUser deletes a given user.
@@ -66,9 +56,5 @@ func (client *Client) DeleteUser(
 	if name == "" {
 		return nil, errors.New("name is empty")
 	}
-	u, err := client.Endpoints().User(name)
-	if err != nil {
-		return nil, err
-	}
-	return client.callDelete(ctx, u.String(), nil, nil)
+	return client.callDelete(ctx, client.Endpoints().User(name), nil, nil)
 }

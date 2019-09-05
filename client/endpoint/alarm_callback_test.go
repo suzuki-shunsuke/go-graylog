@@ -4,17 +4,13 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/suzuki-shunsuke/go-graylog/client/endpoint"
 )
 
 func TestAlarmCallbacks(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
-	if err != nil {
-		t.Fatal(err)
-	}
-	exp := fmt.Sprintf("%s/%s", apiURL, "alerts/callbacks")
-	act := ep.AlarmCallbacks()
-	if act != exp {
-		t.Fatalf(`ep.AlarmCallbacks() = "%s", wanted "%s"`, act, exp)
-	}
+	require.Nil(t, err)
+	require.Equal(t, fmt.Sprintf("%s/alerts/callbacks", apiURL), ep.AlarmCallbacks())
 }

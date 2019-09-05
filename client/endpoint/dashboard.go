@@ -1,22 +1,17 @@
 package endpoint
 
-import (
-	"net/url"
-	"path"
-)
-
 // Dashboards returns a Dashboard API's endpoint url.
 func (ep *Endpoints) Dashboards() string {
-	return ep.dashboards.String()
+	return ep.dashboards
 }
 
 // Dashboard returns a Dashboard API's endpoint url.
-func (ep *Endpoints) Dashboard(id string) (*url.URL, error) {
-	return urlJoin(ep.dashboards, id)
+func (ep *Endpoints) Dashboard(id string) string {
+	return ep.dashboards + "/" + id
 }
 
 // DashboardWidgetsPosition returns a Dashboard widgets position API's endpoint url.
-func (ep *Endpoints) DashboardWidgetsPosition(dashboardID string) (*url.URL, error) {
+func (ep *Endpoints) DashboardWidgetsPosition(dashboardID string) string {
 	// /dashboards/{dashboardId}/positions
-	return urlJoin(ep.dashboards, path.Join(dashboardID, "positions"))
+	return ep.dashboards + "/" + dashboardID + "/positions"
 }

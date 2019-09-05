@@ -13,14 +13,9 @@ import (
 func (client *Client) GetStreamAlertConditions(
 	ctx context.Context, streamID string,
 ) (conds []graylog.AlertCondition, total int, ei *ErrorInfo, err error) {
-	errMsg := "failed to get stream's alert conditions"
 	conditions := &graylog.AlertConditionsBody{}
-	u, err := client.Endpoints().StreamAlertConditions(streamID)
-	if err != nil {
-		return nil, 0, nil, errors.Wrap(err, errMsg)
-	}
 	ei, err = client.callGet(
-		ctx, u.String(), nil, conditions)
+		ctx, client.Endpoints().StreamAlertConditions(streamID), nil, conditions)
 	return conditions.AlertConditions, conditions.Total, ei, err
 }
 
@@ -35,11 +30,7 @@ func (client *Client) GetStreamAlertCondition(
 	if id == "" {
 		return cond, nil, errors.New("id is empty")
 	}
-	u, err := client.Endpoints().StreamAlertCondition(streamID, id)
-	if err != nil {
-		return cond, nil, err
-	}
-	ei, err := client.callGet(ctx, u.String(), nil, &cond)
+	ei, err := client.callGet(ctx, client.Endpoints().StreamAlertCondition(streamID, id), nil, &cond)
 	return cond, ei, err
 }
 
@@ -51,12 +42,8 @@ func (client *Client) CreateStreamAlertCondition(
 	if cond == nil {
 		return nil, fmt.Errorf("%s: alert condition is nil", errMsg)
 	}
-	u, err := client.Endpoints().StreamAlertConditions(streamID)
-	if err != nil {
-		return nil, errors.Wrap(err, errMsg)
-	}
 	ret := map[string]string{}
-	ei, err := client.callPost(ctx, u.String(), cond, &ret)
+	ei, err := client.callPost(ctx, client.Endpoints().StreamAlertConditions(streamID), cond, &ret)
 	if err != nil {
 		return ei, errors.Wrap(err, errMsg)
 	}
@@ -82,12 +69,8 @@ func (client *Client) UpdateStreamAlertCondition(
 	if condID == "" {
 		return nil, fmt.Errorf("%s: alert condition id is empty", errMsg)
 	}
-	u, err := client.Endpoints().StreamAlertCondition(streamID, condID)
-	if err != nil {
-		return nil, errors.Wrap(err, errMsg)
-	}
 	cond.ID = ""
-	ei, err := client.callPut(ctx, u.String(), cond, nil)
+	ei, err := client.callPut(ctx, client.Endpoints().StreamAlertCondition(streamID, condID), cond, nil)
 	cond.ID = condID
 	if err != nil {
 		return ei, errors.Wrap(err, errMsg)
@@ -106,9 +89,5 @@ func (client *Client) DeleteStreamAlertCondition(
 	if id == "" {
 		return nil, fmt.Errorf("%s: alert condition id is empty", errMsg)
 	}
-	u, err := client.Endpoints().StreamAlertCondition(streamID, id)
-	if err != nil {
-		return nil, errors.Wrap(err, errMsg)
-	}
-	return client.callDelete(ctx, u.String(), nil, nil)
+	return client.callDelete(ctx, client.Endpoints().StreamAlertCondition(streamID, id), nil, nil)
 }

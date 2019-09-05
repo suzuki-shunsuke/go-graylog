@@ -15,9 +15,6 @@ func TestNewEndpoints(t *testing.T) {
 	if _, err := endpoint.NewEndpoints(""); err == nil {
 		t.Fatal("invalid argument")
 	}
-	if _, err := endpoint.NewEndpoints(":hoge"); err == nil {
-		t.Fatal("invalid argument")
-	}
 	if _, err := endpoint.NewEndpoints("http://localhost:9000/api"); err != nil {
 		t.Fatal(err)
 	}

@@ -2,9 +2,7 @@ package client
 
 import (
 	"context"
-	"fmt"
-
-	"github.com/pkg/errors"
+	"errors"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 )
@@ -16,7 +14,7 @@ func (client *Client) CreateGrokPattern(
 	// required: name, pattern
 	// allowed: pattern, name, content_pack, id
 	if grokPattern == nil {
-		return nil, fmt.Errorf("grok pattern is nil")
+		return nil, errors.New("grok pattern is nil")
 	}
 	return client.callPost(ctx, client.Endpoints().GrokPatterns(), grokPattern, grokPattern)
 }
@@ -37,12 +35,8 @@ func (client *Client) GetGrokPattern(
 	if id == "" {
 		return nil, nil, errors.New("id is empty")
 	}
-	u, err := client.Endpoints().GrokPattern(id)
-	if err != nil {
-		return nil, nil, err
-	}
 	grokPattern := &graylog.GrokPattern{}
-	ei, err := client.callGet(ctx, u.String(), nil, grokPattern)
+	ei, err := client.callGet(ctx, client.Endpoints().GrokPattern(id), nil, grokPattern)
 	return grokPattern, ei, err
 }
 
@@ -51,16 +45,13 @@ func (client *Client) UpdateGrokPattern(
 	ctx context.Context, grokPattern *graylog.GrokPattern,
 ) (*ErrorInfo, error) {
 	if grokPattern == nil {
-		return nil, fmt.Errorf("grok pattern is nil")
+		return nil, errors.New("grok pattern is nil")
 	}
 	if grokPattern.ID == "" {
 		return nil, errors.New("id is empty")
 	}
-	u, err := client.Endpoints().GrokPattern(grokPattern.ID)
-	if err != nil {
-		return nil, err
-	}
-	return client.callPut(ctx, u.String(), grokPattern, grokPattern)
+	return client.callPut(
+		ctx, client.Endpoints().GrokPattern(grokPattern.ID), grokPattern, grokPattern)
 }
 
 // DeleteGrokPattern deletes a given grok pattern.
@@ -70,9 +61,5 @@ func (client *Client) DeleteGrokPattern(
 	if id == "" {
 		return nil, errors.New("id is empty")
 	}
-	u, err := client.Endpoints().GrokPattern(id)
-	if err != nil {
-		return nil, err
-	}
-	return client.callDelete(ctx, u.String(), nil, nil)
+	return client.callDelete(ctx, client.Endpoints().GrokPattern(id), nil, nil)
 }

@@ -2,7 +2,7 @@ package client
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 )
@@ -23,7 +23,7 @@ func (client *Client) UpdateLDAPSetting(
 	ctx context.Context, prms *graylog.LDAPSetting,
 ) (*ErrorInfo, error) {
 	if prms == nil {
-		return nil, fmt.Errorf("ldap setting is nil")
+		return nil, errors.New("ldap setting is nil")
 	}
 	return client.callPut(ctx, client.Endpoints().LDAPSetting(), prms, nil)
 }

@@ -1,15 +1,11 @@
 package endpoint
 
-import (
-	"net/url"
-)
-
 // Pipelines returns a Pipeline API's endpoint url.
 func (ep *Endpoints) Pipelines() string {
-	return ep.pipelines.String()
+	return ep.pipelines
 }
 
 // Pipeline returns a Pipeline API's endpoint url.
-func (ep *Endpoints) Pipeline(id string) (*url.URL, error) {
-	return urlJoin(ep.pipelines, id)
+func (ep *Endpoints) Pipeline(id string) string {
+	return ep.pipelines + "/" + id
 }

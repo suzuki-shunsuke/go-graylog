@@ -21,11 +21,7 @@ func (client *Client) GetPipelineRule(ctx context.Context, id string) (
 	*graylog.PipelineRule, *ErrorInfo, error,
 ) {
 	rule := &graylog.PipelineRule{}
-	u, err := client.Endpoints().PipelineRule(id)
-	if err != nil {
-		return rule, nil, err
-	}
-	ei, err := client.callGet(ctx, u.String(), nil, rule)
+	ei, err := client.callGet(ctx, client.Endpoints().PipelineRule(id), nil, rule)
 	return rule, ei, err
 }
 
@@ -41,24 +37,17 @@ func (client *Client) CreatePipelineRule(
 func (client *Client) UpdatePipelineRule(
 	ctx context.Context, rule *graylog.PipelineRule,
 ) (*ErrorInfo, error) {
-	u, err := client.Endpoints().PipelineRule(rule.ID)
-	if err != nil {
-		return nil, err
-	}
+	u := client.Endpoints().PipelineRule(rule.ID)
 	defer func(id string) {
 		rule.ID = id
 	}(rule.ID)
 	rule.ID = ""
-	return client.callPut(ctx, u.String(), rule, rule)
+	return client.callPut(ctx, u, rule, rule)
 }
 
 // DeletePipelineRule deletes a pipeline rule.
 func (client *Client) DeletePipelineRule(
 	ctx context.Context, id string,
 ) (*ErrorInfo, error) {
-	u, err := client.Endpoints().PipelineRule(id)
-	if err != nil {
-		return nil, err
-	}
-	return client.callDelete(ctx, u.String(), nil, nil)
+	return client.callDelete(ctx, client.Endpoints().PipelineRule(id), nil, nil)
 }

@@ -1,33 +1,29 @@
 package endpoint
 
 import (
-	"fmt"
-	"net/url"
-	"path"
+	"errors"
+	"strings"
 )
-
-func urlJoin(ep *url.URL, arg string) (*url.URL, error) {
-	return ep.Parse(path.Join(ep.Path, arg))
-}
 
 // Endpoints represents each API's endpoint URLs.
 type Endpoints struct {
-	alarmCallbacks           *url.URL
-	alerts                   *url.URL
-	alertConditions          *url.URL
-	collectorConfigurations  *url.URL
-	dashboards               *url.URL
-	enabledStreams           *url.URL
-	indexSets                *url.URL
-	indexSetStats            *url.URL
-	inputs                   *url.URL
-	pipelines                *url.URL
-	pipelineConnections      *url.URL
-	pipelineRules            *url.URL
-	roles                    *url.URL
-	streams                  *url.URL
-	users                    *url.URL
-	grokPatterns             *url.URL
+	alarmCallbacks           string
+	alerts                   string
+	alertConditions          string
+	collectorConfigurations  string
+	dashboards               string
+	enabledStreams           string
+	indexSets                string
+	indexSetStats            string
+	inputs                   string
+	pipelines                string
+	pipelineConnections      string
+	pipelineRules            string
+	roles                    string
+	streams                  string
+	users                    string
+	grokPatterns             string
+	grokPatternsTest         string
 	ldapSetting              string
 	ldapGroups               string
 	ldapGroupRoleMapping     string
@@ -48,152 +44,48 @@ func NewEndpointsV3(endpoint string) (*Endpoints, error) {
 
 func newEndpoints(endpoint, version string) (*Endpoints, error) {
 	if endpoint == "" {
-		return nil, fmt.Errorf("endpoint is required")
+		return nil, errors.New("endpoint is required")
 	}
-	ep, err := url.Parse(endpoint)
-	if err != nil {
-		return nil, err
-	}
-	alarmCallbacks, err := urlJoin(ep, "alerts/callbacks")
-	if err != nil {
-		return nil, err
-	}
-	alertConditions, err := urlJoin(ep, "alerts/conditions")
-	if err != nil {
-		return nil, err
-	}
-	collectorConfigurations, err := urlJoin(ep, "plugins/org.graylog.plugins.collector/configurations")
-	if err != nil {
-		return nil, err
-	}
-	dashboards, err := urlJoin(ep, "dashboards")
-	if err != nil {
-		return nil, err
-	}
-	roles, err := urlJoin(ep, "roles")
-	if err != nil {
-		return nil, err
-	}
-	streams, err := urlJoin(ep, "streams")
-	if err != nil {
-		return nil, err
-	}
-	enabledStreams, err := urlJoin(streams, "enabled")
-	if err != nil {
-		return nil, err
-	}
-	alerts, err := urlJoin(ep, "streams/alerts")
-	if err != nil {
-		return nil, err
-	}
-	indexSets, err := urlJoin(ep, "system/indices/index_sets")
-	if err != nil {
-		return nil, err
-	}
-	indexSetStats, err := urlJoin(indexSets, "stats")
-	if err != nil {
-		return nil, err
-	}
-	inputs, err := urlJoin(ep, "system/inputs")
-	if err != nil {
-		return nil, err
-	}
-	ldapSetting, err := urlJoin(ep, "system/ldap/settings")
-	if err != nil {
-		return nil, err
-	}
-	ldapGroups, err := urlJoin(ep, "system/ldap/groups")
-	if err != nil {
-		return nil, err
-	}
-	ldapGroupRoleMapping, err := urlJoin(ep, "system/ldap/settings/groups")
-	if err != nil {
-		return nil, err
-	}
-	grokPatterns, err := urlJoin(ep, "system/grok")
-	if err != nil {
-		return nil, err
-	}
+	endpoint = strings.TrimRight(endpoint, "/")
 
-	var pipelines, pipelineRules, pipelineConns, connectPipelinesToStream, connectStreamsToPipeline *url.URL
+	var pipelines, pipelineRules, pipelineConns, connectPipelinesToStream, connectStreamsToPipeline string
 	if version == "v3" {
 		// https://docs.graylog.org/en/latest/pages/upgrade/graylog-3.0.html#plugins-merged-into-the-graylog-server
-		pipelines, err = urlJoin(ep, "system/pipelines/pipeline")
-		if err != nil {
-			return nil, err
-		}
-		pipelineRules, err = urlJoin(ep, "system/pipelines/rule")
-		if err != nil {
-			return nil, err
-		}
-		pipelineConns, err = urlJoin(ep, "system/pipelines/connections")
-		if err != nil {
-			return nil, err
-		}
-		connectStreamsToPipeline, err = urlJoin(
-			ep, "system/pipelines/connections/to_pipeline")
-		if err != nil {
-			return nil, err
-		}
-		connectPipelinesToStream, err = urlJoin(
-			ep, "system/pipelines/connections/to_stream")
-		if err != nil {
-			return nil, err
-		}
+		pipelines = endpoint + "/system/pipelines/pipeline"
+		pipelineRules = endpoint + "/system/pipelines/rule"
+		pipelineConns = endpoint + "/system/pipelines/connections"
+		connectStreamsToPipeline = endpoint + "/system/pipelines/connections/to_pipeline"
+		connectPipelinesToStream = endpoint + "/system/pipelines/connections/to_stream"
 	} else {
-		pipelines, err = urlJoin(
-			ep, "plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/pipeline")
-		if err != nil {
-			return nil, err
-		}
-		pipelineRules, err = urlJoin(
-			ep, "plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/rule")
-		if err != nil {
-			return nil, err
-		}
-		pipelineConns, err = urlJoin(
-			ep, "plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/connections")
-		if err != nil {
-			return nil, err
-		}
-		connectStreamsToPipeline, err = urlJoin(
-			ep, "plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/connections/to_pipeline")
-		if err != nil {
-			return nil, err
-		}
-		connectPipelinesToStream, err = urlJoin(
-			ep, "plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/connections/to_stream")
-		if err != nil {
-			return nil, err
-		}
-
-	}
-	users, err := urlJoin(ep, "users")
-	if err != nil {
-		return nil, err
+		pipelines = endpoint + "/plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/pipeline"
+		pipelineRules = endpoint + "/plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/rule"
+		pipelineConns = endpoint + "/plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/connections"
+		connectStreamsToPipeline = endpoint + "/plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/connections/to_pipeline"
+		connectPipelinesToStream = endpoint + "/plugins/org.graylog.plugins.pipelineprocessor/system/pipelines/connections/to_stream"
 	}
 	return &Endpoints{
-		alarmCallbacks:           alarmCallbacks,
-		alerts:                   alerts,
-		alertConditions:          alertConditions,
-		collectorConfigurations:  collectorConfigurations,
-		dashboards:               dashboards,
-		enabledStreams:           enabledStreams,
-		indexSets:                indexSets,
-		indexSetStats:            indexSetStats,
-		inputs:                   inputs,
-		ldapGroups:               ldapGroups.String(),
-		ldapGroupRoleMapping:     ldapGroupRoleMapping.String(),
-		ldapSetting:              ldapSetting.String(),
+		alarmCallbacks:           endpoint + "/alerts/callbacks",
+		alerts:                   endpoint + "/streams/alerts",
+		alertConditions:          endpoint + "/alerts/conditions",
+		collectorConfigurations:  endpoint + "/plugins/org.graylog.plugins.collector/configurations",
+		dashboards:               endpoint + "/dashboards",
+		enabledStreams:           endpoint + "/streams/enabled",
+		indexSets:                endpoint + "/system/indices/index_sets",
+		indexSetStats:            endpoint + "/system/indices/index_sets/stats",
+		inputs:                   endpoint + "/system/inputs",
+		ldapGroups:               endpoint + "/system/ldap/groups",
+		ldapGroupRoleMapping:     endpoint + "/system/ldap/settings/groups",
+		ldapSetting:              endpoint + "/system/ldap/settings",
 		pipelines:                pipelines,
 		pipelineConnections:      pipelineConns,
-		connectStreamsToPipeline: connectStreamsToPipeline.String(),
-		connectPipelinesToStream: connectPipelinesToStream.String(),
+		connectStreamsToPipeline: connectStreamsToPipeline,
+		connectPipelinesToStream: connectPipelinesToStream,
 		pipelineRules:            pipelineRules,
-		roles:                    roles,
-		streams:                  streams,
-		users:                    users,
-		grokPatterns:             grokPatterns,
+		roles:                    endpoint + "/roles",
+		streams:                  endpoint + "/streams",
+		users:                    endpoint + "/users",
+		grokPatterns:             endpoint + "/system/grok",
+		grokPatternsTest:         endpoint + "/system/grok/test",
 		apiVersion:               version,
 	}, nil
 }

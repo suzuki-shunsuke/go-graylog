@@ -19,12 +19,8 @@ func (client *Client) GetPipelines(ctx context.Context) (
 func (client *Client) GetPipeline(ctx context.Context, id string) (
 	*graylog.Pipeline, *ErrorInfo, error,
 ) {
-	u, err := client.Endpoints().Pipeline(id)
-	if err != nil {
-		return nil, nil, err
-	}
 	pipe := &graylog.Pipeline{}
-	ei, err := client.callGet(ctx, u.String(), nil, pipe)
+	ei, err := client.callGet(ctx, client.Endpoints().Pipeline(id), nil, pipe)
 	return pipe, ei, err
 }
 
@@ -40,11 +36,7 @@ func (client *Client) CreatePipeline(
 func (client *Client) UpdatePipeline(
 	ctx context.Context, pipeline *graylog.Pipeline,
 ) (*ErrorInfo, error) {
-	u, err := client.Endpoints().Pipeline(pipeline.ID)
-	if err != nil {
-		return nil, err
-	}
-	return client.callPut(ctx, u.String(), map[string]interface{}{
+	return client.callPut(ctx, client.Endpoints().Pipeline(pipeline.ID), map[string]interface{}{
 		"source":      pipeline.Source,
 		"description": pipeline.Description,
 	}, pipeline)
@@ -54,9 +46,5 @@ func (client *Client) UpdatePipeline(
 func (client *Client) DeletePipeline(
 	ctx context.Context, id string,
 ) (*ErrorInfo, error) {
-	u, err := client.Endpoints().Pipeline(id)
-	if err != nil {
-		return nil, err
-	}
-	return client.callDelete(ctx, u.String(), nil, nil)
+	return client.callDelete(ctx, client.Endpoints().Pipeline(id), nil, nil)
 }

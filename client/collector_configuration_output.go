@@ -2,7 +2,7 @@ package client
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"github.com/suzuki-shunsuke/go-graylog"
 )
@@ -13,17 +13,14 @@ func (client *Client) CreateCollectorConfigurationOutput(
 ) (*ErrorInfo, error) {
 	// POST /plugins/org.graylog.plugins.collector/configurations/{id}/outputs Create a configuration output
 	if id == "" {
-		return nil, fmt.Errorf("id is required")
+		return nil, errors.New("id is required")
 	}
 	if output == nil {
-		return nil, fmt.Errorf("collector configuration is nil")
-	}
-	u, err := client.Endpoints().CollectorConfigurationOutputs(id)
-	if err != nil {
-		return nil, err
+		return nil, errors.New("collector configuration is nil")
 	}
 	// 202 no content
-	return client.callPost(ctx, u.String(), output, nil)
+	return client.callPost(
+		ctx, client.Endpoints().CollectorConfigurationOutputs(id), output, nil)
 }
 
 // DeleteCollectorConfigurationOutput deletes a collector configuration output.
@@ -32,16 +29,13 @@ func (client *Client) DeleteCollectorConfigurationOutput(
 ) (*ErrorInfo, error) {
 	// DELETE /plugins/org.graylog.plugins.collector/configurations/{id}/outputs/{outputId} Delete output form configuration
 	if id == "" {
-		return nil, fmt.Errorf("id is required")
+		return nil, errors.New("id is required")
 	}
 	if outputID == "" {
-		return nil, fmt.Errorf("output id is required")
+		return nil, errors.New("output id is required")
 	}
-	u, err := client.Endpoints().CollectorConfigurationOutput(id, outputID)
-	if err != nil {
-		return nil, err
-	}
-	return client.callDelete(ctx, u.String(), nil, nil)
+	return client.callDelete(
+		ctx, client.Endpoints().CollectorConfigurationOutput(id, outputID), nil, nil)
 }
 
 // UpdateCollectorConfigurationOutput updates a collector configuration output.
@@ -51,17 +45,14 @@ func (client *Client) UpdateCollectorConfigurationOutput(
 ) (*ErrorInfo, error) {
 	// PUT /plugins/org.graylog.plugins.collector/configurations/{id}/outputs/{output_id} Update a configuration output
 	if id == "" {
-		return nil, fmt.Errorf("id is required")
+		return nil, errors.New("id is required")
 	}
 	if outputID == "" {
-		return nil, fmt.Errorf("output id is required")
+		return nil, errors.New("output id is required")
 	}
 	if output == nil {
-		return nil, fmt.Errorf("output is nil")
+		return nil, errors.New("output is nil")
 	}
-	u, err := client.Endpoints().CollectorConfigurationOutput(id, outputID)
-	if err != nil {
-		return nil, err
-	}
-	return client.callPut(ctx, u.String(), output, nil)
+	return client.callPut(
+		ctx, client.Endpoints().CollectorConfigurationOutput(id, outputID), output, nil)
 }

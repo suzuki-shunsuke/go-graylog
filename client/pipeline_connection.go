@@ -20,12 +20,8 @@ func (client *Client) GetPipelineConnections(ctx context.Context) (
 func (client *Client) GetPipelineConnectionsOfStream(ctx context.Context, id string) (
 	*graylog.PipelineConnection, *ErrorInfo, error,
 ) {
-	u, err := client.Endpoints().PipelineConnectionsOfStream(id)
-	if err != nil {
-		return nil, nil, err
-	}
 	conn := &graylog.PipelineConnection{}
-	ei, err := client.callGet(ctx, u.String(), nil, conn)
+	ei, err := client.callGet(ctx, client.Endpoints().PipelineConnectionsOfStream(id), nil, conn)
 	return conn, ei, err
 }
 

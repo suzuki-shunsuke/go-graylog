@@ -13,13 +13,8 @@ import (
 func (client *Client) GetStreamAlarmCallbacks(
 	ctx context.Context, streamID string,
 ) (acs []graylog.AlarmCallback, total int, ei *ErrorInfo, err error) {
-	errMsg := "failed to get stream's alarm callbacks"
 	callbacks := &graylog.AlarmCallbacksBody{}
-	u, err := client.Endpoints().StreamAlarmCallbacks(streamID)
-	if err != nil {
-		return nil, 0, nil, errors.Wrap(err, errMsg)
-	}
-	ei, err = client.callGet(ctx, u.String(), nil, callbacks)
+	ei, err = client.callGet(ctx, client.Endpoints().StreamAlarmCallbacks(streamID), nil, callbacks)
 	return callbacks.AlarmCallbacks, callbacks.Total, ei, err
 }
 
@@ -34,11 +29,7 @@ func (client *Client) GetStreamAlarmCallback(
 	if id == "" {
 		return ac, nil, errors.New("id is empty")
 	}
-	u, err := client.Endpoints().StreamAlarmCallback(streamID, id)
-	if err != nil {
-		return ac, nil, err
-	}
-	ei, err := client.callGet(ctx, u.String(), nil, &ac)
+	ei, err := client.callGet(ctx, client.Endpoints().StreamAlarmCallback(streamID, id), nil, &ac)
 	return ac, ei, err
 }
 
@@ -54,16 +45,12 @@ func (client *Client) CreateStreamAlarmCallback(
 	if streamID == "" {
 		return nil, fmt.Errorf("%s: stream id is empty", errMsg)
 	}
-	u, err := client.Endpoints().StreamAlarmCallbacks(streamID)
-	if err != nil {
-		return nil, errors.Wrap(err, errMsg)
-	}
 	ret := map[string]string{}
 	ac.StreamID = ""
 	defer func() {
 		ac.StreamID = streamID
 	}()
-	ei, err := client.callPost(ctx, u.String(), ac, &ret)
+	ei, err := client.callPost(ctx, client.Endpoints().StreamAlarmCallbacks(streamID), ac, &ret)
 	if err != nil {
 		return ei, errors.Wrap(err, errMsg)
 	}
@@ -90,17 +77,13 @@ func (client *Client) UpdateStreamAlarmCallback(
 	if acID == "" {
 		return nil, fmt.Errorf("%s: alarm callback id is empty", errMsg)
 	}
-	u, err := client.Endpoints().StreamAlarmCallback(streamID, acID)
-	if err != nil {
-		return nil, errors.Wrap(err, errMsg)
-	}
 	ac.ID = ""
 	ac.StreamID = ""
 	defer func() {
 		ac.ID = acID
 		ac.StreamID = streamID
 	}()
-	ei, err := client.callPut(ctx, u.String(), ac, nil)
+	ei, err := client.callPut(ctx, client.Endpoints().StreamAlarmCallback(streamID, acID), ac, nil)
 	if err != nil {
 		return ei, errors.Wrap(err, errMsg)
 	}
@@ -118,9 +101,5 @@ func (client *Client) DeleteStreamAlarmCallback(
 	if id == "" {
 		return nil, fmt.Errorf("%s: alarm callback id is empty", errMsg)
 	}
-	u, err := client.Endpoints().StreamAlarmCallback(streamID, id)
-	if err != nil {
-		return nil, errors.Wrap(err, errMsg)
-	}
-	return client.callDelete(ctx, u.String(), nil, nil)
+	return client.callDelete(ctx, client.Endpoints().StreamAlarmCallback(streamID, id), nil, nil)
 }
