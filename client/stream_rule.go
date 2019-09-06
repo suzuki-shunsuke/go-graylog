@@ -91,3 +91,16 @@ func (client *Client) GetStreamRule(
 	ei, err := client.callGet(ctx, client.Endpoints().StreamRule(streamID, ruleID), nil, rule)
 	return rule, ei, err
 }
+
+// GetStreamRuleTypes returns all available stream rule types.
+func (client *Client) GetStreamRuleTypes(
+	ctx context.Context, streamID string,
+) ([]graylog.StreamRuleType, *ErrorInfo, error) {
+	// GET /streams/{streamid}/rules/types Get all available stream rule types
+	if streamID == "" {
+		return nil, nil, errors.New("stream id is required")
+	}
+	types := []graylog.StreamRuleType{}
+	ei, err := client.callGet(ctx, client.Endpoints().StreamRuleTypes(streamID), nil, &types)
+	return types, ei, err
+}
