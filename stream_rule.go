@@ -33,6 +33,14 @@ type (
 		Total       int          `json:"total"`
 		StreamRules []StreamRule `json:"stream_rules"`
 	}
+
+	// StreamRuleType represents a stream rule type.
+	StreamRuleType struct {
+		ID        int    `json:"id"`
+		Name      string `json:"name"`
+		ShortDesc string `json:"short_desc"`
+		LongDesc  string `json:"long_desc"`
+	}
 )
 
 // NewUpdateParams converts StreamRule to StreamRuleUpdateParams.
