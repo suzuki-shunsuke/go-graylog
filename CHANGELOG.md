@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="8.0.0"></a>
+# [8.0.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v7.1.0...v8.0.0) (2019-09-11)
+
+
+### Bug Fixes
+
+* failed to create a user: Unable to map property external ([11f7d93](https://github.com/suzuki-shunsuke/go-graylog/commit/11f7d93)), closes [#168](https://github.com/suzuki-shunsuke/go-graylog/issues/168)
+
+
+### Code Refactoring
+
+* refactor Endpoints ([8f7095d](https://github.com/suzuki-shunsuke/go-graylog/commit/8f7095d))
+
+
+### Features
+
+* support to get stream rule types ([1edca44](https://github.com/suzuki-shunsuke/go-graylog/commit/1edca44))
+
+
+### BREAKING CHANGES
+
+* change Endpoints's method signatures
+
+
+
 <a name="7.1.0"></a>
 # [7.1.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v7.0.1...v7.1.0) (2019-08-31)
 
