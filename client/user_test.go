@@ -2,8 +2,15 @@ package client_test
 
 import (
 	"context"
+	"net/http"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+	"github.com/suzuki-shunsuke/flute/flute"
+	"github.com/suzuki-shunsuke/go-set"
+
+	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/client"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
@@ -25,31 +32,61 @@ func TestDeleteUser(t *testing.T) {
 	}
 }
 
-func TestCreateUser(t *testing.T) {
+func TestClient_CreateUser(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	// nil check
-	if _, err := client.CreateUser(ctx, nil); err == nil {
-		t.Fatal("user is nil")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	_, err = cl.CreateUser(ctx, nil)
+	require.NotNil(t, err, "user should not be nil")
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Matcher: &flute.Matcher{
+								Method: "POST",
+								Path:   "/api/users",
+							},
+							Tester: &flute.Tester{
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+								BodyJSONString: `{
+								  "username": "test",
+								  "email": "test@example.com",
+								  "full_name": "test test",
+									"password": "password",
+									"roles": ["Reader"],
+									"permissions": []
+								}`,
+							},
+							Response: &flute.Response{
+								StatusCode: 201,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	user := &graylog.User{
+		Username: "test",
+		Email:    "test@example.com",
+		FullName: "test test",
+		Password: "password",
+		Roles:    set.NewStrSet("Reader"),
+		External: true,
 	}
-	user := testutil.User()
-	client.DeleteUser(ctx, user.Username)
-	if _, err := client.CreateUser(ctx, user); err != nil {
-		t.Fatal(err)
-	}
-	defer client.DeleteUser(ctx, user.Username)
-	// error check
-	user.Username = ""
-	if _, err := client.CreateUser(ctx, user); err == nil {
-		t.Fatal("user name is empty")
-	}
+	_, err = cl.CreateUser(ctx, user)
+	require.Nil(t, err)
 }
 
 func TestGetUsers(t *testing.T) {
@@ -108,33 +145,51 @@ func TestGetUser(t *testing.T) {
 	}
 }
 
-func TestUpdateUser(t *testing.T) {
+func TestClient_UpdateUser(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	user := testutil.User()
-	client.DeleteUser(ctx, user.Username)
-	if _, err := client.UpdateUser(ctx, user.NewUpdateParams()); err == nil {
-		t.Fatal("user should be deleted")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	_, err = cl.UpdateUser(ctx, nil)
+	require.NotNil(t, err, "user should not be nil")
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Matcher: &flute.Matcher{
+								Method: "PUT",
+								Path:   "/api/users/test",
+							},
+							Tester: &flute.Tester{
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+								BodyJSONString: `{
+								  "username": "test",
+									"roles": ["Reader"]
+								}`,
+							},
+							Response: &flute.Response{
+								StatusCode: 204,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	user := &graylog.UserUpdateParams{
+		Username: "test",
+		Roles:    set.NewStrSet("Reader"),
 	}
-	if _, err := client.CreateUser(ctx, user); err != nil {
-		t.Fatal(err)
-	}
-	defer client.DeleteUser(ctx, user.Username)
-	if _, err := client.UpdateUser(ctx, user.NewUpdateParams()); err != nil {
-		t.Fatal(err)
-	}
-	user.Username = ""
-	if _, err := client.UpdateUser(ctx, user.NewUpdateParams()); err == nil {
-		t.Fatal("user name is required")
-	}
-	if _, err := client.UpdateUser(ctx, nil); err == nil {
-		t.Fatal("user is required")
-	}
+	_, err = cl.UpdateUser(ctx, user)
+	require.Nil(t, err)
 }

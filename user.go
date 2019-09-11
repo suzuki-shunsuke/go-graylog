@@ -27,13 +27,12 @@ type (
 		ClientAddress string `json:"client_address,omitempty"`
 		// Session automatically end after this amount of time, unless they are actively used.
 		// ex. 28800000
-		SessionTimeoutMs int `json:"session_timeout_ms,omitempty"`
-		// external and read_only and session_active must be "omitempty". Without "omitempty", it is failed to create an Stream.
-		External      bool         `json:"external"`
-		ReadOnly      bool         `json:"read_only"`
-		SessionActive bool         `json:"session_active"`
-		Preferences   *Preferences `json:"preferences,omitempty"`
-		Startpage     *Startpage   `json:"startpage,omitempty"`
+		SessionTimeoutMs int          `json:"session_timeout_ms,omitempty"`
+		External         bool         `json:"external"`
+		ReadOnly         bool         `json:"read_only"`
+		SessionActive    bool         `json:"session_active"`
+		Preferences      *Preferences `json:"preferences,omitempty"`
+		Startpage        *Startpage   `json:"startpage,omitempty"`
 		// Assign the relevant roles to this user to grant them access to the relevant streams and dashboards.
 		// The Reader role grants basic access to the system and will be enabled.
 		// The Admin role grants access to everything in Graylog.
