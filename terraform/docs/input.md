@@ -1,30 +1,7 @@
 # graylog_input
 
-https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_input.go
-
-```hcl
-resource "graylog_input" "test" {
-  title = "terraform test"
-  type = "org.graylog2.inputs.syslog.udp.SyslogUDPInput"
-  attributes = {
-    bind_address = "0.0.0.0"
-    port = 514
-    recv_buffer_size = 262144
-  }
-}
-```
-
-In case Terraform 0.12, `attributes` should be block type.
-
-https://www.terraform.io/upgrade-guides/0-12.html#attributes-vs-blocks
-
-```hcl
-attributes {
-  bind_address = "0.0.0.0"
-  port = 514
-  recv_buffer_size = 262144
-}
-```
+* [Example](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/example/v0.12/input.tf)
+* [Source code](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_input.go)
 
 ## Argument Reference
 

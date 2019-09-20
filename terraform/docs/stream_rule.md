@@ -1,16 +1,7 @@
 # graylog_stream_rule
 
-https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_stream_rule.go
-
-```hcl
-resource "graylog_stream_rule" "test-terraform" {
-  field = "tag"
-  value = "example.prod"
-  stream_id = "${graylog_stream.test-terraform.id}"
-  description = "test stream rule"
-  type = 1
-}
-```
+* [Example](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/example/v0.12/stream_rule.tf)
+* [Source code](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_stream_rule.go)
 
 ## How to import
 

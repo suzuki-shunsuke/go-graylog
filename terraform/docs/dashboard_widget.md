@@ -1,6 +1,7 @@
 # graylog_dashboard_widget
 
-https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_dashboard_widget.go
+* [Example](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/example/v0.12/dashboard.tf)
+* [Source code](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_dashboard_widget.go)
 
 ```hcl
 resource "graylog_dashboard_widget" "test" {

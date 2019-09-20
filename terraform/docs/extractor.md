@@ -1,7 +1,8 @@
 # graylog_extractor
 
 * https://docs.graylog.org/en/latest/pages/extractors.html
-* https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_extractor.go
+* [Example](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/example/v0.12/extractor.tf)
+* [Source code](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_extractor.go)
 
 ## How to import
 
@@ -41,24 +42,6 @@ converters[].config.locale | string | "" |
 
 ## type: grok 
 
-```hcl
-resource "graylog_extractor" "test" {
-  input_id        = "0000"
-  title           = "test"
-  type            = "grok"
-  cursor_strategy = "copy"
-  source_field    = "message"
-  target_field    = "none"
-  condition_type  = "none"
-  condition_value = ""
-  order           = 0
-
-  grok_type_extractor_config = {
-    grok_pattern = "%{DATA}"
-  }
-}
-```
-
 ### Required Argument
 
 name | type | description
@@ -71,28 +54,6 @@ grok_type_extractor_config.grok_pattern | string |
 None.
 
 ## type: json
-
-```hcl
-resource "graylog_extractor" "test" {
-  input_id        = "0000"
-  title           = "test"
-  type            = "json"
-  cursor_strategy = "copy"
-  source_field    = "message"
-  target_field    = "none"
-  condition_type  = "none"
-  condition_value = ""
-  order           = 0
-
-  json_type_extractor_config = {
-    list_separator             = ", "
-    kv_separator               = "="
-    key_prefix                 = "visit_"
-    key_separator              = "_"
-    key_whitespace_replacement = "_"
-  }
-}
-```
 
 ## Required Argument
 
@@ -112,34 +73,6 @@ json_type_extractor_config.replace_key_whitespace | | bool |
 json_type_extractor_config.key_whitespace_replacement | | string |
 
 ## type: regex
-
-```hcl
-resource "graylog_extractor" "test" {
-  input_id        = "0000"
-  title           = "test"
-  type            = "regex"
-  cursor_strategy = "copy"
-  source_field    = "message"
-  target_field    = "none"
-  condition_type  = "none"
-  condition_value = ""
-  order           = 0
-
-  regex_type_extractor_config = {
-    regex_value = ".*"
-  }
-
-  converters = {
-    type = "date"
-
-    config = {
-      date_format = "yyyy/MM/ddTHH:mm:ss"
-      time_zone   = "Japan"
-      locale      = "en"
-    }
-  }
-}
-```
 
 ## Required Argument
 
