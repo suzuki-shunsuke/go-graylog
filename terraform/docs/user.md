@@ -1,15 +1,7 @@
 # graylog_user
 
-https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_user.go
-
-```hcl
-resource "graylog_user" "zoo" {
-  username = "zoo"
-  email = "zoo@example.com"
-  full_name = "zooull"
-  roles = ["Reader"]
-}
-```
+* [Example](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/example/v0.12/user.tf)
+* [Source code](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_user.go)
 
 ## Argument Reference
 

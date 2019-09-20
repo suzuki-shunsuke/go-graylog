@@ -1,14 +1,7 @@
 # graylog_role
 
-https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_role.go
-
-```hcl
-resource "graylog_role" "foo" {
-  name = "foo"
-  description = "user foo"
-  permissions = ["*"]
-}
-```
+* [Example](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/example/v0.12/role.tf)
+* [Source Code](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_role.go)
 
 ## Argument Reference
 

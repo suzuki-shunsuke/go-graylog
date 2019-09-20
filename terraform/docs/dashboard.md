@@ -1,13 +1,7 @@
 # graylog_dashboard
 
-https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_dashboard.go
-
-```hcl
-resource "graylog_dashboard" "test-dashboard" {
-  title = "test-dashboard"
-  description = "test dashboard"
-}
-```
+* [Example](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/example/v0.12/dashboard.tf)
+* [Source code](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_dashboard.go)
 
 ## Argument Reference
 
