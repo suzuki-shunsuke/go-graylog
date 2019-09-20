@@ -1,2 +1,5 @@
 terraform.tfstate
 terraform.tfstate.backup
+plugin/*
+!plugin/.gitkeep
+*.backup
