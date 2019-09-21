@@ -1,0 +1,106 @@
+{
+  "total": 4,
+  "index_sets": [
+    {
+      "id": "5d84bf242ab79c000d691b7f",
+      "title": "Default index set",
+      "description": "The Graylog default index set",
+      "index_prefix": "graylog",
+      "shards": 4,
+      "replicas": 0,
+      "rotation_strategy_class": "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy",
+      "rotation_strategy": {
+        "type": "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig",
+        "max_docs_per_index": 20000000
+      },
+      "retention_strategy_class": "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy",
+      "retention_strategy": {
+        "type": "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig",
+        "max_number_of_indices": 20
+      },
+      "creation_date": "2019-09-20T11:59:32.219Z",
+      "index_analyzer": "standard",
+      "index_optimization_max_num_segments": 1,
+      "index_optimization_disabled": false,
+      "field_type_refresh_interval": 5000,
+      "writable": true,
+      "default": true
+    },
+    {
+      "id": "5d84bfbe2ab79c000d35d4a6",
+      "title": "Graylog Events",
+      "description": "Stores Graylog events.",
+      "index_prefix": "gl-events",
+      "shards": 4,
+      "replicas": 0,
+      "rotation_strategy_class": "org.graylog2.indexer.rotation.strategies.TimeBasedRotationStrategy",
+      "rotation_strategy": {
+        "type": "org.graylog2.indexer.rotation.strategies.TimeBasedRotationStrategyConfig",
+        "rotation_period": "P1M"
+      },
+      "retention_strategy_class": "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy",
+      "retention_strategy": {
+        "type": "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig",
+        "max_number_of_indices": 12
+      },
+      "creation_date": "2019-09-20T12:02:06.049Z",
+      "index_analyzer": "standard",
+      "index_optimization_max_num_segments": 1,
+      "index_optimization_disabled": false,
+      "field_type_refresh_interval": 60000,
+      "writable": true,
+      "default": false
+    },
+    {
+      "id": "5d84bfbe2ab79c000d35d4a9",
+      "title": "Graylog System Events",
+      "description": "Stores Graylog system events.",
+      "index_prefix": "gl-system-events",
+      "shards": 4,
+      "replicas": 0,
+      "rotation_strategy_class": "org.graylog2.indexer.rotation.strategies.TimeBasedRotationStrategy",
+      "rotation_strategy": {
+        "type": "org.graylog2.indexer.rotation.strategies.TimeBasedRotationStrategyConfig",
+        "rotation_period": "P1M"
+      },
+      "retention_strategy_class": "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy",
+      "retention_strategy": {
+        "type": "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig",
+        "max_number_of_indices": 12
+      },
+      "creation_date": "2019-09-20T12:02:06.072Z",
+      "index_analyzer": "standard",
+      "index_optimization_max_num_segments": 1,
+      "index_optimization_disabled": false,
+      "field_type_refresh_interval": 60000,
+      "writable": true,
+      "default": false
+    },
+    {
+      "id": "5d84c1a92ab79c000d35d6d0",
+      "title": "test",
+      "description": "test 2",
+      "index_prefix": "lai3o-test",
+      "shards": 4,
+      "replicas": 0,
+      "rotation_strategy_class": "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy",
+      "rotation_strategy": {
+        "type": "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig",
+        "max_docs_per_index": 20000000
+      },
+      "retention_strategy_class": "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy",
+      "retention_strategy": {
+        "type": "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig",
+        "max_number_of_indices": 20
+      },
+      "creation_date": "2019-09-20T21:10:17.409Z",
+      "index_analyzer": "standard",
+      "index_optimization_max_num_segments": 1,
+      "index_optimization_disabled": true,
+      "field_type_refresh_interval": 5000,
+      "writable": true,
+      "default": false
+    }
+  ],
+  "stats": {}
+}

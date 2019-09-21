@@ -1,0 +1,20 @@
+{
+  "title": "gelf udp 2",
+  "global": true,
+  "name": "GELF UDP",
+  "content_pack": null,
+  "created_at": "2019-09-20T12:10:18.010Z",
+  "type": "org.graylog2.inputs.gelf.udp.GELFUDPInput",
+  "creator_user_id": "admin",
+  "attributes": {
+    "recv_buffer_size": 262144,
+    "decompress_size_limit": 8388608,
+    "bind_address": "0.0.0.0",
+    "port": 12201
+  },
+  "static_fields": {
+    "foo": "bar"
+  },
+  "node": null,
+  "id": "5d84c1aa2ab79c000d35d6d9"
+}

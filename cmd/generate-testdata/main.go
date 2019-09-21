@@ -71,10 +71,14 @@ func dump(input string, dest interface{}) error {
 
 var (
 	data = map[string]dumper{
-		"users": Users{},
-		"user":  User{},
-		"roles": Roles{},
-		"role":  Role{},
+		"users":      Users{},
+		"user":       User{},
+		"roles":      Roles{},
+		"role":       Role{},
+		"index_sets": IndexSets{},
+		"index_set":  IndexSet{},
+		"inputs":     Inputs{},
+		"input":      Input{},
 	}
 )
 
@@ -94,6 +98,22 @@ type (
 	Role struct {
 		role graylog.Role
 	}
+
+	IndexSets struct {
+		data graylog.IndexSetsBody
+	}
+
+	IndexSet struct {
+		data graylog.IndexSet
+	}
+
+	Inputs struct {
+		data graylog.InputsBody
+	}
+
+	Input struct {
+		data graylog.Input
+	}
 )
 
 func (users Users) dump(input string) error {
@@ -110,4 +130,20 @@ func (roles Roles) dump(input string) error {
 
 func (role Role) dump(input string) error {
 	return dump(input, &role.role)
+}
+
+func (is IndexSets) dump(input string) error {
+	return dump(input, &is.data)
+}
+
+func (is IndexSet) dump(input string) error {
+	return dump(input, &is.data)
+}
+
+func (ip Inputs) dump(input string) error {
+	return dump(input, &ip.data)
+}
+
+func (ip Input) dump(input string) error {
+	return dump(input, &ip.data)
 }
