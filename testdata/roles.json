@@ -1,0 +1,118 @@
+{
+  "roles": [
+    {
+      "name": "Views Manager",
+      "description": "Allows reading and writing all views and extended searches (built-in)",
+      "permissions": [
+        "view:edit",
+        "extendedsearch:use",
+        "view:create",
+        "extendedsearch:create",
+        "view:read",
+        "view:use"
+      ],
+      "read_only": true
+    },
+    {
+      "name": "Reader",
+      "description": "Grants basic permissions for every Graylog user (built-in)",
+      "permissions": [
+        "clusterconfigentry:read",
+        "indexercluster:read",
+        "messagecount:read",
+        "journal:read",
+        "messages:analyze",
+        "inputs:read",
+        "metrics:read",
+        "savedsearches:edit",
+        "fieldnames:read",
+        "buffers:read",
+        "system:read",
+        "savedsearches:create",
+        "jvmstats:read",
+        "decorators:read",
+        "throughput:read",
+        "savedsearches:read",
+        "messages:read"
+      ],
+      "read_only": true
+    },
+    {
+      "name": "terraform",
+      "description": "terraform",
+      "permissions": [
+        "streams:*",
+        "users:*",
+        "dashboards:*",
+        "inputs:*",
+        "roles:*",
+        "pipeline_rule:*",
+        "indexsets:*"
+      ],
+      "read_only": false
+    },
+    {
+      "name": "Sidecar System (Internal)",
+      "description": "Internal technical role. Grants access to register and pull configurations for a Sidecar node (built-in)",
+      "permissions": [
+        "sidecar_collectors:read",
+        "sidecars:update",
+        "sidecar_collector_configurations:read"
+      ],
+      "read_only": true
+    },
+    {
+      "name": "Admin",
+      "description": "Grants all permissions for Graylog administrators (built-in)",
+      "permissions": [
+        "*"
+      ],
+      "read_only": true
+    },
+    {
+      "name": "Views User",
+      "description": "Allows using views and extended searches (built-in)",
+      "permissions": [
+        "extendedsearch:use",
+        "view:create",
+        "extendedsearch:create",
+        "view:use"
+      ],
+      "read_only": true
+    },
+    {
+      "name": "Alerts Manager",
+      "description": "Allows reading and writing all event definitions and event notifications (built-in)",
+      "permissions": [
+        "eventnotifications:edit",
+        "eventdefinitions:read",
+        "eventdefinitions:create",
+        "eventdefinitions:delete",
+        "eventdefinitions:execute",
+        "eventdefinitions:edit",
+        "eventnotifications:create",
+        "eventnotifications:delete",
+        "eventnotifications:read"
+      ],
+      "read_only": true
+    },
+    {
+      "name": "terraform-read",
+      "description": "terraform-read",
+      "permissions": [
+        "dashboards:read",
+        "indexsets:read",
+        "streams:read",
+        "pipeline_rule:read",
+        "users:tokenlist",
+        "users:tokencreate",
+        "users:edit",
+        "inputs:read",
+        "roles:read",
+        "users:list"
+      ],
+      "read_only": false
+    }
+  ],
+  "total": 8
+}

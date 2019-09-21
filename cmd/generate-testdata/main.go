@@ -1,5 +1,12 @@
 package main
 
+// Generate test data
+// 1. call Graylog API by API browser
+// 2. copy and paste the response to testdata/***.json
+// 3. add type and update data
+// 4. run this command and output test data
+// 5. copy and paste the test data to testdata/***.go
+
 import (
 	"encoding/json"
 	"errors"
@@ -66,6 +73,8 @@ var (
 	data = map[string]dumper{
 		"users": Users{},
 		"user":  User{},
+		"roles": Roles{},
+		"role":  Role{},
 	}
 )
 
@@ -77,6 +86,14 @@ type (
 	User struct {
 		user graylog.User
 	}
+
+	Roles struct {
+		roles graylog.RolesBody
+	}
+
+	Role struct {
+		role graylog.Role
+	}
 )
 
 func (users Users) dump(input string) error {
@@ -85,4 +102,12 @@ func (users Users) dump(input string) error {
 
 func (user User) dump(input string) error {
 	return dump(input, &user.user)
+}
+
+func (roles Roles) dump(input string) error {
+	return dump(input, &roles.roles)
+}
+
+func (role Role) dump(input string) error {
+	return dump(input, &role.role)
 }
