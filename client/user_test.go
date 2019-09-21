@@ -14,20 +14,75 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestDeleteUser(t *testing.T) {
+func TestClient_DeleteUser(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	if _, err := client.DeleteUser(ctx, ""); err == nil {
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Matcher: &flute.Matcher{
+								Path: "/api/users/foo",
+							},
+							Tester: &flute.Tester{
+								Method: "DELETE",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 204,
+								},
+							},
+						},
+						{
+							Matcher: &flute.Matcher{
+								Path: "/api/users/h",
+							},
+							Tester: &flute.Tester{
+								Method: "DELETE",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 404,
+									Header: http.Header{
+										"Content-Type": []string{"application/json"},
+									},
+								},
+								BodyString: `{
+  "type": "ApiError",
+  "message": "Couldn't find user h"
+}`,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	if _, err := cl.DeleteUser(ctx, ""); err == nil {
 		t.Fatal("username is required")
 	}
-	if _, err := client.DeleteUser(ctx, "h"); err == nil {
+	if _, err := cl.DeleteUser(ctx, "foo"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := cl.DeleteUser(ctx, "h"); err == nil {
 		t.Fatal(`no user with name "h" is found`)
 	}
 }
@@ -69,7 +124,9 @@ func TestClient_CreateUser(t *testing.T) {
 								}`,
 							},
 							Response: &flute.Response{
-								StatusCode: 201,
+								Base: http.Response{
+									StatusCode: 201,
+								},
 							},
 						},
 					},
@@ -89,7 +146,7 @@ func TestClient_CreateUser(t *testing.T) {
 	require.Nil(t, err)
 }
 
-func TestGetUsers(t *testing.T) {
+func TestClient_GetUsers(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -111,7 +168,7 @@ func TestGetUsers(t *testing.T) {
 	}
 }
 
-func TestGetUser(t *testing.T) {
+func TestClient_GetUser(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -178,7 +235,9 @@ func TestClient_UpdateUser(t *testing.T) {
 								}`,
 							},
 							Response: &flute.Response{
-								StatusCode: 204,
+								Base: http.Response{
+									StatusCode: 204,
+								},
 							},
 						},
 					},

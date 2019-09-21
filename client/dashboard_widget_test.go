@@ -16,7 +16,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/client"
 )
 
-func TestCreateDashboardWidget(t *testing.T) {
+func TestClient_CreateDashboardWidget(t *testing.T) {
 	ctx := context.Background()
 	authName := os.Getenv("GRAYLOG_AUTH_NAME")
 	authPass := os.Getenv("GRAYLOG_AUTH_PASSWORD")

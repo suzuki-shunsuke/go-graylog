@@ -8,7 +8,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestGetInputs(t *testing.T) {
+func TestClient_GetInputs(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -30,7 +30,7 @@ func TestGetInputs(t *testing.T) {
 	}
 }
 
-func TestGetInput(t *testing.T) {
+func TestClient_GetInput(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -63,7 +63,7 @@ func TestGetInput(t *testing.T) {
 	}
 }
 
-func TestCreateInput(t *testing.T) {
+func TestClient_CreateInput(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -92,7 +92,7 @@ func TestCreateInput(t *testing.T) {
 	}
 }
 
-func TestUpdateInput(t *testing.T) {
+func TestClient_UpdateInput(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -127,7 +127,7 @@ func TestUpdateInput(t *testing.T) {
 	}
 }
 
-func TestDeleteInput(t *testing.T) {
+func TestClient_DeleteInput(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {

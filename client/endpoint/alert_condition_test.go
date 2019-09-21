@@ -9,7 +9,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/client/endpoint"
 )
 
-func TestAlertConditions(t *testing.T) {
+func TestEndpoints_AlertConditions(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
 	require.Equal(t, fmt.Sprintf("%s/alerts/conditions", apiURL), ep.AlertConditions())

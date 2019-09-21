@@ -14,7 +14,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/client"
 )
 
-func TestGetStreamAlarmCallbacks(t *testing.T) {
+func TestClient_GetStreamAlarmCallbacks(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient("http://example.com/api", "admin", "password")
@@ -182,7 +182,7 @@ func TestGetStreamAlarmCallbacks(t *testing.T) {
 	}
 }
 
-func TestGetStreamAlarmCallback(t *testing.T) {
+func TestClient_GetStreamAlarmCallback(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient("http://example.com/api", "admin", "password")
@@ -231,7 +231,7 @@ func TestGetStreamAlarmCallback(t *testing.T) {
 	}
 }
 
-func TestCreateStreamAlarmCallback(t *testing.T) {
+func TestClient_CreateStreamAlarmCallback(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient("http://example.com/api", "admin", "password")
@@ -368,7 +368,7 @@ func TestCreateStreamAlarmCallback(t *testing.T) {
 	}
 }
 
-func TestUpdateStreamAlarmCallback(t *testing.T) {
+func TestClient_UpdateStreamAlarmCallback(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient("http://example.com/api", "admin", "password")
@@ -401,7 +401,7 @@ func TestUpdateStreamAlarmCallback(t *testing.T) {
 	}
 }
 
-func TestDeleteStreamAlarmCallback(t *testing.T) {
+func TestClient_DeleteStreamAlarmCallback(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient("http://example.com/api", "admin", "password")

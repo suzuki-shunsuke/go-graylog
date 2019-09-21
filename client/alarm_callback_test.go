@@ -7,7 +7,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestGetAlarmCallbacks(t *testing.T) {
+func TestClient_GetAlarmCallbacks(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {

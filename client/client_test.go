@@ -20,7 +20,7 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
-func TestName(t *testing.T) {
+func TestClient_Name(t *testing.T) {
 	name := "admin"
 	client, err := client.NewClient(endpoint, name, "password")
 	if err != nil {
@@ -41,7 +41,7 @@ func TestName(t *testing.T) {
 	}
 }
 
-func TestPassword(t *testing.T) {
+func TestClient_Password(t *testing.T) {
 	password := "password"
 	client, err := client.NewClient(endpoint, "admin", password)
 	if err != nil {

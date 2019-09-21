@@ -16,7 +16,7 @@ const (
 	grokPatternID = "5d6a29e86df4af0000000000"
 )
 
-func TestCreateGrokPattern(t *testing.T) {
+func TestClient_CreateGrokPattern(t *testing.T) {
 	ctx := context.Background()
 
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
@@ -49,7 +49,12 @@ func TestCreateGrokPattern(t *testing.T) {
 								}`,
 							},
 							Response: &flute.Response{
-								StatusCode: 201,
+								Base: http.Response{
+									StatusCode: 201,
+									Header: http.Header{
+										"Content-Type": []string{"application/json"},
+									},
+								},
 								BodyString: `{
 								  "name": "grok pattern name",
 								  "pattern": "grok pattern",
@@ -72,7 +77,7 @@ func TestCreateGrokPattern(t *testing.T) {
 	require.Equal(t, grokPatternID, pattern.ID)
 }
 
-func TestDeleteGrokPattern(t *testing.T) {
+func TestClient_DeleteGrokPattern(t *testing.T) {
 	ctx := context.Background()
 
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
@@ -101,7 +106,12 @@ func TestDeleteGrokPattern(t *testing.T) {
 								},
 							},
 							Response: &flute.Response{
-								StatusCode: 204,
+								Base: http.Response{
+									StatusCode: 204,
+									Header: http.Header{
+										"Content-Type": []string{"application/json"},
+									},
+								},
 							},
 						},
 					},
@@ -119,7 +129,7 @@ func TestDeleteGrokPattern(t *testing.T) {
 	require.Nil(t, err)
 }
 
-func TestGetGrokPattern(t *testing.T) {
+func TestClient_GetGrokPattern(t *testing.T) {
 	ctx := context.Background()
 
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
@@ -148,7 +158,12 @@ func TestGetGrokPattern(t *testing.T) {
 								},
 							},
 							Response: &flute.Response{
-								StatusCode: 200,
+								Base: http.Response{
+									StatusCode: 200,
+									Header: http.Header{
+										"Content-Type": []string{"application/json"},
+									},
+								},
 								BodyString: `{
 								  "name": "grok pattern name",
 								  "pattern": "grok pattern",
@@ -169,7 +184,7 @@ func TestGetGrokPattern(t *testing.T) {
 	require.Equal(t, "grok pattern", pattern.Pattern)
 }
 
-func TestGetGrokPatterns(t *testing.T) {
+func TestClient_GetGrokPatterns(t *testing.T) {
 	ctx := context.Background()
 
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
@@ -195,7 +210,12 @@ func TestGetGrokPatterns(t *testing.T) {
 								},
 							},
 							Response: &flute.Response{
-								StatusCode: 200,
+								Base: http.Response{
+									StatusCode: 200,
+									Header: http.Header{
+										"Content-Type": []string{"application/json"},
+									},
+								},
 								BodyString: `{"patterns":[{
 								  "name": "grok pattern name",
 								  "pattern": "grok pattern",
@@ -221,7 +241,7 @@ func TestGetGrokPatterns(t *testing.T) {
 	}, patterns)
 }
 
-func TestUpdateGrokPattern(t *testing.T) {
+func TestClient_UpdateGrokPattern(t *testing.T) {
 	ctx := context.Background()
 
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
@@ -255,7 +275,9 @@ func TestUpdateGrokPattern(t *testing.T) {
 								}`,
 							},
 							Response: &flute.Response{
-								StatusCode: 200,
+								Base: http.Response{
+									StatusCode: 200,
+								},
 								BodyString: `{
 								  "name": "grok pattern name",
 								  "pattern": "grok pattern",

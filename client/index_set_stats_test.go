@@ -8,7 +8,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestGetIndexSetStats(t *testing.T) {
+func TestClient_GetIndexSetStats(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -54,7 +54,7 @@ func TestGetIndexSetStats(t *testing.T) {
 	// }
 }
 
-func TestGetTotalIndexSetsStats(t *testing.T) {
+func TestClient_GetTotalIndexSetsStats(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {

@@ -7,7 +7,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestCreateRole(t *testing.T) {
+func TestClient_CreateRole(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -36,7 +36,7 @@ func TestCreateRole(t *testing.T) {
 	}
 }
 
-func TestGetRoles(t *testing.T) {
+func TestClient_GetRoles(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -55,7 +55,7 @@ func TestGetRoles(t *testing.T) {
 	}
 }
 
-func TestGetRole(t *testing.T) {
+func TestClient_GetRole(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -89,7 +89,7 @@ func TestGetRole(t *testing.T) {
 	}
 }
 
-func TestUpdateRole(t *testing.T) {
+func TestClient_UpdateRole(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -121,7 +121,7 @@ func TestUpdateRole(t *testing.T) {
 	}
 }
 
-func TestDeleteRole(t *testing.T) {
+func TestClient_DeleteRole(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {

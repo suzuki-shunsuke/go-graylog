@@ -10,7 +10,7 @@ import (
 	"github.com/suzuki-shunsuke/go-ptr"
 )
 
-func TestGetIndexSets(t *testing.T) {
+func TestClient_GetIndexSets(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -25,7 +25,7 @@ func TestGetIndexSets(t *testing.T) {
 	}
 }
 
-func TestGetIndexSet(t *testing.T) {
+func TestClient_GetIndexSet(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -68,7 +68,7 @@ func TestGetIndexSet(t *testing.T) {
 	}
 }
 
-func TestCreateIndexSet(t *testing.T) {
+func TestClient_CreateIndexSet(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -101,7 +101,7 @@ func TestCreateIndexSet(t *testing.T) {
 	}()
 }
 
-func TestUpdateIndexSet(t *testing.T) {
+func TestClient_UpdateIndexSet(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -143,7 +143,7 @@ func TestUpdateIndexSet(t *testing.T) {
 	}
 }
 
-func TestDeleteIndexSet(t *testing.T) {
+func TestClient_DeleteIndexSet(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -163,7 +163,7 @@ func TestDeleteIndexSet(t *testing.T) {
 	}
 }
 
-func TestSetDefaultIndexSet(t *testing.T) {
+func TestClient_SetDefaultIndexSet(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {

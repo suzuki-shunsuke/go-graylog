@@ -13,7 +13,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/client"
 )
 
-func TestGetPipelineRules(t *testing.T) {
+func TestClient_GetPipelineRules(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient("http://example.com/api", "admin", "password")
@@ -74,7 +74,7 @@ func TestGetPipelineRules(t *testing.T) {
 	}
 }
 
-func TestGetPipelineRule(t *testing.T) {
+func TestClient_GetPipelineRule(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient(
@@ -119,7 +119,7 @@ func TestGetPipelineRule(t *testing.T) {
 	}
 }
 
-func TestCreatePipelineRule(t *testing.T) {
+func TestClient_CreatePipelineRule(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient("http://example.com/api", "admin", "password")
@@ -170,7 +170,7 @@ func TestCreatePipelineRule(t *testing.T) {
 	}
 }
 
-func TestUpdatePipelineRule(t *testing.T) {
+func TestClient_UpdatePipelineRule(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient("http://example.com/api", "admin", "password")
@@ -221,7 +221,7 @@ func TestUpdatePipelineRule(t *testing.T) {
 	}
 }
 
-func TestDeletePipelineRule(t *testing.T) {
+func TestClient_DeletePipelineRule(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient("http://example.com/api", "admin", "password")
