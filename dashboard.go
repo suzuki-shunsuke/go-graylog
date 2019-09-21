@@ -2,6 +2,7 @@ package graylog
 
 import (
 	"encoding/json"
+	"sort"
 )
 
 type (
@@ -55,6 +56,13 @@ func (dashboard *Dashboard) UnmarshalJSON(b []byte) error {
 		position.WidgetID = id
 		positions = append(positions, position)
 	}
+
+	// sort positions in order to test equality at test.
+	// we may improve this behavior.
+	sort.Slice(positions, func(i, j int) bool {
+		return positions[i].WidgetID > positions[j].WidgetID
+	})
+
 	dashboard.Positions = positions
 	return nil
 }

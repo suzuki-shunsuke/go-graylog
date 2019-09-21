@@ -54,18 +54,18 @@ var (
 		},
 		Positions: []graylog.DashboardWidgetPosition{
 			{
-				WidgetID: "78ae7029-0eb4-4064-b3a0-c51306093877",
-				Width:    2,
-				Col:      1,
-				Row:      0,
-				Height:   2,
-			},
-			{
 				WidgetID: "ede5fd51-6286-40ee-9b82-249207808344",
 				Width:    1,
 				Col:      0,
 				Row:      0,
 				Height:   1,
+			},
+			{
+				WidgetID: "78ae7029-0eb4-4064-b3a0-c51306093877",
+				Width:    2,
+				Col:      1,
+				Row:      0,
+				Height:   2,
 			},
 		},
 		CreatorUserID: "admin",

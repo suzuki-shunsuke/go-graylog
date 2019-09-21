@@ -2,6 +2,7 @@ package client_test
 
 import (
 	"context"
+	"io/ioutil"
 	"net/http"
 	"testing"
 
@@ -10,32 +11,59 @@ import (
 
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
+	"github.com/suzuki-shunsuke/go-graylog/testdata"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
 func TestClient_GetStreamRules(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
-	stream, f, err := testutil.GetStream(ctx, client, server, 2)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if f != nil {
-		defer f(stream.ID)
-	}
 
-	if _, _, _, err := client.GetStreamRules(ctx, stream.ID); err != nil {
-		t.Fatal("Failed to GetStreamRules", err)
-	}
-	if _, _, _, err := client.GetStreamRules(ctx, "h"); err == nil {
-		t.Fatal(`no stream with id "h" is found`)
-	}
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	buf, err := ioutil.ReadFile("../testdata/stream_rules.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	id := "5d84c1a92ab79c000d35d6ca"
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "GET",
+								Path:   "/api/streams/" + id + "/rules",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: bodyStr,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	_, _, _, err = cl.GetStreamRules(ctx, "")
+	require.NotNil(t, err)
+
+	rules, total, _, err := cl.GetStreamRules(ctx, id)
+	require.Nil(t, err)
+	require.Equal(t, testdata.StreamRules.Total, total)
+	require.Equal(t, testdata.StreamRules.StreamRules, rules)
 }
 
 func TestClient_CreateStreamRule(t *testing.T) {
