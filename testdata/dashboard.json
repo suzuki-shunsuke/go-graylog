@@ -1,0 +1,61 @@
+{
+  "creator_user_id": "admin",
+  "description": "test",
+  "created_at": "2019-09-20T12:10:17.486Z",
+  "positions": {
+    "78ae7029-0eb4-4064-b3a0-c51306093877": {
+      "width": 2,
+      "col": 1,
+      "row": 0,
+      "height": 2
+    },
+    "ede5fd51-6286-40ee-9b82-249207808344": {
+      "width": 1,
+      "col": 0,
+      "row": 0,
+      "height": 1
+    }
+  },
+  "id": "5d84c1a92ab79c000d35d6c7",
+  "title": "test",
+  "widgets": [
+    {
+      "creator_user_id": "admin",
+      "cache_time": 10,
+      "description": "Quick values",
+      "id": "78ae7029-0eb4-4064-b3a0-c51306093877",
+      "type": "QUICKVALUES",
+      "config": {
+        "timerange": {
+          "type": "relative",
+          "range": 300
+        },
+        "field": "status",
+        "stream_id": "5d84c1a92ab79c000d35d6ca",
+        "query": "",
+        "show_data_table": true,
+        "limit": 5,
+        "sort_order": "desc",
+        "show_pie_chart": true,
+        "data_table_limit": 60
+      }
+    },
+    {
+      "creator_user_id": "admin",
+      "cache_time": 10,
+      "description": "Stream search result count change",
+      "id": "ede5fd51-6286-40ee-9b82-249207808344",
+      "type": "STREAM_SEARCH_RESULT_COUNT",
+      "config": {
+        "timerange": {
+          "type": "relative",
+          "range": 400
+        },
+        "lower_is_better": true,
+        "stream_id": "5d84c1a92ab79c000d35d6ca",
+        "trend": true,
+        "query": ""
+      }
+    }
+  ]
+}

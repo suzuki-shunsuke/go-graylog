@@ -2,6 +2,7 @@ package client_test
 
 import (
 	"context"
+	"io/ioutil"
 	"net/http"
 	"testing"
 
@@ -10,6 +11,7 @@ import (
 
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
+	"github.com/suzuki-shunsuke/go-graylog/testdata"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
@@ -93,36 +95,50 @@ func TestClient_DeleteDashboard(t *testing.T) {
 
 func TestClient_GetDashboard(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	dashboard := testutil.Dashboard()
-	if _, err := client.CreateDashboard(ctx, dashboard); err != nil {
-		t.Fatal(err)
-	}
-	defer client.DeleteDashboard(ctx, dashboard.ID)
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
 
-	r, _, err := client.GetDashboard(ctx, dashboard.ID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if r == nil {
-		t.Fatal("dashboard is nil")
-	}
-	if r.ID != dashboard.ID {
-		t.Fatalf(`dashboard.ID = "%s", wanted "%s"`, r.ID, dashboard.ID)
-	}
-	if _, _, err := client.GetDashboard(ctx, ""); err == nil {
-		t.Fatal("id is required")
-	}
-	if _, _, err := client.GetDashboard(ctx, "h"); err == nil {
-		t.Fatal("dashboard should not be found")
-	}
+	buf, err := ioutil.ReadFile("../testdata/dashboard.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "GET",
+								Path:   "/api/dashboards/" + testdata.Dashboard.ID,
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: bodyStr,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	_, _, err = cl.GetDashboard(ctx, "")
+	require.NotNil(t, err)
+
+	db, _, err := cl.GetDashboard(ctx, testdata.Dashboard.ID)
+	require.Nil(t, err)
+	require.Equal(t, testdata.Dashboard, db)
 }
 
 func TestClient_GetDashboards(t *testing.T) {
