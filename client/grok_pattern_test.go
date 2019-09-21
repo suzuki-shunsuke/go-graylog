@@ -49,7 +49,12 @@ func TestCreateGrokPattern(t *testing.T) {
 								}`,
 							},
 							Response: &flute.Response{
-								StatusCode: 201,
+								Base: http.Response{
+									StatusCode: 201,
+									Header: http.Header{
+										"Content-Type": []string{"application/json"},
+									},
+								},
 								BodyString: `{
 								  "name": "grok pattern name",
 								  "pattern": "grok pattern",
@@ -101,7 +106,12 @@ func TestDeleteGrokPattern(t *testing.T) {
 								},
 							},
 							Response: &flute.Response{
-								StatusCode: 204,
+								Base: http.Response{
+									StatusCode: 204,
+									Header: http.Header{
+										"Content-Type": []string{"application/json"},
+									},
+								},
 							},
 						},
 					},
@@ -148,7 +158,12 @@ func TestGetGrokPattern(t *testing.T) {
 								},
 							},
 							Response: &flute.Response{
-								StatusCode: 200,
+								Base: http.Response{
+									StatusCode: 200,
+									Header: http.Header{
+										"Content-Type": []string{"application/json"},
+									},
+								},
 								BodyString: `{
 								  "name": "grok pattern name",
 								  "pattern": "grok pattern",
@@ -195,7 +210,12 @@ func TestGetGrokPatterns(t *testing.T) {
 								},
 							},
 							Response: &flute.Response{
-								StatusCode: 200,
+								Base: http.Response{
+									StatusCode: 200,
+									Header: http.Header{
+										"Content-Type": []string{"application/json"},
+									},
+								},
 								BodyString: `{"patterns":[{
 								  "name": "grok pattern name",
 								  "pattern": "grok pattern",
@@ -255,7 +275,9 @@ func TestUpdateGrokPattern(t *testing.T) {
 								}`,
 							},
 							Response: &flute.Response{
-								StatusCode: 200,
+								Base: http.Response{
+									StatusCode: 200,
+								},
 								BodyString: `{
 								  "name": "grok pattern name",
 								  "pattern": "grok pattern",

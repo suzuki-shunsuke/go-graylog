@@ -46,7 +46,12 @@ func TestCreateDashboard(t *testing.T) {
 								}`,
 							},
 							Response: &flute.Response{
-								StatusCode: 201,
+								Base: http.Response{
+									StatusCode: 201,
+									Header: http.Header{
+										"Content-Type": []string{"application/json"},
+									},
+								},
 								BodyString: `{
 								  "dashboard_id": "5b39838b08813b0000000000"
 								}`,

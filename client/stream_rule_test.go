@@ -207,7 +207,9 @@ func Test_client_GetStreamRuleTypes(t *testing.T) {
 								},
 							},
 							Response: &flute.Response{
-								StatusCode: 200,
+								Base: http.Response{
+									StatusCode: 200,
+								},
 								BodyString: `[
   {
     "id": 1,
