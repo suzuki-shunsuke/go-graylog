@@ -71,14 +71,20 @@ func dump(input string, dest interface{}) error {
 
 var (
 	data = map[string]dumper{
-		"users":      Users{},
-		"user":       User{},
-		"roles":      Roles{},
-		"role":       Role{},
-		"index_sets": IndexSets{},
-		"index_set":  IndexSet{},
-		"inputs":     Inputs{},
-		"input":      Input{},
+		"users":        Users{},
+		"user":         User{},
+		"roles":        Roles{},
+		"role":         Role{},
+		"index_sets":   IndexSets{},
+		"index_set":    IndexSet{},
+		"inputs":       Inputs{},
+		"input":        Input{},
+		"streams":      Streams{},
+		"stream":       Stream{},
+		"stream_rules": StreamRules{},
+		"stream_rule":  StreamRule{},
+		"dashboards":   Dashboards{},
+		"dashboard":    Dashboard{},
 	}
 )
 
@@ -114,6 +120,30 @@ type (
 	Input struct {
 		data graylog.Input
 	}
+
+	Streams struct {
+		data graylog.StreamsBody
+	}
+
+	Stream struct {
+		data graylog.Stream
+	}
+
+	StreamRules struct {
+		data graylog.StreamRulesBody
+	}
+
+	StreamRule struct {
+		data graylog.StreamRule
+	}
+
+	Dashboards struct {
+		data graylog.DashboardsBody
+	}
+
+	Dashboard struct {
+		data graylog.Dashboard
+	}
 )
 
 func (users Users) dump(input string) error {
@@ -146,4 +176,28 @@ func (ip Inputs) dump(input string) error {
 
 func (ip Input) dump(input string) error {
 	return dump(input, &ip.data)
+}
+
+func (rule StreamRule) dump(input string) error {
+	return dump(input, &rule.data)
+}
+
+func (rules StreamRules) dump(input string) error {
+	return dump(input, &rules.data)
+}
+
+func (streams Streams) dump(input string) error {
+	return dump(input, &streams.data)
+}
+
+func (stream Stream) dump(input string) error {
+	return dump(input, &stream.data)
+}
+
+func (db Dashboard) dump(input string) error {
+	return dump(input, &db.data)
+}
+
+func (db Dashboards) dump(input string) error {
+	return dump(input, &db.data)
 }

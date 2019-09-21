@@ -2,25 +2,64 @@ package client_test
 
 import (
 	"context"
+	"io/ioutil"
+	"net/http"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+	"github.com/suzuki-shunsuke/flute/flute"
+
 	"github.com/gofrs/uuid"
+
+	"github.com/suzuki-shunsuke/go-graylog/client"
+	"github.com/suzuki-shunsuke/go-graylog/testdata"
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
 func TestClient_GetStreams(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	if _, _, _, err := client.GetStreams(ctx); err != nil {
-		t.Fatal(err)
-	}
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	buf, err := ioutil.ReadFile("../testdata/streams.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "GET",
+								Path:   "/api/streams",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: bodyStr,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	streams, total, _, err := cl.GetStreams(ctx)
+	require.Nil(t, err)
+	require.Equal(t, testdata.Streams.Total, total)
+	require.Equal(t, testdata.Streams.Streams, streams)
 }
 
 func TestClient_CreateStream(t *testing.T) {
@@ -84,50 +123,50 @@ func TestClient_GetEnabledStreams(t *testing.T) {
 
 func TestClient_GetStream(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	u, err := uuid.NewV4()
-	if err != nil {
-		t.Fatal(err)
-	}
-	is := testutil.IndexSet(u.String())
-	if _, err := client.CreateIndexSet(ctx, is); err != nil {
-		t.Fatal(err)
-	}
-	testutil.WaitAfterCreateIndexSet(server)
-	defer func(id string) {
-		client.DeleteIndexSet(ctx, id)
-		testutil.WaitAfterDeleteIndexSet(server)
-	}(is.ID)
-	stream := testutil.Stream()
-	stream.IndexSetID = is.ID
-	if _, err := client.CreateStream(ctx, stream); err != nil {
-		t.Fatal(err)
-	}
-	defer client.DeleteStream(ctx, stream.ID)
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
 
-	r, _, err := client.GetStream(ctx, stream.ID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if r == nil {
-		t.Fatal("stream is nil")
-	}
-	if r.ID != stream.ID {
-		t.Fatalf(`stream.ID = "%s", wanted "%s"`, r.ID, stream.ID)
-	}
-	if _, _, err := client.GetStream(ctx, ""); err == nil {
-		t.Fatal("id is required")
-	}
-	if _, _, err := client.GetStream(ctx, "h"); err == nil {
-		t.Fatal("stream should not be found")
-	}
+	buf, err := ioutil.ReadFile("../testdata/stream.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "GET",
+								Path:   "/api/streams/" + testdata.Stream.ID,
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: bodyStr,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	_, _, err = cl.GetStream(ctx, "")
+	require.NotNil(t, err)
+
+	stream, _, err := cl.GetStream(ctx, testdata.Stream.ID)
+	require.Nil(t, err)
+	require.Equal(t, testdata.Stream, stream)
 }
 
 func TestClient_UpdateStream(t *testing.T) {
