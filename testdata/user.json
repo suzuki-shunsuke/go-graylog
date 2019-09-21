@@ -1,0 +1,24 @@
+{
+  "id": "local:admin",
+  "username": "admin",
+  "email": "",
+  "full_name": "Administrator",
+  "permissions": [
+    "*"
+  ],
+  "preferences": {
+    "updateUnfocussed": false,
+    "enableSmartSearch": true
+  },
+  "timezone": "UTC",
+  "session_timeout_ms": 28800000,
+  "external": false,
+  "startpage": null,
+  "roles": [
+    "Admin"
+  ],
+  "read_only": true,
+  "session_active": false,
+  "last_activity": null,
+  "client_address": null
+}

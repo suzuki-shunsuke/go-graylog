@@ -2,6 +2,7 @@ package client_test
 
 import (
 	"context"
+	"io/ioutil"
 	"net/http"
 	"testing"
 
@@ -11,7 +12,7 @@ import (
 
 	"github.com/suzuki-shunsuke/go-graylog"
 	"github.com/suzuki-shunsuke/go-graylog/client"
-	"github.com/suzuki-shunsuke/go-graylog/testutil"
+	"github.com/suzuki-shunsuke/go-graylog/testdata"
 )
 
 func TestClient_DeleteUser(t *testing.T) {
@@ -148,58 +149,100 @@ func TestClient_CreateUser(t *testing.T) {
 
 func TestClient_GetUsers(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	users, _, err := client.GetUsers(ctx)
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	buf, err := ioutil.ReadFile("../testdata/users.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Matcher: &flute.Matcher{
+								Path: "/api/users",
+							},
+							Tester: &flute.Tester{
+								Method: "GET",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: bodyStr,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	users, _, err := cl.GetUsers(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if users == nil {
-		t.Fatal("users is nil")
-	}
-	if len(users) == 0 {
-		t.Fatal("users is empty")
-	}
+	require.Equal(t, testdata.Users.Users, users)
 }
 
 func TestClient_GetUser(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	user := testutil.User()
-	client.DeleteUser(ctx, user.Username)
-	if _, _, err := client.GetUser(ctx, user.Username); err == nil {
-		t.Fatal("user should be deleted")
-	}
-	if _, err := client.CreateUser(ctx, user); err != nil {
-		t.Fatal(err)
-	}
-	defer client.DeleteUser(ctx, user.Username)
-	u, _, err := client.GetUser(ctx, user.Username)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if u == nil {
-		t.Fatal("user is nil")
-	}
-	if u.Username != user.Username {
-		t.Fatalf(`user.Username = "%s", wanted "%s"`, u.Username, user.Username)
-	}
-	if _, _, err := client.GetUser(ctx, ""); err == nil {
-		t.Fatal("user name is required")
-	}
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	buf, err := ioutil.ReadFile("../testdata/user.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Matcher: &flute.Matcher{
+								Path: "/api/users/admin",
+							},
+							Tester: &flute.Tester{
+								Method: "GET",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: bodyStr,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	_, _, err = cl.GetUser(ctx, "")
+	require.NotNil(t, err)
+	u, _, err := cl.GetUser(ctx, "admin")
+	require.Nil(t, err)
+	require.Equal(t, testdata.User, u)
 }
 
 func TestClient_UpdateUser(t *testing.T) {
