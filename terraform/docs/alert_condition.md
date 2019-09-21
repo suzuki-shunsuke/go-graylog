@@ -1,22 +1,7 @@
 # graylog_alert_condition
 
-* https://docs.graylog.org/en/latest/pages/streams/alerts.html#conditions
-* https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_alert_condition.go
-
-```hcl
-resource "graylog_alert_condition" "test-terraform" {
-  type = "field_content_value"
-  stream_id = "${graylog_stream.test-terraform.id}"
-  title = "test"
-  field_content_value_parameters = {
-    field = "message"
-    value = "hoge hoge"
-    backlog = 1
-    query = "*"
-    grace = 0
-  }
-}
-```
+* [Example](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/example/v0.12/alert_condition.tf)
+* [Source code](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_alert_condition.go)
 
 ## Breaking Changes
 
@@ -35,24 +20,9 @@ title | string |
 
 name | default | type | description
 --- | --- | --- | ---
-in_grace | bool |
+in_grace | | bool |
 
 ## type: field_content_value 
-
-```hcl
-resource "graylog_alert_condition" "test-terraform" {
-  type = "field_content_value"
-  stream_id = "${graylog_stream.test-terraform.id}"
-  title = "test"
-  field_content_value_parameters = {
-    field = "message"
-    value = "hoge hoge"
-    backlog = 1
-    query = "*"
-    grace = 0
-  }
-}
-```
 
 ### Required Argument
 
