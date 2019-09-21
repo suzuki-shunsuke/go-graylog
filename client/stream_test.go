@@ -8,7 +8,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestGetStreams(t *testing.T) {
+func TestClient_GetStreams(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -23,7 +23,7 @@ func TestGetStreams(t *testing.T) {
 	}
 }
 
-func TestCreateStream(t *testing.T) {
+func TestClient_CreateStream(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -64,7 +64,7 @@ func TestCreateStream(t *testing.T) {
 	defer client.DeleteStream(ctx, stream.ID)
 }
 
-func TestGetEnabledStreams(t *testing.T) {
+func TestClient_GetEnabledStreams(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -82,7 +82,7 @@ func TestGetEnabledStreams(t *testing.T) {
 	}
 }
 
-func TestGetStream(t *testing.T) {
+func TestClient_GetStream(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -130,7 +130,7 @@ func TestGetStream(t *testing.T) {
 	}
 }
 
-func TestUpdateStream(t *testing.T) {
+func TestClient_UpdateStream(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -165,7 +165,7 @@ func TestUpdateStream(t *testing.T) {
 	}
 }
 
-func TestDeleteStream(t *testing.T) {
+func TestClient_DeleteStream(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -185,7 +185,7 @@ func TestDeleteStream(t *testing.T) {
 	}
 }
 
-func TestPauseStream(t *testing.T) {
+func TestClient_PauseStream(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -228,7 +228,7 @@ func TestPauseStream(t *testing.T) {
 	// TODO test pause
 }
 
-func TestResumeStream(t *testing.T) {
+func TestClient_ResumeStream(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {

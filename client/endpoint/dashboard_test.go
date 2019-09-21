@@ -9,13 +9,13 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/client/endpoint"
 )
 
-func TestDashboards(t *testing.T) {
+func TestEndpoints_Dashboards(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
 	require.Equal(t, fmt.Sprintf("%s/dashboards", apiURL), ep.Dashboards())
 }
 
-func TestDashboard(t *testing.T) {
+func TestEndpoints_Dashboard(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
 	require.Equal(t, fmt.Sprintf("%s/dashboards/%s", apiURL, ID), ep.Dashboard(ID))

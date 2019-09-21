@@ -13,7 +13,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestGetStreamRules(t *testing.T) {
+func TestClient_GetStreamRules(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -38,7 +38,7 @@ func TestGetStreamRules(t *testing.T) {
 	}
 }
 
-func TestCreateStreamRule(t *testing.T) {
+func TestClient_CreateStreamRule(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -77,7 +77,7 @@ func TestCreateStreamRule(t *testing.T) {
 	}
 }
 
-func TestUpdateStreamRule(t *testing.T) {
+func TestClient_UpdateStreamRule(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -132,7 +132,7 @@ func TestUpdateStreamRule(t *testing.T) {
 	}
 }
 
-func TestDeleteStreamRule(t *testing.T) {
+func TestClient_DeleteStreamRule(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -176,7 +176,7 @@ func TestDeleteStreamRule(t *testing.T) {
 	}
 }
 
-func Test_client_GetStreamRuleTypes(t *testing.T) {
+func TestClient_GetStreamRuleTypes(t *testing.T) {
 	ctx := context.Background()
 
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")

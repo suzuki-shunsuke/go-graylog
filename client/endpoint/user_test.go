@@ -9,13 +9,13 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/client/endpoint"
 )
 
-func TestUsers(t *testing.T) {
+func TestEndpoints_Users(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
 	require.Equal(t, fmt.Sprintf("%s/users", apiURL), ep.Users())
 }
 
-func TestUser(t *testing.T) {
+func TestEndpoints_User(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
 	require.Equal(t, fmt.Sprintf("%s/users/foo", apiURL), ep.User("foo"))

@@ -14,7 +14,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/client"
 )
 
-func TestGetLDAPSetting(t *testing.T) {
+func TestClient_GetLDAPSetting(t *testing.T) {
 	ctx := context.Background()
 	authName := os.Getenv("GRAYLOG_AUTH_NAME")
 	authPass := os.Getenv("GRAYLOG_AUTH_PASSWORD")
@@ -79,7 +79,7 @@ func TestGetLDAPSetting(t *testing.T) {
 	}
 }
 
-func TestUpdateLDAPSetting(t *testing.T) {
+func TestClient_UpdateLDAPSetting(t *testing.T) {
 	ctx := context.Background()
 	authName := os.Getenv("GRAYLOG_AUTH_NAME")
 	authPass := os.Getenv("GRAYLOG_AUTH_PASSWORD")

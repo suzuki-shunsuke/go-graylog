@@ -9,25 +9,25 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/client/endpoint"
 )
 
-func TestRoles(t *testing.T) {
+func TestEndpoints_Roles(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
 	require.Equal(t, fmt.Sprintf("%s/roles", apiURL), ep.Roles())
 }
 
-func TestRole(t *testing.T) {
+func TestEndpoints_Role(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
 	require.Equal(t, fmt.Sprintf("%s/roles/foo", apiURL), ep.Role("foo"))
 }
 
-func TestRoleMembers(t *testing.T) {
+func TestEndpoints_RoleMembers(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
 	require.Equal(t, fmt.Sprintf("%s/roles/foo/members", apiURL), ep.RoleMembers("foo"))
 }
 
-func TestRoleMember(t *testing.T) {
+func TestEndpoints_RoleMember(t *testing.T) {
 	ep, err := endpoint.NewEndpoints(apiURL)
 	require.Nil(t, err)
 	require.Equal(

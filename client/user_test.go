@@ -146,7 +146,7 @@ func TestClient_CreateUser(t *testing.T) {
 	require.Nil(t, err)
 }
 
-func TestGetUsers(t *testing.T) {
+func TestClient_GetUsers(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -168,7 +168,7 @@ func TestGetUsers(t *testing.T) {
 	}
 }
 
-func TestGetUser(t *testing.T) {
+func TestClient_GetUser(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {

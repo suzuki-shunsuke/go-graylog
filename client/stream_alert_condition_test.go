@@ -13,7 +13,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/client"
 )
 
-func TestGetStreamAlertConditions(t *testing.T) {
+func TestClient_GetStreamAlertConditions(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient("http://example.com/api", "admin", "password")
@@ -112,7 +112,7 @@ func TestGetStreamAlertConditions(t *testing.T) {
 	}
 }
 
-func TestGetStreamAlertCondition(t *testing.T) {
+func TestClient_GetStreamAlertCondition(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient("http://example.com/api", "admin", "password")
@@ -170,7 +170,7 @@ func TestGetStreamAlertCondition(t *testing.T) {
 	}
 }
 
-func TestCreateStreamAlertCondition(t *testing.T) {
+func TestClient_CreateStreamAlertCondition(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient("http://example.com/api", "admin", "password")
@@ -213,7 +213,7 @@ func TestCreateStreamAlertCondition(t *testing.T) {
 	}
 }
 
-func TestUpdateStreamAlertCondition(t *testing.T) {
+func TestClient_UpdateStreamAlertCondition(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient("http://example.com/api", "admin", "password")
@@ -249,7 +249,7 @@ func TestUpdateStreamAlertCondition(t *testing.T) {
 	}
 }
 
-func TestDeleteStreamAlertCondition(t *testing.T) {
+func TestClient_DeleteStreamAlertCondition(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient("http://example.com/api", "admin", "password")

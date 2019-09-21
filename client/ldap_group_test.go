@@ -12,7 +12,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/client"
 )
 
-func TestGetLDAPGroups(t *testing.T) {
+func TestClient_GetLDAPGroups(t *testing.T) {
 	ctx := context.Background()
 	authName := os.Getenv("GRAYLOG_AUTH_NAME")
 	authPass := os.Getenv("GRAYLOG_AUTH_PASSWORD")
@@ -47,7 +47,7 @@ func TestGetLDAPGroups(t *testing.T) {
 	}
 }
 
-func TestGetLDAPGroupRoleMapping(t *testing.T) {
+func TestClient_GetLDAPGroupRoleMapping(t *testing.T) {
 	ctx := context.Background()
 	authName := os.Getenv("GRAYLOG_AUTH_NAME")
 	authPass := os.Getenv("GRAYLOG_AUTH_PASSWORD")
@@ -80,7 +80,7 @@ func TestGetLDAPGroupRoleMapping(t *testing.T) {
 	}
 }
 
-func TestUpdateLDAPGroupRoleMapping(t *testing.T) {
+func TestClient_UpdateLDAPGroupRoleMapping(t *testing.T) {
 	ctx := context.Background()
 	authName := os.Getenv("GRAYLOG_AUTH_NAME")
 	authPass := os.Getenv("GRAYLOG_AUTH_PASSWORD")

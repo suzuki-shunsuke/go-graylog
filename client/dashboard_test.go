@@ -13,7 +13,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestCreateDashboard(t *testing.T) {
+func TestClient_CreateDashboard(t *testing.T) {
 	ctx := context.Background()
 
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
@@ -71,7 +71,7 @@ func TestCreateDashboard(t *testing.T) {
 	require.Equal(t, "5b39838b08813b0000000000", db.ID)
 }
 
-func TestDeleteDashboard(t *testing.T) {
+func TestClient_DeleteDashboard(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -91,7 +91,7 @@ func TestDeleteDashboard(t *testing.T) {
 	}
 }
 
-func TestGetDashboard(t *testing.T) {
+func TestClient_GetDashboard(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -125,7 +125,7 @@ func TestGetDashboard(t *testing.T) {
 	}
 }
 
-func TestGetDashboards(t *testing.T) {
+func TestClient_GetDashboards(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -140,7 +140,7 @@ func TestGetDashboards(t *testing.T) {
 	}
 }
 
-func TestUpdateDashboard(t *testing.T) {
+func TestClient_UpdateDashboard(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {

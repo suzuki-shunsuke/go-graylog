@@ -89,7 +89,7 @@ func sampleExtractor1() *graylog.Extractor {
 	}
 }
 
-func TestGetExtractors(t *testing.T) {
+func TestClient_GetExtractors(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient(
@@ -240,7 +240,7 @@ func TestGetExtractors(t *testing.T) {
 	}
 }
 
-func TestGetExtractor(t *testing.T) {
+func TestClient_GetExtractor(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient(
@@ -380,7 +380,7 @@ func TestGetExtractor(t *testing.T) {
 	}
 }
 
-func TestCreateExtractor(t *testing.T) {
+func TestClient_CreateExtractor(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient(
@@ -471,7 +471,7 @@ func TestCreateExtractor(t *testing.T) {
 	}
 }
 
-func TestUpdateExtractor(t *testing.T) {
+func TestClient_UpdateExtractor(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient(
@@ -653,7 +653,7 @@ func TestUpdateExtractor(t *testing.T) {
 	}
 }
 
-func TestDeleteExtractor(t *testing.T) {
+func TestClient_DeleteExtractor(t *testing.T) {
 	ctx := context.Background()
 	defer gock.Off()
 	client, err := client.NewClient(

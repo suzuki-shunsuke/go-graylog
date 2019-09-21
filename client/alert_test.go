@@ -7,7 +7,7 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/testutil"
 )
 
-func TestGetAlerts(t *testing.T) {
+func TestClient_GetAlerts(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
@@ -23,7 +23,7 @@ func TestGetAlerts(t *testing.T) {
 	}
 }
 
-func TestGetAlert(t *testing.T) {
+func TestClient_GetAlert(t *testing.T) {
 	ctx := context.Background()
 	server, client, err := testutil.GetServerAndClient()
 	if err != nil {
