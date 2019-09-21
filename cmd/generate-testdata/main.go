@@ -71,20 +71,21 @@ func dump(input string, dest interface{}) error {
 
 var (
 	data = map[string]dumper{
-		"users":        Users{},
-		"user":         User{},
-		"roles":        Roles{},
-		"role":         Role{},
-		"index_sets":   IndexSets{},
-		"index_set":    IndexSet{},
-		"inputs":       Inputs{},
-		"input":        Input{},
-		"streams":      Streams{},
-		"stream":       Stream{},
-		"stream_rules": StreamRules{},
-		"stream_rule":  StreamRule{},
-		"dashboards":   Dashboards{},
-		"dashboard":    Dashboard{},
+		"users":                  Users{},
+		"user":                   User{},
+		"roles":                  Roles{},
+		"role":                   Role{},
+		"index_sets":             IndexSets{},
+		"index_set":              IndexSet{},
+		"inputs":                 Inputs{},
+		"input":                  Input{},
+		"streams":                Streams{},
+		"stream":                 Stream{},
+		"stream_rules":           StreamRules{},
+		"stream_rule":            StreamRule{},
+		"dashboards":             Dashboards{},
+		"dashboard":              Dashboard{},
+		"stream_alarm_callbacks": StreamAlarmCallbacks{},
 	}
 )
 
@@ -144,6 +145,10 @@ type (
 	Dashboard struct {
 		data graylog.Dashboard
 	}
+
+	StreamAlarmCallbacks struct {
+		data graylog.AlarmCallbacksBody
+	}
 )
 
 func (users Users) dump(input string) error {
@@ -200,4 +205,8 @@ func (db Dashboard) dump(input string) error {
 
 func (db Dashboards) dump(input string) error {
 	return dump(input, &db.data)
+}
+
+func (ac StreamAlarmCallbacks) dump(input string) error {
+	return dump(input, &ac.data)
 }
