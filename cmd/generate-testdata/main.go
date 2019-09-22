@@ -88,6 +88,8 @@ var (
 		"stream_alarm_callbacks":      StreamAlarmCallbacks{},
 		"slack_stream_alarm_callback": StreamAlarmCallback{},
 		"http_stream_alarm_callback":  StreamAlarmCallback{},
+		"email_stream_alarm_callback": StreamAlarmCallback{},
+		"stream_alert_conditions":     StreamAlertConditions{},
 	}
 )
 
@@ -155,6 +157,10 @@ type (
 	StreamAlarmCallback struct {
 		data graylog.AlarmCallback
 	}
+
+	StreamAlertConditions struct {
+		data graylog.AlertConditionsBody
+	}
 )
 
 func (users Users) dump(input string) error {
@@ -218,5 +224,9 @@ func (ac StreamAlarmCallbacks) dump(input string) error {
 }
 
 func (ac StreamAlarmCallback) dump(input string) error {
+	return dump(input, &ac.data)
+}
+
+func (ac StreamAlertConditions) dump(input string) error {
 	return dump(input, &ac.data)
 }
