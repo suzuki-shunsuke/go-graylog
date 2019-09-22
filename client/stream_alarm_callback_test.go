@@ -70,51 +70,56 @@ func TestClient_GetStreamAlarmCallbacks(t *testing.T) {
 
 func TestClient_GetStreamAlarmCallback(t *testing.T) {
 	ctx := context.Background()
-	defer gock.Off()
-	client, err := client.NewClient("http://example.com/api", "admin", "password")
+
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	data := []struct {
-		statusCode int
-		resp       string
-		ac         graylog.AlarmCallback
-		checkErr   func(require.TestingT, interface{}, ...interface{})
-	}{{
-		statusCode: 200,
-		resp: `{
-      "id": "5c288624c9e77c0000000000",
-      "type": "org.graylog2.alarmcallbacks.HTTPAlarmCallback",
-      "configuration": {
-        "url": "https://example.com"
-      },
-      "stream_id": "5b93b425c9e0000000000000",
-      "title": "http alarm callback",
-      "created_at": "2018-12-30T08:47:32.865+0000",
-      "creator_user_id": "admin"
-    }`,
-		ac: graylog.AlarmCallback{
-			ID: "5c288624c9e77c0000000000",
-			Configuration: &graylog.HTTPAlarmCallbackConfiguration{
-				URL: "https://example.com",
+	buf, err := ioutil.ReadFile("../testdata/slack_stream_alarm_callback.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	id := "5d84c1a92ab79c000d35d6ca"
+	callbackID := "5d84c1a92ab79c000d35d6d5"
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "GET",
+								Path:   "/api/streams/" + id + "/alarmcallbacks/" + callbackID,
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: bodyStr,
+							},
+						},
+					},
+				},
 			},
-			StreamID:      "5b93b425c9e0000000000000",
-			Title:         "http alarm callback",
-			CreatedAt:     "2018-12-30T08:47:32.865+0000",
-			CreatorUserID: "admin",
 		},
-		checkErr: require.Nil,
-	}}
-	for _, d := range data {
-		gock.New("http://example.com").
-			Get(fmt.Sprintf("/api/streams/%s/alarmcallbacks/%s", "xxxxx", d.ac.ID)).
-			MatchType("json").Reply(d.statusCode).
-			BodyString(d.resp)
-		ac, _, err := client.GetStreamAlarmCallback(ctx, "xxxxx", d.ac.ID)
-		d.checkErr(t, err)
-		if err != nil {
-			require.Equal(t, d.ac, ac)
-		}
-	}
+	})
+
+	_, _, err = cl.GetStreamAlarmCallback(ctx, "", callbackID)
+	require.NotNil(t, err)
+
+	_, _, err = cl.GetStreamAlarmCallback(ctx, id, "")
+	require.NotNil(t, err)
+
+	ac, _, err := cl.GetStreamAlarmCallback(ctx, id, callbackID)
+	require.Nil(t, err)
+	require.Equal(t, testdata.SlackStreamAlarmCallback, ac)
 }
 
 func TestClient_CreateStreamAlarmCallback(t *testing.T) {

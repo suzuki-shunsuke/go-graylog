@@ -1,0 +1,11 @@
+{
+  "id": "5d84c1a92ab79c000d35d6d4",
+  "type": "org.graylog2.alarmcallbacks.HTTPAlarmCallback",
+  "configuration": {
+    "url": "https://example.com"
+  },
+  "stream_id": "5d84c1a92ab79c000d35d6ca",
+  "title": "test",
+  "created_at": "2019-09-20T12:10:17.792+0000",
+  "creator_user_id": "admin"
+}
