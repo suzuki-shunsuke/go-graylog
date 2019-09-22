@@ -19,6 +19,9 @@ func (client *Client) GetStreamRules(
 	ctx context.Context, streamID string,
 ) (streamRules []graylog.StreamRule, total int, ei *ErrorInfo, err error) {
 	// GET /streams/{streamid}/rules Get a list of all stream rules
+	if streamID == "" {
+		return nil, 0, nil, errors.New("stream id is required")
+	}
 	body := &graylog.StreamRulesBody{}
 	ei, err = client.callGet(ctx, client.Endpoints().StreamRules(streamID), nil, body)
 	return body.StreamRules, body.Total, ei, err

@@ -1,0 +1,19 @@
+{
+  "id": "5d84ca7f2ab79c000d35e083",
+  "type": "org.graylog2.alarmcallbacks.EmailAlarmCallback",
+  "configuration": {
+    "user_receivers": [
+      "username"
+    ],
+    "body": "##########\\nAlert Description: ${check_result.resultDescription}\\nDate: ${check_result.triggeredAt}\\nStream ID: ${stream.id}\\nStream title: ${stream.title}\\nStream description: ${stream.description}\\nAlert Condition Title: ${alertCondition.title}\\n${if stream_url}Stream URL: ${stream_url}${end}\\n\\nTriggered condition: ${check_result.triggeredCondition}\\n##########\\n\\n${if backlog}Last messages accounting for this alert:\\n${foreach backlog message}${message}\\n\\n${end}${else}<No backlog>\\n${end}\\n",
+    "sender": "graylog@example.org",
+    "subject": "Graylog alert for stream: ${stream.title}: ${check_result.resultDescription}",
+    "email_receivers": [
+      "graylog@example.com"
+    ]
+  },
+  "stream_id": "5d84c1a92ab79c000d35d6ca",
+  "title": "test",
+  "created_at": "2019-09-20T12:47:59.170+0000",
+  "creator_user_id": "admin"
+}

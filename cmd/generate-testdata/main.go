@@ -71,20 +71,25 @@ func dump(input string, dest interface{}) error {
 
 var (
 	data = map[string]dumper{
-		"users":        Users{},
-		"user":         User{},
-		"roles":        Roles{},
-		"role":         Role{},
-		"index_sets":   IndexSets{},
-		"index_set":    IndexSet{},
-		"inputs":       Inputs{},
-		"input":        Input{},
-		"streams":      Streams{},
-		"stream":       Stream{},
-		"stream_rules": StreamRules{},
-		"stream_rule":  StreamRule{},
-		"dashboards":   Dashboards{},
-		"dashboard":    Dashboard{},
+		"users":                       Users{},
+		"user":                        User{},
+		"roles":                       Roles{},
+		"role":                        Role{},
+		"index_sets":                  IndexSets{},
+		"index_set":                   IndexSet{},
+		"inputs":                      Inputs{},
+		"input":                       Input{},
+		"streams":                     Streams{},
+		"stream":                      Stream{},
+		"stream_rules":                StreamRules{},
+		"stream_rule":                 StreamRule{},
+		"dashboards":                  Dashboards{},
+		"dashboard":                   Dashboard{},
+		"stream_alarm_callbacks":      StreamAlarmCallbacks{},
+		"slack_stream_alarm_callback": StreamAlarmCallback{},
+		"http_stream_alarm_callback":  StreamAlarmCallback{},
+		"email_stream_alarm_callback": StreamAlarmCallback{},
+		"stream_alert_conditions":     StreamAlertConditions{},
 	}
 )
 
@@ -144,6 +149,18 @@ type (
 	Dashboard struct {
 		data graylog.Dashboard
 	}
+
+	StreamAlarmCallbacks struct {
+		data graylog.AlarmCallbacksBody
+	}
+
+	StreamAlarmCallback struct {
+		data graylog.AlarmCallback
+	}
+
+	StreamAlertConditions struct {
+		data graylog.AlertConditionsBody
+	}
 )
 
 func (users Users) dump(input string) error {
@@ -200,4 +217,16 @@ func (db Dashboard) dump(input string) error {
 
 func (db Dashboards) dump(input string) error {
 	return dump(input, &db.data)
+}
+
+func (ac StreamAlarmCallbacks) dump(input string) error {
+	return dump(input, &ac.data)
+}
+
+func (ac StreamAlarmCallback) dump(input string) error {
+	return dump(input, &ac.data)
+}
+
+func (ac StreamAlertConditions) dump(input string) error {
+	return dump(input, &ac.data)
 }

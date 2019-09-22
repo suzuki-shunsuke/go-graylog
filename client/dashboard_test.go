@@ -143,17 +143,48 @@ func TestClient_GetDashboard(t *testing.T) {
 
 func TestClient_GetDashboards(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	if _, _, _, err := client.GetDashboards(ctx); err != nil {
-		t.Fatal(err)
-	}
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	buf, err := ioutil.ReadFile("../testdata/dashboards.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "GET",
+								Path:   "/api/dashboards",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: bodyStr,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	dbs, total, _, err := cl.GetDashboards(ctx)
+	require.Nil(t, err)
+	require.Equal(t, testdata.Dashboards.Dashboards, dbs)
+	require.Equal(t, testdata.Dashboards.Total, total)
 }
 
 func TestClient_UpdateDashboard(t *testing.T) {

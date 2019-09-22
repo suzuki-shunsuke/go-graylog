@@ -13,6 +13,9 @@ import (
 func (client *Client) GetStreamAlarmCallbacks(
 	ctx context.Context, streamID string,
 ) (acs []graylog.AlarmCallback, total int, ei *ErrorInfo, err error) {
+	if streamID == "" {
+		return nil, 0, nil, errors.New("stream id is required")
+	}
 	callbacks := &graylog.AlarmCallbacksBody{}
 	ei, err = client.callGet(ctx, client.Endpoints().StreamAlarmCallbacks(streamID), nil, callbacks)
 	return callbacks.AlarmCallbacks, callbacks.Total, ei, err
