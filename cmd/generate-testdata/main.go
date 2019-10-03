@@ -105,6 +105,7 @@ var (
 		"outputs":                            Outputs{},
 		"stdout_output":                      Output{},
 		"views":                              Views{},
+		"view":                               View{},
 	}
 )
 
@@ -204,6 +205,10 @@ type (
 	Views struct {
 		data graylog.Views
 	}
+
+	View struct {
+		data graylog.View
+	}
 )
 
 func (users Users) dump(input string) error {
@@ -299,5 +304,9 @@ func (definition EventDefinition) dump(input string) error {
 }
 
 func (v Views) dump(input string) error {
+	return dump(input, &v.data)
+}
+
+func (v View) dump(input string) error {
 	return dump(input, &v.data)
 }

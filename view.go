@@ -15,23 +15,21 @@ type (
 		Summary     string `json:"summary"`
 		Description string `json:"description"`
 		SearchID    string `json:"search_id"`
+		Owner       string `json:"owner"`
+		CreatedAt   string `json:"created_at,omitempty"`
 		// Properties []interface{} `json:"properties"`
 		// Requires map[string]interface{} `json:"requires"`
-		State          map[string]ViewState `json:"state"`
 		DashboardState DashboardState       `json:"dashboard_state"`
-		Owner          string               `json:"owner"`
-
-		// ex. "2018-02-20T11:37:19.371Z"
-		CreatedAt string `json:"created_at,omitempty"`
+		State          map[string]ViewState `json:"state"`
 	}
 
 	ViewState struct {
-		SelectedFields []string `json:"selected_fields"`
+		SelectedFields []string                      `json:"selected_fields"`
+		Titles         map[string]map[string]string  `json:"titles"`
+		WidgetMapping  map[string][]string           `json:"widget_mapping"`
+		Widgets        []ViewWidget                  `json:"widgets"`
+		Positions      map[string]ViewWidgetPosition `json:"positions"`
 		// StatecMessageListID interface{} `json:"state_message_list_id"`
-		Titles        map[string]map[string]string  `json:"titles"`
-		Widgets       []ViewWidget                  `json:"widgets"`
-		WidgetMapping map[string][]string           `json:"widget_mapping"`
-		Positions     map[string]ViewWidgetPosition `json:"positions"`
 		// Formatting interface{} `json:"formatting"`
 	}
 
@@ -46,14 +44,14 @@ type (
 	}
 
 	AggregationViewWidgetConfig struct {
-		RowPivots []ViewWidgetRowPivot `json:"row_pivots"`
-		// ColumnPivots []interface{} `json:"column_pivots"`
-		Series []ViewWidgetSeries `json:"series"`
+		RowPivots     []ViewWidgetRowPivot `json:"row_pivots"`
+		Series        []ViewWidgetSeries   `json:"series"`
+		Visualization string               `json:"visualization"`
+		Rollup        bool                 `json:"rollup"`
 		// Sort []interface{} `json:"sort"`
-		Visualization string `json:"visualization"`
+		// ColumnPivots []interface{} `json:"column_pivots"`
 		// VisualizationConfig interface{} `json:"visualization_config"`
 		// FormattingSettings interface{} `json:"formatting_settings"`
-		Rollup bool `json:"rollup"`
 	}
 
 	MessagesViewWidgetConfig struct {

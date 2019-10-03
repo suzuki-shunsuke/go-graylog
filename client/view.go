@@ -38,16 +38,10 @@ func (client *Client) CreateView(
 	if view == nil {
 		return nil, errors.New("view is nil")
 	}
-	ret := map[string]string{}
-	ei, err := client.callPost(ctx, client.Endpoints().Views(), view, &ret)
-	if err != nil {
-		return ei, err
+	if view.State == nil {
+		view.State = map[string]graylog.ViewState{}
 	}
-	if id, ok := ret["view_id"]; ok {
-		view.ID = id
-		return ei, nil
-	}
-	return ei, errors.New(`response doesn't have the field "view_id"`)
+	return client.callPost(ctx, client.Endpoints().Views(), view, view)
 }
 
 // UpdateView updates a view.
@@ -59,6 +53,9 @@ func (client *Client) UpdateView(
 	}
 	if view.ID == "" {
 		return nil, errors.New("id is empty")
+	}
+	if view.State == nil {
+		view.State = map[string]graylog.ViewState{}
 	}
 	body := *view
 	body.ID = ""

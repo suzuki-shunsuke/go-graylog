@@ -1,0 +1,16 @@
+{
+  "id": "5d9620e06df4af000d8ecaae",
+  "title": "test",
+  "summary": "",
+  "description": "",
+  "search_id": "5d9529b275d97f58f9539275",
+  "properties": [],
+  "requires": {},
+  "state": {},
+  "dashboard_state": {
+    "widgets": {},
+    "positions": {}
+  },
+  "owner": "admin",
+  "created_at": "2019-10-03T16:25:04.188Z"
+}
