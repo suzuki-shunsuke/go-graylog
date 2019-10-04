@@ -63,6 +63,17 @@ func resourceDashboard() *schema.Resource {
 	}
 }
 
+func setDashboard(d *schema.ResourceData, db *graylog.Dashboard) error {
+	d.SetId(db.ID)
+	if err := setStrToRD(d, "title", db.Title); err != nil {
+		return err
+	}
+	if err := setStrToRD(d, "description", db.Description); err != nil {
+		return err
+	}
+	return setStrToRD(d, "created_at", db.CreatedAt)
+}
+
 func newDashboard(d *schema.ResourceData) (*graylog.Dashboard, error) {
 	return &graylog.Dashboard{
 		ID:          d.Id(),
@@ -100,13 +111,7 @@ func resourceDashboardRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return handleGetResourceError(d, ei, err)
 	}
-	if err := setStrToRD(d, "title", db.Title); err != nil {
-		return err
-	}
-	if err := setStrToRD(d, "description", db.Description); err != nil {
-		return err
-	}
-	return setStrToRD(d, "created_at", db.CreatedAt)
+	return setDashboard(d, db)
 }
 
 func resourceDashboardUpdate(d *schema.ResourceData, m interface{}) error {

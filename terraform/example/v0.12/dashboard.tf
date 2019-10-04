@@ -1,3 +1,7 @@
+data "graylog_dashboard" "test" {
+  title = "test"
+}
+
 resource "graylog_dashboard" "test" {
   title       = "test"
   description = "test"
@@ -5,7 +9,7 @@ resource "graylog_dashboard" "test" {
 
 resource "graylog_dashboard_widget" "test" {
   description  = "Stream search result count change"
-  dashboard_id = graylog_dashboard.test.id
+  dashboard_id = data.graylog_dashboard.test.id
   type         = "STREAM_SEARCH_RESULT_COUNT"
   stream_search_result_count_configuration {
     timerange {
