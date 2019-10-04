@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* support data_source_dashboard ([2726f87](https://github.com/suzuki-shunsuke/go-graylog/commit/2726f87)), closes [/github.com/suzuki-shunsuke/go-graylog/issues/109#issuecomment-538131946](https://github.com//github.com/suzuki-shunsuke/go-graylog/issues/109/issues/issuecomment-538131946)
+* support data_source_dashboard ([2726f87](https://github.com/suzuki-shunsuke/go-graylog/commit/2726f87)), closes [issuecomment-538131946](https://github.com/suzuki-shunsuke/go-graylog/issues/109#issuecomment-538131946)
 
 
 
