@@ -24,6 +24,7 @@ func resourceView() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+
 			"search_id": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -33,52 +34,126 @@ func resourceView() *schema.Resource {
 			"state": {
 				Type:     schema.TypeMap,
 				Optional: true,
-				Elem: &schema.Schema{
-					Type:     schema.TypeList,
-					Optional: true,
-					MaxItems: 1,
-					MinItems: 1,
-					Elem: &schema.Resource{
-						Schema: map[string]*schema.Schema{
-							"selected_fields": {
-								Type:     schema.TypeList,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"selected_fields": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+
+						"titles": {
+							Type:     schema.TypeMap,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type:     schema.TypeMap,
 								Optional: true,
 								Elem: &schema.Schema{
 									Type: schema.TypeString,
 								},
 							},
 						},
+
+						"widget_mapping": {
+							Type:     schema.TypeMap,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeList,
+								Elem: &schema.Schema{
+									Type: schema.TypeString,
+								},
+							},
+						},
+
+						"widgets": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"id": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+
+									//	"aggregation_config": {
+									//		Type:     schema.TypeList,
+									//		Optional: true,
+									//		MaxItems: 1,
+									//		MinItems: 1,
+									//		Elem:     &schema.Resource{
+									//		},
+									//	},
+								},
+							},
+						},
+
+						"positions": {
+							Type:     schema.TypeMap,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type:     schema.TypeList,
+								Optional: true,
+								MaxItems: 1,
+								MinItems: 1,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										// "width": {
+										// 	Type:     schema.TypeInt,
+										// 	Optional: true,
+										// },
+										"col": {
+											Type:     schema.TypeInt,
+											Optional: true,
+										},
+										"row": {
+											Type:     schema.TypeInt,
+											Optional: true,
+										},
+										"height": {
+											Type:     schema.TypeInt,
+											Optional: true,
+										},
+									},
+								},
+							},
+						},
 					},
 				},
 			},
+
 			"summary": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+
 			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+
 			"owner": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Computed: true,
 			},
-			// outputs
+
 			"created_at": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Computed: true,
 			},
-			"dashboard_state": {
-				Type:     schema.TypeList,
-				Optional: true,
-				MaxItems: 1,
-				MinItems: 1,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{},
-				},
-			},
+
+			//	"dashboard_state": {
+			//		Type:     schema.TypeList,
+			//		Optional: true,
+			//		MaxItems: 1,
+			//		MinItems: 1,
+			//		Elem: &schema.Resource{
+			//			Schema: map[string]*schema.Schema{},
+			//		},
+			//	},
 		},
 	}
 }
