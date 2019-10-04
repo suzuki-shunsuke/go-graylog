@@ -115,6 +115,7 @@ api_version | GRAYLOG_API_VERSION | "v2" | Graylog's API version. The default va
 
 ## Data sources
 
+* [dashboard](docs/data_source_dashboard.md)
 * [index_set](docs/data_source_index_set.md)
 * [stream](docs/data_source_stream.md)
 
