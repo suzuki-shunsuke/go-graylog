@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="8.1.0"></a>
+# [8.1.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v8.0.0...v8.1.0) (2019-10-04)
+
+
+### Features
+
+* support data_source_dashboard ([2726f87](https://github.com/suzuki-shunsuke/go-graylog/commit/2726f87)), closes [/github.com/suzuki-shunsuke/go-graylog/issues/109#issuecomment-538131946](https://github.com//github.com/suzuki-shunsuke/go-graylog/issues/109/issues/issuecomment-538131946)
+
+
+
 <a name="8.0.0"></a>
 # [8.0.0](https://github.com/suzuki-shunsuke/go-graylog/compare/v7.1.0...v8.0.0) (2019-09-11)
 
