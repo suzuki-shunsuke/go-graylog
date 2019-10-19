@@ -14,7 +14,7 @@ volumes:
   temp: {}
 steps:
 - name: download go modules
-  image: &image_go golang:1.13.0
+  image: &image_go golang:1.13.3
   commands:
   - go mod download
   volumes: &volumes
@@ -23,7 +23,7 @@ steps:
   environment:
     GOPATH: /go
 - name: golangci-lint
-  image: golangci/golangci-lint:v1.17.1
+  image: golangci/golangci-lint:v1.21.0
   commands:
   - golangci-lint run
   volumes: *volumes
@@ -41,38 +41,44 @@ steps:
     GOPATH: /go
     CODECOV_TOKEN:
       from_secret: codecov_token
-- name: build
-  image: &image_gox suzukishunsuke/gox:1.0.1__0.2.0
+
+- name: fetch tags
+  image: plugins/git
   commands:
-  - gox -output="dist/${DRONE_TAG}/terraform-provider-graylog_${DRONE_TAG}_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./terraform/
-  - ls dist/${DRONE_TAG} | xargs -I {} gzip dist/${DRONE_TAG}/{}
-  volumes: *volumes
-  environment:
-    CGO_ENABLED: "0"
-    GOPATH: /go
+  - git fetch --tags
+  - git checkout -- .
   when:
     event:
     - tag
-- name: build test
-  image: *image_gox
-  commands:
-  - gox -output="dist/v0.1.0/terraform-provider-graylog_v0.1.0_{{.OS}}_{{.Arch}}" -osarch="darwin/amd64 linux/amd64 windows/amd64" ./terraform/
-  - ls dist/v0.1.0 | xargs -I {} gzip dist/v0.1.0/{}
-  volumes: *volumes
-  environment:
-    CGO_ENABLED: "0"
-    GOPATH: /go
-  when:
-    event:
-    - push
-    - pull_request
 - name: release
-  image: suzukishunsuke/ghr
+  image: &goreleaser goreleaser/goreleaser:v0.119.0
   commands:
-  - ghr -u suzuki-shunsuke -r go-graylog ${DRONE_TAG} dist/${DRONE_TAG}
+  - goreleaser release
   environment:
+    GOPATH: /go
     GITHUB_TOKEN:
       from_secret: github_token
+  volumes: *volumes
   when:
     event:
     - tag
+
+- name: tag dummy
+  image: plugins/git
+  commands:
+  - git tag v0.1.0-alpha
+  when:
+    event:
+    - pull_request
+    - push
+- name: release (skip-publish)
+  image: *goreleaser
+  commands:
+  - goreleaser release --skip-publish
+  environment:
+    GOPATH: /go
+  volumes: *volumes
+  when:
+    event:
+    - pull_request
+    - push
