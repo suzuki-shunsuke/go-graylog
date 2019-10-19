@@ -51,11 +51,6 @@ https://github.com/suzuki-shunsuke/graylog-mock-server (deprecated)
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) .
 
-## See also
-
-* https://docs.graylog.org/en/latest/pages/configuration/rest_api.html
-* https://docs.graylog.org/en/latest/pages/users_and_roles/permission_system.html
-
 ## License
 
 [MIT](LICENSE)
