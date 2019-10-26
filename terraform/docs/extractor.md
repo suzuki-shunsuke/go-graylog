@@ -27,7 +27,6 @@ condition_type | string |
 extractor_config | object{} |
 converters[].type | string |
 converters[].config | object{} |
-converters[].config.date_format | string | "" |
 
 ### Common Optional Argument
 
@@ -37,6 +36,7 @@ converters | list | [] |
 target_field | string | "" |
 condition_value | string | "" |
 order | int | 0 |
+converters[].config.date_format | string | "" |
 converters[].config.time_zone | string | "" |
 converters[].config.locale | string | "" |
 

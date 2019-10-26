@@ -17,3 +17,18 @@ resource "graylog_input_static_fields" "gelf_udp" {
     foo = "bar"
   }
 }
+
+resource "graylog_input" "json_path" {
+  title  = "json path"
+  type   = "org.graylog2.inputs.misc.jsonpath.JsonPathInput"
+  global = "true"
+
+  attributes {
+    interval           = 30
+    path               = "$.userId"
+    throttling_allowed = true
+    target_url         = "http://jsonplaceholder.typicode.com/posts/1"
+    source             = "id"
+    timeunit           = "SECONDS"
+  }
+}
