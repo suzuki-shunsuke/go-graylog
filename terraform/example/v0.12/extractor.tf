@@ -71,7 +71,7 @@ resource "graylog_extractor" "http_response_code" {
   condition_type  = "regex"
   condition_value = "[1-5]\\d{2}"
   order           = 0
-  
+
   converters {
     type = "numeric"
     config {}

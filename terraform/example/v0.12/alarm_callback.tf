@@ -9,11 +9,11 @@ resource "graylog_alarm_callback" "http" {
 }
 
 resource "graylog_alarm_callback" "email" {
-  type = "org.graylog2.alarmcallbacks.EmailAlarmCallback"
+  type      = "org.graylog2.alarmcallbacks.EmailAlarmCallback"
   stream_id = graylog_stream.test.id
-  title = "test"
+  title     = "test"
   email_configuration {
-    sender = "graylog@example.org"
+    sender  = "graylog@example.org"
     subject = "Graylog alert for stream: $${stream.title}: $${check_result.resultDescription}"
     user_receivers = [
       "username"
@@ -26,16 +26,16 @@ resource "graylog_alarm_callback" "email" {
 }
 
 resource "graylog_alarm_callback" "slack" {
-  type = "org.graylog2.plugins.slack.callback.SlackAlarmCallback"
+  type      = "org.graylog2.plugins.slack.callback.SlackAlarmCallback"
   stream_id = graylog_stream.test.id
-  title = "test"
+  title     = "test"
   slack_configuration {
-    graylog2_url = "https://graylog.example.com"
-    color = "#FF0000"
-    webhook_url = "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
-    user_name = "Graylog"
-    backlog_items = 5
-    channel = "#general"
+    graylog2_url   = "https://graylog.example.com"
+    color          = "#FF0000"
+    webhook_url    = "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
+    user_name      = "Graylog"
+    backlog_items  = 5
+    channel        = "#general"
     custom_message = "$${alert_condition.title}\\n\\n$${foreach backlog message}\\n<https://graylog.example.com/streams/$${stream.id}/search?rangetype=absolute&from=$${message.timestamp}&to=$${message.timestamp} | link> $${message.message}\\n$${end}"
   }
 }
