@@ -174,7 +174,7 @@ func resourceExtractor() *schema.Resource {
 								Schema: map[string]*schema.Schema{
 									"date_format": {
 										Type:     schema.TypeString,
-										Required: true,
+										Optional: true,
 									},
 									"time_zone": {
 										Type:     schema.TypeString,
@@ -236,14 +236,18 @@ func newExtractor(d *schema.ResourceData) (*graylog.Extractor, string, error) {
 	converters := make([]graylog.ExtractorConverter, len(list))
 	for i, a := range list {
 		b := a.(map[string]interface{})
-		cfg := b["config"].([]interface{})[0].(map[string]interface{})
+		c := b["config"].([]interface{})
+		cfg := &graylog.ExtractorConverterConfig{}
+		if len(c) > 0 {
+			if d, ok := c[0].(map[string]interface{}); ok {
+				cfg.DateFormat = d["date_format"].(string)
+				cfg.TimeZone = d["time_zone"].(string)
+				cfg.Locale = d["locale"].(string)
+			}
+		}
 		converters[i] = graylog.ExtractorConverter{
-			Type: b["type"].(string),
-			Config: &graylog.ExtractorConverterConfig{
-				DateFormat: cfg["date_format"].(string),
-				TimeZone:   cfg["time_zone"].(string),
-				Locale:     cfg["locale"].(string),
-			},
+			Type:   b["type"].(string),
+			Config: cfg,
 		}
 	}
 	return &graylog.Extractor{

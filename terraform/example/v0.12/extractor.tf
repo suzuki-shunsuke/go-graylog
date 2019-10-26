@@ -60,3 +60,24 @@ resource "graylog_extractor" "test_regex" {
     }
   }
 }
+
+resource "graylog_extractor" "http_response_code" {
+  input_id        = graylog_input.gelf_udp.id
+  title           = "Apache http_response_code"
+  type            = "regex"
+  cursor_strategy = "copy"
+  source_field    = "message"
+  target_field    = "http_response_code"
+  condition_type  = "regex"
+  condition_value = "[1-5]\\d{2}"
+  order           = 0
+  
+  converters {
+    type = "numeric"
+    config {}
+  }
+
+  regex_type_extractor_config {
+    regex_value = "HTTP/1.[0-1]\" (\\d{3}) "
+  }
+}
