@@ -14,7 +14,7 @@ volumes:
   temp: {}
 steps:
 - name: download go modules
-  image: &image_go golang:1.13.3
+  image: &image_go golang:1.13.4
   commands:
   - go mod download
   volumes: &volumes
@@ -23,7 +23,7 @@ steps:
   environment:
     GOPATH: /go
 - name: golangci-lint
-  image: golangci/golangci-lint:v1.21.0
+  image: golangci/golangci-lint:v1.21.0-alpine
   commands:
   - golangci-lint run
   volumes: *volumes
@@ -51,7 +51,7 @@ steps:
     event:
     - tag
 - name: release
-  image: &goreleaser goreleaser/goreleaser:v0.119.0
+  image: &goreleaser goreleaser/goreleaser:v0.123.3
   commands:
   - goreleaser release
   environment:
