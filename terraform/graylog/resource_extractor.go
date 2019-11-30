@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/suzuki-shunsuke/go-jsoneq/jsoneq"
 
-	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
 func resourceExtractor() *schema.Resource {

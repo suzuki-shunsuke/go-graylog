@@ -13,9 +13,9 @@ import (
 	"github.com/suzuki-shunsuke/flute/flute"
 	"github.com/suzuki-shunsuke/go-set"
 
-	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/client"
-	"github.com/suzuki-shunsuke/go-graylog/testdata"
+	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v8/client"
+	"github.com/suzuki-shunsuke/go-graylog/v8/testdata"
 )
 
 func TestClient_GetStreamAlarmCallbacks(t *testing.T) {

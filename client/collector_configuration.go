@@ -6,7 +6,7 @@ import (
 
 	"github.com/suzuki-shunsuke/go-set"
 
-	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
 // CreateCollectorConfiguration creates a collector configuration.
