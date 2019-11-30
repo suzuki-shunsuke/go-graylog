@@ -6,7 +6,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
 // GetStreamAlarmCallbacks gets all alarm callbacks of this stream.

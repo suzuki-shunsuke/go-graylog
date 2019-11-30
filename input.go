@@ -3,7 +3,7 @@ package graylog
 import (
 	"encoding/json"
 
-	"github.com/suzuki-shunsuke/go-graylog/util"
+	"github.com/suzuki-shunsuke/go-graylog/util/v8"
 	"github.com/suzuki-shunsuke/go-ptr"
 )
 

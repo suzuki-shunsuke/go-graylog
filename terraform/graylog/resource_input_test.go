@@ -8,7 +8,7 @@ package graylog
 // 	"github.com/hashicorp/terraform/helper/resource"
 // 	"github.com/hashicorp/terraform/terraform"
 //
-// 	"github.com/suzuki-shunsuke/go-graylog/client"
+// 	"github.com/suzuki-shunsuke/go-graylog/client/v8"
 // )
 //
 // var (

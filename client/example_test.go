@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/suzuki-shunsuke/go-graylog/client"
+	"github.com/suzuki-shunsuke/go-graylog/client/v8"
 	"github.com/suzuki-shunsuke/graylog-mock-server/mockserver"
 )
 

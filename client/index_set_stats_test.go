@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/gofrs/uuid"
-	"github.com/suzuki-shunsuke/go-graylog/testutil"
+	"github.com/suzuki-shunsuke/go-graylog/testutil/v8"
 )
 
 func TestClient_GetIndexSetStats(t *testing.T) {
