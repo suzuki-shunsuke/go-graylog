@@ -47,9 +47,6 @@ type (
 		RemoveMatchesFromDefaultStream *bool            `json:"remove_matches_from_default_stream,omitempty"`
 	}
 
-	// Output represents an output.
-	Output struct{}
-
 	// AlertReceivers represents alert receivers.
 	AlertReceivers struct {
 		Emails []string `json:"emails,omitempty"`

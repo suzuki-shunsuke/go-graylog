@@ -1,0 +1,60 @@
+{
+  "total": 3,
+  "outputs": [
+    {
+      "id": "5de3772faf66c6001353cccb",
+      "title": "stdout",
+      "type": "org.graylog2.outputs.LoggingOutput",
+      "creator_user_id": "admin",
+      "created_at": "2019-12-01T08:17:51.102Z",
+      "configuration": {
+        "prefix": "Writing message (updated): "
+      },
+      "content_pack": null
+    },
+    {
+      "id": "5de37740af66c6001353cce0",
+      "title": "gelf",
+      "type": "org.graylog2.outputs.GelfOutput",
+      "creator_user_id": "admin",
+      "created_at": "2019-12-01T08:18:08.696Z",
+      "configuration": {
+        "hostname": "localhost",
+        "protocol": "TCP",
+        "connect_timeout": 1000,
+        "queue_size": 512,
+        "reconnect_delay": 500,
+        "port": 12201,
+        "max_inflight_sends": 512,
+        "tcp_keep_alive": false,
+        "tcp_no_delay": false,
+        "tls_trust_cert_chain": "",
+        "tls_verification_enabled": false
+      },
+      "content_pack": null
+    },
+    {
+      "id": "5de37825af66c6001353cdec",
+      "title": "slack",
+      "type": "org.graylog2.plugins.slack.output.SlackMessageOutput",
+      "creator_user_id": "admin",
+      "created_at": "2019-12-01T08:21:57.480Z",
+      "configuration": {
+        "icon_url": "",
+        "graylog2_url": "",
+        "link_names": true,
+        "color": "#FF0000",
+        "webhook_url": "http://example.com",
+        "icon_emoji": "",
+        "user_name": "Graylog",
+        "proxy_address": "",
+        "channel": "#channel",
+        "custom_message": "##########\nDate: ${check_result.triggeredAt}\nStream ID: ${stream.id}\nStream title: ${stream.title}\nStream description: ${stream.description}\n${if stream_url}Stream URL: ${stream_url}${end}\n##########\n",
+        "notify_channel": false,
+        "short_mode": false,
+        "add_details": true
+      },
+      "content_pack": null
+    }
+  ]
+}
