@@ -3,7 +3,7 @@ package graylog
 import (
 	"fmt"
 
-	"github.com/suzuki-shunsuke/go-graylog/util"
+	"github.com/suzuki-shunsuke/go-graylog/v8/util"
 )
 
 type (

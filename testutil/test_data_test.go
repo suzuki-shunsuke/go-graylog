@@ -3,7 +3,7 @@ package testutil_test
 import (
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/testutil"
+	"github.com/suzuki-shunsuke/go-graylog/v8/testutil"
 )
 
 func TestRole(t *testing.T) {

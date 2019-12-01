@@ -12,8 +12,8 @@ import (
 	"github.com/suzuki-shunsuke/go-jsoneq/jsoneq"
 	"github.com/suzuki-shunsuke/go-ptr"
 
-	"github.com/suzuki-shunsuke/go-graylog"
-	"github.com/suzuki-shunsuke/go-graylog/client"
+	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v8/client"
 )
 
 func TestClient_CreateDashboardWidget(t *testing.T) {
