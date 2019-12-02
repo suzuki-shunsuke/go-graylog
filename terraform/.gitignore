@@ -4,9 +4,6 @@ vendor
 *.log
 terraform.tfstate
 terraform.tfstate.backup
-terraform.tfvars
-variables.tf
 node_modules
 coverage.txt
 dist
-main.tf
