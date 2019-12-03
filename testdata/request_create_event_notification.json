@@ -1,0 +1,8 @@
+{
+  "title": "http",
+  "description": "",
+  "config": {
+    "type": "http-notification-v1",
+    "url": "http://example.com"
+  }
+}

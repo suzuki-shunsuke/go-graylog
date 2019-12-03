@@ -100,6 +100,7 @@ api_version | GRAYLOG_API_VERSION | "v2" | Graylog's API version. The default va
 * [dashboard_widget](docs/dashboard_widget.md)
 * [dashboard_widget_positions](docs/dashboard_widget_positions.md)
 * [extractor](docs/extractor.md)
+* [event_notification](docs/event_notification.md)
 * [grok_pattern](docs/grok_pattern.md)
 * [index_set](docs/index_set.md)
 * [input](docs/input.md)

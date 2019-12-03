@@ -1,0 +1,9 @@
+{
+  "id" : "5de5a365a1de18000cdfdf49",
+  "title" : "http",
+  "description" : "",
+  "config" : {
+    "type" : "http-notification-v1",
+    "url" : "http://example.com"
+  }
+}
