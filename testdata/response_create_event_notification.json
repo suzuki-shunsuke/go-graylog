@@ -1,6 +1,6 @@
 {
   "id" : "5de5a365a1de18000cdfdf49",
-  "title" : "new-notification-2",
+  "title" : "http",
   "description" : "",
   "config" : {
     "type" : "http-notification-v1",

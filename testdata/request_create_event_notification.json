@@ -1,5 +1,5 @@
 {
-  "title": "new-notification-2",
+  "title": "http",
   "description": "",
   "config": {
     "type": "http-notification-v1",

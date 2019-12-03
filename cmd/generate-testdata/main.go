@@ -71,27 +71,30 @@ func dump(input string, dest interface{}) error {
 
 var (
 	data = map[string]dumper{
-		"users":                       Users{},
-		"user":                        User{},
-		"roles":                       Roles{},
-		"role":                        Role{},
-		"index_sets":                  IndexSets{},
-		"index_set":                   IndexSet{},
-		"inputs":                      Inputs{},
-		"input":                       Input{},
-		"streams":                     Streams{},
-		"stream":                      Stream{},
-		"stream_rules":                StreamRules{},
-		"stream_rule":                 StreamRule{},
-		"dashboards":                  Dashboards{},
-		"dashboard":                   Dashboard{},
-		"stream_alarm_callbacks":      StreamAlarmCallbacks{},
-		"slack_stream_alarm_callback": StreamAlarmCallback{},
-		"http_stream_alarm_callback":  StreamAlarmCallback{},
-		"email_stream_alarm_callback": StreamAlarmCallback{},
-		"stream_alert_conditions":     StreamAlertConditions{},
-		"outputs":                     Outputs{},
-		"stdout_output":               Output{},
+		"response_create_event_notification": EventNotification{},
+		"request_create_event_notification":  EventNotification{},
+		"event_notifications":                EventNotifications{},
+		"users":                              Users{},
+		"user":                               User{},
+		"roles":                              Roles{},
+		"role":                               Role{},
+		"index_sets":                         IndexSets{},
+		"index_set":                          IndexSet{},
+		"inputs":                             Inputs{},
+		"input":                              Input{},
+		"streams":                            Streams{},
+		"stream":                             Stream{},
+		"stream_rules":                       StreamRules{},
+		"stream_rule":                        StreamRule{},
+		"dashboards":                         Dashboards{},
+		"dashboard":                          Dashboard{},
+		"stream_alarm_callbacks":             StreamAlarmCallbacks{},
+		"slack_stream_alarm_callback":        StreamAlarmCallback{},
+		"http_stream_alarm_callback":         StreamAlarmCallback{},
+		"email_stream_alarm_callback":        StreamAlarmCallback{},
+		"stream_alert_conditions":            StreamAlertConditions{},
+		"outputs":                            Outputs{},
+		"stdout_output":                      Output{},
 	}
 )
 
@@ -171,6 +174,14 @@ type (
 	Outputs struct {
 		data graylog.OutputsBody
 	}
+
+	EventNotification struct {
+		data graylog.EventNotification
+	}
+
+	EventNotifications struct {
+		data graylog.EventNotificationsBody
+	}
 )
 
 func (users Users) dump(input string) error {
@@ -247,4 +258,12 @@ func (output Output) dump(input string) error {
 
 func (outputs Outputs) dump(input string) error {
 	return dump(input, &outputs.data)
+}
+
+func (notification EventNotification) dump(input string) error {
+	return dump(input, &notification.data)
+}
+
+func (notifications EventNotifications) dump(input string) error {
+	return dump(input, &notifications.data)
 }
