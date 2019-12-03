@@ -1,0 +1,62 @@
+{
+  "total": 3,
+  "page": 1,
+  "per_page": 50,
+  "count": 3,
+  "notifications": [
+    {
+      "id": "5de59d56a1de18000cdfd770",
+      "title": "test",
+      "description": "Migrated legacy alarm callback",
+      "config": {
+        "type": "legacy-alarm-callback-notification-v1",
+        "callback_type": "org.graylog2.alarmcallbacks.HTTPAlarmCallback",
+        "configuration": {
+          "url": "https://example.com"
+        }
+      }
+    },
+    {
+      "id": "5de59d56a1de18000cdfd772",
+      "title": "test",
+      "description": "Migrated legacy alarm callback",
+      "config": {
+        "type": "legacy-alarm-callback-notification-v1",
+        "callback_type": "org.graylog2.alarmcallbacks.EmailAlarmCallback",
+        "configuration": {
+          "sender": "graylog@example.org",
+          "subject": "Graylog alert for stream: ${stream.title}: ${check_result.resultDescription}",
+          "user_receivers": [
+            "username"
+          ],
+          "body": "##########\\nAlert Description: ${check_result.resultDescription}\\nDate: ${check_result.triggeredAt}\\nStream ID: ${stream.id}\\nStream title: ${stream.title}\\nStream description: ${stream.description}\\nAlert Condition Title: ${alertCondition.title}\\n${if stream_url}Stream URL: ${stream_url}${end}\\n\\nTriggered condition: ${check_result.triggeredCondition}\\n##########\\n\\n${if backlog}Last messages accounting for this alert:\\n${foreach backlog message}${message}\\n\\n${end}${else}<No backlog>\\n${end}\\n",
+          "email_receivers": [
+            "graylog@example.com"
+          ]
+        }
+      }
+    },
+    {
+      "id": "5de59d56a1de18000cdfd774",
+      "title": "test",
+      "description": "Migrated legacy alarm callback",
+      "config": {
+        "type": "legacy-alarm-callback-notification-v1",
+        "callback_type": "org.graylog2.plugins.slack.callback.SlackAlarmCallback",
+        "configuration": {
+          "graylog2_url": "https://graylog.example.com",
+          "notify_channel": false,
+          "link_names": true,
+          "custom_message": "${alert_condition.title}\\n\\n${foreach backlog message}\\n<https://graylog.example.com/streams/${stream.id}/search?rangetype=absolute&from=${message.timestamp}&to=${message.timestamp} | link> ${message.message}\\n${end}",
+          "webhook_url": "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
+          "color": "#FF0000",
+          "backlog_items": 5,
+          "user_name": "Graylog",
+          "channel": "#general"
+        }
+      }
+    }
+  ],
+  "query": "",
+  "grand_total": 3
+}
