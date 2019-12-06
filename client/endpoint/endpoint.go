@@ -13,6 +13,7 @@ type Endpoints struct {
 	collectorConfigurations  string
 	dashboards               string
 	enabledStreams           string
+	eventDefinitions         string
 	eventNotifications       string
 	indexSets                string
 	indexSetStats            string
@@ -73,6 +74,7 @@ func newEndpoints(endpoint, version string) (*Endpoints, error) {
 		collectorConfigurations: endpoint + "/plugins/org.graylog.plugins.collector/configurations",
 		dashboards:              endpoint + "/dashboards",
 		enabledStreams:          endpoint + "/streams/enabled",
+		eventDefinitions:        endpoint + "/events/definitions",
 		eventNotifications:      endpoint + "/events/notifications",
 		indexSets:               endpoint + "/system/indices/index_sets",
 		indexSetStats:           endpoint + "/system/indices/index_sets/stats",

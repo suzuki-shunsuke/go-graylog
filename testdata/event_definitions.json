@@ -1,0 +1,179 @@
+{
+  "total": 3,
+  "page": 1,
+  "per_page": 50,
+  "count": 3,
+  "event_definitions": [
+    {
+      "id": "5de5a9e7a1de18000cdfe192",
+      "title": "new-event-definition",
+      "description": "",
+      "priority": 2,
+      "alert": true,
+      "config": {
+        "type": "aggregation-v1",
+        "query": "test",
+        "streams": [
+          "000000000000000000000001"
+        ],
+        "group_by": [],
+        "series": [],
+        "conditions": {
+          "expression": null
+        },
+        "search_within_ms": 60000,
+        "execute_every_ms": 60000
+      },
+      "field_spec": {
+        "test": {
+          "data_type": "string",
+          "providers": [
+            {
+              "type": "template-v1",
+              "template": "test",
+              "require_values": false
+            }
+          ]
+        }
+      },
+      "key_spec": [],
+      "notification_settings": {
+        "grace_period_ms": 0,
+        "backlog_size": 0
+      },
+      "notifications": [
+        {
+          "notification_id": "5de5a365a1de18000cdfdf49",
+          "notification_parameters": null
+        }
+      ],
+      "storage": [
+        {
+          "type": "persist-to-streams-v1",
+          "streams": [
+            "000000000000000000000002"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5de5aac1a1de18000cdfe2b3",
+      "title": "new-event-definition",
+      "description": "",
+      "priority": 2,
+      "alert": true,
+      "config": {
+        "type": "aggregation-v1",
+        "query": "test",
+        "streams": [
+          "000000000000000000000001"
+        ],
+        "group_by": [],
+        "series": [],
+        "conditions": {
+          "expression": null
+        },
+        "search_within_ms": 60000,
+        "execute_every_ms": 60000
+      },
+      "field_spec": {
+        "test": {
+          "data_type": "string",
+          "providers": [
+            {
+              "type": "template-v1",
+              "template": "test",
+              "require_values": false
+            }
+          ]
+        }
+      },
+      "key_spec": [],
+      "notification_settings": {
+        "grace_period_ms": 0,
+        "backlog_size": 0
+      },
+      "notifications": [
+        {
+          "notification_id": "5de5a365a1de18000cdfdf49",
+          "notification_parameters": null
+        }
+      ],
+      "storage": [
+        {
+          "type": "persist-to-streams-v1",
+          "streams": [
+            "000000000000000000000002"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5de59d56a1de18000cdfd776",
+      "title": "test",
+      "description": "Migrated message count alert condition",
+      "priority": 2,
+      "alert": true,
+      "config": {
+        "type": "aggregation-v1",
+        "query": "message:\"hoge hoge\"",
+        "streams": [
+          "5de4fcf7a1de1800127e2fbe"
+        ],
+        "group_by": [],
+        "series": [
+          {
+            "id": "40aea221-88d2-492a-a3f0-62da7aa68f56",
+            "function": "count",
+            "field": null
+          }
+        ],
+        "conditions": {
+          "expression": {
+            "expr": ">",
+            "left": {
+              "expr": "number-ref",
+              "ref": "40aea221-88d2-492a-a3f0-62da7aa68f56"
+            },
+            "right": {
+              "expr": "number",
+              "value": 0
+            }
+          }
+        },
+        "search_within_ms": 60000,
+        "execute_every_ms": 60000
+      },
+      "field_spec": {},
+      "key_spec": [],
+      "notification_settings": {
+        "grace_period_ms": 0,
+        "backlog_size": 2
+      },
+      "notifications": [
+        {
+          "notification_id": "5de59d56a1de18000cdfd774",
+          "notification_parameters": null
+        },
+        {
+          "notification_id": "5de59d56a1de18000cdfd770",
+          "notification_parameters": null
+        },
+        {
+          "notification_id": "5de59d56a1de18000cdfd772",
+          "notification_parameters": null
+        }
+      ],
+      "storage": [
+        {
+          "type": "persist-to-streams-v1",
+          "streams": [
+            "000000000000000000000002"
+          ]
+        }
+      ]
+    }
+  ],
+  "query": "",
+  "grand_total": 3
+}
