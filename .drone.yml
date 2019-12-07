@@ -14,7 +14,7 @@ volumes:
   temp: {}
 steps:
 - name: download go modules
-  image: &image_go golang:1.13.3
+  image: &image_go golang:1.13.5
   commands:
   - go mod download
   volumes: &volumes
@@ -23,7 +23,7 @@ steps:
   environment:
     GOPATH: /go
 - name: golangci-lint
-  image: golangci/golangci-lint:v1.21.0
+  image: golangci/golangci-lint:v1.21.0-alpine
   commands:
   - golangci-lint run
   volumes: *volumes
@@ -41,17 +41,21 @@ steps:
     GOPATH: /go
     CODECOV_TOKEN:
       from_secret: codecov_token
+- name: remove changes
+  image: &image_git plugins/git
+  commands:
+  # Sometimes it is failed to release by goreleaser due to changes of go.sum
+  - git checkout -- .
 
-- name: fetch tags
-  image: plugins/git
+- name: fetch tags to release
+  image: *image_git
   commands:
   - git fetch --tags
-  - git checkout -- .
   when:
     event:
     - tag
 - name: release
-  image: &goreleaser goreleaser/goreleaser:v0.119.0
+  image: &goreleaser goreleaser/goreleaser:v0.123.3
   commands:
   - goreleaser release
   environment:
@@ -63,8 +67,8 @@ steps:
     event:
     - tag
 
-- name: tag dummy
-  image: plugins/git
+- name: create a dummy tag to test releasing
+  image: *image_git
   commands:
   - git tag v0.1.0-alpha
   when:
