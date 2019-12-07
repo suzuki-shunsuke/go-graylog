@@ -8,6 +8,7 @@ require (
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/hashicorp/terraform v0.12.16
 	github.com/hashicorp/terraform-plugin-sdk v1.4.0 // indirect
+	github.com/labstack/echo v3.3.10+incompatible // indirect
 	github.com/labstack/echo/v4 v4.1.11 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/mitchellh/mapstructure v1.1.2
@@ -16,6 +17,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.4.0
 	github.com/suzuki-shunsuke/flute v0.7.0
+	github.com/suzuki-shunsuke/go-graylog v2.5.0+incompatible // indirect
 	github.com/suzuki-shunsuke/go-jsoneq v0.1.1
 	github.com/suzuki-shunsuke/go-ptr v1.0.0
 	github.com/suzuki-shunsuke/go-set v6.0.0+incompatible

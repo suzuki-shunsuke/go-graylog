@@ -1,0 +1,65 @@
+{
+  "id": "5dea491ba1de18000d4bbcce",
+  "title": "new-event-definition",
+  "description": "",
+  "priority": 1,
+  "alert": true,
+  "config": {
+    "type": "aggregation-v1",
+    "query": "test",
+    "streams": [
+      "000000000000000000000001"
+    ],
+    "group_by": [
+      "alert"
+    ],
+    "series": [
+      {
+        "id": "9dfd012c-4f4d-417b-80d8-f7ebda2020a3",
+        "function": "avg",
+        "field": "alert"
+      }
+    ],
+    "conditions": {
+      "expression": {
+        "expr": "<",
+        "left": {
+          "expr": "number-ref",
+          "ref": "9dfd012c-4f4d-417b-80d8-f7ebda2020a3"
+        },
+        "right": {
+          "expr": "number",
+          "value": 0
+        }
+      }
+    },
+    "search_within_ms": 60000,
+    "execute_every_ms": 60000
+  },
+  "field_spec": {
+    "test": {
+      "data_type": "string",
+      "providers": [
+        {
+          "type": "template-v1",
+          "template": "test",
+          "require_values": false
+        }
+      ]
+    }
+  },
+  "key_spec": [],
+  "notification_settings": {
+    "grace_period_ms": 0,
+    "backlog_size": 0
+  },
+  "notifications": [],
+  "storage": [
+    {
+      "type": "persist-to-streams-v1",
+      "streams": [
+        "000000000000000000000002"
+      ]
+    }
+  ]
+}
