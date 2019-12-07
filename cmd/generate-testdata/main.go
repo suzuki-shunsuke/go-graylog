@@ -65,7 +65,10 @@ func dump(input string, dest interface{}) error {
 	if err := json.NewDecoder(f).Decode(dest); err != nil {
 		return err
 	}
-	litter.Dump(dest)
+	options := litter.Options{
+		HideZeroValues: true,
+	}
+	options.Dump(dest)
 	return nil
 }
 
@@ -73,6 +76,12 @@ var (
 	data = map[string]dumper{
 		"response_create_event_notification": EventNotification{},
 		"request_create_event_notification":  EventNotification{},
+		"event_definition/gets/response":     EventDefinitions{},
+		"event_definition/get/response":      EventDefinition{},
+		"event_definition/create/request":    EventDefinition{},
+		"event_definition/create/response":   EventDefinition{},
+		"event_definition/update/request":    EventDefinition{},
+		"event_definition/update/response":   EventDefinition{},
 		"event_notifications":                EventNotifications{},
 		"users":                              Users{},
 		"user":                               User{},
@@ -182,6 +191,14 @@ type (
 	EventNotifications struct {
 		data graylog.EventNotificationsBody
 	}
+
+	EventDefinitions struct {
+		data graylog.EventDefinitionsBody
+	}
+
+	EventDefinition struct {
+		data graylog.EventDefinition
+	}
 )
 
 func (users Users) dump(input string) error {
@@ -266,4 +283,12 @@ func (notification EventNotification) dump(input string) error {
 
 func (notifications EventNotifications) dump(input string) error {
 	return dump(input, &notifications.data)
+}
+
+func (definitions EventDefinitions) dump(input string) error {
+	return dump(input, &definitions.data)
+}
+
+func (definition EventDefinition) dump(input string) error {
+	return dump(input, &definition.data)
 }

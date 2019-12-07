@@ -6,10 +6,11 @@ ee() {
 cd `dirname $0`/..
 
 if [ "$1" = "" ]; then
-  target=`find pkg -type d | fzf`
+  target=`go list ./... | fzf`
   if [ "$target" = "" ]; then
     exit 0
   fi
+  target=${target#github.com/suzuki-shunsuke/go-graylog/v8/}
 else
   target=$1
 fi
