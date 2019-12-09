@@ -12,6 +12,7 @@ name | type | description
 title | string |
 config | string | JSON string
 notifications[].notification_id | string |
+priority | int | 1 (Low), 2 (Normal), 3 (High)
 
 `config` is a JSON string.
 The format of `config` depends on the Event Notification type.
@@ -23,7 +24,6 @@ Using the [Graylog's API browser](https://docs.graylog.org/en/3.1/pages/configur
 name | default | type | description
 --- | --- | --- | ---
 description | "" | string |
-priority | 0 | int |
 alert | false | bool |
 field_spec | "" | string | JSON string
 notification_settings.grace_period_ms | 0 | int |
