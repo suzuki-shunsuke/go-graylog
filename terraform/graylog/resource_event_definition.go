@@ -206,6 +206,15 @@ func newEventDefinition(d *schema.ResourceData) (*graylog.EventDefinition, error
 		return nil, err
 	}
 
+	a := d.Get("notifications").([]interface{})
+	notifs := make([]graylog.EventDefinitionNotification, len(a))
+	for i, b := range a {
+		c := b.(map[string]interface{})
+		notifs[i] = graylog.EventDefinitionNotification{
+			NotificationID: c["notification_id"].(string),
+		}
+	}
+
 	return &graylog.EventDefinition{
 		ID:                   d.Id(),
 		Title:                d.Get("title").(string),
@@ -215,6 +224,7 @@ func newEventDefinition(d *schema.ResourceData) (*graylog.EventDefinition, error
 		NotificationSettings: getDefinitionSettings(d),
 		Config:               cfg,
 		FieldSpec:            fieldSpec,
+		Notifications:        notifs,
 	}, nil
 }
 
