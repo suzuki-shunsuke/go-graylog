@@ -12,9 +12,7 @@ resource "graylog_event_definition" "test" {
   ],
   "search_within_ms": 60000,
   "execute_every_ms": 60000,
-  "group_by": [
-    "alert"
-  ],
+  "group_by": [],
   "series": [],
   "conditions": null
 }
