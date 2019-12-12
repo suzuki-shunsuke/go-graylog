@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/suzuki-shunsuke/go-jsoneq/jsoneq"
@@ -104,16 +105,24 @@ func resourceEventDefinition() *schema.Resource {
 }
 
 func validateFuncEventDefinitionFieldSpec(v interface{}, k string) (s []string, es []error) {
+	a := strings.TrimSpace(v.(string))
+	if len(a) == 0 {
+		return
+	}
 	spec := map[string]graylog.EventDefinitionFieldSpec{}
-	if err := json.Unmarshal([]byte(v.(string)), &spec); err != nil {
+	if err := json.Unmarshal([]byte(a), &spec); err != nil {
 		es = append(es, fmt.Errorf("failed to parse the 'field_spec'. 'field_spec' must be a JSON string: %w", err))
 	}
 	return
 }
 
 func getFieldSpec(d *schema.ResourceData) (map[string]graylog.EventDefinitionFieldSpec, error) {
+	s := strings.TrimSpace(d.Get("field_spec").(string))
+	if len(s) == 0 {
+		return nil, nil
+	}
 	spec := map[string]graylog.EventDefinitionFieldSpec{}
-	if err := json.Unmarshal([]byte(d.Get("field_spec").(string)), &spec); err != nil {
+	if err := json.Unmarshal([]byte(s), &spec); err != nil {
 		return nil, fmt.Errorf("failed to parse the 'field_spec'. 'field_spec' must be a JSON string: %w", err)
 	}
 	return spec, nil
