@@ -32,13 +32,13 @@ func resourceEventDefinition() *schema.Resource {
 			"priority": {
 				Type:     schema.TypeInt,
 				Required: true,
-				ValidateFunc: func(v interface{}, k string) (s []string, es []error) {
+				ValidateFunc: wrapValidateFunc(func(v interface{}, k string) error {
 					priority := v.(int)
 					if priority < 1 || priority > 3 {
-						es = append(es, errors.New("'priority' should be either 1, 2, and 3"))
+						return errors.New("'priority' should be either 1, 2, and 3")
 					}
-					return
-				},
+					return nil
+				}),
 			},
 			"config": {
 				Type:             schema.TypeString,
@@ -77,7 +77,7 @@ func resourceEventDefinition() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				DiffSuppressFunc: schemaDiffSuppressJSONString,
-				ValidateFunc:     validateFuncEventDefinitionFieldSpec,
+				ValidateFunc:     wrapValidateFunc(validateFuncEventDefinitionFieldSpec),
 			},
 			"notifications": {
 				Type:     schema.TypeList,
@@ -104,16 +104,17 @@ func resourceEventDefinition() *schema.Resource {
 	}
 }
 
-func validateFuncEventDefinitionFieldSpec(v interface{}, k string) (s []string, es []error) {
+func validateFuncEventDefinitionFieldSpec(v interface{}, k string) error {
 	a := strings.TrimSpace(v.(string))
 	if len(a) == 0 {
-		return
+		return nil
 	}
 	spec := map[string]graylog.EventDefinitionFieldSpec{}
 	if err := json.Unmarshal([]byte(a), &spec); err != nil {
-		es = append(es, fmt.Errorf("failed to parse the 'field_spec'. 'field_spec' must be a JSON string: %w", err))
+		return fmt.Errorf(
+			"failed to parse the 'field_spec'. 'field_spec' must be a JSON string: %w", err)
 	}
-	return
+	return nil
 }
 
 func getFieldSpec(d *schema.ResourceData) (map[string]graylog.EventDefinitionFieldSpec, error) {
