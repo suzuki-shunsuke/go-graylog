@@ -2,6 +2,7 @@ package graylog
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"testing"
@@ -53,7 +54,7 @@ func testUpdateDashboard(
 			return err
 		}
 		if db.Title != title {
-			return fmt.Errorf("db.Title is not updated")
+			return errors.New("db.Title is not updated")
 		}
 		return nil
 	}

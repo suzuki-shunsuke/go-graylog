@@ -2,10 +2,10 @@ package graylog
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/pkg/errors"
 	"github.com/suzuki-shunsuke/go-jsoneq/jsoneq"
 
 	"github.com/suzuki-shunsuke/go-graylog/v8"
@@ -316,11 +316,11 @@ func resourceExtractorRead(d *schema.ResourceData, m interface{}) error {
 	}
 	a, err := jsoneq.Convert(extractor.ExtractorConfig)
 	if err != nil {
-		return errors.Wrap(err, "failed to convert extractor_config")
+		return fmt.Errorf("failed to convert extractor_config: %w", err)
 	}
 	b, ok := a.(map[string]interface{})
 	if !ok {
-		return fmt.Errorf("failed to convert extractor_config to map[string]interface{}")
+		return errors.New("failed to convert extractor_config to map[string]interface{}")
 	}
 	switch extractor.Type {
 	case "json":
@@ -351,7 +351,7 @@ func resourceExtractorRead(d *schema.ResourceData, m interface{}) error {
 			case bool:
 				boolMap[k] = a
 			default:
-				return fmt.Errorf("%s is invalid type", k)
+				return errors.New(k + " is invalid type")
 			}
 		}
 		if err := d.Set("general_bool_extractor_config", boolMap); err != nil {

@@ -1,6 +1,7 @@
 package graylog
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strings"
@@ -162,7 +163,7 @@ func SetInputAttrs(args ...NewInputAttrs) error {
 	for _, f := range args {
 		a := f()
 		if reflect.TypeOf(a).Kind() != reflect.Ptr {
-			return fmt.Errorf("NewInputAttrs must return pointer")
+			return errors.New("NewInputAttrs must return pointer")
 		}
 		attrsSet.data[a.InputType()] = f
 	}

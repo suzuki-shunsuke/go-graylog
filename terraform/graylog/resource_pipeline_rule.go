@@ -2,7 +2,7 @@ package graylog
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"github.com/hashicorp/terraform/helper/schema"
 
@@ -54,7 +54,7 @@ func resourcePipelineRuleCreate(d *schema.ResourceData, m interface{}) error {
 	}
 	rule := newPipelineRule(d)
 	if rule.Source == "" {
-		return fmt.Errorf("source is required to create a pipeline rule")
+		return errors.New("source is required to create a pipeline rule")
 	}
 	if _, err = cl.CreatePipelineRule(ctx, rule); err != nil {
 		return err

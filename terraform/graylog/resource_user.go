@@ -2,7 +2,7 @@ package graylog
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/suzuki-shunsuke/go-set"
@@ -127,7 +127,7 @@ func resourceUserCreate(d *schema.ResourceData, m interface{}) error {
 	}
 	user := newUser(d)
 	if user.Password == "" {
-		return fmt.Errorf("password is required to create a user")
+		return errors.New("password is required to create a user")
 	}
 	if _, err = cl.CreateUser(ctx, user); err != nil {
 		return err

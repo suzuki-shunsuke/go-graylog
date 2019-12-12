@@ -1,6 +1,7 @@
 package client
 
 import (
+	"errors"
 	"net/http"
 )
 
@@ -12,3 +13,8 @@ type ErrorInfo struct {
 	Request  *http.Request  `json:"request"`
 	Response *http.Response `json:"response"`
 }
+
+var (
+	errStreamIDRequired = errors.New("stream id is required")
+	errIDRequired       = errors.New("id is empty")
+)

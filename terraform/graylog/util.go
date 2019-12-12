@@ -1,7 +1,7 @@
 package graylog
 
 import (
-	"fmt"
+	"errors"
 	"os"
 	"strings"
 
@@ -35,7 +35,7 @@ func genImport(keys ...string) schema.StateFunc {
 		a := strings.Split(d.Id(), "/")
 		size := len(keys)
 		if len(a) != size {
-			return nil, fmt.Errorf("format of import argument should be %s", strings.Join(keys, "/"))
+			return nil, errors.New("format of import argument should be " + strings.Join(keys, "/"))
 		}
 		for i, k := range keys[:size-1] {
 			if err := setStrToRD(d, k, a[i]); err != nil {
@@ -139,11 +139,11 @@ func setEnv() (*client.Client, *mockserver.Server, error) {
 func getIDFromTfState(tfState *terraform.State, key string) (string, error) {
 	rs, ok := tfState.RootModule().Resources[key]
 	if !ok {
-		return "", fmt.Errorf("not found: %s", key)
+		return "", errors.New("not found: " + key)
 	}
 	id := rs.Primary.ID
 	if id == "" {
-		return "", fmt.Errorf("no ID is set")
+		return "", errors.New("no ID is set")
 	}
 	return id, nil
 }

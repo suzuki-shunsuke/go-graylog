@@ -2,6 +2,7 @@ package graylog
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"testing"
@@ -41,7 +42,7 @@ func testUpdateRole(
 			return err
 		}
 		if role.Description != description {
-			return fmt.Errorf("role.Description is not updated")
+			return errors.New("role.Description is not updated")
 		}
 		return nil
 	}
