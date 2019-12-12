@@ -1,7 +1,7 @@
 package graylog
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/suzuki-shunsuke/go-graylog/v8/util"
 )
@@ -57,10 +57,10 @@ func (d *InputUpdateParamsData) ToInputUpdateParams(input *InputUpdateParams) er
 // ToInput copies InputData's data to Input.
 func (d *InputData) ToInput(input *Input) error {
 	if input.Type() != "" && input.Type() != d.Type {
-		return fmt.Errorf("input type is different")
+		return errors.New("input type is different")
 	}
 	if input.Attrs != nil && input.Attrs.InputType() != d.Type {
-		return fmt.Errorf("input type is different")
+		return errors.New("input type is different")
 	}
 	input.Title = d.Title
 	input.ID = d.ID

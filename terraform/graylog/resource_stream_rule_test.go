@@ -2,6 +2,7 @@ package graylog
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"testing"
@@ -19,12 +20,12 @@ func testDeleteStreamRule(
 	return func(tfState *terraform.State) error {
 		rs, ok := tfState.RootModule().Resources[key]
 		if !ok {
-			return fmt.Errorf("Not found: %s", key)
+			return errors.New("Not found: " + key)
 		}
 		id := rs.Primary.ID
 		streamID, ok := rs.Primary.Attributes["stream_id"]
 		if !ok {
-			return fmt.Errorf("stream_id is not found: %s", key)
+			return errors.New("stream_id is not found: " + key)
 		}
 		if _, _, err := cl.GetStreamRule(ctx, streamID, id); err == nil {
 			return fmt.Errorf(`stream rule "%s" must be deleted`, id)
@@ -39,12 +40,12 @@ func testCreateStreamRule(
 	return func(tfState *terraform.State) error {
 		rs, ok := tfState.RootModule().Resources[key]
 		if !ok {
-			return fmt.Errorf("Not found: %s", key)
+			return errors.New("Not found: " + key)
 		}
 		id := rs.Primary.ID
 		streamID, ok := rs.Primary.Attributes["stream_id"]
 		if !ok {
-			return fmt.Errorf("stream_id is not found: %s", key)
+			return errors.New("stream_id is not found: " + key)
 		}
 		testutil.WaitAfterCreateIndexSet(server)
 		_, _, err := cl.GetStreamRule(ctx, streamID, id)
@@ -58,12 +59,12 @@ func testUpdateStreamRule(
 	return func(tfState *terraform.State) error {
 		rs, ok := tfState.RootModule().Resources[key]
 		if !ok {
-			return fmt.Errorf("Not found: %s", key)
+			return errors.New("Not found: " + key)
 		}
 		id := rs.Primary.ID
 		streamID, ok := rs.Primary.Attributes["stream_id"]
 		if !ok {
-			return fmt.Errorf("stream_id is not found: %s", key)
+			return errors.New("stream_id is not found: " + key)
 		}
 		rule, _, err := cl.GetStreamRule(ctx, streamID, id)
 		if err != nil {

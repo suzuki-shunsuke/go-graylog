@@ -2,7 +2,7 @@ package graylog
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/suzuki-shunsuke/go-set"
@@ -123,7 +123,7 @@ func newLDAPSetting(d *schema.ResourceData) (*graylog.LDAPSetting, error) {
 	for k, v := range d.Get("group_mapping").(map[string]interface{}) {
 		s, ok := v.(string)
 		if !ok {
-			return nil, fmt.Errorf("group_mapping's value must be string")
+			return nil, errors.New("group_mapping's value must be string")
 		}
 		mapping[k] = s
 	}

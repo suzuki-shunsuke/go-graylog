@@ -2,9 +2,8 @@ package graylog
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
-
-	"github.com/pkg/errors"
 )
 
 type (
@@ -101,7 +100,7 @@ func (cond *AlertCondition) MarshalJSON() ([]byte, error) {
 func (cond *AlertCondition) UnmarshalJSON(b []byte) error {
 	errMsg := "failed to unmarshal JSON to alert condition"
 	if cond == nil {
-		return fmt.Errorf("%s: alert condition is nil", errMsg)
+		return errors.New(errMsg + ": alert condition is nil")
 	}
 	type alias AlertCondition
 	a := struct {
@@ -112,34 +111,34 @@ func (cond *AlertCondition) UnmarshalJSON(b []byte) error {
 		alias: (*alias)(cond),
 	}
 	if err := json.Unmarshal(b, &a); err != nil {
-		return errors.Wrap(err, errMsg)
+		return fmt.Errorf(errMsg+": %w", err)
 	}
 	switch a.Type {
 	case "field_content_value":
 		p := FieldContentAlertConditionParameters{}
 		if err := json.Unmarshal(a.Parameters, &p); err != nil {
-			return errors.Wrap(err, errMsg)
+			return fmt.Errorf(errMsg+": %w", err)
 		}
 		cond.Parameters = p
 		return nil
 	case "field_value":
 		p := FieldAggregationAlertConditionParameters{}
 		if err := json.Unmarshal(a.Parameters, &p); err != nil {
-			return errors.Wrap(err, errMsg)
+			return fmt.Errorf(errMsg+": %w", err)
 		}
 		cond.Parameters = p
 		return nil
 	case "message_count":
 		p := MessageCountAlertConditionParameters{}
 		if err := json.Unmarshal(a.Parameters, &p); err != nil {
-			return errors.Wrap(err, errMsg)
+			return fmt.Errorf(errMsg+": %w", err)
 		}
 		cond.Parameters = p
 		return nil
 	}
 	p := map[string]interface{}{}
 	if err := json.Unmarshal(a.Parameters, &p); err != nil {
-		return errors.Wrap(err, errMsg)
+		return fmt.Errorf(errMsg+": %w", err)
 	}
 	cond.Parameters = GeneralAlertConditionParameters{
 		Type: a.Type, Parameters: p,

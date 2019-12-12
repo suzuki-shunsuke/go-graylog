@@ -2,11 +2,11 @@ package testutil
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 	"github.com/suzuki-shunsuke/go-graylog/v8/client"
 	"github.com/suzuki-shunsuke/graylog-mock-server/mockserver"
@@ -88,7 +88,7 @@ func GetStream(
 					return &stream, nil, nil
 				}
 			}
-			return nil, nil, fmt.Errorf("default stream is not found")
+			return nil, nil, errors.New("default stream is not found")
 		}
 		if mode == 2 {
 			for _, stream := range streams {
@@ -96,7 +96,7 @@ func GetStream(
 					return &stream, nil, nil
 				}
 			}
-			return nil, nil, fmt.Errorf("not default stream is not found")
+			return nil, nil, errors.New("not default stream is not found")
 		}
 		return &(streams[0]), nil, nil
 	}
@@ -158,7 +158,7 @@ func GetServerAndClient() (*mockserver.Server, *client.Client, error) {
 	if endpoint == "" {
 		server, err = mockserver.NewServer("", nil)
 		if err != nil {
-			return nil, nil, errors.Wrap(err, "Failed to get Mock Server")
+			return nil, nil, fmt.Errorf("failed to get Mock Server: %w", err)
 		}
 		server.SetAuth(true)
 		endpoint = server.Endpoint()
@@ -168,7 +168,7 @@ func GetServerAndClient() (*mockserver.Server, *client.Client, error) {
 		if server != nil {
 			server.Close()
 		}
-		return nil, nil, errors.Wrap(err, "NewClient is failure")
+		return nil, nil, fmt.Errorf("NewClient is failure: %w", err)
 	}
 	if server != nil {
 		server.Start()

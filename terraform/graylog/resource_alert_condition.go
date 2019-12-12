@@ -2,7 +2,9 @@ package graylog
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -207,7 +209,7 @@ func alertConditionStateMigrateFunc(
 	case 0:
 		return migrateAlertConditionStateV0toV1(is)
 	default:
-		return is, fmt.Errorf("unexpected schema version: %d", v)
+		return is, errors.New("unexpected schema version: " + strconv.Itoa(v))
 	}
 }
 
@@ -265,7 +267,7 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 		p := graylog.FieldContentAlertConditionParameters{}
 		prms := d.Get("field_content_value_parameters")
 		if prms == nil {
-			return nil, fmt.Errorf("field_content_value is required")
+			return nil, errors.New("field_content_value is required")
 		}
 		for k, v := range prms.([]interface{})[0].(map[string]interface{}) {
 			switch k {
@@ -283,15 +285,15 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 				}
 			case fieldKey:
 				if p.Field, ok = v.(string); !ok {
-					return nil, fmt.Errorf("%s must be string", k)
+					return nil, errors.New(k + " must be string")
 				}
 			case valueKey:
 				if p.Value, ok = v.(string); !ok {
-					return nil, fmt.Errorf("%s must be string", k)
+					return nil, errors.New(k + " must be string")
 				}
 			case queryKey:
 				if p.Query, ok = v.(string); !ok {
-					return nil, fmt.Errorf("%s must be string", k)
+					return nil, errors.New(k + " must be string")
 				}
 			default:
 				return nil, fmt.Errorf("invalid attribute for alert condition type `field_content_value`: `%s`", k)
@@ -303,7 +305,7 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 		p := graylog.FieldAggregationAlertConditionParameters{}
 		prms := d.Get("field_value_parameters")
 		if prms == nil {
-			return nil, fmt.Errorf("field_value_parameters is required")
+			return nil, errors.New("field_value_parameters is required")
 		}
 		for k, v := range prms.([]interface{})[0].(map[string]interface{}) {
 			switch k {
@@ -329,19 +331,19 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 				}
 			case fieldKey:
 				if p.Field, ok = v.(string); !ok {
-					return nil, fmt.Errorf("%s must be string", k)
+					return nil, errors.New(k + " must be string")
 				}
 			case queryKey:
 				if p.Query, ok = v.(string); !ok {
-					return nil, fmt.Errorf("%s must be string", k)
+					return nil, errors.New(k + " must be string")
 				}
 			case "type":
 				if p.Type, ok = v.(string); !ok {
-					return nil, fmt.Errorf("%s must be string", k)
+					return nil, errors.New(k + " must be string")
 				}
 			case thresholdTypeKey:
 				if p.ThresholdType, ok = v.(string); !ok {
-					return nil, fmt.Errorf("%s must be string", k)
+					return nil, errors.New(k + " must be string")
 				}
 			default:
 				return nil, fmt.Errorf("invalid attribute for alert condition type `field_value`: `%s`", k)
@@ -353,7 +355,7 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 		p := graylog.MessageCountAlertConditionParameters{}
 		prms := d.Get("message_count_parameters")
 		if prms == nil {
-			return nil, fmt.Errorf("message_count_parameters is required")
+			return nil, errors.New("message_count_parameters is required")
 		}
 		for k, v := range prms.([]interface{})[0].(map[string]interface{}) {
 			switch k {
@@ -379,11 +381,11 @@ func newAlertCondition(d *schema.ResourceData) (*graylog.AlertCondition, error) 
 				}
 			case queryKey:
 				if p.Query, ok = v.(string); !ok {
-					return nil, fmt.Errorf("%s must be string", k)
+					return nil, errors.New(k + " must be string")
 				}
 			case thresholdTypeKey:
 				if p.ThresholdType, ok = v.(string); !ok {
-					return nil, fmt.Errorf("%s must be string", k)
+					return nil, errors.New(k + " must be string")
 				}
 			default:
 				return nil, fmt.Errorf("invalid attribute for alert condition type `message_count`: `%s`", k)
@@ -471,7 +473,7 @@ func resourceAlertConditionRead(d *schema.ResourceData, m interface{}) error {
 	case "field_value":
 		prms, ok := cond.Parameters.(graylog.FieldAggregationAlertConditionParameters)
 		if !ok {
-			return fmt.Errorf("parameters is invalid type as field_value")
+			return errors.New("parameters is invalid type as field_value")
 		}
 		return d.Set(
 			"field_value_parameters",
@@ -489,7 +491,7 @@ func resourceAlertConditionRead(d *schema.ResourceData, m interface{}) error {
 	case "message_count":
 		prms, ok := cond.Parameters.(graylog.MessageCountAlertConditionParameters)
 		if !ok {
-			return fmt.Errorf("parameters is invalid type as message_count")
+			return errors.New("parameters is invalid type as message_count")
 		}
 		return d.Set(
 			"message_count_parameters",
@@ -505,7 +507,7 @@ func resourceAlertConditionRead(d *schema.ResourceData, m interface{}) error {
 	}
 	prms, ok := cond.Parameters.(graylog.GeneralAlertConditionParameters)
 	if !ok {
-		return fmt.Errorf("parameters is invalid type as GeneralAlertConditionParameters")
+		return errors.New("parameters is invalid type as GeneralAlertConditionParameters")
 	}
 	intM := map[string]interface{}{}
 	strM := map[string]interface{}{}
@@ -524,7 +526,7 @@ func resourceAlertConditionRead(d *schema.ResourceData, m interface{}) error {
 		case string:
 			strM[k] = v
 		default:
-			return fmt.Errorf("%s is invalid type", k)
+			return errors.New(k + " is invalid type")
 		}
 	}
 	if err := d.Set("general_int_parameters", intM); err != nil {

@@ -2,9 +2,8 @@ package client
 
 import (
 	"context"
+	"errors"
 	"fmt"
-
-	"github.com/pkg/errors"
 
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
@@ -25,10 +24,10 @@ func (client *Client) GetStreamAlertCondition(
 ) (graylog.AlertCondition, *ErrorInfo, error) {
 	cond := graylog.AlertCondition{}
 	if streamID == "" {
-		return cond, nil, errors.New("stream id is empty")
+		return cond, nil, errStreamIDRequired
 	}
 	if id == "" {
-		return cond, nil, errors.New("id is empty")
+		return cond, nil, errIDRequired
 	}
 	ei, err := client.callGet(ctx, client.Endpoints().StreamAlertCondition(streamID, id), nil, &cond)
 	return cond, ei, err
@@ -40,18 +39,18 @@ func (client *Client) CreateStreamAlertCondition(
 ) (*ErrorInfo, error) {
 	errMsg := "failed to create an alert condition"
 	if cond == nil {
-		return nil, fmt.Errorf("%s: alert condition is nil", errMsg)
+		return nil, errors.New(errMsg + ": alert condition is nil")
 	}
 	ret := map[string]string{}
 	ei, err := client.callPost(ctx, client.Endpoints().StreamAlertConditions(streamID), cond, &ret)
 	if err != nil {
-		return ei, errors.Wrap(err, errMsg)
+		return ei, fmt.Errorf(errMsg+": %w", err)
 	}
 	if id, ok := ret["alert_condition_id"]; ok {
 		cond.ID = id
 		return ei, nil
 	}
-	return ei, fmt.Errorf(`%s: response doesn't have the field "alert_condition_id"`, errMsg)
+	return ei, errors.New(errMsg + `: response doesn't have the field "alert_condition_id"`)
 }
 
 // UpdateStreamAlertCondition modifies an alert condition.
@@ -60,20 +59,20 @@ func (client *Client) UpdateStreamAlertCondition(
 ) (*ErrorInfo, error) {
 	errMsg := "failed to update an alert condition"
 	if streamID == "" {
-		return nil, fmt.Errorf("%s: stream id is empty", errMsg)
+		return nil, errors.New(errMsg + ": stream id is empty")
 	}
 	if cond == nil {
-		return nil, fmt.Errorf("%s: alert condition is nil", errMsg)
+		return nil, errors.New(errMsg + ": alert condition is nil")
 	}
 	condID := cond.ID
 	if condID == "" {
-		return nil, fmt.Errorf("%s: alert condition id is empty", errMsg)
+		return nil, errors.New(errMsg + ": alert condition id is empty")
 	}
 	cond.ID = ""
 	ei, err := client.callPut(ctx, client.Endpoints().StreamAlertCondition(streamID, condID), cond, nil)
 	cond.ID = condID
 	if err != nil {
-		return ei, errors.Wrap(err, errMsg)
+		return ei, fmt.Errorf(errMsg+": %w", err)
 	}
 	return ei, nil
 }
@@ -84,10 +83,10 @@ func (client *Client) DeleteStreamAlertCondition(
 ) (*ErrorInfo, error) {
 	errMsg := "failed to delete an alert condition"
 	if streamID == "" {
-		return nil, fmt.Errorf("%s: stream id is empty", errMsg)
+		return nil, errors.New(errMsg + ": stream id is empty")
 	}
 	if id == "" {
-		return nil, fmt.Errorf("%s: alert condition id is empty", errMsg)
+		return nil, errors.New(errMsg + ": alert condition id is empty")
 	}
 	return client.callDelete(ctx, client.Endpoints().StreamAlertCondition(streamID, id), nil, nil)
 }

@@ -2,6 +2,7 @@ package graylog
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"testing"
@@ -41,7 +42,7 @@ func testUpdateUser(
 			return err
 		}
 		if user.FullName != fullName {
-			return fmt.Errorf("user.FullName is not updated")
+			return errors.New("user.FullName is not updated")
 		}
 		return nil
 	}

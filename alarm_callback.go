@@ -2,9 +2,9 @@ package graylog
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/suzuki-shunsuke/go-set"
 )
 
@@ -123,7 +123,7 @@ func (ac *SlackAlarmCallbackConfiguration) AlarmCallbackType() string {
 func (ac *AlarmCallback) UnmarshalJSON(b []byte) error {
 	errMsg := "failed to unmarshal JSON to AlarmCallback"
 	if ac == nil {
-		return fmt.Errorf("%s: AlarmCallback is nil", errMsg)
+		return errors.New(errMsg + ": AlarmCallback is nil")
 	}
 	type alias AlarmCallback
 	a := struct {
@@ -134,34 +134,34 @@ func (ac *AlarmCallback) UnmarshalJSON(b []byte) error {
 		alias: (*alias)(ac),
 	}
 	if err := json.Unmarshal(b, &a); err != nil {
-		return errors.Wrap(err, errMsg)
+		return fmt.Errorf(errMsg+": %w", err)
 	}
 	switch a.Type {
 	case EmailAlarmCallbackType:
 		p := EmailAlarmCallbackConfiguration{}
 		if err := json.Unmarshal(a.Configuration, &p); err != nil {
-			return errors.Wrap(err, errMsg)
+			return fmt.Errorf(errMsg+": %w", err)
 		}
 		ac.Configuration = &p
 		return nil
 	case HTTPAlarmCallbackType:
 		p := HTTPAlarmCallbackConfiguration{}
 		if err := json.Unmarshal(a.Configuration, &p); err != nil {
-			return errors.Wrap(err, errMsg)
+			return fmt.Errorf(errMsg+": %w", err)
 		}
 		ac.Configuration = &p
 		return nil
 	case SlackAlarmCallbackType:
 		p := SlackAlarmCallbackConfiguration{}
 		if err := json.Unmarshal(a.Configuration, &p); err != nil {
-			return errors.Wrap(err, errMsg)
+			return fmt.Errorf(errMsg+": %w", err)
 		}
 		ac.Configuration = &p
 		return nil
 	}
 	p := map[string]interface{}{}
 	if err := json.Unmarshal(a.Configuration, &p); err != nil {
-		return errors.Wrap(err, errMsg)
+		return fmt.Errorf(errMsg+": %w", err)
 	}
 	ac.Configuration = &GeneralAlarmCallbackConfiguration{
 		Type: a.Type, Configuration: p,

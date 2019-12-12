@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/pkg/errors"
 )
 
 func (client *Client) callGet(
@@ -42,15 +40,15 @@ func (client *Client) callAPI(
 	if input != nil {
 		reqBody := &bytes.Buffer{}
 		if err := json.NewEncoder(reqBody).Encode(input); err != nil {
-			return nil, errors.Wrap(err, "failed to encode request body")
+			return nil, fmt.Errorf("failed to encode request body: %w", err)
 		}
 		req, err = http.NewRequest(method, endpoint, reqBody)
 	} else {
 		req, err = http.NewRequest(method, endpoint, nil)
 	}
 	if err != nil {
-		return nil, errors.Wrapf(
-			err, "failed to call http.NewRequest: %s %s", method, endpoint)
+		return nil, fmt.Errorf(
+			"failed to call http.NewRequest: %s %s: %w", method, endpoint, err)
 	}
 	ei := &ErrorInfo{Request: req}
 	req.SetBasicAuth(client.Name(), client.Password())
@@ -65,8 +63,8 @@ func (client *Client) callAPI(
 	// request
 	resp, err := hc.Do(req)
 	if err != nil {
-		return ei, errors.Wrapf(
-			err, "failed to call Graylog API: %s %s", method, endpoint)
+		return ei, fmt.Errorf(
+			"failed to call Graylog API: %s %s: %w", method, endpoint, err)
 	}
 	defer resp.Body.Close()
 	ei.Response = resp
@@ -79,9 +77,9 @@ func (client *Client) callAPI(
 				method, endpoint, resp.StatusCode)
 		}
 		if err := json.Unmarshal(b, ei); err != nil {
-			return ei, errors.Wrapf(
-				err, "failed to parse response body as ErrorInfo: %s %s %d "+string(b),
-				method, endpoint, resp.StatusCode)
+			return ei, fmt.Errorf(
+				"failed to parse response body as ErrorInfo: %s %s %d %s: %w",
+				method, endpoint, resp.StatusCode, string(b), err)
 		}
 		return ei, fmt.Errorf(
 			"graylog API error: %s %s %d: "+string(b),
@@ -89,9 +87,9 @@ func (client *Client) callAPI(
 	}
 	if output != nil {
 		if err := json.NewDecoder(ei.Response.Body).Decode(output); err != nil {
-			return ei, errors.Wrapf(
-				err, "failed to decode graylog API response body: %s %s",
-				method, endpoint)
+			return ei, fmt.Errorf(
+				"failed to decode graylog API response body: %s %s: %w",
+				method, endpoint, err)
 		}
 	}
 	return ei, nil

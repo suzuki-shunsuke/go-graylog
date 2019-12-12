@@ -2,6 +2,7 @@ package graylog
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -190,7 +191,7 @@ func newAlarmCallback(d *schema.ResourceData) (*graylog.AlarmCallback, error) {
 		p := graylog.HTTPAlarmCallbackConfiguration{}
 		hc := d.Get("http_configuration")
 		if hc == nil {
-			return nil, fmt.Errorf("http_configuration is required")
+			return nil, errors.New("http_configuration is required")
 		}
 		p.URL = hc.([]interface{})[0].(map[string]interface{})["url"].(string)
 		ac.Configuration = &p
@@ -199,7 +200,7 @@ func newAlarmCallback(d *schema.ResourceData) (*graylog.AlarmCallback, error) {
 		p := graylog.EmailAlarmCallbackConfiguration{}
 		ec := d.Get("email_configuration")
 		if ec == nil {
-			return nil, fmt.Errorf("email_configuration is required")
+			return nil, errors.New("email_configuration is required")
 		}
 		emailCfg := ec.([]interface{})[0].(map[string]interface{})
 		for k, v := range emailCfg {
@@ -232,7 +233,7 @@ func newAlarmCallback(d *schema.ResourceData) (*graylog.AlarmCallback, error) {
 		p := graylog.SlackAlarmCallbackConfiguration{}
 		sc := d.Get("slack_configuration")
 		if sc == nil {
-			return nil, fmt.Errorf("slack_configuration is required")
+			return nil, errors.New("slack_configuration is required")
 		}
 		slackCfg := sc.([]interface{})[0].(map[string]interface{})
 		for k, v := range slackCfg {
@@ -326,7 +327,7 @@ func resourceAlarmCallbackRead(d *schema.ResourceData, m interface{}) error {
 		case graylog.HTTPAlarmCallbackType:
 			cfg, ok := ac.Configuration.(*graylog.HTTPAlarmCallbackConfiguration)
 			if !ok {
-				return fmt.Errorf("configuration is invalid type")
+				return errors.New("configuration is invalid type")
 			}
 			return d.Set("http_configuration", []map[string]interface{}{
 				{"url": cfg.URL},
@@ -334,7 +335,7 @@ func resourceAlarmCallbackRead(d *schema.ResourceData, m interface{}) error {
 		case graylog.EmailAlarmCallbackType:
 			cfg, ok := ac.Configuration.(*graylog.EmailAlarmCallbackConfiguration)
 			if !ok {
-				return fmt.Errorf("configuration is invalid type")
+				return errors.New("configuration is invalid type")
 			}
 			return d.Set("email_configuration", []map[string]interface{}{{
 				"sender":          cfg.Sender,
@@ -346,7 +347,7 @@ func resourceAlarmCallbackRead(d *schema.ResourceData, m interface{}) error {
 		case graylog.SlackAlarmCallbackType:
 			cfg, ok := ac.Configuration.(*graylog.SlackAlarmCallbackConfiguration)
 			if !ok {
-				return fmt.Errorf("configuration is invalid type")
+				return errors.New("configuration is invalid type")
 			}
 			return d.Set("slack_configuration", []map[string]interface{}{{
 				"color":          cfg.Color,
@@ -365,7 +366,7 @@ func resourceAlarmCallbackRead(d *schema.ResourceData, m interface{}) error {
 		}
 		cfg, ok := ac.Configuration.(*graylog.GeneralAlarmCallbackConfiguration)
 		if !ok {
-			return fmt.Errorf("configuration is invalid type")
+			return errors.New("configuration is invalid type")
 		}
 		intM := map[string]interface{}{}
 		strM := map[string]interface{}{}
@@ -384,7 +385,7 @@ func resourceAlarmCallbackRead(d *schema.ResourceData, m interface{}) error {
 			case string:
 				strM[k] = v
 			default:
-				return fmt.Errorf("%s is invalid type", k)
+				return errors.New(k + " is invalid type")
 			}
 		}
 		if err := d.Set("general_int_configuration", intM); err != nil {
