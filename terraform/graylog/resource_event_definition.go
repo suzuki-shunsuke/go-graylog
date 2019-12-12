@@ -76,6 +76,7 @@ func resourceEventDefinition() *schema.Resource {
 			"field_spec": {
 				Type:             schema.TypeString,
 				Optional:         true,
+				Default:          "{}",
 				DiffSuppressFunc: schemaDiffSuppressJSONString,
 				ValidateFunc:     wrapValidateFunc(validateFuncEventDefinitionFieldSpec),
 			},
