@@ -4,27 +4,23 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
+
+	"github.com/suzuki-shunsuke/flute/flute"
 
 	"github.com/suzuki-shunsuke/go-graylog/v8/client"
-	"github.com/suzuki-shunsuke/graylog-mock-server/mockserver"
 )
 
 func ExampleClient() {
 	ctx := context.Background()
-	// Create a mock server
-	server, err := mockserver.NewServer("", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// Start a server
-	server.Start()
-	defer server.Close()
 
 	// Create a client
-	cl, err := client.NewClient(server.Endpoint(), "admin", "admin")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	setExampleMock(cl)
 
 	// get a role "Admin"
 	// ei.Response.Body is closed
@@ -37,4 +33,42 @@ func ExampleClient() {
 	// Output:
 	// 200
 	// Admin
+}
+
+func setExampleMock(cl *client.Client) {
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "GET",
+								Path:   "/api/roles/Admin",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: `{
+  "name": "Admin",
+  "description": "Grants all permissions for Graylog administrators (built-in)",
+  "permissions": [
+    "*"
+  ],
+  "read_only": true
+}`,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
 }
