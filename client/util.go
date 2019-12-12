@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -71,14 +72,20 @@ func (client *Client) callAPI(
 	ei.Response = resp
 
 	if resp.StatusCode >= 400 {
-		if err := json.NewDecoder(resp.Body).Decode(ei); err != nil {
+		b, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return ei, fmt.Errorf(
+				"graylog API error: failed to read the response body: %s %s %d",
+				method, endpoint, resp.StatusCode)
+		}
+		if err := json.Unmarshal(b, ei); err != nil {
 			return ei, errors.Wrapf(
-				err, "failed to parse response body as ErrorInfo: %s %s %d",
+				err, "failed to parse response body as ErrorInfo: %s %s %d "+string(b),
 				method, endpoint, resp.StatusCode)
 		}
 		return ei, fmt.Errorf(
-			"graylog API error: %s %s %d: %s",
-			method, endpoint, resp.StatusCode, ei.Message)
+			"graylog API error: %s %s %d: "+string(b),
+			method, endpoint, resp.StatusCode)
 	}
 	if output != nil {
 		if err := json.NewDecoder(ei.Response.Body).Decode(output); err != nil {
