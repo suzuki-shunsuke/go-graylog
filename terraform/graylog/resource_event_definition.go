@@ -189,7 +189,11 @@ func getDefinitionCfg(d *schema.ResourceData) (map[string]interface{}, error) {
 }
 
 func getDefinitionSettings(d *schema.ResourceData) graylog.EventDefinitionNotificationSettings {
-	settings := d.Get("notification_settings").([]interface{})[0].(map[string]interface{})
+	s := d.Get("notification_settings").([]interface{})
+	if len(s) == 0 {
+		return graylog.EventDefinitionNotificationSettings{}
+	}
+	settings := s[0].(map[string]interface{})
 	gracePeriodMS := 0
 	if a, ok := settings["grace_period_ms"]; ok {
 		gracePeriodMS = a.(int)
