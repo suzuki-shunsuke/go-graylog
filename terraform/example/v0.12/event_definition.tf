@@ -81,4 +81,9 @@ resource "graylog_event_definition" "test2" {
   }
 }
 EOF
+  
+  notification_settings {
+    grace_period_ms = 0
+    backlog_size = 0
+  }
 }

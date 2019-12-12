@@ -48,7 +48,7 @@ func resourceEventDefinition() *schema.Resource {
 			},
 			"notification_settings": {
 				Type:     schema.TypeList,
-				Optional: true,
+				Required: true,
 				MaxItems: 1,
 				MinItems: 1,
 				Elem: &schema.Resource{

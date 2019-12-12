@@ -13,6 +13,7 @@ title | string |
 config | string | JSON string
 notifications[].notification_id | string |
 priority | int | 1 (Low), 2 (Normal), 3 (High)
+notification_settings | {} |
 
 `config` is a JSON string.
 The format of `config` depends on the Event Notification type.
