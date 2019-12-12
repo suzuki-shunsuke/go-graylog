@@ -43,7 +43,7 @@ func resourceEventDefinition() *schema.Resource {
 			"config": {
 				Type:             schema.TypeString,
 				Required:         true,
-				DiffSuppressFunc: cfgSchemaDiffSuppress,
+				DiffSuppressFunc: schemaDiffSuppressJSONString,
 				ValidateFunc:     validateFuncEventDefinitionConfig,
 			},
 			"notification_settings": {
@@ -76,7 +76,7 @@ func resourceEventDefinition() *schema.Resource {
 			"field_spec": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				DiffSuppressFunc: cfgSchemaDiffSuppress,
+				DiffSuppressFunc: schemaDiffSuppressJSONString,
 				ValidateFunc:     validateFuncEventDefinitionFieldSpec,
 			},
 			"notifications": {

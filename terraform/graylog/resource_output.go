@@ -34,18 +34,10 @@ func resourceOutput() *schema.Resource {
 			"configuration": {
 				Type:             schema.TypeString,
 				Required:         true,
-				DiffSuppressFunc: cfgSchemaDiffSuppress,
+				DiffSuppressFunc: schemaDiffSuppressJSONString,
 			},
 		},
 	}
-}
-
-func cfgSchemaDiffSuppress(k, oldV, newV string, d *schema.ResourceData) bool {
-	b, err := jsoneq.Equal([]byte(oldV), []byte(newV))
-	if err != nil {
-		return false
-	}
-	return b
 }
 
 func newOutput(d *schema.ResourceData) (*graylog.Output, error) {
