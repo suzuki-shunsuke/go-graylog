@@ -10,14 +10,7 @@
 
 [Graylog](https://www.graylog.org/) API client for Golang and terraform provider for Graylog.
 
-## Supported APIs
-
-Graylog provides very various APIs so we can't support all of them yet.
-Please check the following godoc's Client methods.
-
-https://godoc.org/github.com/suzuki-shunsuke/go-graylog/client
-
-## Example - client and mock server
+## Example of API client
 
 * https://godoc.org/github.com/suzuki-shunsuke/go-graylog/client/#example-Client
 
@@ -35,9 +28,6 @@ We support the following versions.
 We use [the graylog's official Docker Image](https://hub.docker.com/r/graylog/graylog/) for development.
 
 ### Support of Graylog v3
-
-* https://github.com/suzuki-shunsuke/go-graylog/issues/66
-* https://github.com/suzuki-shunsuke/go-graylog/milestone/1
 
 Use `client.NewClientV3` instead of `client.NewClient` .
 
