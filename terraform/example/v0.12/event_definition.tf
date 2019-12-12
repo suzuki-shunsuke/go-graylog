@@ -58,12 +58,14 @@ resource "graylog_event_definition" "test2" {
   ],
   "search_within_ms": 60000,
   "execute_every_ms": 60000,
-  "group_by": [],
+  "group_by": [
+    "alert"
+  ],
   "series": [
     {
       "id": "${random_uuid.event_definition_test2_series0.result}",
-      "function": "count",
-      "field": null
+      "function": "avg",
+      "field": "alert"
     }
   ],
   "conditions": {
