@@ -41,3 +41,44 @@ EOF
     notification_id = graylog_event_notification.http.id
   }
 }
+
+# https://github.com/suzuki-shunsuke/go-graylog/issues/170#issuecomment-564817360
+# https://www.terraform.io/docs/providers/random/r/uuid.html
+resource "random_uuid" "event_definition_test2_series0" {}
+
+resource "graylog_event_definition" "test2" {
+  title = "new-event-definition 2"
+  priority = 2
+  config = <<EOF
+{
+  "type": "aggregation-v1",
+  "query": "test",
+  "streams": [
+    "${graylog_stream.test.id}"
+  ],
+  "search_within_ms": 60000,
+  "execute_every_ms": 60000,
+  "group_by": [],
+  "series": [
+    {
+      "id": "${random_uuid.event_definition_test2_series0.result}",
+      "function": "count",
+      "field": null
+    }
+  ],
+  "conditions": {
+    "expression": {
+      "expr": ">",
+      "left": {
+        "expr": "number-ref",
+        "ref": "${random_uuid.event_definition_test2_series0.result}"
+      },
+      "right": {
+        "expr": "number",
+        "value": 0
+      }
+    }
+  }
+}
+EOF
+}
