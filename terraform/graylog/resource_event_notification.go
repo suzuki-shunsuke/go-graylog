@@ -34,7 +34,7 @@ func resourceEventNotification() *schema.Resource {
 			"config": {
 				Type:             schema.TypeString,
 				Required:         true,
-				DiffSuppressFunc: cfgSchemaDiffSuppress,
+				DiffSuppressFunc: schemaDiffSuppressJSONString,
 			},
 		},
 	}

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/suzuki-shunsuke/go-jsoneq/jsoneq"
@@ -31,23 +32,23 @@ func resourceEventDefinition() *schema.Resource {
 			"priority": {
 				Type:     schema.TypeInt,
 				Required: true,
-				ValidateFunc: func(v interface{}, k string) (s []string, es []error) {
+				ValidateFunc: wrapValidateFunc(func(v interface{}, k string) error {
 					priority := v.(int)
 					if priority < 1 || priority > 3 {
-						es = append(es, errors.New("'priority' should be either 1, 2, and 3"))
+						return errors.New("'priority' should be either 1, 2, and 3")
 					}
-					return
-				},
+					return nil
+				}),
 			},
 			"config": {
 				Type:             schema.TypeString,
 				Required:         true,
-				DiffSuppressFunc: cfgSchemaDiffSuppress,
+				DiffSuppressFunc: schemaDiffSuppressJSONString,
 				ValidateFunc:     validateFuncEventDefinitionConfig,
 			},
 			"notification_settings": {
 				Type:     schema.TypeList,
-				Optional: true,
+				Required: true,
 				MaxItems: 1,
 				MinItems: 1,
 				Elem: &schema.Resource{
@@ -75,8 +76,9 @@ func resourceEventDefinition() *schema.Resource {
 			"field_spec": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				DiffSuppressFunc: cfgSchemaDiffSuppress,
-				ValidateFunc:     validateFuncEventDefinitionFieldSpec,
+				Default:          "{}",
+				DiffSuppressFunc: schemaDiffSuppressJSONString,
+				ValidateFunc:     wrapValidateFunc(validateFuncEventDefinitionFieldSpec),
 			},
 			"notifications": {
 				Type:     schema.TypeList,
@@ -103,17 +105,26 @@ func resourceEventDefinition() *schema.Resource {
 	}
 }
 
-func validateFuncEventDefinitionFieldSpec(v interface{}, k string) (s []string, es []error) {
-	spec := map[string]graylog.EventDefinitionFieldSpec{}
-	if err := json.Unmarshal([]byte(v.(string)), &spec); err != nil {
-		es = append(es, fmt.Errorf("failed to parse the 'field_spec'. 'field_spec' must be a JSON string: %w", err))
+func validateFuncEventDefinitionFieldSpec(v interface{}, k string) error {
+	a := strings.TrimSpace(v.(string))
+	if len(a) == 0 {
+		return nil
 	}
-	return
+	spec := map[string]graylog.EventDefinitionFieldSpec{}
+	if err := json.Unmarshal([]byte(a), &spec); err != nil {
+		return fmt.Errorf(
+			"failed to parse the 'field_spec'. 'field_spec' must be a JSON string: %w", err)
+	}
+	return nil
 }
 
 func getFieldSpec(d *schema.ResourceData) (map[string]graylog.EventDefinitionFieldSpec, error) {
+	s := strings.TrimSpace(d.Get("field_spec").(string))
+	if len(s) == 0 {
+		return nil, nil
+	}
 	spec := map[string]graylog.EventDefinitionFieldSpec{}
-	if err := json.Unmarshal([]byte(d.Get("field_spec").(string)), &spec); err != nil {
+	if err := json.Unmarshal([]byte(s), &spec); err != nil {
 		return nil, fmt.Errorf("failed to parse the 'field_spec'. 'field_spec' must be a JSON string: %w", err)
 	}
 	return spec, nil
@@ -180,7 +191,11 @@ func getDefinitionCfg(d *schema.ResourceData) (map[string]interface{}, error) {
 }
 
 func getDefinitionSettings(d *schema.ResourceData) graylog.EventDefinitionNotificationSettings {
-	settings := d.Get("notification_settings").([]interface{})[0].(map[string]interface{})
+	s := d.Get("notification_settings").([]interface{})
+	if len(s) == 0 {
+		return graylog.EventDefinitionNotificationSettings{}
+	}
+	settings := s[0].(map[string]interface{})
 	gracePeriodMS := 0
 	if a, ok := settings["grace_period_ms"]; ok {
 		gracePeriodMS = a.(int)

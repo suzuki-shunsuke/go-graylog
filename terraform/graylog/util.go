@@ -7,10 +7,28 @@ import (
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/suzuki-shunsuke/go-jsoneq/jsoneq"
 
 	"github.com/suzuki-shunsuke/go-graylog/v8/client"
 	"github.com/suzuki-shunsuke/graylog-mock-server/mockserver"
 )
+
+func schemaDiffSuppressJSONString(k, oldV, newV string, d *schema.ResourceData) bool {
+	b, err := jsoneq.Equal([]byte(oldV), []byte(newV))
+	if err != nil {
+		return false
+	}
+	return b
+}
+
+func wrapValidateFunc(f func(v interface{}, k string) error) schema.SchemaValidateFunc {
+	return func(v interface{}, k string) (s []string, es []error) {
+		if err := f(v, k); err != nil {
+			es = append(es, err)
+		}
+		return
+	}
+}
 
 func genImport(keys ...string) schema.StateFunc {
 	return func(d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
