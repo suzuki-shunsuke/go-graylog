@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -43,7 +44,7 @@ func resourceEventDefinition() *schema.Resource {
 			"config": {
 				Type:             schema.TypeString,
 				Required:         true,
-				DiffSuppressFunc: schemaDiffSuppressJSONString,
+				DiffSuppressFunc: schemaDiffSuppressEventDefinitionConfig,
 				ValidateFunc:     validateFuncEventDefinitionConfig,
 			},
 			"notification_settings": {
@@ -128,6 +129,65 @@ func getFieldSpec(d *schema.ResourceData) (map[string]graylog.EventDefinitionFie
 		return nil, fmt.Errorf("failed to parse the 'field_spec'. 'field_spec' must be a JSON string: %w", err)
 	}
 	return spec, nil
+}
+
+func schemaDiffSuppressEventDefinitionConfig(k, oldV, newV string, d *schema.ResourceData) bool {
+	oldD, err := encodeEventDefinitionConfig(oldV)
+	if err != nil {
+		return false
+	}
+	newD, err := encodeEventDefinitionConfig(newV)
+	if err != nil {
+		return false
+	}
+	b, err := jsoneq.Equal(oldD, newD)
+	if err != nil {
+		return false
+	}
+	return b
+}
+
+func encodeEventDefinitionConfig(cfg string) (interface{}, error) {
+	a0, err := jsoneq.ConvertByte([]byte(cfg))
+	if err != nil {
+		return nil, err
+	}
+	a1, ok := a0.(map[string]interface{})
+	if !ok {
+		return a0, nil
+	}
+	t0, ok := a1["type"]
+	if !ok {
+		return a1, nil
+	}
+	t1, ok := t0.(string)
+	if !ok {
+		return a1, nil
+	}
+	if t1 != "aggregation-v1" {
+		return a1, nil
+	}
+	s0, ok := a1["streams"]
+	if !ok {
+		return a1, nil
+	}
+	s1, ok := s0.([]interface{})
+	if !ok {
+		return a1, nil
+	}
+	s2 := make([]string, len(s1))
+	for i, a := range s1 {
+		b, ok := a.(string)
+		if !ok {
+			return a1, nil
+		}
+		s2[i] = b
+	}
+	sort.Slice(s2, func(i, j int) bool {
+		return s2[i] > s2[j]
+	})
+	a1["streams"] = s2
+	return a1, nil
 }
 
 func validateFuncEventDefinitionConfig(v interface{}, k string) (s []string, es []error) {
