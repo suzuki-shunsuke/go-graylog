@@ -1,5 +1,14 @@
-cd `dirname $0`/.. || exit 1
-echo "pwd: $PWD" || exit 1
+#!/usr/bin/env bash
 
-mkdir -p ~/.terraform.d/plugins || exit 1
-go build -o ~/.terraform.d/plugins/terraform-provider-graylog ./terraform
+set -eu
+set -o pipefail
+
+ee() {
+  echo "+ $*"
+  eval "$@"
+}
+
+cd "$(dirname "$0")/.."
+
+ee mkdir -p ~/.terraform.d/plugins
+ee go build -o ~/.terraform.d/plugins/terraform-provider-graylog ./terraform

@@ -51,3 +51,11 @@ tasks:
     LOCAL: "true"
 - name: install-local-terraform
   script: bash scripts/install_local_terraform.sh
+- name: shellcheck
+  description: shellcheck
+  usage: shellcheck
+  script: 'find . -name "*.sh" -print0 | xargs -0 shellcheck env.sh.tmpl'
+- name: shfmt
+  description: shfmt
+  usage: shfmt
+  script: 'find . -name "*.sh" -print0 | xargs -0 shfmt -l -w env.sh.tmpl'

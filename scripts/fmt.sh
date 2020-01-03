@@ -1,8 +1,9 @@
-cd `dirname $0`/.. || exit 1
-echo "pwd: $PWD" || exit 1
+#!/usr/bin/env bash
 
-find . -type d -name node_modules -prune -o \
+set -eu
+set -o pipefail
+
+find . \
   -type d -name .git -prune -o \
-  -type d -name vendor -prune -o \
-  -type f -name "*.go" -print \
-  | xargs gofmt -l -s -w
+  -type f -name "*.go" -print0 |
+  xargs -0 gofmt -l -s -w
