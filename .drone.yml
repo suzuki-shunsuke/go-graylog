@@ -8,6 +8,28 @@ steps:
   - sh scripts/durl.sh
 ---
 kind: pipeline
+name: shell scripts
+clone:
+  depth: 1
+steps:
+- name: shellcheck
+  image: koalaman/shellcheck-alpine:v0.7.0
+  commands:
+  - 'find . -name "*.sh" -print0 | xargs -0 shellcheck env.sh.tmpl'
+- name: shfmt
+  image: mvdan/shfmt:v3.0.0
+  commands:
+  - 'find . -name "*.sh" -print0 | xargs -0 shfmt -l -w env.sh.tmpl'
+---
+kind: pipeline
+name: yamllint
+steps:
+- name: yamllint
+  image: quay.io/suzuki_shunsuke/yamllint:1.20.0__1
+  commands:
+  - 'find . \( -name "*.yml" -o -name "*.yaml" \) -print0 | xargs -0 yamllint -c .yamllint.yml'
+---
+kind: pipeline
 name: build
 volumes:
 - name: gopath
@@ -33,7 +55,7 @@ steps:
   image: *image_go
   commands:
   # bash and cgo seem to be required
-  - bash scripts/codecov-test.sh
+  - bash scripts/codecov_test.sh
   - curl -s https://codecov.io/bash > /tmp/codecov.sh
   - test "$LOCAL" = "true" -o "$DRONE_BUILD_EVENT" = "pull_request" || bash /tmp/codecov.sh
   volumes: *volumes

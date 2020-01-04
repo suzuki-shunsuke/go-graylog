@@ -1,18 +1,26 @@
+#!/usr/bin/env bash
+
+set -eu
+set -o pipefail
+
 ee() {
-  echo "+ $@"
+  echo "+ $*"
   eval "$@"
 }
 
-cd `dirname $0`/..
+cd "$(dirname "$0")/.."
 
-if [ "$1" = "" ]; then
-  target=`go list ./... | fzf`
+if [ $# -eq 0 ]; then
+  target="$(go list ./... | fzf)"
   if [ "$target" = "" ]; then
     exit 0
   fi
-  target=${target#github.com/suzuki-shunsuke/go-graylog/v8/}
+  target="${target#github.com/suzuki-shunsuke/go-graylog/v8/}"
+elif [ $# -eq 1 ]; then
+  target="$1"
 else
-  target=$1
+  echo "too many arguments are given: $*" >&2
+  exit 1
 fi
 
 if [ ! -d "$target" ]; then
@@ -20,6 +28,6 @@ if [ ! -d "$target" ]; then
   exit 1
 fi
 
-ee mkdir -p .coverage/$target || exit 1
-ee go test ./$target -coverprofile=.coverage/$target/coverage.txt -covermode=atomic || exit 1
-ee go tool cover -html=.coverage/$target/coverage.txt
+ee mkdir -p ".coverage/$target"
+ee go test "./$target" -coverprofile=".coverage/$target/coverage.txt" -covermode=atomic
+ee go tool cover -html=".coverage/$target/coverage.txt"

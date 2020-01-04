@@ -1,11 +1,19 @@
-cd `dirname $0`/.. || exit 1
-echo "pwd: $PWD" || exit 1
+#!/usr/bin/env bash
 
-source scripts/decho.sh || exit 1
+set -eu
+set -o pipefail
+
+ee() {
+  echo "+ $*"
+  eval "$@"
+}
+
+cd "$(dirname "$0")/.."
 
 if [ -f env.sh ]; then
+  # shellcheck disable=SC1091
   source env.sh
 fi
 
-decho go test ./testutil/... ./util/... ./validator/... ./client/... . -covermode=atomic || exit 1
-decho go test -v ./terraform/... -covermode=atomic || exit 1
+ee go test ./testutil/... ./util/... ./validator/... ./client/... . -covermode=atomic
+ee go test -v ./terraform/... -covermode=atomic
