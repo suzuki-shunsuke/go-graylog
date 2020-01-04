@@ -8,7 +8,7 @@ resource "graylog_dashboard" "test" {
 }
 
 resource "graylog_dashboard_widget" "test" {
-  description  = "Stream search result count change"
+  description = "Stream search result count change"
   # dashboard_id = data.graylog_dashboard.test.id
   dashboard_id = graylog_dashboard.test.id
   type         = "STREAM_SEARCH_RESULT_COUNT"
