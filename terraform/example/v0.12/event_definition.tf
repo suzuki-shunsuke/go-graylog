@@ -1,9 +1,9 @@
 resource "graylog_event_definition" "test" {
-  title = "new-event-definition"
+  title       = "new-event-definition"
   description = ""
-  priority = 1
-  alert = true
-  config = <<EOF
+  priority    = 1
+  alert       = true
+  config      = <<EOF
 {
   "type": "aggregation-v1",
   "query": "test",
@@ -17,7 +17,7 @@ resource "graylog_event_definition" "test" {
   "conditions": null
 }
 EOF
-  field_spec = <<EOF
+  field_spec  = <<EOF
 {
   "test": {
     "data_type": "string",
@@ -31,10 +31,10 @@ EOF
   }
 }
 EOF
-  
+
   notification_settings {
     grace_period_ms = 0
-    backlog_size = 0
+    backlog_size    = 0
   }
 
   notifications {
@@ -47,9 +47,9 @@ EOF
 resource "random_uuid" "event_definition_test2_series0" {}
 
 resource "graylog_event_definition" "test2" {
-  title = "new-event-definition 2"
+  title    = "new-event-definition 2"
   priority = 2
-  config = <<EOF
+  config   = <<EOF
 {
   "type": "aggregation-v1",
   "query": "test",
@@ -83,9 +83,9 @@ resource "graylog_event_definition" "test2" {
   }
 }
 EOF
-  
+
   notification_settings {
     grace_period_ms = 0
-    backlog_size = 0
+    backlog_size    = 0
   }
 }

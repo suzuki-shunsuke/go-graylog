@@ -1,5 +1,5 @@
 resource "graylog_event_notification" "legacy-http-alarm-callback" {
-  title = "legacy-http-alarm-callback"
+  title       = "legacy-http-alarm-callback"
   description = "Migrated legacy alarm callback"
 
   config = <<EOF
@@ -14,7 +14,7 @@ EOF
 }
 
 resource "graylog_event_notification" "legacy-email-alarm-callback" {
-  title = "legacy-email-alarm-callback"
+  title       = "legacy-email-alarm-callback"
   description = "Migrated legacy alarm callback"
 
   config = <<EOF
@@ -37,7 +37,7 @@ EOF
 }
 
 resource "graylog_event_notification" "legacy-slack-alarm-callback" {
-  title = "legacy-slack-alarm-callback"
+  title       = "legacy-slack-alarm-callback"
   description = "Migrated legacy alarm callback"
 
   config = <<EOF
@@ -60,7 +60,7 @@ EOF
 }
 
 resource "graylog_event_notification" "http" {
-  title = "http"
+  title       = "http"
   description = "http notification"
 
   config = <<EOF
@@ -72,7 +72,7 @@ EOF
 }
 
 resource "graylog_event_notification" "email" {
-  title = "email"
+  title       = "email"
   description = "email notification"
 
   config = <<EOF
