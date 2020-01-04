@@ -30,6 +30,14 @@ steps:
   - 'find . \( -name "*.yml" -o -name "*.yaml" \) -print0 | xargs -0 yamllint -c .yamllint.yml'
 ---
 kind: pipeline
+name: jsonlint
+steps:
+- name: jsonlint
+  image: cytopia/jsonlint:1.6.0-0.5
+  commands:
+  - bash scripts/jsonlint.sh
+---
+kind: pipeline
 name: build
 volumes:
 - name: gopath
