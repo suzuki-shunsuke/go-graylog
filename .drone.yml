@@ -38,6 +38,24 @@ steps:
   - bash scripts/jsonlint.sh
 ---
 kind: pipeline
+name: terraform fmt (v0.12)
+steps:
+- name: terraform fmt (v0.12)
+  image: hashicorp/terraform:0.12.18
+  commands:
+  - cd terraform/example/v0.12
+  - terraform fmt -check
+---
+kind: pipeline
+name: terraform fmt (v0.11)
+steps:
+- name: terraform fmt (v0.11)
+  image: hashicorp/terraform:0.11.14
+  commands:
+  - cd terraform/example/v0.11
+  - terraform fmt -check
+---
+kind: pipeline
 name: build
 volumes:
 - name: gopath
