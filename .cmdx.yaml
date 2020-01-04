@@ -63,3 +63,7 @@ tasks:
   description: yamllint
   usage: yamllint
   script: 'find . \( -name "*.yml" -o -name "*.yaml" \) -print0 | xargs -0 yamllint -c .yamllint.yml'
+- name: jsonlint
+  description: jsonlint
+  usage: jsonlint
+  script: bash scripts/jsonlint.sh
