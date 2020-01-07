@@ -58,9 +58,6 @@ func (d *InputData) ToInput(input *Input) error {
 	if input.Type() != "" && input.Type() != d.Type {
 		return errors.New("input type is different")
 	}
-	if input.Attrs != nil && input.Attrs.InputType() != d.Type {
-		return errors.New("input type is different")
-	}
 	input.Title = d.Title
 	input.ID = d.ID
 	input.Global = d.Global
@@ -70,7 +67,7 @@ func (d *InputData) ToInput(input *Input) error {
 	input.StaticFields = d.StaticFields
 	attrs := NewInputAttrsByType(d.Type)
 	if _, ok := attrs.(*InputUnknownAttrs); ok {
-		input.Attrs = &InputUnknownAttrs{inputType: input.Type(), Data: d.Attrs}
+		input.Attrs = &InputUnknownAttrs{inputType: d.Type, Data: d.Attrs}
 		return nil
 	}
 	if err := util.MSDecode(d.Attrs, attrs); err != nil {

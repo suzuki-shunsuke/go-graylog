@@ -32,3 +32,15 @@ resource "graylog_input" "json_path" {
     timeunit           = "SECONDS"
   }
 }
+
+resource "graylog_input" "kube_events" {
+  title = "Kube Events Input"
+  type  = "org.graylog2.inputs.raw.tcp.RawTCPInput"
+
+  global = true
+
+  attributes {
+    bind_address = "0.0.0.0"
+    port         = 5555
+  }
+}
