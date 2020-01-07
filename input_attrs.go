@@ -35,6 +35,7 @@ var (
 		NewInputNetFlowUDPAttrs,
 		NewInputRawAMQPAttrs,
 		NewInputRawKafkaAttrs,
+		NewInputRawTCPAttrs,
 		NewInputSyslogAMQPAttrs,
 		NewInputSyslogKafkaAttrs,
 		NewInputSyslogTCPAttrs,
