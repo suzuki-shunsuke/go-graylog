@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	Dashboard = &graylog.Dashboard{
+	Dashboard = graylog.Dashboard{
 		Title:       "test",
 		Description: "test",
 		CreatedAt:   "2019-09-20T12:10:17.486Z",

@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	Role = &graylog.Role{
+	Role = graylog.Role{
 		Name:        "Views Manager",
 		Description: "Allows reading and writing all views and extended searches (built-in)",
 		Permissions: set.StrSet{

@@ -1,0 +1,7 @@
+{
+  "title": "All system events",
+  "index_set_id": "5d84bfbe2ab79c000d35d4a9",
+  "description": "Stream containing all system events created by Graylog",
+  "matching_type": "AND",
+  "remove_matches_from_default_stream": false
+}

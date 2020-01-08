@@ -1,0 +1,123 @@
+{
+  "role": "Admin",
+  "users": [
+    {
+      "id": "local:admin",
+      "username": "admin",
+      "email": "",
+      "full_name": "Administrator",
+      "permissions": [
+        "*"
+      ],
+      "preferences": {
+        "updateUnfocussed": false,
+        "enableSmartSearch": true
+      },
+      "timezone": "UTC",
+      "session_timeout_ms": 28800000,
+      "external": false,
+      "startpage": null,
+      "roles": [
+        "Admin"
+      ],
+      "read_only": true,
+      "session_active": true,
+      "last_activity": "2019-09-21T01:28:20.552+0000",
+      "client_address": "172.18.0.1"
+    },
+    {
+      "id": "5d84bfbb2ab79c000d35d402",
+      "username": "graylog-sidecar",
+      "email": "sidecar@graylog.local",
+      "full_name": "Sidecar System User (built-in)",
+      "permissions": [
+        "users:tokenremove:graylog-sidecar",
+        "users:edit:graylog-sidecar",
+        "users:tokenlist:graylog-sidecar",
+        "users:tokencreate:graylog-sidecar",
+        "users:passwordchange:graylog-sidecar",
+        "sidecar_collectors:read",
+        "sidecars:update",
+        "sidecar_collector_configurations:read",
+        "clusterconfigentry:read",
+        "indexercluster:read",
+        "messagecount:read",
+        "journal:read",
+        "messages:analyze",
+        "inputs:read",
+        "metrics:read",
+        "savedsearches:edit",
+        "fieldnames:read",
+        "buffers:read",
+        "system:read",
+        "savedsearches:create",
+        "jvmstats:read",
+        "decorators:read",
+        "throughput:read",
+        "savedsearches:read",
+        "messages:read"
+      ],
+      "preferences": {
+        "updateUnfocussed": false,
+        "enableSmartSearch": true
+      },
+      "timezone": "UTC",
+      "session_timeout_ms": 28800000,
+      "external": false,
+      "startpage": null,
+      "roles": [
+        "Sidecar System (Internal)",
+        "Reader"
+      ],
+      "read_only": false,
+      "session_active": false,
+      "last_activity": null,
+      "client_address": null
+    },
+    {
+      "id": "5d84c1a92ab79c000d35d6cb",
+      "username": "test",
+      "email": "test@example.com",
+      "full_name": "test test",
+      "permissions": [
+        "users:edit:test",
+        "users:passwordchange:test",
+        "users:tokencreate:test",
+        "users:tokenlist:test",
+        "users:tokenremove:test",
+        "clusterconfigentry:read",
+        "indexercluster:read",
+        "messagecount:read",
+        "journal:read",
+        "messages:analyze",
+        "inputs:read",
+        "metrics:read",
+        "savedsearches:edit",
+        "fieldnames:read",
+        "buffers:read",
+        "system:read",
+        "savedsearches:create",
+        "jvmstats:read",
+        "decorators:read",
+        "throughput:read",
+        "savedsearches:read",
+        "messages:read"
+      ],
+      "preferences": {
+        "updateUnfocussed": false,
+        "enableSmartSearch": true
+      },
+      "timezone": null,
+      "session_timeout_ms": 28800000,
+      "external": false,
+      "startpage": null,
+      "roles": [
+        "Reader"
+      ],
+      "read_only": false,
+      "session_active": false,
+      "last_activity": null,
+      "client_address": null
+    }
+  ]
+}
