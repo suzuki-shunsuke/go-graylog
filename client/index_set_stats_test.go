@@ -2,80 +2,106 @@ package client_test
 
 import (
 	"context"
+	"io/ioutil"
+	"net/http"
 	"testing"
 
-	"github.com/gofrs/uuid"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testutil"
+	"github.com/stretchr/testify/require"
+	"github.com/suzuki-shunsuke/flute/flute"
+
+	"github.com/suzuki-shunsuke/go-graylog/v8/client"
+	"github.com/suzuki-shunsuke/go-graylog/v8/testdata"
 )
 
 func TestClient_GetIndexSetStats(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	iss, _, _, _, err := client.GetIndexSets(ctx, 0, 0, false)
-	if err != nil {
-		t.Fatal(err)
-	}
-	u, err := uuid.NewV4()
-	if err != nil {
-		t.Fatal(err)
-	}
-	is := testutil.IndexSet(u.String())
-	if len(iss) == 0 {
-		if _, err := client.CreateIndexSet(ctx, is); err != nil {
-			t.Fatal(err)
-		}
-		testutil.WaitAfterCreateIndexSet(server)
-		// clean
-		defer func(id string) {
-			if _, err := client.DeleteIndexSet(ctx, id); err != nil {
-				t.Fatal(err)
-			}
-			testutil.WaitAfterDeleteIndexSet(server)
-		}(is.ID)
-	} else {
-		is = &(iss[0])
-	}
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
 
-	if _, _, err := client.GetIndexSetStats(ctx, is.ID); err != nil {
+	buf, err := ioutil.ReadFile("../testdata/index_set_stat.json")
+	require.Nil(t, err)
+
+	is := testdata.IndexSet
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "GET",
+								Path:   "/api/system/indices/index_sets/" + is.ID + "/stats",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: string(buf),
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	if _, _, err := cl.GetIndexSetStats(ctx, is.ID); err != nil {
 		t.Fatal(err)
 	}
-	if _, _, err := client.GetIndexSetStats(ctx, ""); err == nil {
+	if _, _, err := cl.GetIndexSetStats(ctx, ""); err == nil {
 		t.Fatal("index set id is required")
 	}
-	// if _, _, err := client.GetIndexSetStats("h"); err == nil {
-	// 	t.Fatal(`no index set whose id is "h"`)
-	// }
 }
 
 func TestClient_GetTotalIndexSetsStats(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	u, err := uuid.NewV4()
-	if err != nil {
-		t.Fatal(err)
-	}
-	is, f, err := testutil.GetIndexSet(ctx, client, server, u.String())
-	if err != nil {
-		t.Fatal(err)
-	}
-	if f != nil {
-		defer f(is.ID)
-	}
-	if _, _, err := client.GetTotalIndexSetsStats(ctx); err != nil {
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	buf, err := ioutil.ReadFile("../testdata/index_set_stat.json")
+	require.Nil(t, err)
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "GET",
+								Path:   "/api/system/indices/index_sets/stats",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: string(buf),
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	if _, _, err := cl.GetTotalIndexSetsStats(ctx); err != nil {
 		t.Fatal(err)
 	}
 }

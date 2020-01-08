@@ -36,6 +36,10 @@ func (client *Client) CreateStreamRule(
 		return nil, errors.New("rule is required")
 	}
 
+	if rule.StreamID == "" {
+		return nil, errors.New("stream id is required")
+	}
+
 	cr := *rule
 	cr.StreamID = ""
 	body := &streamRuleIDBody{}

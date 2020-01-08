@@ -2,104 +2,243 @@ package client_test
 
 import (
 	"context"
+	"io/ioutil"
+	"net/http"
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8/testutil"
+	"github.com/stretchr/testify/require"
+	"github.com/suzuki-shunsuke/flute/flute"
+	"github.com/suzuki-shunsuke/go-graylog/v8/client"
 )
 
 func TestClient_GetRoleMembers(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	if _, _, err := client.GetRoleMembers(ctx, "Admin"); err != nil {
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	buf, err := ioutil.ReadFile("../testdata/role_members.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Matcher: &flute.Matcher{
+								Path: "/api/roles/Admin/members",
+							},
+							Tester: &flute.Tester{
+								Method: "GET",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: bodyStr,
+							},
+						},
+						{
+							Matcher: &flute.Matcher{
+								Path: "/api/roles/h/members",
+							},
+							Tester: &flute.Tester{
+								Method: "GET",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 404,
+									Header: http.Header{
+										"Content-Type": []string{"application/json"},
+									},
+								},
+								BodyString: `{
+  "type": "ApiError",
+  "message": "Couldn't find role h"
+}`,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	if _, _, err := cl.GetRoleMembers(ctx, "Admin"); err != nil {
 		t.Fatal("Failed to GetRoleMembers", err)
 	}
-	if _, _, err := client.GetRoleMembers(ctx, ""); err == nil {
+	if _, _, err := cl.GetRoleMembers(ctx, ""); err == nil {
 		t.Fatal("name is required")
 	}
-	if _, _, err := client.GetRoleMembers(ctx, "h"); err == nil {
+	if _, _, err := cl.GetRoleMembers(ctx, "h"); err == nil {
 		t.Fatal(`no role whose name is "h"`)
 	}
 }
 
 func TestClient_AddUserToRole(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
-	user, err := testutil.GetNonAdminUser(ctx, client)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if user == nil {
-		user = testutil.User()
-		user.Username = "foo"
-		if _, err := client.CreateUser(ctx, user); err != nil {
-			t.Fatal(err)
-		}
-	}
-	if _, err = client.AddUserToRole(ctx, user.Username, "Admin"); err != nil {
+
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Matcher: &flute.Matcher{
+								Path: "/api/roles/Admin/members/test",
+							},
+							Tester: &flute.Tester{
+								Method: "PUT",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 204,
+								},
+							},
+						},
+						{
+							Matcher: &flute.Matcher{
+								Path: "/api/roles/h/members/test",
+							},
+							Tester: &flute.Tester{
+								Method: "PUT",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 404,
+									Header: http.Header{
+										"Content-Type": []string{"application/json"},
+									},
+								},
+								BodyString: `{
+  "type": "ApiError",
+  "message": "Couldn't find role h"
+}`,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	if _, err = cl.AddUserToRole(ctx, "test", "Admin"); err != nil {
 		// Cannot modify local root user, this is a bug.
 		t.Fatal(err)
 	}
-	if _, err = client.AddUserToRole(ctx, "", "Admin"); err == nil {
+	if _, err = cl.AddUserToRole(ctx, "", "Admin"); err == nil {
 		t.Fatal("user name is required")
 	}
-	if _, err = client.AddUserToRole(ctx, "admin", ""); err == nil {
+	if _, err = cl.AddUserToRole(ctx, "admin", ""); err == nil {
 		t.Fatal("role name is required")
 	}
-	if _, err = client.AddUserToRole(ctx, "h", "Admin"); err == nil {
-		t.Fatal(`no user whose name is "h"`)
-	}
-	if _, err = client.AddUserToRole(ctx, "admin", "h"); err == nil {
+	if _, err = cl.AddUserToRole(ctx, "test", "h"); err == nil {
 		t.Fatal(`no role whose name is "h"`)
 	}
 }
 
 func TestClient_RemoveUserFromRole(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
-	user, err := testutil.GetNonAdminUser(ctx, client)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if user == nil {
-		user = testutil.User()
-		user.Username = "foo"
-		if _, err := client.CreateUser(ctx, user); err != nil {
-			t.Fatal(err)
-		}
-	}
-	if _, err = client.RemoveUserFromRole(ctx, user.Username, "Admin"); err != nil {
+
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Matcher: &flute.Matcher{
+								Path: "/api/roles/Admin/members/test",
+							},
+							Tester: &flute.Tester{
+								Method: "DELETE",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 204,
+								},
+							},
+						},
+						{
+							Matcher: &flute.Matcher{
+								Path: "/api/roles/h/members/test",
+							},
+							Tester: &flute.Tester{
+								Method: "DELETE",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 404,
+									Header: http.Header{
+										"Content-Type": []string{"application/json"},
+									},
+								},
+								BodyString: `{
+  "type": "ApiError",
+  "message": "Couldn't find role h"
+}`,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	if _, err = cl.RemoveUserFromRole(ctx, "test", "Admin"); err != nil {
 		// Cannot modify local root user, this is a bug.
 		t.Fatal(err)
 	}
-	if _, err = client.RemoveUserFromRole(ctx, "", "Admin"); err == nil {
+	if _, err = cl.RemoveUserFromRole(ctx, "", "Admin"); err == nil {
 		t.Fatal("user name is required")
 	}
-	if _, err = client.RemoveUserFromRole(ctx, user.Username, ""); err == nil {
+	if _, err = cl.RemoveUserFromRole(ctx, "test", ""); err == nil {
 		t.Fatal("role name is required")
 	}
-	if _, err = client.RemoveUserFromRole(ctx, "h", "Admin"); err == nil {
-		t.Fatal(`no user whose name is "h"`)
-	}
-	if _, err = client.RemoveUserFromRole(ctx, user.Username, "h"); err == nil {
+	if _, err = cl.RemoveUserFromRole(ctx, "test", "h"); err == nil {
 		t.Fatal(`no role whose name is "h"`)
 	}
 }

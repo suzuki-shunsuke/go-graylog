@@ -9,10 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/flute/flute"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
 	"github.com/suzuki-shunsuke/go-graylog/v8/client"
 	"github.com/suzuki-shunsuke/go-graylog/v8/testdata"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testutil"
 )
 
 func TestClient_GetInputs(t *testing.T) {
@@ -108,82 +106,184 @@ func TestClient_GetInput(t *testing.T) {
 
 func TestClient_CreateInput(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
+
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	buf, err := ioutil.ReadFile("../testdata/create_input.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "POST",
+								Path:   "/api/system/inputs",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+								BodyJSONString: bodyStr,
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 201,
+								},
+								BodyString: `{
+  "id": "5e1460d1a1de18000d890cd5"
+}`,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
 
 	// nil check
-	if _, err := client.CreateInput(ctx, nil); err == nil {
+	if _, err := cl.CreateInput(ctx, nil); err == nil {
 		t.Fatal("input is nil")
 	}
-	input := testutil.Input()
-	if _, err := client.CreateInput(ctx, input); err != nil {
+	input := testdata.CreateInput
+	if _, err := cl.CreateInput(ctx, &input); err != nil {
 		t.Fatal(err)
-	}
-	defer client.DeleteInput(ctx, input.ID)
-	attrs := input.Attrs.(*graylog.InputBeatsAttrs)
-	if attrs.BindAddress == "" {
-		t.Fatal(`attrs.BindAddress == ""`)
-	}
-	// error check
-	if _, err := client.CreateInput(ctx, input); err == nil {
-		t.Fatal("input id should be empty")
 	}
 }
 
 func TestClient_UpdateInput(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	input := testutil.Input()
-	if _, err := client.CreateInput(ctx, input); err != nil {
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	buf, err := ioutil.ReadFile("../testdata/create_input.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	inputID := "5e1460d1a1de18000d890cd5"
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "PUT",
+								Path:   "/api/system/inputs/" + inputID,
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+								BodyJSONString: bodyStr,
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 201,
+								},
+								BodyString: `{
+  "id": "5e1460d1a1de18000d890cd5"
+}`,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	input := testdata.UpdateInput()
+	if _, _, err := cl.UpdateInput(ctx, &input); err == nil {
+		t.Fatal("id is required")
+	}
+	input = testdata.UpdateInput()
+	input.ID = inputID
+	if _, _, err := cl.UpdateInput(ctx, &input); err != nil {
 		t.Fatal(err)
 	}
-	defer client.DeleteInput(ctx, input.ID)
-	attrs := input.Attrs.(*graylog.InputBeatsAttrs)
-	if attrs.BindAddress == "" {
-		t.Fatal(`attrs.BindAddress == ""`)
-	}
-	if _, _, err := client.UpdateInput(ctx, input.NewUpdateParams()); err != nil {
-		t.Fatal(err)
-	}
-	input.ID = ""
-	if _, _, err := client.UpdateInput(ctx, input.NewUpdateParams()); err == nil {
-		t.Fatal("input id is required")
-	}
-	if _, _, err := client.UpdateInput(ctx, nil); err == nil {
+	if _, _, err := cl.UpdateInput(ctx, nil); err == nil {
 		t.Fatal("input is required")
-	}
-	input.ID = "h"
-	if _, _, err := client.UpdateInput(ctx, input.NewUpdateParams()); err == nil {
-		t.Fatal("input should no be found")
 	}
 }
 
 func TestClient_DeleteInput(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	if _, err := client.DeleteInput(ctx, ""); err == nil {
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	inputID := "5e1460d1a1de18000d890cd5"
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Matcher: &flute.Matcher{
+								Path: "/api/system/inputs/" + inputID,
+							},
+							Tester: &flute.Tester{
+								Method: "DELETE",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 204,
+								},
+							},
+						},
+						{
+							Matcher: &flute.Matcher{
+								Path: "/api/system/inputs/h",
+							},
+							Tester: &flute.Tester{
+								Method: "DELETE",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 404,
+								},
+								BodyString: `{
+  "type": "ApiError",
+  "message": "Input id <h> is invalid!"
+}`,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	if _, err := cl.DeleteInput(ctx, ""); err == nil {
 		t.Fatal("input id is required")
 	}
-	if _, err := client.DeleteInput(ctx, "h"); err == nil {
+	if _, err := cl.DeleteInput(ctx, "h"); err == nil {
 		t.Fatal(`no input with id "h" is found`)
+	}
+	if _, err := cl.DeleteInput(ctx, inputID); err != nil {
+		t.Fatal(err)
 	}
 }
