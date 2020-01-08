@@ -15,5 +15,5 @@ if [ -f env.sh ]; then
   source env.sh
 fi
 
-ee go test ./testutil/... ./util/... ./validator/... ./client/... . -covermode=atomic
+ee go test ./util/... ./validator/... ./client/... . -covermode=atomic
 ee go test -v ./terraform/... -covermode=atomic
