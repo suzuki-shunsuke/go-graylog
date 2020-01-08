@@ -21,6 +21,7 @@ type (
 		Description *string `json:"description,omitempty"`
 		// ex. ["clusterconfigentry:read", "users:edit"]
 		Permissions set.StrSet `json:"permissions,omitempty" v-create:"required" v-update:"required"`
+		ReadOnly    *bool      `json:"read_only"`
 	}
 
 	// RolesBody represents Get Roles API's response body.
@@ -37,5 +38,6 @@ func (role *Role) NewUpdateParams() *RoleUpdateParams {
 		Name:        role.Name,
 		Description: ptr.PStr(role.Description),
 		Permissions: role.Permissions,
+		ReadOnly:    ptr.PBool(role.ReadOnly),
 	}
 }
