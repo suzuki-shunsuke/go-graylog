@@ -3,11 +3,11 @@ package graylog_test
 import (
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8/testutil"
+	"github.com/suzuki-shunsuke/go-graylog/v8/testdata"
 )
 
 func TestRoleNewUpdateParams(t *testing.T) {
-	role := testutil.Role()
+	role := testdata.Role
 	prms := role.NewUpdateParams()
 	if role.Name != prms.Name {
 		t.Fatalf(`prms.Name = "%s", wanted "%s"`, prms.Name, role.Name)
