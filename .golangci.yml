@@ -14,7 +14,8 @@ linters:
   - staticcheck
   - structcheck
   - unconvert
-  - unused
+  # https://github.com/golangci/golangci-lint/issues/827
+  # - unused
   - varcheck
   # - errcheck
   disable-all: true
