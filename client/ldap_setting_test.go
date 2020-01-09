@@ -8,7 +8,7 @@ import (
 	"gopkg.in/h2non/gock.v1"
 
 	"github.com/stretchr/testify/require"
-	"github.com/suzuki-shunsuke/go-set"
+	"github.com/suzuki-shunsuke/go-set/v6"
 
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 	"github.com/suzuki-shunsuke/go-graylog/v8/client"

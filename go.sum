@@ -308,7 +308,8 @@ github.com/suzuki-shunsuke/go-jsoneq v0.1.1/go.mod h1:vbOEb6bPf8nD+QASKzxtQ/vfVG
 github.com/suzuki-shunsuke/go-ptr v1.0.0 h1:sVR6ICMJbdCyOpxzrflHErkO8KmItPFDu0E0PoQR0W8=
 github.com/suzuki-shunsuke/go-ptr v1.0.0/go.mod h1:4WKv+CJynv3Veutqvmt7yPUqEsZp0vezqFxVRukjga0=
 github.com/suzuki-shunsuke/go-set v6.0.0+incompatible h1:APxAhd/XeHGrrp3vR6a9Yiwgak+HlM+CVREvDAULM8w=
-github.com/suzuki-shunsuke/go-set v6.0.0+incompatible/go.mod h1:CZob7MsjSLZlWDHWKeRvDX/Q2eWA6qqbx+FXdy2FgnM=
+github.com/suzuki-shunsuke/go-set/v6 v6.0.1 h1:JxqxB+UYnkMqskPZhLrOFLas6SY/Z6yMNOm9kOvwSDY=
+github.com/suzuki-shunsuke/go-set/v6 v6.0.1/go.mod h1:3dlTSl52oLMev8ZwgkNkGl3euc+Gm0ehBpfR4g+MdXY=
 github.com/suzuki-shunsuke/gomic v0.5.6/go.mod h1:GEDQnxOB07p3mTZG/MiuclfyfcqnNqp0rt9AHgIzs7Q=
 github.com/svanharmelen/jsonapi v0.0.0-20180618144545-0c0828c3f16d/go.mod h1:BSTlc8jOjh0niykqEGVXOLXdi9o0r0kR8tCYiMvjFgw=
 github.com/terraform-providers/terraform-provider-openstack v1.15.0/go.mod h1:2aQ6n/BtChAl1y2S60vebhyJyZXBsuAI5G4+lHrT1Ew=

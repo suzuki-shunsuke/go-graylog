@@ -14,7 +14,7 @@ require (
 	github.com/suzuki-shunsuke/flute v0.7.0
 	github.com/suzuki-shunsuke/go-jsoneq v0.1.1
 	github.com/suzuki-shunsuke/go-ptr v1.0.0
-	github.com/suzuki-shunsuke/go-set v6.0.0+incompatible
+	github.com/suzuki-shunsuke/go-set/v6 v6.0.1
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/h2non/gock.v1 v1.0.15
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22

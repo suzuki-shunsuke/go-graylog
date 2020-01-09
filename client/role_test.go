@@ -9,7 +9,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/flute/flute"
-	"github.com/suzuki-shunsuke/go-set"
+	"github.com/suzuki-shunsuke/go-set/v6"
 
 	"github.com/suzuki-shunsuke/go-graylog/v8/client"
 	"github.com/suzuki-shunsuke/go-graylog/v8/testdata"
