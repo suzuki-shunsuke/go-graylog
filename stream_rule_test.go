@@ -7,7 +7,7 @@ import (
 )
 
 func TestStreamRuleNewUpdateParams(t *testing.T) {
-	rule := testdata.StreamRule
+	rule := testdata.StreamRule()
 	prms := rule.NewUpdateParams()
 	if rule.ID != prms.ID {
 		t.Fatalf(`prms.ID = "%s", wanted "%s"`, prms.ID, rule.ID)

@@ -4,8 +4,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
-var (
-	StreamRules = &graylog.StreamRulesBody{
+func StreamRules() *graylog.StreamRulesBody {
+	return &graylog.StreamRulesBody{
 		Total: 1,
 		StreamRules: []graylog.StreamRule{
 			{
@@ -19,4 +19,4 @@ var (
 			},
 		},
 	}
-)
+}

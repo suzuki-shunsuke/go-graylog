@@ -8,7 +8,7 @@ import (
 )
 
 func TestIndexSetNewUpdateParams(t *testing.T) {
-	is := testdata.IndexSet
+	is := testdata.IndexSet()
 	prms := is.NewUpdateParams()
 	if is.Title != prms.Title {
 		t.Fatalf(`prms.Title = "%s", wanted "%s"`, prms.Title, is.Title)

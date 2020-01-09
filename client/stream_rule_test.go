@@ -61,8 +61,8 @@ func TestClient_GetStreamRules(t *testing.T) {
 
 	rules, total, _, err := cl.GetStreamRules(ctx, id)
 	require.Nil(t, err)
-	require.Equal(t, testdata.StreamRules.Total, total)
-	require.Equal(t, testdata.StreamRules.StreamRules, rules)
+	require.Equal(t, testdata.StreamRules().Total, total)
+	require.Equal(t, testdata.StreamRules().StreamRules, rules)
 }
 
 func TestClient_CreateStreamRule(t *testing.T) {
@@ -75,7 +75,7 @@ func TestClient_CreateStreamRule(t *testing.T) {
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
-	rule := testdata.CreateStreamRule
+	rule := testdata.CreateStreamRule()
 
 	cl.SetHTTPClient(&http.Client{
 		Transport: &flute.Transport{
@@ -136,7 +136,7 @@ func TestClient_UpdateStreamRule(t *testing.T) {
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
-	rule := testdata.CreateStreamRule
+	rule := testdata.CreateStreamRule()
 	rule.ID = "5e1539d0a1de18000d89d7fe"
 
 	cl.SetHTTPClient(&http.Client{
@@ -198,7 +198,7 @@ func TestClient_DeleteStreamRule(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	rule := testdata.CreateStreamRule
+	rule := testdata.CreateStreamRule()
 	rule.ID = "5e1539d0a1de18000d89d7fe"
 
 	cl.SetHTTPClient(&http.Client{

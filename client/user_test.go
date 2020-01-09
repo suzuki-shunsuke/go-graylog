@@ -193,7 +193,7 @@ func TestClient_GetUsers(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	require.Equal(t, testdata.Users.Users, users)
+	require.Equal(t, testdata.Users().Users, users)
 }
 
 func TestClient_GetUser(t *testing.T) {
@@ -242,7 +242,7 @@ func TestClient_GetUser(t *testing.T) {
 	require.NotNil(t, err)
 	u, _, err := cl.GetUser(ctx, "admin")
 	require.Nil(t, err)
-	require.Equal(t, testdata.User, u)
+	require.Equal(t, testdata.User(), u)
 }
 
 func TestClient_UpdateUser(t *testing.T) {

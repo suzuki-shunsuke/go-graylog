@@ -4,8 +4,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
-var (
-	CreateIndexSet = graylog.IndexSet{
+func CreateIndexSet() graylog.IndexSet {
+	return graylog.IndexSet{
 		Title:                 "test",
 		IndexPrefix:           "1234-test",
 		RotationStrategyClass: "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy",
@@ -26,4 +26,4 @@ var (
 		Description:                     "The Graylog default index set",
 		Writable:                        true,
 	}
-)
+}

@@ -107,7 +107,7 @@ func TestClient_GetRoles(t *testing.T) {
 
 	roles, _, _, err := cl.GetRoles(ctx)
 	require.Nil(t, err)
-	require.Equal(t, testdata.Roles.Roles, roles)
+	require.Equal(t, testdata.Roles().Roles, roles)
 }
 
 func TestClient_GetRole(t *testing.T) {

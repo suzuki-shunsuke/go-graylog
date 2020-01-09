@@ -6,8 +6,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
-var (
-	Users = &graylog.UsersBody{
+func Users() *graylog.UsersBody {
+	return &graylog.UsersBody{
 		Users: []graylog.User{
 			{
 				Username:         "admin",
@@ -123,4 +123,4 @@ var (
 			},
 		},
 	}
-)
+}

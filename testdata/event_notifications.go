@@ -4,8 +4,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
-var (
-	EventNotificationsBody = &graylog.EventNotificationsBody{
+func EventNotificationsBody() *graylog.EventNotificationsBody {
+	return &graylog.EventNotificationsBody{
 		EventNotifications: []graylog.EventNotification{
 			{
 				ID:          "5de59d56a1de18000cdfd770",
@@ -67,4 +67,4 @@ var (
 		GrandTotal: 3,
 		Query:      "",
 	}
-)
+}

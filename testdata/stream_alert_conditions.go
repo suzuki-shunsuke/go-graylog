@@ -4,8 +4,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
-var (
-	StreamAlertConditions = &graylog.AlertConditionsBody{
+func StreamAlertConditions() *graylog.AlertConditionsBody {
+	return &graylog.AlertConditionsBody{
 		AlertConditions: []graylog.AlertCondition{
 			{
 				ID:            "56f9f507-601d-4a54-a2f4-4bda93bb8492",
@@ -25,4 +25,4 @@ var (
 		},
 		Total: 1,
 	}
-)
+}

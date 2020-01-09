@@ -4,8 +4,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
-var (
-	CreateInput = graylog.Input{
+func CreateInput() graylog.Input {
+	return graylog.Input{
 		Title: "gelf udp 2",
 		Attrs: &graylog.InputGELFUDPAttrs{
 			DecompressSizeLimit: 8388608,
@@ -15,4 +15,4 @@ var (
 		},
 		Global: true,
 	}
-)
+}

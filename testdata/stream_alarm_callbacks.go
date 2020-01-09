@@ -6,8 +6,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
-var (
-	StreamAlarmCallbacks = &graylog.AlarmCallbacksBody{
+func StreamAlarmCallbacks() *graylog.AlarmCallbacksBody {
+	return &graylog.AlarmCallbacksBody{
 		AlarmCallbacks: []graylog.AlarmCallback{
 			{
 				ID:            "5d84c1a92ab79c000d35d6d5",
@@ -57,4 +57,4 @@ var (
 		},
 		Total: 3,
 	}
-)
+}

@@ -55,8 +55,8 @@ func TestClient_GetStreams(t *testing.T) {
 
 	streams, total, _, err := cl.GetStreams(ctx)
 	require.Nil(t, err)
-	require.Equal(t, testdata.Streams.Total, total)
-	require.Equal(t, testdata.Streams.Streams, streams)
+	require.Equal(t, testdata.Streams().Total, total)
+	require.Equal(t, testdata.Streams().Streams, streams)
 }
 
 func TestClient_CreateStream(t *testing.T) {
@@ -156,7 +156,7 @@ func TestClient_GetEnabledStreams(t *testing.T) {
 
 	_, total, _, err := cl.GetEnabledStreams(ctx)
 	require.Nil(t, err)
-	require.Equal(t, testdata.Streams.Total, total)
+	require.Equal(t, testdata.Streams().Total, total)
 }
 
 func TestClient_GetStream(t *testing.T) {
@@ -179,7 +179,7 @@ func TestClient_GetStream(t *testing.T) {
 						{
 							Tester: &flute.Tester{
 								Method: "GET",
-								Path:   "/api/streams/" + testdata.Stream.ID,
+								Path:   "/api/streams/" + testdata.Stream().ID,
 								PartOfHeader: http.Header{
 									"Content-Type":   []string{"application/json"},
 									"X-Requested-By": []string{"go-graylog"},
@@ -202,9 +202,9 @@ func TestClient_GetStream(t *testing.T) {
 	_, _, err = cl.GetStream(ctx, "")
 	require.NotNil(t, err)
 
-	stream, _, err := cl.GetStream(ctx, testdata.Stream.ID)
+	stream, _, err := cl.GetStream(ctx, testdata.Stream().ID)
 	require.Nil(t, err)
-	require.Equal(t, testdata.Stream, stream)
+	require.Equal(t, testdata.Stream(), stream)
 }
 
 func TestClient_UpdateStream(t *testing.T) {

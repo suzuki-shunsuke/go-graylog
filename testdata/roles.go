@@ -6,8 +6,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
-var (
-	Roles = &graylog.RolesBody{
+func Roles() *graylog.RolesBody {
+	return &graylog.RolesBody{
 		Roles: []graylog.Role{
 			{
 				Name:        "Views Manager",
@@ -123,4 +123,4 @@ var (
 		},
 		Total: 8,
 	}
-)
+}

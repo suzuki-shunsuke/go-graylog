@@ -22,7 +22,7 @@ func TestClient_GetIndexSetStats(t *testing.T) {
 	buf, err := ioutil.ReadFile("../testdata/index_set_stat.json")
 	require.Nil(t, err)
 
-	is := testdata.IndexSet
+	is := testdata.IndexSet()
 
 	cl.SetHTTPClient(&http.Client{
 		Transport: &flute.Transport{

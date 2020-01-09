@@ -55,8 +55,8 @@ func TestClient_GetInputs(t *testing.T) {
 
 	inputs, total, _, err := cl.GetInputs(ctx)
 	require.Nil(t, err)
-	require.Equal(t, testdata.Inputs.Inputs, inputs)
-	require.Equal(t, testdata.Inputs.Total, total)
+	require.Equal(t, testdata.Inputs().Inputs, inputs)
+	require.Equal(t, testdata.Inputs().Total, total)
 }
 
 func TestClient_GetInput(t *testing.T) {
@@ -79,7 +79,7 @@ func TestClient_GetInput(t *testing.T) {
 						{
 							Tester: &flute.Tester{
 								Method: "GET",
-								Path:   "/api/system/inputs/" + testdata.Input.ID,
+								Path:   "/api/system/inputs/" + testdata.Input().ID,
 								PartOfHeader: http.Header{
 									"Content-Type":   []string{"application/json"},
 									"X-Requested-By": []string{"go-graylog"},
@@ -99,9 +99,9 @@ func TestClient_GetInput(t *testing.T) {
 		},
 	})
 
-	input, _, err := cl.GetInput(ctx, testdata.Input.ID)
+	input, _, err := cl.GetInput(ctx, testdata.Input().ID)
 	require.Nil(t, err)
-	require.Equal(t, testdata.Input, input)
+	require.Equal(t, testdata.Input(), input)
 }
 
 func TestClient_CreateInput(t *testing.T) {
@@ -151,7 +151,7 @@ func TestClient_CreateInput(t *testing.T) {
 	if _, err := cl.CreateInput(ctx, nil); err == nil {
 		t.Fatal("input is nil")
 	}
-	input := testdata.CreateInput
+	input := testdata.CreateInput()
 	if _, err := cl.CreateInput(ctx, &input); err != nil {
 		t.Fatal(err)
 	}

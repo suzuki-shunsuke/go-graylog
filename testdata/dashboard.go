@@ -6,8 +6,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
-var (
-	Dashboard = graylog.Dashboard{
+func Dashboard() graylog.Dashboard {
+	return graylog.Dashboard{
 		Title:       "test",
 		Description: "test",
 		CreatedAt:   "2019-09-20T12:10:17.486Z",
@@ -70,4 +70,4 @@ var (
 		},
 		CreatorUserID: "admin",
 	}
-)
+}

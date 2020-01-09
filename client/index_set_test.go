@@ -61,8 +61,8 @@ func TestClient_GetIndexSets(t *testing.T) {
 
 	is, _, total, _, err := cl.GetIndexSets(ctx, 0, 0, false)
 	require.Nil(t, err)
-	require.Equal(t, testdata.IndexSets.IndexSets, is)
-	require.Equal(t, testdata.IndexSets.Total, total)
+	require.Equal(t, testdata.IndexSets().IndexSets, is)
+	require.Equal(t, testdata.IndexSets().Total, total)
 }
 
 func TestClient_GetIndexSet(t *testing.T) {
@@ -85,7 +85,7 @@ func TestClient_GetIndexSet(t *testing.T) {
 						{
 							Tester: &flute.Tester{
 								Method: "GET",
-								Path:   "/api/system/indices/index_sets/" + testdata.IndexSet.ID,
+								Path:   "/api/system/indices/index_sets/" + testdata.IndexSet().ID,
 								PartOfHeader: http.Header{
 									"Content-Type":   []string{"application/json"},
 									"X-Requested-By": []string{"go-graylog"},
@@ -108,9 +108,9 @@ func TestClient_GetIndexSet(t *testing.T) {
 	_, _, err = cl.GetIndexSet(ctx, "")
 	require.NotNil(t, err)
 
-	is, _, err := cl.GetIndexSet(ctx, testdata.IndexSet.ID)
+	is, _, err := cl.GetIndexSet(ctx, testdata.IndexSet().ID)
 	require.Nil(t, err)
-	require.Equal(t, testdata.IndexSet, is)
+	require.Equal(t, testdata.IndexSet(), is)
 }
 
 func TestClient_CreateIndexSet(t *testing.T) {
@@ -160,7 +160,7 @@ func TestClient_CreateIndexSet(t *testing.T) {
 	if _, err := cl.CreateIndexSet(ctx, nil); err == nil {
 		t.Fatal("index set is nil")
 	}
-	is := testdata.CreateIndexSet
+	is := testdata.CreateIndexSet()
 	if _, err := cl.CreateIndexSet(ctx, &is); err != nil {
 		t.Fatal(err)
 	}
@@ -178,7 +178,7 @@ func TestClient_UpdateIndexSet(t *testing.T) {
 	respBuf, err := ioutil.ReadFile("../testdata/index_set.json")
 	require.Nil(t, err)
 
-	is := testdata.CreateIndexSet
+	is := testdata.CreateIndexSet()
 
 	cl.SetHTTPClient(&http.Client{
 		Transport: &flute.Transport{
@@ -190,7 +190,7 @@ func TestClient_UpdateIndexSet(t *testing.T) {
 						{
 							Tester: &flute.Tester{
 								Method: "PUT",
-								Path:   "/api/system/indices/index_sets/" + testdata.IndexSet.ID,
+								Path:   "/api/system/indices/index_sets/" + testdata.IndexSet().ID,
 								PartOfHeader: http.Header{
 									"Content-Type":   []string{"application/json"},
 									"X-Requested-By": []string{"go-graylog"},
@@ -212,7 +212,7 @@ func TestClient_UpdateIndexSet(t *testing.T) {
 	})
 
 	// success
-	is.ID = testdata.IndexSet.ID
+	is.ID = testdata.IndexSet().ID
 	if _, _, err := cl.UpdateIndexSet(ctx, is.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
@@ -234,7 +234,7 @@ func TestClient_DeleteIndexSet(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	is := testdata.IndexSet
+	is := testdata.IndexSet()
 
 	cl.SetHTTPClient(&http.Client{
 		Transport: &flute.Transport{
@@ -284,7 +284,7 @@ func TestClient_SetDefaultIndexSet(t *testing.T) {
 	respBuf, err := ioutil.ReadFile("../testdata/index_set.json")
 	require.Nil(t, err)
 
-	is := testdata.IndexSet
+	is := testdata.IndexSet()
 
 	cl.SetHTTPClient(&http.Client{
 		Transport: &flute.Transport{

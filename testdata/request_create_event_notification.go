@@ -4,8 +4,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
-var (
-	RequestCreateEventNotification = &graylog.EventNotification{
+func RequestCreateEventNotification() *graylog.EventNotification {
+	return &graylog.EventNotification{
 		Title:       "http",
 		Description: "",
 		Config: map[string]interface{}{
@@ -13,4 +13,4 @@ var (
 			"url":  "http://example.com",
 		},
 	}
-)
+}

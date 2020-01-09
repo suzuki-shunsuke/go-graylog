@@ -143,7 +143,7 @@ func TestClient_GetDashboard(t *testing.T) {
 						{
 							Tester: &flute.Tester{
 								Method: "GET",
-								Path:   "/api/dashboards/" + testdata.Dashboard.ID,
+								Path:   "/api/dashboards/" + testdata.Dashboard().ID,
 								PartOfHeader: http.Header{
 									"Content-Type":   []string{"application/json"},
 									"X-Requested-By": []string{"go-graylog"},
@@ -166,9 +166,10 @@ func TestClient_GetDashboard(t *testing.T) {
 	_, _, err = cl.GetDashboard(ctx, "")
 	require.NotNil(t, err)
 
-	db, _, err := cl.GetDashboard(ctx, testdata.Dashboard.ID)
+	db, _, err := cl.GetDashboard(ctx, testdata.Dashboard().ID)
 	require.Nil(t, err)
-	require.Equal(t, &testdata.Dashboard, db)
+	d := testdata.Dashboard()
+	require.Equal(t, &d, db)
 }
 
 func TestClient_GetDashboards(t *testing.T) {
@@ -212,8 +213,8 @@ func TestClient_GetDashboards(t *testing.T) {
 
 	dbs, total, _, err := cl.GetDashboards(ctx)
 	require.Nil(t, err)
-	require.Equal(t, testdata.Dashboards.Dashboards, dbs)
-	require.Equal(t, testdata.Dashboards.Total, total)
+	require.Equal(t, testdata.Dashboards().Dashboards, dbs)
+	require.Equal(t, testdata.Dashboards().Total, total)
 }
 
 func TestClient_UpdateDashboard(t *testing.T) {
@@ -228,7 +229,7 @@ func TestClient_UpdateDashboard(t *testing.T) {
 	buf, err := ioutil.ReadFile("../testdata/create_dashboard.json")
 	require.Nil(t, err)
 
-	ds := testdata.Dashboard
+	ds := testdata.Dashboard()
 
 	cl.SetHTTPClient(&http.Client{
 		Transport: &flute.Transport{

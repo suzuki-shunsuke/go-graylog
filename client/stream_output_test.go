@@ -173,5 +173,5 @@ func TestClient_GetStreamOutputs(t *testing.T) {
 	})
 	_, total, _, err := cl.GetStreamOutputs(ctx, streamID)
 	require.Nil(t, err)
-	require.Equal(t, testdata.Outputs.Total, total)
+	require.Equal(t, testdata.Outputs().Total, total)
 }

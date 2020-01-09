@@ -4,8 +4,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
-var (
-	Stream = &graylog.Stream{
+func Stream() *graylog.Stream {
+	return &graylog.Stream{
 		ID:              "000000000000000000000003",
 		Title:           "All system events",
 		IndexSetID:      "5d84bfbe2ab79c000d35d4a9",
@@ -24,4 +24,4 @@ var (
 		RemoveMatchesFromDefaultStream: true,
 		IsDefault:                      false,
 	}
-)
+}

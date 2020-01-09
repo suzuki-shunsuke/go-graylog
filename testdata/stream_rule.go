@@ -4,8 +4,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
-var (
-	StreamRule = &graylog.StreamRule{
+func StreamRule() *graylog.StreamRule {
+	return &graylog.StreamRule{
 		ID:          "5d84c1a92ab79c000d35d6d7",
 		StreamID:    "5d84c1a92ab79c000d35d6ca",
 		Field:       "tag",
@@ -14,4 +14,4 @@ var (
 		Type:        1,
 		Inverted:    false,
 	}
-)
+}

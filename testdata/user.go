@@ -6,8 +6,8 @@ import (
 	"github.com/suzuki-shunsuke/go-graylog/v8"
 )
 
-var (
-	User = &graylog.User{
+func User() *graylog.User {
+	return &graylog.User{
 		Username:         "admin",
 		Email:            "",
 		FullName:         "Administrator",
@@ -28,4 +28,4 @@ var (
 		Roles:       set.NewStrSet("Admin"),
 		Permissions: set.NewStrSet("*"),
 	}
-)
+}

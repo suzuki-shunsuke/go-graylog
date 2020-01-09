@@ -8,7 +8,7 @@ import (
 )
 
 func TestUserNewUpdateParams(t *testing.T) {
-	user := testdata.User
+	user := testdata.User()
 	prms := user.NewUpdateParams()
 	if user.Username != prms.Username {
 		t.Fatalf(`prms.Username = "%s", wanted "%s"`, prms.Username, user.Username)
