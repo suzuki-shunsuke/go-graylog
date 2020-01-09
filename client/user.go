@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
 // CreateUser creates a new user account.

@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/go-set/v6"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
-	"github.com/suzuki-shunsuke/go-graylog/v8/client"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
+	"github.com/suzuki-shunsuke/go-graylog/v9/client"
 )
 
 func TestClient_GetLDAPSetting(t *testing.T) {

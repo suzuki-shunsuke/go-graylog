@@ -3,7 +3,7 @@ package graylog_test
 import (
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
 func TestInputUpdatePramsDataToInputUpdateParams(t *testing.T) {

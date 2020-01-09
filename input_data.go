@@ -3,7 +3,7 @@ package graylog
 import (
 	"errors"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8/util"
+	"github.com/suzuki-shunsuke/go-graylog/v9/util"
 )
 
 type (

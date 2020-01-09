@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/suzuki-shunsuke/go-jsoneq/jsoneq"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
 func resourceOutput() *schema.Resource {

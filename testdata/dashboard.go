@@ -3,7 +3,7 @@ package testdata
 import (
 	"github.com/suzuki-shunsuke/go-ptr"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
 func Dashboard() graylog.Dashboard {

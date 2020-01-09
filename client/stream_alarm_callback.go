@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
 // GetStreamAlarmCallbacks gets all alarm callbacks of this stream.
