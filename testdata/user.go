@@ -24,12 +24,8 @@ var (
 			UpdateUnfocussed:  false,
 			EnableSmartSearch: true,
 		},
-		Startpage: nil,
-		Roles: set.StrSet{
-			"Admin": struct{}{},
-		},
-		Permissions: set.StrSet{
-			"*": struct{}{},
-		},
+		Startpage:   nil,
+		Roles:       set.NewStrSet("Admin"),
+		Permissions: set.NewStrSet("*"),
 	}
 )
