@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/suzuki-shunsuke/go-set"
+	"github.com/suzuki-shunsuke/go-set/v6"
 )
 
 const (

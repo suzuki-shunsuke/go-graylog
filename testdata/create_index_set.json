@@ -1,0 +1,23 @@
+{
+  "title": "test",
+  "index_prefix": "1234-test",
+  "rotation_strategy_class": "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy",
+  "rotation_strategy": {
+    "type": "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig",
+    "max_docs_per_index": 20000000
+  },
+  "retention_strategy_class": "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy",
+  "retention_strategy": {
+    "type": "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig",
+    "max_number_of_indices": 20
+  },
+  "creation_date": "2019-09-20T11:59:32.219Z",
+  "index_analyzer": "standard",
+  "shards": 4,
+  "index_optimization_max_num_segments": 1,
+  "field_type_refresh_interval": 5000,
+  "description": "The Graylog default index set",
+  "writable": true,
+  "index_optimization_disabled": false,
+  "default": false
+}

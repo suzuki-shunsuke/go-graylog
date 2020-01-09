@@ -1,11 +1,11 @@
 package testdata
 
 import (
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
-var (
-	Inputs = &graylog.InputsBody{
+func Inputs() *graylog.InputsBody {
+	return &graylog.InputsBody{
 		Inputs: []graylog.Input{
 			{
 				Title: "gelf udp 2",
@@ -28,4 +28,4 @@ var (
 		},
 		Total: 1,
 	}
-)
+}

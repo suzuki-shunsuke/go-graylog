@@ -1,128 +1,126 @@
 package testdata
 
 import (
-	"github.com/suzuki-shunsuke/go-set"
+	"github.com/suzuki-shunsuke/go-set/v6"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
-var (
-	Roles = &graylog.RolesBody{
+func Roles() *graylog.RolesBody {
+	return &graylog.RolesBody{
 		Roles: []graylog.Role{
 			{
 				Name:        "Views Manager",
 				Description: "Allows reading and writing all views and extended searches (built-in)",
-				Permissions: set.StrSet{
-					"extendedsearch:create": struct{}{},
-					"extendedsearch:use":    struct{}{},
-					"view:create":           struct{}{},
-					"view:edit":             struct{}{},
-					"view:read":             struct{}{},
-					"view:use":              struct{}{},
-				},
+				Permissions: set.NewStrSet(
+					"extendedsearch:create",
+					"extendedsearch:use",
+					"view:create",
+					"view:edit",
+					"view:read",
+					"view:use",
+				),
 				ReadOnly: true,
 			},
 			{
 				Name:        "Reader",
 				Description: "Grants basic permissions for every Graylog user (built-in)",
-				Permissions: set.StrSet{
-					"buffers:read":            struct{}{},
-					"clusterconfigentry:read": struct{}{},
-					"decorators:read":         struct{}{},
-					"fieldnames:read":         struct{}{},
-					"indexercluster:read":     struct{}{},
-					"inputs:read":             struct{}{},
-					"journal:read":            struct{}{},
-					"jvmstats:read":           struct{}{},
-					"messagecount:read":       struct{}{},
-					"messages:analyze":        struct{}{},
-					"messages:read":           struct{}{},
-					"metrics:read":            struct{}{},
-					"savedsearches:create":    struct{}{},
-					"savedsearches:edit":      struct{}{},
-					"savedsearches:read":      struct{}{},
-					"system:read":             struct{}{},
-					"throughput:read":         struct{}{},
-				},
+				Permissions: set.NewStrSet(
+					"buffers:read",
+					"clusterconfigentry:read",
+					"decorators:read",
+					"fieldnames:read",
+					"indexercluster:read",
+					"inputs:read",
+					"journal:read",
+					"jvmstats:read",
+					"messagecount:read",
+					"messages:analyze",
+					"messages:read",
+					"metrics:read",
+					"savedsearches:create",
+					"savedsearches:edit",
+					"savedsearches:read",
+					"system:read",
+					"throughput:read",
+				),
 				ReadOnly: true,
 			},
 			{
 				Name:        "terraform",
 				Description: "terraform",
-				Permissions: set.StrSet{
-					"dashboards:*":    struct{}{},
-					"indexsets:*":     struct{}{},
-					"inputs:*":        struct{}{},
-					"pipeline_rule:*": struct{}{},
-					"roles:*":         struct{}{},
-					"streams:*":       struct{}{},
-					"users:*":         struct{}{},
-				},
+				Permissions: set.NewStrSet(
+					"dashboards:*",
+					"indexsets:*",
+					"inputs:*",
+					"pipeline_rule:*",
+					"roles:*",
+					"streams:*",
+					"users:*",
+				),
 				ReadOnly: false,
 			},
 			{
 				Name:        "Sidecar System (Internal)",
 				Description: "Internal technical role. Grants access to register and pull configurations for a Sidecar node (built-in)",
-				Permissions: set.StrSet{
-					"sidecar_collector_configurations:read": struct{}{},
-					"sidecar_collectors:read":               struct{}{},
-					"sidecars:update":                       struct{}{},
-				},
+				Permissions: set.NewStrSet(
+					"sidecar_collector_configurations:read",
+					"sidecar_collectors:read",
+					"sidecars:update",
+				),
 				ReadOnly: true,
 			},
 			{
 				Name:        "Admin",
 				Description: "Grants all permissions for Graylog administrators (built-in)",
-				Permissions: set.StrSet{
-					"*": struct{}{},
-				},
-				ReadOnly: true,
+				Permissions: set.NewStrSet("*"),
+				ReadOnly:    true,
 			},
 			{
 				Name:        "Views User",
 				Description: "Allows using views and extended searches (built-in)",
-				Permissions: set.StrSet{
-					"extendedsearch:create": struct{}{},
-					"extendedsearch:use":    struct{}{},
-					"view:create":           struct{}{},
-					"view:use":              struct{}{},
-				},
+				Permissions: set.NewStrSet(
+					"extendedsearch:create",
+					"extendedsearch:use",
+					"view:create",
+					"view:use",
+				),
 				ReadOnly: true,
 			},
 			{
 				Name:        "Alerts Manager",
 				Description: "Allows reading and writing all event definitions and event notifications (built-in)",
-				Permissions: set.StrSet{
-					"eventdefinitions:create":   struct{}{},
-					"eventdefinitions:delete":   struct{}{},
-					"eventdefinitions:edit":     struct{}{},
-					"eventdefinitions:execute":  struct{}{},
-					"eventdefinitions:read":     struct{}{},
-					"eventnotifications:create": struct{}{},
-					"eventnotifications:delete": struct{}{},
-					"eventnotifications:edit":   struct{}{},
-					"eventnotifications:read":   struct{}{},
-				},
+				Permissions: set.NewStrSet(
+					"eventdefinitions:create",
+					"eventdefinitions:delete",
+					"eventdefinitions:edit",
+					"eventdefinitions:execute",
+					"eventdefinitions:read",
+					"eventnotifications:create",
+					"eventnotifications:delete",
+					"eventnotifications:edit",
+					"eventnotifications:read",
+				),
 				ReadOnly: true,
 			},
 			{
 				Name:        "terraform-read",
 				Description: "terraform-read",
-				Permissions: set.StrSet{
-					"dashboards:read":    struct{}{},
-					"indexsets:read":     struct{}{},
-					"inputs:read":        struct{}{},
-					"pipeline_rule:read": struct{}{},
-					"roles:read":         struct{}{},
-					"streams:read":       struct{}{},
-					"users:edit":         struct{}{},
-					"users:list":         struct{}{},
-					"users:tokencreate":  struct{}{},
-					"users:tokenlist":    struct{}{},
-				},
+				Permissions: set.NewStrSet(
+					"dashboards:read",
+					"indexsets:read",
+					"inputs:read",
+					"pipeline_rule:read",
+					"roles:read",
+					"streams:read",
+					"users:edit",
+					"users:list",
+					"users:tokencreate",
+					"users:tokenlist",
+				),
 				ReadOnly: false,
 			},
 		},
 		Total: 8,
 	}
-)
+}

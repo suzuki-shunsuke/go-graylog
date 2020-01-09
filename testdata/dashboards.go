@@ -3,11 +3,11 @@ package testdata
 import (
 	"github.com/suzuki-shunsuke/go-ptr"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
-var (
-	Dashboards = &graylog.DashboardsBody{
+func Dashboards() *graylog.DashboardsBody {
+	return &graylog.DashboardsBody{
 		Dashboards: []graylog.Dashboard{
 			{
 				Title:       "test",
@@ -75,4 +75,4 @@ var (
 		},
 		Total: 1,
 	}
-)
+}

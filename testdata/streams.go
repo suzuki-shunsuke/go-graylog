@@ -1,11 +1,11 @@
 package testdata
 
 import (
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
-var (
-	Streams = &graylog.StreamsBody{
+func Streams() *graylog.StreamsBody {
+	return &graylog.StreamsBody{
 		Total: 4,
 		Streams: []graylog.Stream{
 			{
@@ -112,4 +112,4 @@ var (
 			},
 		},
 	}
-)
+}

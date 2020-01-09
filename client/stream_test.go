@@ -9,11 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/flute/flute"
 
-	"github.com/gofrs/uuid"
-
-	"github.com/suzuki-shunsuke/go-graylog/v8/client"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testdata"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testutil"
+	"github.com/suzuki-shunsuke/go-graylog/v9/client"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
 )
 
 func TestClient_GetStreams(t *testing.T) {
@@ -58,67 +55,108 @@ func TestClient_GetStreams(t *testing.T) {
 
 	streams, total, _, err := cl.GetStreams(ctx)
 	require.Nil(t, err)
-	require.Equal(t, testdata.Streams.Total, total)
-	require.Equal(t, testdata.Streams.Streams, streams)
+	require.Equal(t, testdata.Streams().Total, total)
+	require.Equal(t, testdata.Streams().Streams, streams)
 }
 
 func TestClient_CreateStream(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
+
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	buf, err := ioutil.ReadFile("../testdata/create_stream.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "POST",
+								Path:   "/api/streams",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+								BodyJSONString: bodyStr,
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: `{
+  "stream_id": "5e151c31a1de18000d89a83f"
+}`,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
 
 	// nil check
-	if _, err := client.CreateStream(ctx, nil); err == nil {
+	if _, err := cl.CreateStream(ctx, nil); err == nil {
 		t.Fatal("stream is nil")
 	}
-	// success
-	u, err := uuid.NewV4()
-	if err != nil {
-		t.Fatal(err)
-	}
-	is := testutil.IndexSet(u.String())
-	if _, err := client.CreateIndexSet(ctx, is); err != nil {
-		t.Fatal(err)
-	}
-	testutil.WaitAfterCreateIndexSet(server)
-	// clean
-	defer func(id string) {
-		if _, err := client.DeleteIndexSet(ctx, id); err != nil {
-			t.Fatal(err)
-		}
-		testutil.WaitAfterDeleteIndexSet(server)
-	}(is.ID)
 
-	stream := testutil.Stream()
-	stream.IndexSetID = is.ID
-	if _, err := client.CreateStream(ctx, stream); err != nil {
+	stream := testdata.CreateStream()
+	if _, err := cl.CreateStream(ctx, &stream); err != nil {
 		t.Fatal(err)
 	}
-	// clean
-	defer client.DeleteStream(ctx, stream.ID)
+	require.Equal(t, "5e151c31a1de18000d89a83f", stream.ID)
 }
 
 func TestClient_GetEnabledStreams(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
-	_, total, _, err := client.GetEnabledStreams(ctx)
-	if err != nil {
-		t.Fatal("Failed to GetStreams", err)
-	}
-	if total != 1 {
-		t.Fatalf("total == %d, wanted %d", total, 1)
-	}
+
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	buf, err := ioutil.ReadFile("../testdata/streams.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "GET",
+								Path:   "/api/streams/enabled",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: bodyStr,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	_, total, _, err := cl.GetEnabledStreams(ctx)
+	require.Nil(t, err)
+	require.Equal(t, testdata.Streams().Total, total)
 }
 
 func TestClient_GetStream(t *testing.T) {
@@ -141,7 +179,7 @@ func TestClient_GetStream(t *testing.T) {
 						{
 							Tester: &flute.Tester{
 								Method: "GET",
-								Path:   "/api/streams/" + testdata.Stream.ID,
+								Path:   "/api/streams/" + testdata.Stream().ID,
 								PartOfHeader: http.Header{
 									"Content-Type":   []string{"application/json"},
 									"X-Requested-By": []string{"go-graylog"},
@@ -164,149 +202,254 @@ func TestClient_GetStream(t *testing.T) {
 	_, _, err = cl.GetStream(ctx, "")
 	require.NotNil(t, err)
 
-	stream, _, err := cl.GetStream(ctx, testdata.Stream.ID)
+	stream, _, err := cl.GetStream(ctx, testdata.Stream().ID)
 	require.Nil(t, err)
-	require.Equal(t, testdata.Stream, stream)
+	require.Equal(t, testdata.Stream(), stream)
 }
 
 func TestClient_UpdateStream(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	stream, f, err := testutil.GetStream(ctx, client, server, 2)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if f != nil {
-		defer f(stream.ID)
-	}
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
 
-	stream.Description = "changed!"
-	if _, err := client.UpdateStream(ctx, stream); err != nil {
-		t.Fatal(err)
-	}
-	stream.ID = ""
-	if _, err := client.UpdateStream(ctx, stream); err == nil {
+	reqBuf, err := ioutil.ReadFile("../testdata/create_stream.json")
+	require.Nil(t, err)
+	reqBodyStr := string(reqBuf)
+
+	respBuf, err := ioutil.ReadFile("../testdata/stream.json")
+	require.Nil(t, err)
+	respBodyStr := string(respBuf)
+
+	streamID := "5e151c31a1de18000d89a83f"
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Matcher: &flute.Matcher{
+								Path: "/api/streams/" + streamID,
+							},
+							Tester: &flute.Tester{
+								Method: "PUT",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+								BodyJSONString: reqBodyStr,
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: respBodyStr,
+							},
+						},
+						{
+							Matcher: &flute.Matcher{
+								Path: "/api/streams/h",
+							},
+							Tester: &flute.Tester{
+								Method: "PUT",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+								BodyJSONString: reqBodyStr,
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 404,
+								},
+								BodyString: `{
+  "type": "ApiError",
+  "message": "Stream <h> not found!"
+}`,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	stream := testdata.CreateStream()
+
+	if _, err := cl.UpdateStream(ctx, &stream); err == nil {
 		t.Fatal("id is required")
 	}
+	stream = testdata.CreateStream()
+	stream.ID = streamID
+	if _, err := cl.UpdateStream(ctx, &stream); err != nil {
+		t.Fatal(err)
+	}
+	stream = testdata.CreateStream()
 	stream.ID = "h"
-	if _, err := client.UpdateStream(ctx, stream); err == nil {
+	if _, err := cl.UpdateStream(ctx, &stream); err == nil {
 		t.Fatal(`no stream whose id is "h"`)
 	}
-	if _, err := client.UpdateStream(ctx, nil); err == nil {
+	if _, err := cl.UpdateStream(ctx, nil); err == nil {
 		t.Fatal("stream is nil")
 	}
 }
 
 func TestClient_DeleteStream(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
+
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	streamID := "5e151c31a1de18000d89a83f"
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "DELETE",
+								Path:   "/api/streams/" + streamID,
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 204,
+								},
+							},
+						},
+						{
+							Tester: &flute.Tester{
+								Method: "DELETE",
+								Path:   "/api/streams/h",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 404,
+								},
+								BodyString: `"message"
+"Stream <h> not found!"`,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
 
 	// id required
-	if _, err := client.DeleteStream(ctx, ""); err == nil {
+	if _, err := cl.DeleteStream(ctx, ""); err == nil {
 		t.Fatal("id is required")
 	}
 	// invalid id
-	if _, err := client.DeleteStream(ctx, "h"); err == nil {
-		t.Fatal(`no stream with id "h" is found`)
+	if _, err := cl.DeleteStream(ctx, streamID); err != nil {
+		t.Fatal(err)
 	}
 }
 
 func TestClient_PauseStream(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	if _, err := client.PauseStream(ctx, ""); err == nil {
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	streamID := "5e151c31a1de18000d89a83f"
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "POST",
+								Path:   "/api/streams/" + streamID + "/pause",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 204,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	if _, err := cl.PauseStream(ctx, ""); err == nil {
 		t.Fatal("id is required")
 	}
-	if _, err := client.PauseStream(ctx, "h"); err == nil {
-		t.Fatal(`no stream whose id is "h"`)
-	}
-
-	u, err := uuid.NewV4()
-	if err != nil {
+	if _, err := cl.PauseStream(ctx, streamID); err != nil {
 		t.Fatal(err)
 	}
-	is := testutil.IndexSet(u.String())
-	if _, err := client.CreateIndexSet(ctx, is); err != nil {
-		t.Fatal(err)
-	}
-	testutil.WaitAfterCreateIndexSet(server)
-	defer func(id string) {
-		client.DeleteIndexSet(ctx, id)
-		testutil.WaitAfterDeleteIndexSet(server)
-	}(is.ID)
-	stream := testutil.Stream()
-	stream.IndexSetID = is.ID
-	if _, err := client.CreateStream(ctx, stream); err != nil {
-		t.Fatal(err)
-	}
-	defer client.DeleteStream(ctx, stream.ID)
-
-	if _, err = client.PauseStream(ctx, stream.ID); err != nil {
-		t.Fatal("Failed to PauseStream", err)
-	}
-	// TODO test pause
 }
 
 func TestClient_ResumeStream(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	if _, err = client.ResumeStream(ctx, ""); err == nil {
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	streamID := "5e151c31a1de18000d89a83f"
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "POST",
+								Path:   "/api/streams/" + streamID + "/resume",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 204,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	if _, err := cl.ResumeStream(ctx, ""); err == nil {
 		t.Fatal("id is required")
 	}
-
-	if _, err = client.ResumeStream(ctx, "h"); err == nil {
-		t.Fatal(`no stream whose id is "h"`)
-	}
-
-	u, err := uuid.NewV4()
-	if err != nil {
+	if _, err := cl.ResumeStream(ctx, streamID); err != nil {
 		t.Fatal(err)
 	}
-	is := testutil.IndexSet(u.String())
-	if _, err := client.CreateIndexSet(ctx, is); err != nil {
-		t.Fatal(err)
-	}
-	testutil.WaitAfterCreateIndexSet(server)
-	defer func(id string) {
-		client.DeleteIndexSet(ctx, id)
-		testutil.WaitAfterDeleteIndexSet(server)
-	}(is.ID)
-	stream := testutil.Stream()
-	stream.IndexSetID = is.ID
-	if _, err := client.CreateStream(ctx, stream); err != nil {
-		t.Fatal(err)
-	}
-	defer client.DeleteStream(ctx, stream.ID)
-
-	if _, err = client.ResumeStream(ctx, stream.ID); err != nil {
-		t.Fatal("Failed to ResumeStream", err)
-	}
-	// TODO test resume
 }

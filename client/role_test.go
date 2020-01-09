@@ -2,44 +2,66 @@ package client_test
 
 import (
 	"context"
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/flute/flute"
+	"github.com/suzuki-shunsuke/go-set/v6"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8/client"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testdata"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testutil"
+	"github.com/suzuki-shunsuke/go-graylog/v9/client"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
 )
 
 func TestClient_CreateRole(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	role := testutil.Role()
-	client.DeleteRole(ctx, role.Name)
-	// nil check
-	if _, err := client.CreateRole(ctx, nil); err == nil {
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	buf, err := ioutil.ReadFile("../testdata/role.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Test:   testRoleBody,
+								Method: "POST",
+								Path:   "/api/roles",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 201,
+								},
+								BodyString: bodyStr,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	if _, err := cl.CreateRole(ctx, nil); err == nil {
 		t.Fatal("role is nil")
 	}
-	if _, err := client.CreateRole(ctx, role); err != nil {
+	role := testdata.Role
+	if _, err := cl.CreateRole(ctx, &role); err != nil {
 		t.Fatal(err)
-	}
-	if _, err := client.DeleteRole(ctx, role.Name); err != nil {
-		t.Fatal(err)
-	}
-	// error check
-	role.Name = ""
-	if _, err := client.CreateRole(ctx, role); err == nil {
-		t.Fatal("role name is empty")
 	}
 }
 
@@ -85,7 +107,7 @@ func TestClient_GetRoles(t *testing.T) {
 
 	roles, _, _, err := cl.GetRoles(ctx)
 	require.Nil(t, err)
-	require.Equal(t, testdata.Roles.Roles, roles)
+	require.Equal(t, testdata.Roles().Roles, roles)
 }
 
 func TestClient_GetRole(t *testing.T) {
@@ -133,37 +155,79 @@ func TestClient_GetRole(t *testing.T) {
 
 	role, _, err := cl.GetRole(ctx, testdata.Role.Name)
 	require.Nil(t, err)
-	require.Equal(t, testdata.Role, role)
+	require.Equal(t, &testdata.Role, role)
+}
+
+func testRoleBody(t *testing.T, req *http.Request, svc *flute.Service, route *flute.Route) {
+	var body map[string]interface{}
+	require.Nil(t, json.NewDecoder(req.Body).Decode(&body))
+
+	perms := set.NewStrSet()
+	for _, p := range body["permissions"].([]interface{}) {
+		perms.Add(p.(string))
+	}
+	body["permissions"] = perms
+	require.Equal(t, map[string]interface{}{
+		"name":        "Views Manager",
+		"description": "Allows reading and writing all views and extended searches (built-in)",
+		"permissions": set.NewStrSet(
+			"view:edit",
+			"extendedsearch:use",
+			"view:create",
+			"extendedsearch:create",
+			"view:read",
+			"view:use"),
+		"read_only": true,
+	}, body)
 }
 
 func TestClient_UpdateRole(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
 
-	role := testutil.Role()
-	client.DeleteRole(ctx, role.Name)
-	if _, _, err := client.UpdateRole(ctx, role.Name, role.NewUpdateParams()); err == nil {
-		t.Fatal("role should be deleted")
-	}
-	if _, err := client.CreateRole(ctx, role); err != nil {
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	buf, err := ioutil.ReadFile("../testdata/role.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	role := testdata.Role
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Test:   testRoleBody,
+								Method: "PUT",
+								Path:   "/api/roles/" + role.Name,
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 200,
+								},
+								BodyString: bodyStr,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	if _, _, err := cl.UpdateRole(ctx, role.Name, role.NewUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
-	defer client.DeleteRole(ctx, role.Name)
-	if _, _, err := client.UpdateRole(ctx, role.Name, role.NewUpdateParams()); err != nil {
-		t.Fatal(err)
-	}
-	if _, _, err := client.UpdateRole(ctx, "", role.NewUpdateParams()); err == nil {
-		t.Fatal("role name is required")
-	}
-	name := role.Name
-	role.Name = ""
-	if _, _, err := client.UpdateRole(ctx, name, role.NewUpdateParams()); err == nil {
+	if _, _, err := cl.UpdateRole(ctx, "", role.NewUpdateParams()); err == nil {
 		t.Fatal("role name is required")
 	}
 }

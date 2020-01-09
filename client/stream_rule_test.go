@@ -9,10 +9,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/flute/flute"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
-	"github.com/suzuki-shunsuke/go-graylog/v8/client"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testdata"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testutil"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
+	"github.com/suzuki-shunsuke/go-graylog/v9/client"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
 )
 
 func TestClient_GetStreamRules(t *testing.T) {
@@ -62,145 +61,183 @@ func TestClient_GetStreamRules(t *testing.T) {
 
 	rules, total, _, err := cl.GetStreamRules(ctx, id)
 	require.Nil(t, err)
-	require.Equal(t, testdata.StreamRules.Total, total)
-	require.Equal(t, testdata.StreamRules.StreamRules, rules)
+	require.Equal(t, testdata.StreamRules().Total, total)
+	require.Equal(t, testdata.StreamRules().StreamRules, rules)
 }
 
 func TestClient_CreateStreamRule(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
+
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	buf, err := ioutil.ReadFile("../testdata/create_stream_rule.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	rule := testdata.CreateStreamRule()
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "POST",
+								Path:   "/api/streams/" + rule.StreamID + "/rules",
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+								BodyJSONString: bodyStr,
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 201,
+								},
+								BodyString: `{
+  "streamrule_id": "5e1539d0a1de18000d89d7fe"
+}`,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	ruleID := "5e1539d0a1de18000d89d7fe"
+
+	if _, err := cl.CreateStreamRule(ctx, &rule); err != nil {
 		t.Fatal(err)
 	}
-	if server != nil {
-		defer server.Close()
-	}
-	stream, f, err := testutil.GetStream(ctx, client, server, 2)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if f != nil {
-		defer f(stream.ID)
-	}
-	rule := testutil.StreamRule()
-	rule.StreamID = stream.ID
-	if _, err := client.CreateStreamRule(ctx, rule); err != nil {
-		t.Fatal(err)
-	}
-	if _, err := client.CreateStreamRule(ctx, rule); err == nil {
-		t.Fatal("stream rule id should be empty")
-	}
+	require.Equal(t, ruleID, rule.ID)
 	rule.ID = ""
 	rule.StreamID = ""
-	if _, err := client.CreateStreamRule(ctx, rule); err == nil {
+	if _, err := cl.CreateStreamRule(ctx, &rule); err == nil {
 		t.Fatal("stream id is required")
 	}
-	rule.StreamID = "h"
-	if _, err := client.CreateStreamRule(ctx, rule); err == nil {
-		t.Fatal(`no stream with id "h" is not found`)
-	}
 
-	if _, err := client.CreateStreamRule(ctx, nil); err == nil {
+	if _, err := cl.CreateStreamRule(ctx, nil); err == nil {
 		t.Fatal("stream rule is nil")
 	}
 }
 
 func TestClient_UpdateStreamRule(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
-	stream, f, err := testutil.GetStream(ctx, client, server, 2)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if f != nil {
-		defer f(stream.ID)
-	}
-	rules, _, _, err := client.GetStreamRules(ctx, stream.ID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	rule := testutil.StreamRule()
-	if len(rules) == 0 {
-		rule.StreamID = stream.ID
-		if _, err := client.CreateStreamRule(ctx, rule); err != nil {
-			t.Fatal(err)
-		}
-	} else {
-		rule = &(rules[0])
-	}
 
-	rule.Description += " changed!"
-	if _, err := client.UpdateStreamRule(ctx, rule); err != nil {
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	buf, err := ioutil.ReadFile("../testdata/create_stream_rule.json")
+	require.Nil(t, err)
+	bodyStr := string(buf)
+
+	rule := testdata.CreateStreamRule()
+	rule.ID = "5e1539d0a1de18000d89d7fe"
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "PUT",
+								Path:   "/api/streams/" + rule.StreamID + "/rules/" + rule.ID,
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+								BodyJSONString: bodyStr,
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 201,
+								},
+								BodyString: `{
+  "streamrule_id": "5e1539d0a1de18000d89d7fe"
+}`,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	if _, err := cl.UpdateStreamRule(ctx, &rule); err != nil {
 		t.Fatal(err)
 	}
 	streamID := rule.StreamID
 	rule.StreamID = ""
-	if _, err := client.UpdateStreamRule(ctx, rule); err == nil {
+	if _, err := cl.UpdateStreamRule(ctx, &rule); err == nil {
 		t.Fatal("stream id is required")
 	}
 	rule.StreamID = streamID
 	// ruleID = rule.ID
 	rule.ID = ""
-	if _, err := client.UpdateStreamRule(ctx, rule); err == nil {
+	if _, err := cl.UpdateStreamRule(ctx, &rule); err == nil {
 		t.Fatal("stream rule id is required")
 	}
-	rule.ID = "h"
-	if _, err := client.UpdateStreamRule(ctx, rule); err == nil {
-		t.Fatal(`no stream rule with id "h" is not found`)
-	}
 
-	if _, err := client.UpdateStreamRule(ctx, nil); err == nil {
+	if _, err := cl.UpdateStreamRule(ctx, nil); err == nil {
 		t.Fatal("stream rule is nil")
 	}
 }
 
 func TestClient_DeleteStreamRule(t *testing.T) {
 	ctx := context.Background()
-	server, client, err := testutil.GetServerAndClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if server != nil {
-		defer server.Close()
-	}
-	stream, f, err := testutil.GetStream(ctx, client, server, 2)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if f != nil {
-		defer f(stream.ID)
-	}
-	rules, _, _, err := client.GetStreamRules(ctx, stream.ID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	rule := testutil.StreamRule()
-	if len(rules) == 0 {
-		rule.StreamID = stream.ID
-		if _, err := client.CreateStreamRule(ctx, rule); err != nil {
-			t.Fatal(err)
-		}
-	} else {
-		rule = &(rules[0])
-	}
 
-	if _, err := client.DeleteStreamRule(ctx, "", rule.ID); err == nil {
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+
+	rule := testdata.CreateStreamRule()
+	rule.ID = "5e1539d0a1de18000d89d7fe"
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Tester: &flute.Tester{
+								Method: "DELETE",
+								Path:   "/api/streams/" + rule.StreamID + "/rules/" + rule.ID,
+								PartOfHeader: http.Header{
+									"Content-Type":   []string{"application/json"},
+									"X-Requested-By": []string{"go-graylog"},
+									"Authorization":  nil,
+								},
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 204,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	if _, err := cl.DeleteStreamRule(ctx, "", rule.ID); err == nil {
 		t.Fatal("stream id is required")
 	}
-	if _, err := client.DeleteStreamRule(ctx, rule.StreamID, ""); err == nil {
+	if _, err := cl.DeleteStreamRule(ctx, rule.StreamID, ""); err == nil {
 		t.Fatal("stream rule id is required")
 	}
-	if _, err := client.DeleteStreamRule(ctx, rule.StreamID, rule.ID); err != nil {
+	if _, err := cl.DeleteStreamRule(ctx, rule.StreamID, rule.ID); err != nil {
 		t.Fatal(err)
-	}
-	if _, _, err := client.GetStreamRule(ctx, rule.StreamID, rule.ID); err == nil {
-		t.Fatal("stream rule should be deleted")
 	}
 }
 

@@ -9,9 +9,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/flute/flute"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
-	"github.com/suzuki-shunsuke/go-graylog/v8/client"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testdata"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
+	"github.com/suzuki-shunsuke/go-graylog/v9/client"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
 )
 
 func TestClient_CreateOutput(t *testing.T) {
@@ -77,7 +77,7 @@ func TestClient_CreateOutput(t *testing.T) {
 	}
 	_, err = cl.CreateOutput(ctx, output)
 	require.Nil(t, err)
-	require.Equal(t, testdata.StdoutOutput.ID, output.ID)
+	require.Equal(t, testdata.StdoutOutput().ID, output.ID)
 }
 
 func TestClient_DeleteOutput(t *testing.T) {
@@ -96,7 +96,7 @@ func TestClient_DeleteOutput(t *testing.T) {
 						{
 							Matcher: &flute.Matcher{
 								Method: "DELETE",
-								Path:   "/api/system/outputs/" + testdata.StdoutOutput.ID,
+								Path:   "/api/system/outputs/" + testdata.StdoutOutput().ID,
 							},
 							Tester: &flute.Tester{
 								PartOfHeader: http.Header{
@@ -125,7 +125,7 @@ func TestClient_DeleteOutput(t *testing.T) {
 		t.Fatal("id is required")
 	}
 	// invalid id
-	_, err = cl.DeleteOutput(ctx, testdata.StdoutOutput.ID)
+	_, err = cl.DeleteOutput(ctx, testdata.StdoutOutput().ID)
 	require.Nil(t, err)
 }
 
@@ -152,7 +152,7 @@ func TestClient_GetOutput(t *testing.T) {
 						{
 							Matcher: &flute.Matcher{
 								Method: "GET",
-								Path:   "/api/system/outputs/" + testdata.StdoutOutput.ID,
+								Path:   "/api/system/outputs/" + testdata.StdoutOutput().ID,
 							},
 							Tester: &flute.Tester{
 								PartOfHeader: http.Header{
@@ -176,9 +176,9 @@ func TestClient_GetOutput(t *testing.T) {
 			},
 		},
 	})
-	output, _, err := cl.GetOutput(ctx, testdata.StdoutOutput.ID)
+	output, _, err := cl.GetOutput(ctx, testdata.StdoutOutput().ID)
 	require.Nil(t, err)
-	require.Equal(t, testdata.StdoutOutput, output)
+	require.Equal(t, testdata.StdoutOutput(), output)
 }
 
 func TestClient_GetOutputs(t *testing.T) {
@@ -228,7 +228,7 @@ func TestClient_GetOutputs(t *testing.T) {
 
 	_, total, _, err := cl.GetOutputs(ctx)
 	require.Nil(t, err)
-	require.Equal(t, testdata.Outputs.Total, total)
+	require.Equal(t, testdata.Outputs().Total, total)
 }
 
 func TestClient_UpdateOutput(t *testing.T) {
@@ -254,7 +254,7 @@ func TestClient_UpdateOutput(t *testing.T) {
 						{
 							Matcher: &flute.Matcher{
 								Method: "PUT",
-								Path:   "/api/system/outputs/" + testdata.StdoutOutput.ID,
+								Path:   "/api/system/outputs/" + testdata.StdoutOutput().ID,
 							},
 							Tester: &flute.Tester{
 								PartOfHeader: http.Header{
@@ -282,6 +282,6 @@ func TestClient_UpdateOutput(t *testing.T) {
 			},
 		},
 	})
-	_, err = cl.UpdateOutput(ctx, testdata.StdoutOutput)
+	_, err = cl.UpdateOutput(ctx, testdata.StdoutOutput())
 	require.Nil(t, err)
 }

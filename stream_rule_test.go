@@ -3,11 +3,11 @@ package graylog_test
 import (
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8/testutil"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
 )
 
 func TestStreamRuleNewUpdateParams(t *testing.T) {
-	rule := testutil.StreamRule()
+	rule := testdata.StreamRule()
 	prms := rule.NewUpdateParams()
 	if rule.ID != prms.ID {
 		t.Fatalf(`prms.ID = "%s", wanted "%s"`, prms.ID, rule.ID)

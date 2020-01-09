@@ -1,11 +1,11 @@
 package testdata
 
 import (
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
-var (
-	SlackStreamAlarmCallback = graylog.AlarmCallback{
+func SlackStreamAlarmCallback() graylog.AlarmCallback {
+	return graylog.AlarmCallback{
 		ID:            "5d84c1a92ab79c000d35d6d5",
 		StreamID:      "5d84c1a92ab79c000d35d6ca",
 		Title:         "test",
@@ -26,4 +26,4 @@ var (
 			NotifyChannel: false,
 		},
 	}
-)
+}

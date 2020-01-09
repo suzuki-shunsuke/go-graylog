@@ -1,13 +1,13 @@
 package testdata
 
 import (
-	"github.com/suzuki-shunsuke/go-set"
+	"github.com/suzuki-shunsuke/go-set/v6"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
-var (
-	User = &graylog.User{
+func User() *graylog.User {
+	return &graylog.User{
 		Username:         "admin",
 		Email:            "",
 		FullName:         "Administrator",
@@ -24,12 +24,8 @@ var (
 			UpdateUnfocussed:  false,
 			EnableSmartSearch: true,
 		},
-		Startpage: nil,
-		Roles: set.StrSet{
-			"Admin": struct{}{},
-		},
-		Permissions: set.StrSet{
-			"*": struct{}{},
-		},
+		Startpage:   nil,
+		Roles:       set.NewStrSet("Admin"),
+		Permissions: set.NewStrSet("*"),
 	}
-)
+}

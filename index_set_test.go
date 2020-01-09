@@ -3,12 +3,12 @@ package graylog_test
 import (
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testutil"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
 )
 
 func TestIndexSetNewUpdateParams(t *testing.T) {
-	is := testutil.IndexSet("hoge")
+	is := testdata.IndexSet()
 	prms := is.NewUpdateParams()
 	if is.Title != prms.Title {
 		t.Fatalf(`prms.Title = "%s", wanted "%s"`, prms.Title, is.Title)

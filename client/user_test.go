@@ -8,11 +8,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/flute/flute"
-	"github.com/suzuki-shunsuke/go-set"
+	"github.com/suzuki-shunsuke/go-set/v6"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
-	"github.com/suzuki-shunsuke/go-graylog/v8/client"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testdata"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
+	"github.com/suzuki-shunsuke/go-graylog/v9/client"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
 )
 
 func TestClient_DeleteUser(t *testing.T) {
@@ -193,7 +193,7 @@ func TestClient_GetUsers(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	require.Equal(t, testdata.Users.Users, users)
+	require.Equal(t, testdata.Users().Users, users)
 }
 
 func TestClient_GetUser(t *testing.T) {
@@ -242,7 +242,7 @@ func TestClient_GetUser(t *testing.T) {
 	require.NotNil(t, err)
 	u, _, err := cl.GetUser(ctx, "admin")
 	require.Nil(t, err)
-	require.Equal(t, testdata.User, u)
+	require.Equal(t, testdata.User(), u)
 }
 
 func TestClient_UpdateUser(t *testing.T) {

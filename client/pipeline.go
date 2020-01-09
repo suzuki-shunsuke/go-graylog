@@ -3,7 +3,7 @@ package client
 import (
 	"context"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
 // GetPipelines returns all pipeline.

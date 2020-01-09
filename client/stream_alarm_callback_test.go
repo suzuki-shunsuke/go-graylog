@@ -11,11 +11,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/flute/flute"
-	"github.com/suzuki-shunsuke/go-set"
+	"github.com/suzuki-shunsuke/go-set/v6"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
-	"github.com/suzuki-shunsuke/go-graylog/v8/client"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testdata"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
+	"github.com/suzuki-shunsuke/go-graylog/v9/client"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
 )
 
 func TestClient_GetStreamAlarmCallbacks(t *testing.T) {
@@ -64,8 +64,8 @@ func TestClient_GetStreamAlarmCallbacks(t *testing.T) {
 	require.NotNil(t, err)
 	acs, total, _, err := cl.GetStreamAlarmCallbacks(ctx, id)
 	require.Nil(t, err)
-	require.Equal(t, testdata.StreamAlarmCallbacks.Total, total)
-	require.Equal(t, testdata.StreamAlarmCallbacks.AlarmCallbacks, acs)
+	require.Equal(t, testdata.StreamAlarmCallbacks().Total, total)
+	require.Equal(t, testdata.StreamAlarmCallbacks().AlarmCallbacks, acs)
 }
 
 func TestClient_GetStreamAlarmCallback(t *testing.T) {
@@ -119,7 +119,7 @@ func TestClient_GetStreamAlarmCallback(t *testing.T) {
 
 	ac, _, err := cl.GetStreamAlarmCallback(ctx, id, callbackID)
 	require.Nil(t, err)
-	require.Equal(t, testdata.SlackStreamAlarmCallback, ac)
+	require.Equal(t, testdata.SlackStreamAlarmCallback(), ac)
 }
 
 func TestClient_CreateStreamAlarmCallback(t *testing.T) {

@@ -1,11 +1,11 @@
 package testdata
 
 import (
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
-var (
-	HTTPStreamAlarmCallback = graylog.AlarmCallback{
+func HTTPStreamAlarmCallback() graylog.AlarmCallback {
+	return graylog.AlarmCallback{
 		ID:            "5d84c1a92ab79c000d35d6d4",
 		StreamID:      "5d84c1a92ab79c000d35d6ca",
 		Title:         "test",
@@ -15,4 +15,4 @@ var (
 			URL: "https://example.com",
 		},
 	}
-)
+}

@@ -1,11 +1,11 @@
 package testdata
 
 import (
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
-var (
-	EventNotification = &graylog.EventNotification{
+func EventNotification() *graylog.EventNotification {
+	return &graylog.EventNotification{
 		ID:          "5de5a365a1de18000cdfdf49",
 		Title:       "http",
 		Description: "",
@@ -14,4 +14,4 @@ var (
 			"url":  "http://example.com",
 		},
 	}
-)
+}

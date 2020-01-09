@@ -2,7 +2,7 @@ package util
 
 import (
 	"github.com/mitchellh/mapstructure"
-	"github.com/suzuki-shunsuke/go-set"
+	"github.com/suzuki-shunsuke/go-set/v6"
 )
 
 // MSDecode assigns input's data to outputs with mapstructure.

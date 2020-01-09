@@ -81,7 +81,7 @@ type (
 		IndexOptimizationMaxNumSegments int                `json:"index_optimization_max_num_segments" v-update:"required"`
 		// field_type_refresh_interval is added from Graylog API v3
 		FieldTypeRefreshInterval int    `json:"field_type_refresh_interval"`
-		ID                       string `json:"id" v-update:"required,objectid"`
+		ID                       string `json:"id,omitempty" v-update:"required,objectid"`
 
 		Description               *string `json:"description,omitempty"`
 		Replicas                  *int    `json:"replicas,omitempty"`

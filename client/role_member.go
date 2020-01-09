@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
 // GetRoleMembers returns a given role's members.

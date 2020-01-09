@@ -2,15 +2,12 @@ package graylog
 
 import (
 	"errors"
-	"os"
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/terraform"
 	"github.com/suzuki-shunsuke/go-jsoneq/jsoneq"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8/client"
-	"github.com/suzuki-shunsuke/graylog-mock-server/mockserver"
+	"github.com/suzuki-shunsuke/go-graylog/v9/client"
 )
 
 func schemaDiffSuppressJSONString(k, oldV, newV string, d *schema.ResourceData) bool {
@@ -87,66 +84,57 @@ func newClient(m interface{}) (*client.Client, error) {
 	return cl, nil
 }
 
-func setEnv() (*client.Client, *mockserver.Server, error) {
-	_, ok := os.LookupEnv("TF_ACC")
-	if !ok {
-		if err := os.Setenv("TF_ACC", "true"); err != nil {
-			return nil, nil, err
-		}
-	}
-	authName, ok := os.LookupEnv("GRAYLOG_AUTH_NAME")
-	if !ok {
-		authName = "admin"
-		if err := os.Setenv("GRAYLOG_AUTH_NAME", authName); err != nil {
-			return nil, nil, err
-		}
-	}
-	authPass, ok := os.LookupEnv("GRAYLOG_AUTH_PASSWORD")
-	if !ok {
-		authPass = "admin"
-		if err := os.Setenv("GRAYLOG_AUTH_PASSWORD", "admin"); err != nil {
-			return nil, nil, err
-		}
-	}
-	var (
-		server *mockserver.Server
-		err    error
-		cl     *client.Client
-	)
-	endpoint := os.Getenv("GRAYLOG_WEB_ENDPOINT_URI")
-	if endpoint == "" {
-		server, err = mockserver.NewServer("", nil)
-		if err != nil {
-			return nil, nil, err
-		}
-		server.SetAuth(true)
-		endpoint = server.Endpoint()
-		if err := os.Setenv("GRAYLOG_WEB_ENDPOINT_URI", endpoint); err != nil {
-			return nil, nil, err
-		}
-	}
-	if os.Getenv("GRAYLOG_API_VERSION") == "v3" {
-		cl, err = client.NewClientV3(endpoint, authName, authPass)
-	} else {
-		cl, err = client.NewClient(endpoint, authName, authPass)
-	}
-	if err != nil {
-		return nil, nil, err
-	}
-	return cl, server, nil
-}
+// func setEnv() (*client.Client, error) {
+// 	_, ok := os.LookupEnv("TF_ACC")
+// 	if !ok {
+// 		if err := os.Setenv("TF_ACC", "true"); err != nil {
+// 			return nil, err
+// 		}
+// 	}
+// 	authName, ok := os.LookupEnv("GRAYLOG_AUTH_NAME")
+// 	if !ok {
+// 		authName = "admin"
+// 		if err := os.Setenv("GRAYLOG_AUTH_NAME", authName); err != nil {
+// 			return nil, err
+// 		}
+// 	}
+// 	authPass, ok := os.LookupEnv("GRAYLOG_AUTH_PASSWORD")
+// 	if !ok {
+// 		authPass = "admin"
+// 		if err := os.Setenv("GRAYLOG_AUTH_PASSWORD", "admin"); err != nil {
+// 			return nil, err
+// 		}
+// 	}
+// 	var (
+// 		err error
+// 		cl  *client.Client
+// 	)
+// 	endpoint := os.Getenv("GRAYLOG_WEB_ENDPOINT_URI")
+// 	if endpoint == "" {
+// 		return nil, errors.New("GRAYLOG_WEB_ENDPOINT_URI is required")
+// 	}
+// 	if os.Getenv("GRAYLOG_API_VERSION") == "v3" {
+// 		cl, err = client.NewClientV3(endpoint, authName, authPass)
+// 	} else {
+// 		cl, err = client.NewClient(endpoint, authName, authPass)
+// 	}
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return cl, nil
+// }
 
-func getIDFromTfState(tfState *terraform.State, key string) (string, error) {
-	rs, ok := tfState.RootModule().Resources[key]
-	if !ok {
-		return "", errors.New("not found: " + key)
-	}
-	id := rs.Primary.ID
-	if id == "" {
-		return "", errors.New("no ID is set")
-	}
-	return id, nil
-}
+// func getIDFromTfState(tfState *terraform.State, key string) (string, error) {
+// 	rs, ok := tfState.RootModule().Resources[key]
+// 	if !ok {
+// 		return "", errors.New("not found: " + key)
+// 	}
+// 	id := rs.Primary.ID
+// 	if id == "" {
+// 		return "", errors.New("no ID is set")
+// 	}
+// 	return id, nil
+// }
 
 func setStrListToRD(d *schema.ResourceData, key string, val []string) error {
 	return d.Set(key, val)

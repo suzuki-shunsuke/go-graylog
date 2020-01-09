@@ -1,11 +1,11 @@
 package testdata
 
 import (
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
-var (
-	IndexSets = &graylog.IndexSetsBody{
+func IndexSets() *graylog.IndexSetsBody {
+	return &graylog.IndexSetsBody{
 		IndexSets: []graylog.IndexSet{
 			{
 				Title:                 "Default index set",
@@ -123,4 +123,4 @@ var (
 		Stats: map[string]graylog.IndexSetStats{},
 		Total: 4,
 	}
-)
+}

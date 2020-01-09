@@ -3,12 +3,12 @@ package graylog_test
 import (
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testutil"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
 )
 
 func TestUserNewUpdateParams(t *testing.T) {
-	user := testutil.User()
+	user := testdata.User()
 	prms := user.NewUpdateParams()
 	if user.Username != prms.Username {
 		t.Fatalf(`prms.Username = "%s", wanted "%s"`, prms.Username, user.Username)

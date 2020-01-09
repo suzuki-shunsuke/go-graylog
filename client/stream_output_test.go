@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/flute/flute"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8/client"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testdata"
+	"github.com/suzuki-shunsuke/go-graylog/v9/client"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
 )
 
 const (
@@ -173,5 +173,5 @@ func TestClient_GetStreamOutputs(t *testing.T) {
 	})
 	_, total, _, err := cl.GetStreamOutputs(ctx, streamID)
 	require.Nil(t, err)
-	require.Equal(t, testdata.Outputs.Total, total)
+	require.Equal(t, testdata.Outputs().Total, total)
 }

@@ -3,7 +3,7 @@ package graylog
 import (
 	"encoding/json"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8/util"
+	"github.com/suzuki-shunsuke/go-graylog/v9/util"
 	"github.com/suzuki-shunsuke/go-ptr"
 )
 
@@ -35,7 +35,6 @@ type (
 	InputUpdateParams struct {
 		ID     string     `json:"id,omitempty" v-update:"required,objectid"`
 		Title  string     `json:"title,omitempty" v-update:"required"`
-		Type   string     `json:"type,omitempty" v-update:"required"`
 		Attrs  InputAttrs `json:"attributes,omitempty" v-update:"required"`
 		Global *bool      `json:"global,omitempty"`
 		Node   string     `json:"node,omitempty"`
@@ -62,7 +61,6 @@ func (input *Input) NewUpdateParams() *InputUpdateParams {
 	return &InputUpdateParams{
 		ID:     input.ID,
 		Title:  input.Title,
-		Type:   input.Type(),
 		Attrs:  input.Attrs,
 		Node:   input.Node,
 		Global: ptr.PBool(input.Global),
@@ -106,4 +104,12 @@ func (input *Input) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 	return json.Marshal(d)
+}
+
+// Type returns the input's type.
+func (input InputUpdateParams) Type() string {
+	if input.Attrs == nil {
+		return ""
+	}
+	return input.Attrs.InputType()
 }

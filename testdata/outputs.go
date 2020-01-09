@@ -1,11 +1,11 @@
 package testdata
 
 import (
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
-var (
-	Outputs = &graylog.OutputsBody{
+func Outputs() *graylog.OutputsBody {
+	return &graylog.OutputsBody{
 		Outputs: []graylog.Output{
 			{
 				ID:            "5de3772faf66c6001353cccb",
@@ -62,4 +62,4 @@ var (
 		},
 		Total: 3,
 	}
-)
+}

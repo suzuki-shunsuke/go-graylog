@@ -3,7 +3,7 @@ package client_test
 import (
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8/client"
+	"github.com/suzuki-shunsuke/go-graylog/v9/client"
 )
 
 const (

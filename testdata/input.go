@@ -1,11 +1,11 @@
 package testdata
 
 import (
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
-var (
-	Input = &graylog.Input{
+func Input() *graylog.Input {
+	return &graylog.Input{
 		Title: "gelf udp 2",
 		Attrs: &graylog.InputGELFUDPAttrs{
 			DecompressSizeLimit: 8388608,
@@ -23,4 +23,4 @@ var (
 			"foo": "bar",
 		},
 	}
-)
+}

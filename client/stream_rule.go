@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
 )
 
 // GetStreamRuleTypes returns all available stream types
@@ -34,6 +34,10 @@ func (client *Client) CreateStreamRule(
 	// POST /streams/{streamid}/rules Create a stream rule
 	if rule == nil {
 		return nil, errors.New("rule is required")
+	}
+
+	if rule.StreamID == "" {
+		return nil, errors.New("stream id is required")
 	}
 
 	cr := *rule

@@ -3,7 +3,7 @@ package graylog
 import (
 	"errors"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8/util"
+	"github.com/suzuki-shunsuke/go-graylog/v9/util"
 )
 
 type (
@@ -38,13 +38,12 @@ type (
 // ToInputUpdateParams copies InputUpdateParamsData's data to InputUpdateParams.
 func (d *InputUpdateParamsData) ToInputUpdateParams(input *InputUpdateParams) error {
 	input.Title = d.Title
-	input.Type = d.Type
 	input.ID = d.ID
 	input.Global = d.Global
 	input.Node = d.Node
-	attrs := NewInputAttrsByType(input.Type)
+	attrs := NewInputAttrsByType(input.Type())
 	if _, ok := attrs.(*InputUnknownAttrs); ok {
-		input.Attrs = &InputUnknownAttrs{inputType: input.Type, Data: d.Attrs}
+		input.Attrs = &InputUnknownAttrs{inputType: input.Type(), Data: d.Attrs}
 		return nil
 	}
 	if err := util.MSDecode(d.Attrs, attrs); err != nil {

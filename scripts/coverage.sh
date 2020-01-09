@@ -15,7 +15,7 @@ if [ $# -eq 0 ]; then
   if [ "$target" = "" ]; then
     exit 0
   fi
-  target="${target#github.com/suzuki-shunsuke/go-graylog/v8/}"
+  target="${target#github.com/suzuki-shunsuke/go-graylog/v9/}"
 elif [ $# -eq 1 ]; then
   target="$1"
 else

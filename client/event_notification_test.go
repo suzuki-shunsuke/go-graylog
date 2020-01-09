@@ -9,9 +9,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/flute/flute"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8"
-	"github.com/suzuki-shunsuke/go-graylog/v8/client"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testdata"
+	"github.com/suzuki-shunsuke/go-graylog/v9"
+	"github.com/suzuki-shunsuke/go-graylog/v9/client"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
 )
 
 func TestClient_CreateEventNotification(t *testing.T) {
@@ -76,7 +76,7 @@ func TestClient_CreateEventNotification(t *testing.T) {
 	}
 	_, err = cl.CreateEventNotification(ctx, notification)
 	require.Nil(t, err)
-	require.Equal(t, testdata.EventNotification.ID, notification.ID)
+	require.Equal(t, testdata.EventNotification().ID, notification.ID)
 }
 
 func TestClient_DeleteEventNotification(t *testing.T) {
@@ -95,7 +95,7 @@ func TestClient_DeleteEventNotification(t *testing.T) {
 						{
 							Matcher: &flute.Matcher{
 								Method: "DELETE",
-								Path:   "/api/events/notifications/" + testdata.EventNotification.ID,
+								Path:   "/api/events/notifications/" + testdata.EventNotification().ID,
 							},
 							Tester: &flute.Tester{
 								PartOfHeader: http.Header{
@@ -124,7 +124,7 @@ func TestClient_DeleteEventNotification(t *testing.T) {
 		t.Fatal("id is required")
 	}
 	// invalid id
-	_, err = cl.DeleteEventNotification(ctx, testdata.EventNotification.ID)
+	_, err = cl.DeleteEventNotification(ctx, testdata.EventNotification().ID)
 	require.Nil(t, err)
 }
 
@@ -151,7 +151,7 @@ func TestClient_GetEventNotification(t *testing.T) {
 						{
 							Matcher: &flute.Matcher{
 								Method: "GET",
-								Path:   "/api/events/notifications/" + testdata.EventNotification.ID,
+								Path:   "/api/events/notifications/" + testdata.EventNotification().ID,
 							},
 							Tester: &flute.Tester{
 								PartOfHeader: http.Header{
@@ -175,9 +175,9 @@ func TestClient_GetEventNotification(t *testing.T) {
 			},
 		},
 	})
-	notification, _, err := cl.GetEventNotification(ctx, testdata.EventNotification.ID)
+	notification, _, err := cl.GetEventNotification(ctx, testdata.EventNotification().ID)
 	require.Nil(t, err)
-	require.Equal(t, testdata.EventNotification, notification)
+	require.Equal(t, testdata.EventNotification(), notification)
 }
 
 func TestClient_GetEventNotifications(t *testing.T) {
@@ -252,7 +252,7 @@ func TestClient_UpdateEventNotification(t *testing.T) {
 						{
 							Matcher: &flute.Matcher{
 								Method: "PUT",
-								Path:   "/api/events/notifications/" + testdata.EventNotification.ID,
+								Path:   "/api/events/notifications/" + testdata.EventNotification().ID,
 							},
 							Tester: &flute.Tester{
 								PartOfHeader: http.Header{
@@ -274,6 +274,6 @@ func TestClient_UpdateEventNotification(t *testing.T) {
 			},
 		},
 	})
-	_, err = cl.UpdateEventNotification(ctx, testdata.EventNotification)
+	_, err = cl.UpdateEventNotification(ctx, testdata.EventNotification())
 	require.Nil(t, err)
 }

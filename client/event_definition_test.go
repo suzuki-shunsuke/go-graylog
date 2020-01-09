@@ -9,10 +9,10 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/flute/flute"
 
-	"github.com/suzuki-shunsuke/go-graylog/v8/client"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testdata/event_definition/create"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testdata/event_definition/get"
-	"github.com/suzuki-shunsuke/go-graylog/v8/testdata/event_definition/update"
+	"github.com/suzuki-shunsuke/go-graylog/v9/client"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata/event_definition/create"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata/event_definition/get"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata/event_definition/update"
 )
 
 func TestClient_CreateEventDefinition(t *testing.T) {
@@ -67,9 +67,10 @@ func TestClient_CreateEventDefinition(t *testing.T) {
 			},
 		},
 	})
-	_, err = cl.CreateEventDefinition(ctx, create.Request)
+	ed := create.Request()
+	_, err = cl.CreateEventDefinition(ctx, ed)
 	require.Nil(t, err)
-	require.Equal(t, create.Response.ID, create.Request.ID)
+	require.Equal(t, create.Response().ID, ed.ID)
 }
 
 func TestClient_DeleteEventDefinition(t *testing.T) {
@@ -88,7 +89,7 @@ func TestClient_DeleteEventDefinition(t *testing.T) {
 						{
 							Matcher: &flute.Matcher{
 								Method: "DELETE",
-								Path:   "/api/events/definitions/" + get.Response.ID,
+								Path:   "/api/events/definitions/" + get.Response().ID,
 							},
 							Tester: &flute.Tester{
 								PartOfHeader: http.Header{
@@ -117,7 +118,7 @@ func TestClient_DeleteEventDefinition(t *testing.T) {
 		t.Fatal("id is required")
 	}
 	// invalid id
-	_, err = cl.DeleteEventDefinition(ctx, get.Response.ID)
+	_, err = cl.DeleteEventDefinition(ctx, get.Response().ID)
 	require.Nil(t, err)
 }
 
@@ -144,7 +145,7 @@ func TestClient_GetEventDefinition(t *testing.T) {
 						{
 							Matcher: &flute.Matcher{
 								Method: "GET",
-								Path:   "/api/events/definitions/" + get.Response.ID,
+								Path:   "/api/events/definitions/" + get.Response().ID,
 							},
 							Tester: &flute.Tester{
 								PartOfHeader: http.Header{
@@ -168,9 +169,9 @@ func TestClient_GetEventDefinition(t *testing.T) {
 			},
 		},
 	})
-	definition, _, err := cl.GetEventDefinition(ctx, get.Response.ID)
+	definition, _, err := cl.GetEventDefinition(ctx, get.Response().ID)
 	require.Nil(t, err)
-	require.Equal(t, get.Response.ID, definition.ID)
+	require.Equal(t, get.Response().ID, definition.ID)
 }
 
 func TestClient_GetEventDefinitions(t *testing.T) {
@@ -249,7 +250,7 @@ func TestClient_UpdateEventDefinition(t *testing.T) {
 						{
 							Matcher: &flute.Matcher{
 								Method: "PUT",
-								Path:   "/api/events/definitions/" + update.Request.ID,
+								Path:   "/api/events/definitions/" + update.Request().ID,
 							},
 							Tester: &flute.Tester{
 								PartOfHeader: http.Header{
@@ -271,6 +272,6 @@ func TestClient_UpdateEventDefinition(t *testing.T) {
 			},
 		},
 	})
-	_, err = cl.UpdateEventDefinition(ctx, update.Request)
+	_, err = cl.UpdateEventDefinition(ctx, update.Request())
 	require.Nil(t, err)
 }
