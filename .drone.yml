@@ -41,7 +41,7 @@ kind: pipeline
 name: terraform fmt (v0.12)
 steps:
 - name: terraform fmt (v0.12)
-  image: hashicorp/terraform:0.12.18
+  image: hashicorp/terraform:0.12.19
   commands:
   - terraform fmt -check terraform/example/v0.12
   - terraform fmt -check -recursive testdata
@@ -62,7 +62,7 @@ volumes:
   temp: {}
 steps:
 - name: download go modules
-  image: &image_go golang:1.13.5
+  image: &image_go golang:1.13.6
   commands:
   - go mod download
   volumes: &volumes
