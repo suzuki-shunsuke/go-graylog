@@ -29,7 +29,7 @@ func Provider() *schema.Provider {
 				Type:     schema.TypeString,
 				Optional: true,
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{
-					"GRAYLOG_X_REQUESTED_BY"}, "terraform-go-graylog"),
+					"GRAYLOG_X_REQUESTED_BY"}, "terraform-provider-graylog"),
 			},
 			"api_version": {
 				Type:     schema.TypeString,
