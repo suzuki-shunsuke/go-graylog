@@ -2,6 +2,7 @@ package graylog
 
 import (
 	"errors"
+	"os"
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -84,57 +85,13 @@ func newClient(m interface{}) (*client.Client, error) {
 	return cl, nil
 }
 
-// func setEnv() (*client.Client, error) {
-// 	_, ok := os.LookupEnv("TF_ACC")
-// 	if !ok {
-// 		if err := os.Setenv("TF_ACC", "true"); err != nil {
-// 			return nil, err
-// 		}
-// 	}
-// 	authName, ok := os.LookupEnv("GRAYLOG_AUTH_NAME")
-// 	if !ok {
-// 		authName = "admin"
-// 		if err := os.Setenv("GRAYLOG_AUTH_NAME", authName); err != nil {
-// 			return nil, err
-// 		}
-// 	}
-// 	authPass, ok := os.LookupEnv("GRAYLOG_AUTH_PASSWORD")
-// 	if !ok {
-// 		authPass = "admin"
-// 		if err := os.Setenv("GRAYLOG_AUTH_PASSWORD", "admin"); err != nil {
-// 			return nil, err
-// 		}
-// 	}
-// 	var (
-// 		err error
-// 		cl  *client.Client
-// 	)
-// 	endpoint := os.Getenv("GRAYLOG_WEB_ENDPOINT_URI")
-// 	if endpoint == "" {
-// 		return nil, errors.New("GRAYLOG_WEB_ENDPOINT_URI is required")
-// 	}
-// 	if os.Getenv("GRAYLOG_API_VERSION") == "v3" {
-// 		cl, err = client.NewClientV3(endpoint, authName, authPass)
-// 	} else {
-// 		cl, err = client.NewClient(endpoint, authName, authPass)
-// 	}
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return cl, nil
-// }
-
-// func getIDFromTfState(tfState *terraform.State, key string) (string, error) {
-// 	rs, ok := tfState.RootModule().Resources[key]
-// 	if !ok {
-// 		return "", errors.New("not found: " + key)
-// 	}
-// 	id := rs.Primary.ID
-// 	if id == "" {
-// 		return "", errors.New("no ID is set")
-// 	}
-// 	return id, nil
-// }
+func setEnv() {
+	os.Setenv("TF_ACC", "true")
+	os.Setenv("GRAYLOG_WEB_ENDPOINT_URI", "http://example.com/api")
+	os.Setenv("GRAYLOG_AUTH_NAME", "admin")
+	os.Setenv("GRAYLOG_AUTH_PASSWORD", "admin")
+	os.Setenv("GRAYLOG_API_VERSION", "v3")
+}
 
 func setStrListToRD(d *schema.ResourceData, key string, val []string) error {
 	return d.Set(key, val)

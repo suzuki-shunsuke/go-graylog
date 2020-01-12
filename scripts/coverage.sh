@@ -29,5 +29,9 @@ if [ ! -d "$target" ]; then
 fi
 
 ee mkdir -p ".coverage/$target"
-ee go test "./$target" -coverprofile=".coverage/$target/coverage.txt" -covermode=atomic
+if [ "$target" = "terraform/graylog" ]; then
+  ee go test -v "./$target" -coverprofile=".coverage/$target/coverage.txt" -covermode=atomic
+else
+  ee go test "./$target" -coverprofile=".coverage/$target/coverage.txt" -covermode=atomic
+fi
 ee go tool cover -html=".coverage/$target/coverage.txt"
