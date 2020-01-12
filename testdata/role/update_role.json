@@ -2,9 +2,9 @@
   "name": "foo",
   "description": "updated description",
   "permissions": [
-    "view:edit",
-    "extendedsearch:use",
     "extendedsearch:create",
+    "extendedsearch:use",
+    "view:edit",
     "view:read",
     "view:use"
   ],
