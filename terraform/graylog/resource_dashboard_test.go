@@ -1,98 +1,138 @@
 package graylog
 
 import (
+	"io/ioutil"
+	"net/http"
+	"strings"
 	"testing"
+
+	"github.com/hashicorp/terraform/helper/resource"
+	"github.com/stretchr/testify/require"
+	"github.com/suzuki-shunsuke/flute/flute"
+
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
 )
 
-//func testDeleteDashboard(
-//	ctx context.Context, cl *client.Client, key string,
-//) resource.TestCheckFunc {
-//	return func(tfState *terraform.State) error {
-//		id, err := getIDFromTfState(tfState, key)
-//		if err != nil {
-//			return err
-//		}
-//		if _, _, err := cl.GetDashboard(ctx, id); err == nil {
-//			return fmt.Errorf(`dashboard "%s" must be deleted`, id)
-//		}
-//		return nil
-//	}
-//}
-//
-//func testCreateDashboard(
-//	ctx context.Context, cl *client.Client, key string,
-//) resource.TestCheckFunc {
-//	return func(tfState *terraform.State) error {
-//		id, err := getIDFromTfState(tfState, key)
-//		if err != nil {
-//			return err
-//		}
-//		_, _, err = cl.GetDashboard(ctx, id)
-//		return err
-//	}
-//}
-//
-//func testUpdateDashboard(
-//	ctx context.Context, cl *client.Client, key, title string,
-//) resource.TestCheckFunc {
-//	return func(tfState *terraform.State) error {
-//		id, err := getIDFromTfState(tfState, key)
-//		if err != nil {
-//			return err
-//		}
-//		db, _, err := cl.GetDashboard(ctx, id)
-//		if err != nil {
-//			return err
-//		}
-//		if db.Title != title {
-//			return errors.New("db.Title is not updated")
-//		}
-//		return nil
-//	}
-//}
-
 func TestAccDashboard(t *testing.T) {
-	// 	ctx := context.Background()
-	// 	cl, err := setEnv()
-	// 	if err != nil {
-	// 		t.Fatal(err)
-	// 	}
-	//
-	// 	testAccProvider := Provider()
-	// 	testAccProviders := map[string]terraform.ResourceProvider{
-	// 		"graylog": testAccProvider,
-	// 	}
-	//
-	// 	title := "test-dashboard"
-	// 	updatedTitle := "test-dashboard changed"
-	//
-	// 	dbTf := fmt.Sprintf(`
-	// resource "graylog_dashboard" "zoo" {
-	//   title = "%s"
-	//   description = "test dashboard"
-	// }`, title)
-	// 	updateTf := fmt.Sprintf(`
-	// resource "graylog_dashboard" "zoo" {
-	//   title = "%s"
-	//   description = "test dashboard"
-	// }`, updatedTitle)
-	// 	key := "graylog_dashboard.zoo"
-	// 	resource.Test(t, resource.TestCase{
-	// 		Providers:    testAccProviders,
-	// 		CheckDestroy: testDeleteDashboard(ctx, cl, key),
-	// 		Steps: []resource.TestStep{
-	// 			{
-	// 				Config: dbTf,
-	// 				Check: resource.ComposeTestCheckFunc(
-	// 					testCreateDashboard(ctx, cl, key),
-	// 				),
-	// 			},
-	// 			{
-	// 				Config: updateTf,
-	// 				Check: resource.ComposeTestCheckFunc(
-	// 					testUpdateDashboard(ctx, cl, key, updatedTitle),
-	// 				),
-	// 			},
-	// 		},
-	// 	})
+	setEnv()
+
+	createRespBody, err := ioutil.ReadFile("../../testdata/dashboard/create_dashboard_response.json")
+	require.Nil(t, err)
+
+	getBody, err := ioutil.ReadFile("../../testdata/dashboard/dashboard.json")
+	require.Nil(t, err)
+
+	updatedGetBody, err := ioutil.ReadFile("../../testdata/dashboard/updated_dashboard.json")
+	require.Nil(t, err)
+
+	createTF, err := ioutil.ReadFile("../../testdata/dashboard/dashboard.tf")
+	require.Nil(t, err)
+
+	updateTF, err := ioutil.ReadFile("../../testdata/dashboard/update_dashboard.tf")
+	require.Nil(t, err)
+
+	store := newBodyStore("")
+
+	ds := testdata.Dashboard()
+
+	dsPath := "/api/dashboards/" + ds.ID
+
+	defaultTransport := http.DefaultClient.Transport
+	defer func() {
+		http.DefaultClient.Transport = defaultTransport
+	}()
+	http.DefaultClient.Transport = &flute.Transport{
+		T: t,
+		Services: []flute.Service{
+			{
+				Endpoint: "http://example.com",
+				Routes: []flute.Route{
+					{
+						Name: "get a dashboard",
+						Matcher: &flute.Matcher{
+							Method: "GET",
+						},
+						Tester: &flute.Tester{
+							Path:         dsPath,
+							PartOfHeader: getTestHeader(),
+						},
+						Response: &flute.Response{
+							Response: func(req *http.Request) (*http.Response, error) {
+								return &http.Response{
+									StatusCode: 200,
+									Body:       ioutil.NopCloser(strings.NewReader(store.Get())),
+								}, nil
+							},
+						},
+					},
+					{
+						Name: "create a dashboard",
+						Matcher: &flute.Matcher{
+							Method: "POST",
+						},
+						Tester: &flute.Tester{
+							Path:         "/api/dashboards",
+							PartOfHeader: getTestHeader(),
+							Test: genTestBody(map[string]interface{}{
+								"title":       "test",
+								"description": "test",
+							}, string(getBody), store),
+						},
+						Response: &flute.Response{
+							Base: http.Response{
+								StatusCode: 201,
+							},
+							BodyString: string(createRespBody),
+						},
+					},
+					{
+						Name: "update a dashboard",
+						Matcher: &flute.Matcher{
+							Method: "PUT",
+						},
+						Tester: &flute.Tester{
+							Path:         dsPath,
+							PartOfHeader: getTestHeader(),
+							Test: genTestBody(map[string]interface{}{
+								"title":       "updated title",
+								"description": "updated description",
+							}, string(updatedGetBody), store),
+						},
+						Response: &flute.Response{
+							Base: http.Response{
+								StatusCode: 204,
+							},
+						},
+					},
+					{
+						Name: "delete a dashboard",
+						Matcher: &flute.Matcher{
+							Method: "DELETE",
+						},
+						Tester: &flute.Tester{
+							Path:         dsPath,
+							PartOfHeader: getTestHeader(),
+						},
+						Response: &flute.Response{
+							Base: http.Response{
+								StatusCode: 204,
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	resource.Test(t, resource.TestCase{
+		Providers: getTestProviders(),
+		Steps: []resource.TestStep{
+			{
+				Config: string(createTF),
+			},
+			{
+				Config: string(updateTF),
+			},
+		},
+	})
 }

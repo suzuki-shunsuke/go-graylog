@@ -1,7 +1,7 @@
 {
   "id": "5d84c1a92ab79c000d35d6c7",
-  "title": "test",
-  "description": "test",
+  "title": "updated title",
+  "description": "updated description",
   "creator_user_id": "admin",
   "created_at": "2019-09-20T12:10:17.486Z",
   "positions": {
@@ -59,3 +59,4 @@
     }
   ]
 }
+
