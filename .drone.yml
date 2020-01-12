@@ -43,8 +43,8 @@ steps:
 - name: terraform fmt (v0.12)
   image: hashicorp/terraform:0.12.18
   commands:
-  - cd terraform/example/v0.12
-  - terraform fmt -check
+  - terraform fmt -check terraform/example/v0.12
+  - terraform fmt -check -recursive testdata
 ---
 kind: pipeline
 name: terraform fmt (v0.11)
