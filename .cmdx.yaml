@@ -54,15 +54,15 @@ tasks:
 - name: shellcheck
   description: shellcheck
   usage: shellcheck
-  script: 'find . -name "*.sh" -print0 | xargs -0 shellcheck env.sh.tmpl'
+  script: bash scripts/shellcheck.sh
 - name: shfmt
   description: shfmt
   usage: shfmt
-  script: 'find . -name "*.sh" -print0 | xargs -0 shfmt -l -w env.sh.tmpl'
+  script: 'git ls-files | grep -E ".*\.sh$" | xargs shfmt -l -w env.sh.tmpl'
 - name: yamllint
   description: yamllint
   usage: yamllint
-  script: 'find . \( -name "*.yml" -o -name "*.yaml" \) -print0 | xargs -0 yamllint -c .yamllint.yml'
+  script: bash scripts/yamllint.sh
 - name: jsonlint
   description: jsonlint
   usage: jsonlint

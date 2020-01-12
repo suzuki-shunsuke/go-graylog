@@ -5,4 +5,4 @@ set -o pipefail
 
 cd "$(dirname "$0")/.."
 
-git ls-files | durl check
+git ls-files | grep -E ".*\.ya?ml$" | xargs yamllint -c .yamllint.yml

@@ -2,10 +2,14 @@
 kind: pipeline
 name: durl
 steps:
+- name: list files
+  image: plugins/git
+  commands:
+  - git ls-files > list.txt
 - name: durl
   image: quay.io/suzuki_shunsuke/durl:1.0.0
   commands:
-  - sh scripts/durl.sh
+  - cat list.txt | durl check
 ---
 kind: pipeline
 name: shell scripts
@@ -15,11 +19,12 @@ steps:
 - name: shellcheck
   image: koalaman/shellcheck-alpine:v0.7.0
   commands:
-  - 'find . -name "*.sh" -print0 | xargs -0 shellcheck env.sh.tmpl'
+  - apk add git
+  - sh scripts/shellcheck.sh
 - name: shfmt
   image: mvdan/shfmt:v3.0.0
   commands:
-  - 'find . -name "*.sh" -print0 | xargs -0 shfmt -l -w env.sh.tmpl'
+  - 'shfmt -d . env.sh.tmpl'
 ---
 kind: pipeline
 name: yamllint
@@ -27,7 +32,8 @@ steps:
 - name: yamllint
   image: quay.io/suzuki_shunsuke/yamllint:1.20.0__1
   commands:
-  - 'find . \( -name "*.yml" -o -name "*.yaml" \) -print0 | xargs -0 yamllint -c .yamllint.yml'
+  - apk add git
+  - sh scripts/yamllint.sh
 ---
 kind: pipeline
 name: jsonlint
