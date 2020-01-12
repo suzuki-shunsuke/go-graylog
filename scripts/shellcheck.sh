@@ -5,4 +5,4 @@ set -o pipefail
 
 cd "$(dirname "$0")/.."
 
-git ls-files | durl check
+git ls-files | grep -E ".*\.sh$" | xargs shellcheck env.sh.tmpl
