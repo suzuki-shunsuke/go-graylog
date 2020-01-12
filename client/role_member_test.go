@@ -17,7 +17,7 @@ func TestClient_GetRoleMembers(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/role_members.json")
+	buf, err := ioutil.ReadFile("../testdata/role_member/role_members.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -33,12 +33,8 @@ func TestClient_GetRoleMembers(t *testing.T) {
 								Path: "/api/roles/Admin/members",
 							},
 							Tester: &flute.Tester{
-								Method: "GET",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -52,12 +48,8 @@ func TestClient_GetRoleMembers(t *testing.T) {
 								Path: "/api/roles/h/members",
 							},
 							Tester: &flute.Tester{
-								Method: "GET",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -107,12 +99,8 @@ func TestClient_AddUserToRole(t *testing.T) {
 								Path: "/api/roles/Admin/members/test",
 							},
 							Tester: &flute.Tester{
-								Method: "PUT",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "PUT",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -125,12 +113,8 @@ func TestClient_AddUserToRole(t *testing.T) {
 								Path: "/api/roles/h/members/test",
 							},
 							Tester: &flute.Tester{
-								Method: "PUT",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "PUT",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -184,12 +168,8 @@ func TestClient_RemoveUserFromRole(t *testing.T) {
 								Path: "/api/roles/Admin/members/test",
 							},
 							Tester: &flute.Tester{
-								Method: "DELETE",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "DELETE",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -202,12 +182,8 @@ func TestClient_RemoveUserFromRole(t *testing.T) {
 								Path: "/api/roles/h/members/test",
 							},
 							Tester: &flute.Tester{
-								Method: "DELETE",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "DELETE",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{

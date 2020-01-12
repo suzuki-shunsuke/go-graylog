@@ -19,7 +19,7 @@ func TestClient_GetInputs(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/inputs.json")
+	buf, err := ioutil.ReadFile("../testdata/input/inputs.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -32,13 +32,9 @@ func TestClient_GetInputs(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/system/inputs",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/system/inputs",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -65,7 +61,7 @@ func TestClient_GetInput(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/input.json")
+	buf, err := ioutil.ReadFile("../testdata/input/input.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -78,13 +74,9 @@ func TestClient_GetInput(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/system/inputs/" + testdata.Input().ID,
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/system/inputs/" + testdata.Input().ID,
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -110,7 +102,7 @@ func TestClient_CreateInput(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/create_input.json")
+	buf, err := ioutil.ReadFile("../testdata/input/create_input.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -123,13 +115,9 @@ func TestClient_CreateInput(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "POST",
-								Path:   "/api/system/inputs",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:         "POST",
+								Path:           "/api/system/inputs",
+								PartOfHeader:   getTestHeader(),
 								BodyJSONString: bodyStr,
 							},
 							Response: &flute.Response{
@@ -163,7 +151,7 @@ func TestClient_UpdateInput(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/create_input.json")
+	buf, err := ioutil.ReadFile("../testdata/input/create_input.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -178,13 +166,9 @@ func TestClient_UpdateInput(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "PUT",
-								Path:   "/api/system/inputs/" + inputID,
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:         "PUT",
+								Path:           "/api/system/inputs/" + inputID,
+								PartOfHeader:   getTestHeader(),
 								BodyJSONString: bodyStr,
 							},
 							Response: &flute.Response{
@@ -236,12 +220,8 @@ func TestClient_DeleteInput(t *testing.T) {
 								Path: "/api/system/inputs/" + inputID,
 							},
 							Tester: &flute.Tester{
-								Method: "DELETE",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "DELETE",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -254,12 +234,8 @@ func TestClient_DeleteInput(t *testing.T) {
 								Path: "/api/system/inputs/h",
 							},
 							Tester: &flute.Tester{
-								Method: "DELETE",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "DELETE",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{

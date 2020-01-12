@@ -20,7 +20,7 @@ func TestClient_GetStreamRules(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/stream_rules.json")
+	buf, err := ioutil.ReadFile("../testdata/stream_rule/stream_rules.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -35,13 +35,9 @@ func TestClient_GetStreamRules(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/streams/" + id + "/rules",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/streams/" + id + "/rules",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -71,7 +67,7 @@ func TestClient_CreateStreamRule(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/create_stream_rule.json")
+	buf, err := ioutil.ReadFile("../testdata/stream_rule/create_stream_rule.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -86,13 +82,9 @@ func TestClient_CreateStreamRule(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "POST",
-								Path:   "/api/streams/" + rule.StreamID + "/rules",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:         "POST",
+								Path:           "/api/streams/" + rule.StreamID + "/rules",
+								PartOfHeader:   getTestHeader(),
 								BodyJSONString: bodyStr,
 							},
 							Response: &flute.Response{
@@ -132,7 +124,7 @@ func TestClient_UpdateStreamRule(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/create_stream_rule.json")
+	buf, err := ioutil.ReadFile("../testdata/stream_rule/create_stream_rule.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -148,13 +140,9 @@ func TestClient_UpdateStreamRule(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "PUT",
-								Path:   "/api/streams/" + rule.StreamID + "/rules/" + rule.ID,
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:         "PUT",
+								Path:           "/api/streams/" + rule.StreamID + "/rules/" + rule.ID,
+								PartOfHeader:   getTestHeader(),
 								BodyJSONString: bodyStr,
 							},
 							Response: &flute.Response{
@@ -210,13 +198,9 @@ func TestClient_DeleteStreamRule(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "DELETE",
-								Path:   "/api/streams/" + rule.StreamID + "/rules/" + rule.ID,
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "DELETE",
+								Path:         "/api/streams/" + rule.StreamID + "/rules/" + rule.ID,
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -265,11 +249,7 @@ func TestClient_GetStreamRuleTypes(t *testing.T) {
 								Path:   "/api/streams/" + streamID + "/rules/types",
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{

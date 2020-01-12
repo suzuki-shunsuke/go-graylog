@@ -21,7 +21,7 @@ func TestClient_CreateRole(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/role.json")
+	buf, err := ioutil.ReadFile("../testdata/role/role.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -34,14 +34,10 @@ func TestClient_CreateRole(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Test:   testRoleBody,
-								Method: "POST",
-								Path:   "/api/roles",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Test:         testRoleBody,
+								Method:       "POST",
+								Path:         "/api/roles",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -71,7 +67,7 @@ func TestClient_GetRoles(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/roles.json")
+	buf, err := ioutil.ReadFile("../testdata/role/roles.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -84,13 +80,9 @@ func TestClient_GetRoles(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/roles",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/roles",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -116,7 +108,7 @@ func TestClient_GetRole(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/role.json")
+	buf, err := ioutil.ReadFile("../testdata/role/role.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -129,13 +121,9 @@ func TestClient_GetRole(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/roles/Views Manager",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/roles/" + testdata.Role.Name,
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -168,7 +156,7 @@ func testRoleBody(t *testing.T, req *http.Request, svc *flute.Service, route *fl
 	}
 	body["permissions"] = perms
 	require.Equal(t, map[string]interface{}{
-		"name":        "Views Manager",
+		"name":        "foo",
 		"description": "Allows reading and writing all views and extended searches (built-in)",
 		"permissions": set.NewStrSet(
 			"view:edit",
@@ -187,7 +175,7 @@ func TestClient_UpdateRole(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/role.json")
+	buf, err := ioutil.ReadFile("../testdata/role/role.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -202,14 +190,10 @@ func TestClient_UpdateRole(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Test:   testRoleBody,
-								Method: "PUT",
-								Path:   "/api/roles/" + role.Name,
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Test:         testRoleBody,
+								Method:       "PUT",
+								Path:         "/api/roles/" + role.Name,
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -247,13 +231,9 @@ func TestClient_DeleteRole(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "DELETE",
-								Path:   "/api/roles/foo",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "DELETE",
+								Path:         "/api/roles/foo",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{

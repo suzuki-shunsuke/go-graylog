@@ -18,7 +18,7 @@ func TestClient_GetAlerts(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/alerts.json")
+	buf, err := ioutil.ReadFile("../testdata/alert/alerts.json")
 	require.Nil(t, err)
 
 	cl.SetHTTPClient(&http.Client{
@@ -30,13 +30,9 @@ func TestClient_GetAlerts(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/streams/alerts",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/streams/alerts",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -63,7 +59,7 @@ func TestClient_GetAlert(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/alert.json")
+	buf, err := ioutil.ReadFile("../testdata/alert/alert.json")
 	require.Nil(t, err)
 
 	id := "5d84c1a92ab79c000d35d6c7"
@@ -77,13 +73,9 @@ func TestClient_GetAlert(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/streams/alerts/" + id,
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/streams/alerts/" + id,
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{

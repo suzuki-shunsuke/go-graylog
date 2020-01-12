@@ -23,7 +23,7 @@ func TestClient_CreateStreamOutputs(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/request_create_stream_outputs.json")
+	buf, err := ioutil.ReadFile("../testdata/output/request_create_stream_outputs.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -43,11 +43,7 @@ func TestClient_CreateStreamOutputs(t *testing.T) {
 								Path:   "/api/streams/" + streamID + "/outputs",
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader:   getTestHeader(),
 								BodyJSONString: bodyStr,
 							},
 							Response: &flute.Response{
@@ -98,11 +94,7 @@ func TestClient_DeleteStreamOutput(t *testing.T) {
 								Path:   "/api/streams/" + streamID + "/outputs/" + outputID,
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -130,7 +122,7 @@ func TestClient_GetStreamOutputs(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/outputs.json")
+	buf, err := ioutil.ReadFile("../testdata/output/outputs.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -150,11 +142,7 @@ func TestClient_GetStreamOutputs(t *testing.T) {
 								Path:   "/api/streams/" + streamID + "/outputs",
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{

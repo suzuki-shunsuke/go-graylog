@@ -38,11 +38,7 @@ func TestClient_CreateGrokPattern(t *testing.T) {
 								Path:   "/api/system/grok",
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 								BodyJSONString: `{
 								  "name": "grok pattern name",
 								  "pattern": "grok pattern"
@@ -99,11 +95,7 @@ func TestClient_DeleteGrokPattern(t *testing.T) {
 								Path:   "/api/system/grok/" + grokPatternID,
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -151,11 +143,7 @@ func TestClient_GetGrokPattern(t *testing.T) {
 								Path:   "/api/system/grok/" + grokPatternID,
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -203,11 +191,7 @@ func TestClient_GetGrokPatterns(t *testing.T) {
 								Path:   "/api/system/grok",
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -263,11 +247,7 @@ func TestClient_UpdateGrokPattern(t *testing.T) {
 								Path:   "/api/system/grok/" + grokPatternID,
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 								BodyJSONString: `{
 								  "id": "5d6a29e86df4af0000000000",
 								  "name": "grok pattern name",

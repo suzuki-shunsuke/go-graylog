@@ -20,11 +20,11 @@ func TestClient_CreateEventNotification(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	reqBuf, err := ioutil.ReadFile("../testdata/request_create_event_notification.json")
+	reqBuf, err := ioutil.ReadFile("../testdata/event_notification/request_create_event_notification.json")
 	require.Nil(t, err)
 	reqBody := string(reqBuf)
 
-	respBuf, err := ioutil.ReadFile("../testdata/response_create_event_notification.json")
+	respBuf, err := ioutil.ReadFile("../testdata/event_notification/response_create_event_notification.json")
 	require.Nil(t, err)
 	respBody := string(respBuf)
 
@@ -44,11 +44,7 @@ func TestClient_CreateEventNotification(t *testing.T) {
 								Path:   "/api/events/notifications",
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader:   getTestHeader(),
 								BodyJSONString: reqBody,
 							},
 							Response: &flute.Response{
@@ -98,11 +94,7 @@ func TestClient_DeleteEventNotification(t *testing.T) {
 								Path:   "/api/events/notifications/" + testdata.EventNotification().ID,
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -134,7 +126,7 @@ func TestClient_GetEventNotification(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/response_create_event_notification.json")
+	buf, err := ioutil.ReadFile("../testdata/event_notification/response_create_event_notification.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -154,11 +146,7 @@ func TestClient_GetEventNotification(t *testing.T) {
 								Path:   "/api/events/notifications/" + testdata.EventNotification().ID,
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -186,7 +174,7 @@ func TestClient_GetEventNotifications(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/event_notifications.json")
+	buf, err := ioutil.ReadFile("../testdata/event_notification/event_notifications.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -203,11 +191,7 @@ func TestClient_GetEventNotifications(t *testing.T) {
 								Path:   "/api/events/notifications",
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -235,7 +219,7 @@ func TestClient_UpdateEventNotification(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/response_create_event_notification.json")
+	buf, err := ioutil.ReadFile("../testdata/event_notification/response_create_event_notification.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -255,11 +239,7 @@ func TestClient_UpdateEventNotification(t *testing.T) {
 								Path:   "/api/events/notifications/" + testdata.EventNotification().ID,
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader:   getTestHeader(),
 								BodyJSONString: ``,
 							},
 							Response: &flute.Response{

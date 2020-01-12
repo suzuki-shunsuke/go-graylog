@@ -1,5 +1,5 @@
 {
-  "name": "Views Manager",
+  "name": "foo",
   "description": "Allows reading and writing all views and extended searches (built-in)",
   "permissions": [
     "view:edit",
