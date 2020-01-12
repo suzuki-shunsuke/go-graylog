@@ -36,11 +36,7 @@ func TestClient_CreateDashboard(t *testing.T) {
 								Path:   "/api/dashboards",
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 								BodyJSONString: `{
 								  "title": "dashboard title",
 								  "description": "dashboard description"
@@ -93,11 +89,7 @@ func TestClient_DeleteDashboard(t *testing.T) {
 								Path:   "/api/dashboards/" + id,
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -130,7 +122,7 @@ func TestClient_GetDashboard(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/dashboard.json")
+	buf, err := ioutil.ReadFile("../testdata/dashboard/dashboard.json")
 	require.Nil(t, err)
 
 	cl.SetHTTPClient(&http.Client{
@@ -142,13 +134,9 @@ func TestClient_GetDashboard(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/dashboards/" + testdata.Dashboard().ID,
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/dashboards/" + testdata.Dashboard().ID,
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -178,7 +166,7 @@ func TestClient_GetDashboards(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/dashboards.json")
+	buf, err := ioutil.ReadFile("../testdata/dashboard/dashboards.json")
 	require.Nil(t, err)
 
 	cl.SetHTTPClient(&http.Client{
@@ -190,13 +178,9 @@ func TestClient_GetDashboards(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/dashboards",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/dashboards",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -226,7 +210,7 @@ func TestClient_UpdateDashboard(t *testing.T) {
 	_, err = cl.UpdateDashboard(ctx, nil)
 	require.NotNil(t, err, "dashboard should not be nil")
 
-	buf, err := ioutil.ReadFile("../testdata/create_dashboard.json")
+	buf, err := ioutil.ReadFile("../testdata/dashboard/create_dashboard.json")
 	require.Nil(t, err)
 
 	ds := testdata.Dashboard()
@@ -244,11 +228,7 @@ func TestClient_UpdateDashboard(t *testing.T) {
 								Path:   "/api/dashboards/" + ds.ID,
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader:   getTestHeader(),
 								BodyJSONString: string(buf),
 							},
 							Response: &flute.Response{

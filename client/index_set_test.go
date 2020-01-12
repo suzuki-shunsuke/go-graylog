@@ -20,7 +20,7 @@ func TestClient_GetIndexSets(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/index_sets.json")
+	buf, err := ioutil.ReadFile("../testdata/index_set/index_sets.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -33,13 +33,9 @@ func TestClient_GetIndexSets(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/system/indices/index_sets",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/system/indices/index_sets",
+								PartOfHeader: getTestHeader(),
 								Query: url.Values{
 									"skip":  []string{"0"},
 									"limit": []string{"0"},
@@ -71,7 +67,7 @@ func TestClient_GetIndexSet(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/index_set.json")
+	buf, err := ioutil.ReadFile("../testdata/index_set/index_set.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -84,13 +80,9 @@ func TestClient_GetIndexSet(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/system/indices/index_sets/" + testdata.IndexSet().ID,
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/system/indices/index_sets/" + testdata.IndexSet().ID,
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -119,10 +111,10 @@ func TestClient_CreateIndexSet(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	reqBuf, err := ioutil.ReadFile("../testdata/create_index_set.json")
+	reqBuf, err := ioutil.ReadFile("../testdata/index_set/create_index_set.json")
 	require.Nil(t, err)
 
-	respBuf, err := ioutil.ReadFile("../testdata/index_set.json")
+	respBuf, err := ioutil.ReadFile("../testdata/index_set/index_set.json")
 	require.Nil(t, err)
 
 	cl.SetHTTPClient(&http.Client{
@@ -134,13 +126,9 @@ func TestClient_CreateIndexSet(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "POST",
-								Path:   "/api/system/indices/index_sets",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:         "POST",
+								Path:           "/api/system/indices/index_sets",
+								PartOfHeader:   getTestHeader(),
 								BodyJSONString: string(reqBuf),
 							},
 							Response: &flute.Response{
@@ -172,10 +160,10 @@ func TestClient_UpdateIndexSet(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	reqBuf, err := ioutil.ReadFile("../testdata/update_index_set.json")
+	reqBuf, err := ioutil.ReadFile("../testdata/index_set/update_index_set.json")
 	require.Nil(t, err)
 
-	respBuf, err := ioutil.ReadFile("../testdata/index_set.json")
+	respBuf, err := ioutil.ReadFile("../testdata/index_set/index_set.json")
 	require.Nil(t, err)
 
 	is := testdata.CreateIndexSet()
@@ -189,13 +177,9 @@ func TestClient_UpdateIndexSet(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "PUT",
-								Path:   "/api/system/indices/index_sets/" + testdata.IndexSet().ID,
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:         "PUT",
+								Path:           "/api/system/indices/index_sets/" + testdata.IndexSet().ID,
+								PartOfHeader:   getTestHeader(),
 								BodyJSONString: string(reqBuf),
 							},
 							Response: &flute.Response{
@@ -245,13 +229,9 @@ func TestClient_DeleteIndexSet(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "DELETE",
-								Path:   "/api/system/indices/index_sets/" + is.ID,
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "DELETE",
+								Path:         "/api/system/indices/index_sets/" + is.ID,
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -281,7 +261,7 @@ func TestClient_SetDefaultIndexSet(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	respBuf, err := ioutil.ReadFile("../testdata/index_set.json")
+	respBuf, err := ioutil.ReadFile("../testdata/index_set/index_set.json")
 	require.Nil(t, err)
 
 	is := testdata.IndexSet()
@@ -295,13 +275,9 @@ func TestClient_SetDefaultIndexSet(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "PUT",
-								Path:   "/api/system/indices/index_sets/" + is.ID + "/default",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "PUT",
+								Path:         "/api/system/indices/index_sets/" + is.ID + "/default",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{

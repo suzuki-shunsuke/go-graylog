@@ -19,7 +19,7 @@ func TestClient_GetStreams(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/streams.json")
+	buf, err := ioutil.ReadFile("../testdata/stream/streams.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -32,13 +32,9 @@ func TestClient_GetStreams(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/streams",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/streams",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -65,7 +61,7 @@ func TestClient_CreateStream(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/create_stream.json")
+	buf, err := ioutil.ReadFile("../testdata/stream/create_stream.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -78,13 +74,9 @@ func TestClient_CreateStream(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "POST",
-								Path:   "/api/streams",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:         "POST",
+								Path:           "/api/streams",
+								PartOfHeader:   getTestHeader(),
 								BodyJSONString: bodyStr,
 							},
 							Response: &flute.Response{
@@ -120,7 +112,7 @@ func TestClient_GetEnabledStreams(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/streams.json")
+	buf, err := ioutil.ReadFile("../testdata/stream/streams.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -133,13 +125,9 @@ func TestClient_GetEnabledStreams(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/streams/enabled",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/streams/enabled",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -165,7 +153,7 @@ func TestClient_GetStream(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/stream.json")
+	buf, err := ioutil.ReadFile("../testdata/stream/stream.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -178,13 +166,9 @@ func TestClient_GetStream(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/streams/" + testdata.Stream().ID,
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/streams/" + testdata.Stream().ID,
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -213,11 +197,11 @@ func TestClient_UpdateStream(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	reqBuf, err := ioutil.ReadFile("../testdata/create_stream.json")
+	reqBuf, err := ioutil.ReadFile("../testdata/stream/create_stream.json")
 	require.Nil(t, err)
 	reqBodyStr := string(reqBuf)
 
-	respBuf, err := ioutil.ReadFile("../testdata/stream.json")
+	respBuf, err := ioutil.ReadFile("../testdata/stream/stream.json")
 	require.Nil(t, err)
 	respBodyStr := string(respBuf)
 
@@ -235,12 +219,8 @@ func TestClient_UpdateStream(t *testing.T) {
 								Path: "/api/streams/" + streamID,
 							},
 							Tester: &flute.Tester{
-								Method: "PUT",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:         "PUT",
+								PartOfHeader:   getTestHeader(),
 								BodyJSONString: reqBodyStr,
 							},
 							Response: &flute.Response{
@@ -255,12 +235,8 @@ func TestClient_UpdateStream(t *testing.T) {
 								Path: "/api/streams/h",
 							},
 							Tester: &flute.Tester{
-								Method: "PUT",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:         "PUT",
+								PartOfHeader:   getTestHeader(),
 								BodyJSONString: reqBodyStr,
 							},
 							Response: &flute.Response{
@@ -316,13 +292,9 @@ func TestClient_DeleteStream(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "DELETE",
-								Path:   "/api/streams/" + streamID,
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "DELETE",
+								Path:         "/api/streams/" + streamID,
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -332,13 +304,9 @@ func TestClient_DeleteStream(t *testing.T) {
 						},
 						{
 							Tester: &flute.Tester{
-								Method: "DELETE",
-								Path:   "/api/streams/h",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "DELETE",
+								Path:         "/api/streams/h",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -381,13 +349,9 @@ func TestClient_PauseStream(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "POST",
-								Path:   "/api/streams/" + streamID + "/pause",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "POST",
+								Path:         "/api/streams/" + streamID + "/pause",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -426,13 +390,9 @@ func TestClient_ResumeStream(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "POST",
-								Path:   "/api/streams/" + streamID + "/resume",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "POST",
+								Path:         "/api/streams/" + streamID + "/resume",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{

@@ -45,11 +45,7 @@ func TestClient_CreateEventDefinition(t *testing.T) {
 								Path:   "/api/events/definitions",
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader:   getTestHeader(),
 								BodyJSONString: reqStr,
 							},
 							Response: &flute.Response{
@@ -92,11 +88,7 @@ func TestClient_DeleteEventDefinition(t *testing.T) {
 								Path:   "/api/events/definitions/" + get.Response().ID,
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -148,11 +140,7 @@ func TestClient_GetEventDefinition(t *testing.T) {
 								Path:   "/api/events/definitions/" + get.Response().ID,
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -197,11 +185,7 @@ func TestClient_GetEventDefinitions(t *testing.T) {
 								Path:   "/api/events/definitions",
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -253,11 +237,7 @@ func TestClient_UpdateEventDefinition(t *testing.T) {
 								Path:   "/api/events/definitions/" + update.Request().ID,
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader:   getTestHeader(),
 								BodyJSONString: reqStr,
 							},
 							Response: &flute.Response{

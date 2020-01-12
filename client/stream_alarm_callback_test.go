@@ -24,7 +24,7 @@ func TestClient_GetStreamAlarmCallbacks(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/stream_alarm_callbacks.json")
+	buf, err := ioutil.ReadFile("../testdata/stream_alarm_callback/stream_alarm_callbacks.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -39,13 +39,9 @@ func TestClient_GetStreamAlarmCallbacks(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/streams/" + id + "/alarmcallbacks",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/streams/" + id + "/alarmcallbacks",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -74,7 +70,7 @@ func TestClient_GetStreamAlarmCallback(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/slack_stream_alarm_callback.json")
+	buf, err := ioutil.ReadFile("../testdata/stream_alarm_callback/slack_stream_alarm_callback.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -90,13 +86,9 @@ func TestClient_GetStreamAlarmCallback(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/streams/" + id + "/alarmcallbacks/" + callbackID,
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/streams/" + id + "/alarmcallbacks/" + callbackID,
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{

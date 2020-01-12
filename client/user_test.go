@@ -33,12 +33,8 @@ func TestClient_DeleteUser(t *testing.T) {
 								Path: "/api/users/foo",
 							},
 							Tester: &flute.Tester{
-								Method: "DELETE",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "DELETE",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -51,12 +47,8 @@ func TestClient_DeleteUser(t *testing.T) {
 								Path: "/api/users/h",
 							},
 							Tester: &flute.Tester{
-								Method: "DELETE",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "DELETE",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -110,11 +102,7 @@ func TestClient_CreateUser(t *testing.T) {
 								Path:   "/api/users",
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 								BodyJSONString: `{
 								  "username": "test",
 								  "email": "test@example.com",
@@ -153,7 +141,7 @@ func TestClient_GetUsers(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/users.json")
+	buf, err := ioutil.ReadFile("../testdata/user/users.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -169,12 +157,8 @@ func TestClient_GetUsers(t *testing.T) {
 								Path: "/api/users",
 							},
 							Tester: &flute.Tester{
-								Method: "GET",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -202,7 +186,7 @@ func TestClient_GetUser(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/user.json")
+	buf, err := ioutil.ReadFile("../testdata/user/user.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -218,12 +202,8 @@ func TestClient_GetUser(t *testing.T) {
 								Path: "/api/users/admin",
 							},
 							Tester: &flute.Tester{
-								Method: "GET",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -267,11 +247,7 @@ func TestClient_UpdateUser(t *testing.T) {
 								Path:   "/api/users/test",
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 								BodyJSONString: `{
 								  "username": "test",
 									"roles": ["Reader"]

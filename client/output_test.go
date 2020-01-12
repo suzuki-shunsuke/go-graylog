@@ -20,7 +20,7 @@ func TestClient_CreateOutput(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/stdout_output.json")
+	buf, err := ioutil.ReadFile("../testdata/output/stdout_output.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -40,11 +40,7 @@ func TestClient_CreateOutput(t *testing.T) {
 								Path:   "/api/system/outputs",
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 								BodyJSONString: `{
 								  "title": "test-stdout",
 								  "type": "org.graylog2.outputs.LoggingOutput",
@@ -99,11 +95,7 @@ func TestClient_DeleteOutput(t *testing.T) {
 								Path:   "/api/system/outputs/" + testdata.StdoutOutput().ID,
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -135,7 +127,7 @@ func TestClient_GetOutput(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/stdout_output.json")
+	buf, err := ioutil.ReadFile("../testdata/output/stdout_output.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -155,11 +147,7 @@ func TestClient_GetOutput(t *testing.T) {
 								Path:   "/api/system/outputs/" + testdata.StdoutOutput().ID,
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -187,7 +175,7 @@ func TestClient_GetOutputs(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/outputs.json")
+	buf, err := ioutil.ReadFile("../testdata/output/outputs.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -204,11 +192,7 @@ func TestClient_GetOutputs(t *testing.T) {
 								Path:   "/api/system/outputs",
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
@@ -237,7 +221,7 @@ func TestClient_UpdateOutput(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/stdout_output.json")
+	buf, err := ioutil.ReadFile("../testdata/output/stdout_output.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -257,11 +241,7 @@ func TestClient_UpdateOutput(t *testing.T) {
 								Path:   "/api/system/outputs/" + testdata.StdoutOutput().ID,
 							},
 							Tester: &flute.Tester{
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								PartOfHeader: getTestHeader(),
 								BodyJSONString: `{
   "title": "test",
   "type": "org.graylog2.outputs.LoggingOutput",

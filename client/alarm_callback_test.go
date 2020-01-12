@@ -18,7 +18,7 @@ func TestClient_GetAlarmCallbacks(t *testing.T) {
 	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
-	buf, err := ioutil.ReadFile("../testdata/alarm_callbacks.json")
+	buf, err := ioutil.ReadFile("../testdata/alarm_callback/alarm_callbacks.json")
 	require.Nil(t, err)
 	bodyStr := string(buf)
 
@@ -31,13 +31,9 @@ func TestClient_GetAlarmCallbacks(t *testing.T) {
 					Routes: []flute.Route{
 						{
 							Tester: &flute.Tester{
-								Method: "GET",
-								Path:   "/api/alerts/callbacks",
-								PartOfHeader: http.Header{
-									"Content-Type":   []string{"application/json"},
-									"X-Requested-By": []string{"go-graylog"},
-									"Authorization":  nil,
-								},
+								Method:       "GET",
+								Path:         "/api/alerts/callbacks",
+								PartOfHeader: getTestHeader(),
 							},
 							Response: &flute.Response{
 								Base: http.Response{
