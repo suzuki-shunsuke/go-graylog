@@ -1,9 +1,10 @@
 {
   "id": "000000000000000000000003",
+  "title": "updated title",
+  "description": "updated description",
   "creator_user_id": "admin",
   "outputs": [],
   "matching_type": "AND",
-  "description": "test",
   "created_at": "2019-09-20T12:02:06.078Z",
   "disabled": false,
   "rules": [],
@@ -12,9 +13,9 @@
     "emails": [],
     "users": []
   },
-  "title": "test",
   "content_pack": null,
   "remove_matches_from_default_stream": true,
   "index_set_id": "5d84bfbe2ab79c000d35d4a9",
   "is_default": false
 }
+
