@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testutil"
 )
 
 func TestAccIndexSet(t *testing.T) {
@@ -32,7 +33,7 @@ func TestAccIndexSet(t *testing.T) {
 			return m, nil
 		},
 
-		CreateReqBodyMap: map[string]interface{}{
+		CreateReqBodyMap: testutil.ConvertIntToFloat64OfMap(map[string]interface{}{
 			"title":       "test",
 			"description": "The Graylog default index set",
 
@@ -40,23 +41,23 @@ func TestAccIndexSet(t *testing.T) {
 			"rotation_strategy_class": "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy",
 			"rotation_strategy": map[string]interface{}{
 				"type":               "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig",
-				"max_docs_per_index": float64(20000000),
+				"max_docs_per_index": 20000000,
 			},
 			"retention_strategy_class": "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy",
 			"retention_strategy": map[string]interface{}{
 				"type":                  "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig",
-				"max_number_of_indices": float64(20),
+				"max_number_of_indices": 20,
 			},
 			"creation_date":                       creationDate,
 			"index_analyzer":                      "standard",
-			"shards":                              float64(4),
-			"index_optimization_max_num_segments": float64(1),
-			"field_type_refresh_interval":         float64(5000),
+			"shards":                              4,
+			"index_optimization_max_num_segments": 1,
+			"field_type_refresh_interval":         5000,
 			"writable":                            true,
 			"index_optimization_disabled":         false,
 			"default":                             false,
-		},
-		UpdateReqBodyMap: map[string]interface{}{
+		}),
+		UpdateReqBodyMap: testutil.ConvertIntToFloat64OfMap(map[string]interface{}{
 			"title":       "updated title",
 			"description": "updated description",
 
@@ -64,21 +65,21 @@ func TestAccIndexSet(t *testing.T) {
 			"rotation_strategy_class": "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategy",
 			"rotation_strategy": map[string]interface{}{
 				"type":               "org.graylog2.indexer.rotation.strategies.MessageCountRotationStrategyConfig",
-				"max_docs_per_index": float64(20000000),
+				"max_docs_per_index": 20000000,
 			},
 			"retention_strategy_class": "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategy",
 			"retention_strategy": map[string]interface{}{
 				"type":                  "org.graylog2.indexer.retention.strategies.DeletionRetentionStrategyConfig",
-				"max_number_of_indices": float64(20),
+				"max_number_of_indices": 20,
 			},
 			"index_analyzer":                      "standard",
-			"shards":                              float64(4),
-			"index_optimization_max_num_segments": float64(1),
-			"replicas":                            float64(0),
-			"field_type_refresh_interval":         float64(5000),
+			"shards":                              4,
+			"index_optimization_max_num_segments": 1,
+			"replicas":                            0,
+			"field_type_refresh_interval":         5000,
 			"writable":                            true,
 			"index_optimization_disabled":         false,
-		},
+		}),
 		CreatedDataPath:    "index_set/create_index_set_response.json",
 		UpdatedDataPath:    "index_set/update_response.json",
 		CreateRespBodyPath: "index_set/create_index_set_response.json",
