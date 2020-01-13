@@ -96,7 +96,7 @@
       "creation_date": "2019-09-20T21:10:17.409Z",
       "index_analyzer": "standard",
       "index_optimization_max_num_segments": 1,
-      "index_optimization_disabled": true,
+      "index_optimization_disabled": false,
       "field_type_refresh_interval": 5000,
       "writable": true,
       "default": false

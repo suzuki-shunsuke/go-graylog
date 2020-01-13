@@ -114,7 +114,7 @@ func IndexSets() *graylog.IndexSetsBody {
 				ID:                              "5d84c1a92ab79c000d35d6d0",
 				Description:                     "test 2",
 				Replicas:                        0,
-				IndexOptimizationDisabled:       true,
+				IndexOptimizationDisabled:       false,
 				Writable:                        true,
 				Default:                         false,
 				Stats:                           nil,
