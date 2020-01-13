@@ -197,7 +197,7 @@ func TestClient_UpdateIndexSet(t *testing.T) {
 
 	// success
 	is.ID = testdata.IndexSet().ID
-	if _, _, err := cl.UpdateIndexSet(ctx, is.NewUpdateParams()); err != nil {
+	if _, _, err := cl.UpdateIndexSet(ctx, testdata.IndexSetUpdateParams()); err != nil {
 		t.Fatal(err)
 	}
 	// id required
