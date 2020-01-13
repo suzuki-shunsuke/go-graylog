@@ -68,12 +68,12 @@ func (tc *testCase) genTestBody(exp map[string]interface{}, bodyString string, s
 	return func(t *testing.T, req *http.Request, svc *flute.Service, route *flute.Route) {
 		if tc.ConvertReqBody != nil {
 			data, err := tc.ConvertReqBody(req.Body)
-			require.Nil(t, err)
-			assert.Equal(t, exp, data)
+			require.Nil(t, err, "failed to convert a request body; route: "+route.Name)
+			assert.Equal(t, exp, data, "request body should match; route: "+route.Name)
 		} else {
 			body := map[string]interface{}{}
-			require.Nil(t, json.NewDecoder(req.Body).Decode(&body))
-			assert.Equal(t, exp, body)
+			require.Nil(t, json.NewDecoder(req.Body).Decode(&body), "failed to unmarshal request body as JSON; route: "+route.Name)
+			assert.Equal(t, exp, body, "request body should match; route: "+route.Name)
 		}
 		store.Set(bodyString)
 	}
