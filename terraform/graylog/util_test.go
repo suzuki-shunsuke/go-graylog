@@ -203,15 +203,6 @@ func (tc *testCase) Get() (http.RoundTripper, resource.TestCase, error) {
 		}, nil
 }
 
-func genTestBody(exp map[string]interface{}, bodyString string, store *bodyStore) func(t *testing.T, req *http.Request, svc *flute.Service, route *flute.Route) {
-	return func(t *testing.T, req *http.Request, svc *flute.Service, route *flute.Route) {
-		body := map[string]interface{}{}
-		require.Nil(t, json.NewDecoder(req.Body).Decode(&body))
-		assert.Equal(t, exp, body)
-		store.Set(bodyString)
-	}
-}
-
 func getTestProviders() map[string]terraform.ResourceProvider {
 	return map[string]terraform.ResourceProvider{
 		"graylog": Provider(),
