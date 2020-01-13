@@ -15,3 +15,23 @@ func StreamRule() *graylog.StreamRule {
 		Inverted:    false,
 	}
 }
+
+func CreateStreamRuleReqBodyMap() map[string]interface{} {
+	return map[string]interface{}{
+		"field":       "tag",
+		"value":       "4",
+		"description": "test",
+		"type":        1,
+		"inverted":    false,
+	}
+}
+
+func UpdateStreamRuleReqBodyMap() map[string]interface{} {
+	return map[string]interface{}{
+		"field":       "tag",
+		"value":       "4",
+		"description": "updated description",
+		"type":        1,
+		"inverted":    false,
+	}
+}
