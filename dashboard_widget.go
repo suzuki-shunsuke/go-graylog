@@ -188,3 +188,7 @@ func (cfg *WidgetConfigUnknownType) Type() string {
 func (cfg *WidgetConfigUnknownType) UnmarshalJSON(b []byte) error {
 	return json.Unmarshal(b, &cfg.Fields)
 }
+
+func (cfg *WidgetConfigUnknownType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&cfg.Fields)
+}

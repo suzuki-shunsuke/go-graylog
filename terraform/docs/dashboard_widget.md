@@ -3,23 +3,6 @@
 * [Example](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/example/v0.12/dashboard.tf)
 * [Source code](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/graylog/resource_dashboard_widget.go)
 
-```hcl
-resource "graylog_dashboard_widget" "test" {
-  description = "Stream search result count"
-  dashboard_id = "5b6586000000000000000000"
-  type = "STREAM_SEARCH_RESULT_COUNT"
-  stream_search_result_count_configuration {
-    timerange {
-      type = "relative"
-      range = 300
-    }
-    stream_id = "5b3983000000000000000000"
-    query = ""
-  }
-  cache_time = 10
-}
-```
-
 ## Supported types
 
 * STREAM_SEARCH_RESULT_COUNT
@@ -29,11 +12,12 @@ resource "graylog_dashboard_widget" "test" {
 * FIELD_CHART
 * STATS_COUNT
 
-## Unsupported types
+## `json_configuration`
 
-* STACKED_CHART
-* SEARCH_RESULT_COUNT
-* etc
+From v10.0.0, the attribute `json_configuration` is added to support any type of dashboard widget.
+`json_configuration` should be JSON string.
+
+Please see the [Example](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/example/v0.12/dashboard.tf).
 
 ## Common required arguments
 

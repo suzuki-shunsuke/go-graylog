@@ -2,12 +2,15 @@ package graylog
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/suzuki-shunsuke/go-jsoneq/jsoneq"
+	"github.com/suzuki-shunsuke/go-ptr"
 
 	"github.com/suzuki-shunsuke/go-graylog/v9"
-	"github.com/suzuki-shunsuke/go-ptr"
 )
 
 func resourceDashboardWidget() *schema.Resource {
@@ -46,6 +49,13 @@ func resourceDashboardWidget() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 				Computed: true,
+			},
+
+			"json_configuration": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				DiffSuppressFunc: schemaDiffSuppressJSONString,
+				ValidateFunc:     wrapValidateFunc(validateFuncDashboardWidgetJSONConfiguration),
 			},
 
 			"quick_values_configuration": {
@@ -286,6 +296,18 @@ func resourceDashboardWidget() *schema.Resource {
 	}
 }
 
+func validateFuncDashboardWidgetJSONConfiguration(v interface{}, k string) error {
+	c, err := jsoneq.ConvertByte([]byte(v.(string)))
+	if err != nil {
+		return fmt.Errorf("'json_configuration' must be a JSON string: %w", err)
+	}
+	_, ok := c.(map[string]interface{})
+	if !ok {
+		return errors.New("'json_configuration' should be a JSON string which represents object")
+	}
+	return nil
+}
+
 func timeRangeSchema() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,
@@ -428,7 +450,22 @@ func newDashboardWidget(d *schema.ResourceData) (*graylog.Widget, string, error)
 			Relative:      cfg["relative"].(int),
 		}
 	default:
-		return nil, "", errors.New("unsupported type: " + t)
+		v, ok := d.GetOk("json_configuration")
+		if !ok {
+			return nil, "", fmt.Errorf("for unknown type '%s', 'json_configuration' is required", t)
+		}
+		c, err := jsoneq.ConvertByte([]byte(v.(string)))
+		if err != nil {
+			return nil, "", fmt.Errorf("failed to parse the 'json_configuration'. 'json_configuration' must be a JSON string '%s': %w", v.(string), err)
+		}
+		fields, ok := c.(map[string]interface{})
+		if !ok {
+			return nil, "", errors.New("'json_configuration' should be a JSON string which represents object")
+		}
+		config = &graylog.WidgetConfigUnknownType{
+			T:      t,
+			Fields: fields,
+		}
 	}
 	return &graylog.Widget{
 		Description:   d.Get("description").(string),
@@ -598,7 +635,14 @@ func resourceDashboardWidgetRead(d *schema.ResourceData, m interface{}) error {
 			return err
 		}
 	default:
-		return errors.New("unsupported type: " + widget.Type())
+		w := widget.Config.(*graylog.WidgetConfigUnknownType)
+		b, err := json.Marshal(w.Fields)
+		if err != nil {
+			return fmt.Errorf("failed to marshal fields: %w", err)
+		}
+		if err := d.Set("json_configuration", string(b)); err != nil {
+			return err
+		}
 	}
 	return setStrToRD(d, "creator_user_id", widget.CreatorUserID)
 }
