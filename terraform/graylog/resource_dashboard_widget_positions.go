@@ -100,9 +100,9 @@ func resourceDashboardWidgetPositionsRead(d *schema.ResourceData, m interface{})
 	if err != nil {
 		return err
 	}
-	db, _, err := cl.GetDashboard(ctx, d.Id())
+	db, ei, err := cl.GetDashboard(ctx, d.Id())
 	if err != nil {
-		return err
+		return handleGetResourceError(d, ei, err)
 	}
 	if err := setStrToRD(d, "dashboard_id", d.Id()); err != nil {
 		return err
