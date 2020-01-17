@@ -46,11 +46,19 @@ func genImport(keys ...string) schema.StateFunc {
 }
 
 func handleGetResourceError(
-	d *schema.ResourceData, ei *client.ErrorInfo, err error,
+	d *schema.ResourceData, ei *client.ErrorInfo, err error, codes ...int,
 ) error {
-	if ei != nil && ei.Response != nil && ei.Response.StatusCode == 404 {
-		d.SetId("")
-		return nil
+	if ei != nil && ei.Response != nil {
+		if ei.Response.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
+		for _, code := range codes {
+			if ei.Response.StatusCode == code {
+				d.SetId("")
+				return nil
+			}
+		}
 	}
 	return err
 }
