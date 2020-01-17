@@ -6,7 +6,7 @@
   "outputs": [],
   "matching_type": "AND",
   "created_at": "2019-09-20T12:02:06.078Z",
-  "disabled": false,
+  "disabled": true,
   "rules": [],
   "alert_conditions": [],
   "alert_receivers": {

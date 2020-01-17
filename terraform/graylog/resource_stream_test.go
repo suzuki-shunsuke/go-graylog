@@ -56,6 +56,20 @@ func TestAccStream(t *testing.T) {
 				StatusCode: 204,
 			},
 		},
+	}, flute.Route{
+		Name: "Pause stream",
+		Matcher: &flute.Matcher{
+			Method: "POST",
+			Path:   tc.GetPath + "/pause",
+		},
+		Tester: &flute.Tester{
+			PartOfHeader: getTestHeader(),
+		},
+		Response: &flute.Response{
+			Base: http.Response{
+				StatusCode: 204,
+			},
+		},
 	})
 	http.DefaultClient.Transport = transport
 	resource.Test(tc.t, testCase)
