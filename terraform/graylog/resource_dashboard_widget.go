@@ -44,6 +44,7 @@ func resourceDashboardWidget() *schema.Resource {
 			"cache_time": {
 				Type:     schema.TypeInt,
 				Optional: true,
+				Computed: true,
 			},
 			"creator_user_id": {
 				Type:     schema.TypeString,
