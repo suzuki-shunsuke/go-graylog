@@ -138,6 +138,18 @@ func resourceStreamUpdate(d *schema.ResourceData, m interface{}) error {
 	if _, err := cl.UpdateStream(ctx, stream); err != nil {
 		return err
 	}
+	if !d.HasChange("disabled") {
+		return nil
+	}
+	if d.Get("disabled").(bool) {
+		if _, err := cl.PauseStream(ctx, stream.ID); err != nil {
+			return err
+		}
+		return nil
+	}
+	if _, err := cl.ResumeStream(ctx, stream.ID); err != nil {
+		return err
+	}
 	return nil
 }
 
