@@ -667,7 +667,7 @@ func resourceDashboardWidgetUpdate(d *schema.ResourceData, m interface{}) error 
 			return err
 		}
 	}
-	if hasChange(d, "type", "quick_values_histogram_configuration", "quick_values_configuration", "stats_count_configuration", "search_result_chart_configuration", "stream_search_result_count_configuration", "field_chart_configuration") {
+	if hasChange(d, "type", "quick_values_histogram_configuration", "quick_values_configuration", "stats_count_configuration", "search_result_chart_configuration", "stream_search_result_count_configuration", "field_chart_configuration", "json_configuration") {
 		if _, err := cl.UpdateDashboardWidget(ctx, dashboardID, *widget); err != nil {
 			return err
 		}
