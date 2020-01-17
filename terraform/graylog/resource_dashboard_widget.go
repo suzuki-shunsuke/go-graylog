@@ -505,7 +505,7 @@ func resourceDashboardWidgetRead(d *schema.ResourceData, m interface{}) error {
 	widget, ei, err := cl.GetDashboardWidget(
 		ctx, d.Get("dashboard_id").(string), d.Id())
 	if err != nil {
-		return handleGetResourceError(d, ei, err)
+		return handleGetResourceError(d, ei, err, 500)
 	}
 	if err := setStrToRD(d, "type", widget.Type()); err != nil {
 		return err
