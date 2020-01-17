@@ -3,17 +3,20 @@ package client_test
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"testing"
 
 	"gopkg.in/h2non/gock.v1"
 
 	"github.com/stretchr/testify/require"
-	"github.com/suzuki-shunsuke/go-jsoneq/jsoneq"
+	"github.com/suzuki-shunsuke/flute/flute"
 	"github.com/suzuki-shunsuke/go-ptr"
 
 	"github.com/suzuki-shunsuke/go-graylog/v9"
 	"github.com/suzuki-shunsuke/go-graylog/v9/client"
+	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
 )
 
 func TestClient_CreateDashboardWidget(t *testing.T) {
@@ -82,50 +85,59 @@ func TestClient_CreateDashboardWidget(t *testing.T) {
 	}
 }
 
-func Test_client_UpdateDashboardWidget(t *testing.T) {
-	widget := &graylog.Widget{
-		Config: &graylog.WidgetConfigStreamSearchResultCount{
-			Timerange: &graylog.Timerange{
-				Type:  "relative",
-				Range: 300,
+func TestClient_UpdateDashboardWidget(t *testing.T) {
+	ctx := context.Background()
+
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
+	dashboardID := "5b65868b08813b0001777af3"
+	widgetID := "5b65868b0881300000000000"
+
+	_, err = cl.UpdateDashboardWidget(ctx, "", graylog.Widget{
+		ID: widgetID,
+	})
+	require.NotNil(t, err, "dashboard id is required")
+
+	_, err = cl.UpdateDashboardWidget(ctx, dashboardID, graylog.Widget{})
+	require.NotNil(t, err, "dashboard widget id is required")
+
+	buf, err := ioutil.ReadFile("../testdata/dashboard_widget/stacked_chart/update.json")
+	require.Nil(t, err)
+
+	widget := testdata.UpdateDashboardWidgetStackedChart()
+	widget.ID = widgetID
+
+	cl.SetHTTPClient(&http.Client{
+		Transport: &flute.Transport{
+			T: t,
+			Services: []flute.Service{
+				{
+					Endpoint: "http://example.com",
+					Routes: []flute.Route{
+						{
+							Matcher: &flute.Matcher{
+								Method: "PUT",
+							},
+							Tester: &flute.Tester{
+								Path:           "/api/dashboards/" + dashboardID + "/widgets/" + widgetID,
+								PartOfHeader:   getTestHeader(),
+								BodyJSONString: string(buf),
+							},
+							Response: &flute.Response{
+								Base: http.Response{
+									StatusCode: 204,
+									Header: http.Header{
+										"Content-Type": []string{"application/json"},
+									},
+								},
+							},
+						},
+					},
+				},
 			},
-			LowerIsBetter: true,
-			Trend:         true,
-			StreamID:      "000000000000000000000001",
 		},
-	}
+	})
 
-	b, err := jsoneq.Equal(
-		widget.Config,
-		[]byte(`{
-  "timerange": {
-    "type": "relative",
-    "range": 300
-  },
-  "lower_is_better": true,
-  "trend": true,
-  "stream_id": "000000000000000000000001",
-  "query": ""
-}`))
+	_, err = cl.UpdateDashboardWidget(ctx, dashboardID, widget)
 	require.Nil(t, err)
-	require.True(t, b)
-
-	b, err = jsoneq.Equal(
-		map[string]interface{}{
-			"config": widget.Config,
-		},
-		[]byte(`{
-  "config": {
-    "timerange": {
-      "type": "relative",
-      "range": 300
-    },
-    "lower_is_better": true,
-    "trend": true,
-    "stream_id": "000000000000000000000001",
-    "query": ""
-  }
-}`))
-	require.Nil(t, err)
-	require.True(t, b)
 }

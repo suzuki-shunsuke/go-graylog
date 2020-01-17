@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"github.com/suzuki-shunsuke/go-jsoneq/jsoneq"
 	"github.com/suzuki-shunsuke/go-ptr"
 )
 
@@ -99,4 +100,52 @@ func TestWidget_MarshalJSON(t *testing.T) {
 			require.JSONEq(t, d.exp, string(w))
 		})
 	}
+}
+
+func TestWidgetConfig_MarshalJSON(t *testing.T) {
+	widget := &Widget{
+		Config: &WidgetConfigStreamSearchResultCount{
+			Timerange: &Timerange{
+				Type:  "relative",
+				Range: 300,
+			},
+			LowerIsBetter: true,
+			Trend:         true,
+			StreamID:      "000000000000000000000001",
+		},
+	}
+
+	b, err := jsoneq.Equal(
+		widget.Config,
+		[]byte(`{
+  "timerange": {
+    "type": "relative",
+    "range": 300
+  },
+  "lower_is_better": true,
+  "trend": true,
+  "stream_id": "000000000000000000000001",
+  "query": ""
+}`))
+	require.Nil(t, err)
+	require.True(t, b)
+
+	b, err = jsoneq.Equal(
+		map[string]interface{}{
+			"config": widget.Config,
+		},
+		[]byte(`{
+  "config": {
+    "timerange": {
+      "type": "relative",
+      "range": 300
+    },
+    "lower_is_better": true,
+    "trend": true,
+    "stream_id": "000000000000000000000001",
+    "query": ""
+  }
+}`))
+	require.Nil(t, err)
+	require.True(t, b)
 }

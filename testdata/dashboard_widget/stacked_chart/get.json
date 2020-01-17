@@ -1,0 +1,23 @@
+{
+  "id": "6a049bb7-64eb-4ae8-8f99-c57c69b51fd8",
+  "description": "stacked chart",
+  "type": "STACKED_CHART",
+  "config": {
+    "interpolation": "linear",
+    "interval": "hour",
+    "renderer": "bar",
+    "timerange": {
+      "type": "relative",
+      "range": 86400
+    },
+    "series": [
+      {
+        "field": "AccessMask",
+        "query": "",
+        "statistical_function": "count"
+      }
+    ]
+  },
+  "cache_time": 10,
+  "creator_user_id": "admin"
+}
