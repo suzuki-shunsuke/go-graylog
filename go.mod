@@ -17,6 +17,5 @@ require (
 	github.com/suzuki-shunsuke/go-set/v6 v6.0.1
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
-	gopkg.in/h2non/gock.v1 v1.0.15
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 )

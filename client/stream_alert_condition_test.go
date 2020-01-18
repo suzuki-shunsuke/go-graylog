@@ -3,20 +3,19 @@ package client_test
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"testing"
-
-	"gopkg.in/h2non/gock.v1"
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/suzuki-shunsuke/flute/flute"
 	"github.com/suzuki-shunsuke/go-graylog/v9"
 	"github.com/suzuki-shunsuke/go-graylog/v9/client"
 )
 
 func TestClient_GetStreamAlertConditions(t *testing.T) {
 	ctx := context.Background()
-	defer gock.Off()
-	client, err := client.NewClient("http://example.com/api", "admin", "password")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -99,11 +98,33 @@ func TestClient_GetStreamAlertConditions(t *testing.T) {
 		checkErr: require.Nil,
 	}}
 	for _, d := range data {
-		gock.New("http://example.com").
-			Get(fmt.Sprintf("/api/streams/%s/alerts/conditions", "xxxxx")).
-			MatchType("json").Reply(d.statusCode).
-			BodyString(d.resp)
-		conds, total, _, err := client.GetStreamAlertConditions(ctx, "xxxxx")
+		cl.SetHTTPClient(&http.Client{
+			Transport: &flute.Transport{
+				T: t,
+				Services: []flute.Service{
+					{
+						Endpoint: "http://example.com",
+						Routes: []flute.Route{
+							{
+								Tester: &flute.Tester{
+									Method:       "GET",
+									Path:         fmt.Sprintf("/api/streams/%s/alerts/conditions", "xxxxx"),
+									PartOfHeader: getTestHeader(),
+								},
+								Response: &flute.Response{
+									Base: http.Response{
+										StatusCode: d.statusCode,
+									},
+									BodyString: d.resp,
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+
+		conds, total, _, err := cl.GetStreamAlertConditions(ctx, "xxxxx")
 		d.checkErr(t, err)
 		if err != nil {
 			require.Equal(t, d.conds, conds)
@@ -114,8 +135,7 @@ func TestClient_GetStreamAlertConditions(t *testing.T) {
 
 func TestClient_GetStreamAlertCondition(t *testing.T) {
 	ctx := context.Background()
-	defer gock.Off()
-	client, err := client.NewClient("http://example.com/api", "admin", "password")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -158,11 +178,33 @@ func TestClient_GetStreamAlertCondition(t *testing.T) {
 		checkErr: require.Nil,
 	}}
 	for _, d := range data {
-		gock.New("http://example.com").
-			Get(fmt.Sprintf("/api/streams/%s/alerts/conditions/%s", "xxxxx", d.cond.ID)).
-			MatchType("json").Reply(d.statusCode).
-			BodyString(d.resp)
-		cond, _, err := client.GetStreamAlertCondition(ctx, "xxxxx", d.cond.ID)
+		cl.SetHTTPClient(&http.Client{
+			Transport: &flute.Transport{
+				T: t,
+				Services: []flute.Service{
+					{
+						Endpoint: "http://example.com",
+						Routes: []flute.Route{
+							{
+								Tester: &flute.Tester{
+									Method:       "GET",
+									Path:         fmt.Sprintf("/api/streams/%s/alerts/conditions/%s", "xxxxx", d.cond.ID),
+									PartOfHeader: getTestHeader(),
+								},
+								Response: &flute.Response{
+									Base: http.Response{
+										StatusCode: d.statusCode,
+									},
+									BodyString: d.resp,
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+
+		cond, _, err := cl.GetStreamAlertCondition(ctx, "xxxxx", d.cond.ID)
 		d.checkErr(t, err)
 		if err != nil {
 			require.Equal(t, d.cond, cond)
@@ -172,8 +214,7 @@ func TestClient_GetStreamAlertCondition(t *testing.T) {
 
 func TestClient_CreateStreamAlertCondition(t *testing.T) {
 	ctx := context.Background()
-	defer gock.Off()
-	client, err := client.NewClient("http://example.com/api", "admin", "password")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -199,13 +240,35 @@ func TestClient_CreateStreamAlertCondition(t *testing.T) {
 	}}
 	streamID := "xxxxx"
 	for _, d := range data {
-		gock.New("http://example.com").
-			Post(fmt.Sprintf("/api/streams/%s/alerts/conditions", streamID)).
-			MatchType("json").Reply(d.statusCode).
-			BodyString(fmt.Sprintf(`{
+		cl.SetHTTPClient(&http.Client{
+			Transport: &flute.Transport{
+				T: t,
+				Services: []flute.Service{
+					{
+						Endpoint: "http://example.com",
+						Routes: []flute.Route{
+							{
+								Tester: &flute.Tester{
+									Method:       "POST",
+									Path:         fmt.Sprintf("/api/streams/%s/alerts/conditions", streamID),
+									PartOfHeader: getTestHeader(),
+								},
+								Response: &flute.Response{
+									Base: http.Response{
+										StatusCode: d.statusCode,
+									},
+									BodyString: fmt.Sprintf(`{
   "alert_condition_id": "%s"
-}`, d.condID))
-		_, err := client.CreateStreamAlertCondition(ctx, streamID, &d.cond)
+}`, d.condID),
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+
+		_, err := cl.CreateStreamAlertCondition(ctx, streamID, &d.cond)
 		d.checkErr(t, err)
 		if err != nil {
 			require.Equal(t, d.cond.ID, d.condID)
@@ -215,8 +278,7 @@ func TestClient_CreateStreamAlertCondition(t *testing.T) {
 
 func TestClient_UpdateStreamAlertCondition(t *testing.T) {
 	ctx := context.Background()
-	defer gock.Off()
-	client, err := client.NewClient("http://example.com/api", "admin", "password")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -241,19 +303,41 @@ func TestClient_UpdateStreamAlertCondition(t *testing.T) {
 	}}
 	streamID := "xxxxx"
 	for _, d := range data {
-		gock.New("http://example.com").
-			Put(fmt.Sprintf("/api/streams/%s/alerts/conditions/%s", streamID, d.cond.ID)).
-			MatchType("json").Reply(d.statusCode)
-		_, err := client.UpdateStreamAlertCondition(ctx, streamID, &d.cond)
+		cl.SetHTTPClient(&http.Client{
+			Transport: &flute.Transport{
+				T: t,
+				Services: []flute.Service{
+					{
+						Endpoint: "http://example.com",
+						Routes: []flute.Route{
+							{
+								Tester: &flute.Tester{
+									Method:       "PUT",
+									Path:         fmt.Sprintf("/api/streams/%s/alerts/conditions/%s", streamID, d.cond.ID),
+									PartOfHeader: getTestHeader(),
+								},
+								Response: &flute.Response{
+									Base: http.Response{
+										StatusCode: d.statusCode,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+
+		_, err := cl.UpdateStreamAlertCondition(ctx, streamID, &d.cond)
 		d.checkErr(t, err)
 	}
 }
 
 func TestClient_DeleteStreamAlertCondition(t *testing.T) {
 	ctx := context.Background()
-	defer gock.Off()
-	client, err := client.NewClient("http://example.com/api", "admin", "password")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
+
 	data := []struct {
 		statusCode int
 		checkErr   func(require.TestingT, interface{}, ...interface{})
@@ -264,10 +348,32 @@ func TestClient_DeleteStreamAlertCondition(t *testing.T) {
 	streamID := "xxxxx"
 	condID := "d3ecb503-b767-4d59-bf6a-e2c000000000"
 	for _, d := range data {
-		gock.New("http://example.com").
-			Delete(fmt.Sprintf("/api/streams/%s/alerts/conditions/%s", streamID, condID)).
-			MatchType("json").Reply(d.statusCode)
-		_, err := client.DeleteStreamAlertCondition(ctx, streamID, condID)
+		cl.SetHTTPClient(&http.Client{
+			Transport: &flute.Transport{
+				T: t,
+				Services: []flute.Service{
+					{
+						Endpoint: "http://example.com",
+						Routes: []flute.Route{
+							{
+								Tester: &flute.Tester{
+									Method:       "DELETE",
+									Path:         fmt.Sprintf("/api/streams/%s/alerts/conditions/%s", streamID, condID),
+									PartOfHeader: getTestHeader(),
+								},
+								Response: &flute.Response{
+									Base: http.Response{
+										StatusCode: d.statusCode,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+
+		_, err := cl.DeleteStreamAlertCondition(ctx, streamID, condID)
 		d.checkErr(t, err)
 	}
 }

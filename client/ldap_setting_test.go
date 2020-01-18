@@ -2,12 +2,11 @@ package client_test
 
 import (
 	"context"
-	"os"
+	"net/http"
 	"testing"
 
-	"gopkg.in/h2non/gock.v1"
-
 	"github.com/stretchr/testify/require"
+	"github.com/suzuki-shunsuke/flute/flute"
 	"github.com/suzuki-shunsuke/go-set/v6"
 
 	"github.com/suzuki-shunsuke/go-graylog/v9"
@@ -16,23 +15,17 @@ import (
 
 func TestClient_GetLDAPSetting(t *testing.T) {
 	ctx := context.Background()
-	authName := os.Getenv("GRAYLOG_AUTH_NAME")
-	authPass := os.Getenv("GRAYLOG_AUTH_PASSWORD")
-	endpoint := os.Getenv("GRAYLOG_WEB_ENDPOINT_URI")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
 
-	if endpoint == "" {
-		defer gock.Off()
-		endpoint = "http://example.com/api"
-		client, err := client.NewClient(endpoint, authName, authPass)
-		require.Nil(t, err)
-		data := []struct {
-			statusCode int
-			resp       string
-			setting    *graylog.LDAPSetting
-			checkErr   func(require.TestingT, interface{}, ...interface{})
-		}{{
-			statusCode: 200,
-			resp: `{
+	data := []struct {
+		statusCode int
+		resp       string
+		setting    *graylog.LDAPSetting
+		checkErr   func(require.TestingT, interface{}, ...interface{})
+	}{{
+		statusCode: 200,
+		resp: `{
   "enabled": true,
   "system_username": "CN=admin",
   "system_password": "***",
@@ -52,52 +45,68 @@ func TestClient_GetLDAPSetting(t *testing.T) {
   "additional_default_groups": [],
   "group_search_pattern": ""
 }`,
-			setting: &graylog.LDAPSetting{
-				Enabled:                 true,
-				SystemUsername:          "admin",
-				SystemPassword:          "***",
-				LDAPURI:                 "ldap://ldap.example.com:389/",
-				SearchBase:              "OU=user,OU=foo,DC=example,DC=com",
-				SearchPattern:           "(cn={0})",
-				DisplayNameAttribute:    "displayname",
-				DefaultGroup:            "Reader",
-				GroupMapping:            map[string]string{"foo": "Reader"},
-				AdditionalDefaultGroups: set.StrSet{},
+		setting: &graylog.LDAPSetting{
+			Enabled:                 true,
+			SystemUsername:          "admin",
+			SystemPassword:          "***",
+			LDAPURI:                 "ldap://ldap.example.com:389/",
+			SearchBase:              "OU=user,OU=foo,DC=example,DC=com",
+			SearchPattern:           "(cn={0})",
+			DisplayNameAttribute:    "displayname",
+			DefaultGroup:            "Reader",
+			GroupMapping:            map[string]string{"foo": "Reader"},
+			AdditionalDefaultGroups: set.StrSet{},
+		},
+		checkErr: require.Nil,
+	}}
+	for _, d := range data {
+		cl.SetHTTPClient(&http.Client{
+			Transport: &flute.Transport{
+				T: t,
+				Services: []flute.Service{
+					{
+						Endpoint: "http://example.com",
+						Routes: []flute.Route{
+							{
+								Tester: &flute.Tester{
+									Method:       "GET",
+									Path:         "/api/system/ldap/settings",
+									PartOfHeader: getTestHeader(),
+								},
+								Response: &flute.Response{
+									Base: http.Response{
+										StatusCode: d.statusCode,
+									},
+									BodyString: d.resp,
+								},
+							},
+						},
+					},
+				},
 			},
-			checkErr: require.Nil,
-		}}
-		for _, d := range data {
-			gock.New("http://example.com").
-				Get("/api/system/ldap/settings").
-				MatchType("json").Reply(d.statusCode).BodyString(d.resp)
-			m, _, err := client.GetLDAPSetting(ctx)
-			if err != nil {
-				require.Equal(t, d.setting, m)
-			}
-			d.checkErr(t, err)
+		})
+
+		m, _, err := cl.GetLDAPSetting(ctx)
+		if err != nil {
+			require.Equal(t, d.setting, m)
 		}
+		d.checkErr(t, err)
 	}
 }
 
 func TestClient_UpdateLDAPSetting(t *testing.T) {
 	ctx := context.Background()
-	authName := os.Getenv("GRAYLOG_AUTH_NAME")
-	authPass := os.Getenv("GRAYLOG_AUTH_PASSWORD")
-	endpoint := os.Getenv("GRAYLOG_WEB_ENDPOINT_URI")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
+	require.Nil(t, err)
 
-	if endpoint == "" {
-		defer gock.Off()
-		endpoint = "http://example.com/api"
-		client, err := client.NewClient(endpoint, authName, authPass)
-		require.Nil(t, err)
-		data := []struct {
-			statusCode int
-			body       string
-			setting    *graylog.LDAPSetting
-			checkErr   func(require.TestingT, interface{}, ...interface{})
-		}{{
-			statusCode: 204,
-			body: `{
+	data := []struct {
+		statusCode int
+		body       string
+		setting    *graylog.LDAPSetting
+		checkErr   func(require.TestingT, interface{}, ...interface{})
+	}{{
+		statusCode: 204,
+		body: `{
   "enabled": true,
   "use_start_tls": false,
   "trust_all_certificates": false,
@@ -113,25 +122,47 @@ func TestClient_UpdateLDAPSetting(t *testing.T) {
     "foo": "Reader"
   }
 }`,
-			setting: &graylog.LDAPSetting{
-				Enabled:              true,
-				SystemUsername:       "admin",
-				SystemPassword:       "***",
-				LDAPURI:              "ldap://ldap.example.com:389/",
-				SearchBase:           "OU=user,OU=foo,DC=example,DC=com",
-				SearchPattern:        "(cn={0})",
-				DisplayNameAttribute: "displayname",
-				DefaultGroup:         "Reader",
-				GroupMapping:         map[string]string{"foo": "Reader"},
+		setting: &graylog.LDAPSetting{
+			Enabled:              true,
+			SystemUsername:       "admin",
+			SystemPassword:       "***",
+			LDAPURI:              "ldap://ldap.example.com:389/",
+			SearchBase:           "OU=user,OU=foo,DC=example,DC=com",
+			SearchPattern:        "(cn={0})",
+			DisplayNameAttribute: "displayname",
+			DefaultGroup:         "Reader",
+			GroupMapping:         map[string]string{"foo": "Reader"},
+		},
+		checkErr: require.Nil,
+	}}
+	for _, d := range data {
+		cl.SetHTTPClient(&http.Client{
+			Transport: &flute.Transport{
+				T: t,
+				Services: []flute.Service{
+					{
+						Endpoint: "http://example.com",
+						Routes: []flute.Route{
+							{
+								Tester: &flute.Tester{
+									Method:         "PUT",
+									Path:           "/api/system/ldap/settings",
+									PartOfHeader:   getTestHeader(),
+									BodyJSONString: d.body,
+								},
+								Response: &flute.Response{
+									Base: http.Response{
+										StatusCode: d.statusCode,
+									},
+								},
+							},
+						},
+					},
+				},
 			},
-			checkErr: require.Nil,
-		}}
-		for _, d := range data {
-			gock.New("http://example.com").
-				Put("/api/system/ldap/settings").
-				MatchType("json").BodyString(d.body).Reply(d.statusCode)
-			_, err := client.UpdateLDAPSetting(ctx, d.setting)
-			d.checkErr(t, err)
-		}
+		})
+
+		_, err := cl.UpdateLDAPSetting(ctx, d.setting)
+		d.checkErr(t, err)
 	}
 }
