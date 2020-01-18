@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"testing"
 
-	"gopkg.in/h2non/gock.v1"
-
 	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/flute/flute"
 	"github.com/suzuki-shunsuke/go-set/v6"
@@ -116,8 +114,8 @@ func TestClient_GetStreamAlarmCallback(t *testing.T) {
 
 func TestClient_CreateStreamAlarmCallback(t *testing.T) {
 	ctx := context.Background()
-	defer gock.Off()
-	client, err := client.NewClient("http://example.com/api", "admin", "password")
+
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -239,11 +237,34 @@ func TestClient_CreateStreamAlarmCallback(t *testing.T) {
 		checkErr: require.Nil,
 	}}
 	for _, d := range data {
-		gock.New("http://example.com").
-			Post(fmt.Sprintf("/api/streams/%s/alarmcallbacks", d.ac.StreamID)).
-			MatchType("json").JSON(d.req).Reply(d.statusCode).
-			JSON(map[string]string{"alarmcallback_id": d.acID})
-		_, err := client.CreateStreamAlarmCallback(ctx, &d.ac)
+		cl.SetHTTPClient(&http.Client{
+			Transport: &flute.Transport{
+				T: t,
+				Services: []flute.Service{
+					{
+						Endpoint: "http://example.com",
+						Routes: []flute.Route{
+							{
+								Tester: &flute.Tester{
+									Method:       "POST",
+									Path:         fmt.Sprintf("/api/streams/%s/alarmcallbacks", d.ac.StreamID),
+									PartOfHeader: getTestHeader(),
+									BodyJSON:     d.req,
+								},
+								Response: &flute.Response{
+									Base: http.Response{
+										StatusCode: d.statusCode,
+									},
+									BodyJSON: map[string]string{"alarmcallback_id": d.acID},
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+
+		_, err := cl.CreateStreamAlarmCallback(ctx, &d.ac)
 		d.checkErr(t, err)
 		if err != nil {
 			require.Equal(t, d.ac.ID, d.acID)
@@ -253,8 +274,7 @@ func TestClient_CreateStreamAlarmCallback(t *testing.T) {
 
 func TestClient_UpdateStreamAlarmCallback(t *testing.T) {
 	ctx := context.Background()
-	defer gock.Off()
-	client, err := client.NewClient("http://example.com/api", "admin", "password")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -276,19 +296,41 @@ func TestClient_UpdateStreamAlarmCallback(t *testing.T) {
 		checkErr: require.Nil,
 	}}
 	for _, d := range data {
-		gock.New("http://example.com").
-			Put(fmt.Sprintf("/api/streams/%s/alarmcallbacks/%s", d.ac.StreamID, d.ac.ID)).
-			MatchType("json").Reply(d.statusCode)
-		_, err := client.UpdateStreamAlarmCallback(ctx, &d.ac)
+		cl.SetHTTPClient(&http.Client{
+			Transport: &flute.Transport{
+				T: t,
+				Services: []flute.Service{
+					{
+						Endpoint: "http://example.com",
+						Routes: []flute.Route{
+							{
+								Tester: &flute.Tester{
+									Method:       "PUT",
+									Path:         fmt.Sprintf("/api/streams/%s/alarmcallbacks/%s", d.ac.StreamID, d.ac.ID),
+									PartOfHeader: getTestHeader(),
+								},
+								Response: &flute.Response{
+									Base: http.Response{
+										StatusCode: d.statusCode,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+
+		_, err := cl.UpdateStreamAlarmCallback(ctx, &d.ac)
 		d.checkErr(t, err)
 	}
 }
 
 func TestClient_DeleteStreamAlarmCallback(t *testing.T) {
 	ctx := context.Background()
-	defer gock.Off()
-	client, err := client.NewClient("http://example.com/api", "admin", "password")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
+
 	data := []struct {
 		statusCode int
 		checkErr   func(require.TestingT, interface{}, ...interface{})
@@ -299,10 +341,32 @@ func TestClient_DeleteStreamAlarmCallback(t *testing.T) {
 	streamID := "xxxxx"
 	acID := "d3ecb503-b767-4d59-bf6a-e2c000000000"
 	for _, d := range data {
-		gock.New("http://example.com").
-			Delete(fmt.Sprintf("/api/streams/%s/alarmcallbacks/%s", streamID, acID)).
-			MatchType("json").Reply(d.statusCode)
-		_, err := client.DeleteStreamAlarmCallback(ctx, streamID, acID)
+		cl.SetHTTPClient(&http.Client{
+			Transport: &flute.Transport{
+				T: t,
+				Services: []flute.Service{
+					{
+						Endpoint: "http://example.com",
+						Routes: []flute.Route{
+							{
+								Tester: &flute.Tester{
+									Method:       "DELETE",
+									Path:         fmt.Sprintf("/api/streams/%s/alarmcallbacks/%s", streamID, acID),
+									PartOfHeader: getTestHeader(),
+								},
+								Response: &flute.Response{
+									Base: http.Response{
+										StatusCode: d.statusCode,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+
+		_, err := cl.DeleteStreamAlarmCallback(ctx, streamID, acID)
 		d.checkErr(t, err)
 	}
 }
