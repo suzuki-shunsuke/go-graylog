@@ -3,12 +3,11 @@ package client_test
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"testing"
 
-	"gopkg.in/h2non/gock.v1"
-
 	"github.com/stretchr/testify/require"
-	"github.com/suzuki-shunsuke/go-jsoneq/jsoneq"
+	"github.com/suzuki-shunsuke/flute/flute"
 
 	"github.com/suzuki-shunsuke/go-graylog/v9"
 	"github.com/suzuki-shunsuke/go-graylog/v9/client"
@@ -91,9 +90,7 @@ func sampleExtractor1() *graylog.Extractor {
 
 func TestClient_GetExtractors(t *testing.T) {
 	ctx := context.Background()
-	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -225,11 +222,33 @@ func TestClient_GetExtractors(t *testing.T) {
 	}
 	id := "xxxxx"
 	for _, d := range data {
-		gock.New("http://example.com").
-			Get(fmt.Sprintf("/api/system/inputs/%s/extractors", id)).
-			MatchType("json").Reply(d.statusCode).
-			BodyString(d.resp)
-		extractors, total, _, err := client.GetExtractors(ctx, id)
+		cl.SetHTTPClient(&http.Client{
+			Transport: &flute.Transport{
+				T: t,
+				Services: []flute.Service{
+					{
+						Endpoint: "http://example.com",
+						Routes: []flute.Route{
+							{
+								Tester: &flute.Tester{
+									Method:       "GET",
+									Path:         fmt.Sprintf("/api/system/inputs/%s/extractors", id),
+									PartOfHeader: getTestHeader(),
+								},
+								Response: &flute.Response{
+									Base: http.Response{
+										StatusCode: d.statusCode,
+									},
+									BodyString: d.resp,
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+
+		extractors, total, _, err := cl.GetExtractors(ctx, id)
 		if d.isErr {
 			require.NotNil(t, err)
 			return
@@ -242,9 +261,7 @@ func TestClient_GetExtractors(t *testing.T) {
 
 func TestClient_GetExtractor(t *testing.T) {
 	ctx := context.Background()
-	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -366,11 +383,33 @@ func TestClient_GetExtractor(t *testing.T) {
 	inputID := "XXX"
 	extractorID := "YYY"
 	for _, d := range data {
-		gock.New("http://example.com").
-			Get(fmt.Sprintf("/api/system/inputs/%s/extractors/%s", inputID, extractorID)).
-			MatchType("json").Reply(d.statusCode).
-			BodyString(d.resp)
-		extractor, _, err := client.GetExtractor(ctx, inputID, extractorID)
+		cl.SetHTTPClient(&http.Client{
+			Transport: &flute.Transport{
+				T: t,
+				Services: []flute.Service{
+					{
+						Endpoint: "http://example.com",
+						Routes: []flute.Route{
+							{
+								Tester: &flute.Tester{
+									Method:       "GET",
+									Path:         fmt.Sprintf("/api/system/inputs/%s/extractors/%s", inputID, extractorID),
+									PartOfHeader: getTestHeader(),
+								},
+								Response: &flute.Response{
+									Base: http.Response{
+										StatusCode: d.statusCode,
+									},
+									BodyString: d.resp,
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+
+		extractor, _, err := cl.GetExtractor(ctx, inputID, extractorID)
 		if d.isErr {
 			require.NotNil(t, err)
 			return
@@ -382,9 +421,7 @@ func TestClient_GetExtractor(t *testing.T) {
 
 func TestClient_CreateExtractor(t *testing.T) {
 	ctx := context.Background()
-	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -453,15 +490,34 @@ func TestClient_CreateExtractor(t *testing.T) {
 		resp: `{"extractor_id": "e9f5e010-4315-11e9-964f-020000000000"}`,
 	}}
 	for _, d := range data {
-		req, err := jsoneq.Convert([]byte(d.req))
-		if err != nil {
-			t.Fatal(err)
-		}
-		gock.New("http://example.com").
-			Post(fmt.Sprintf("/api/system/inputs/%s/extractors", d.inputID)).
-			MatchType("json").JSON(req).Reply(d.statusCode).
-			BodyString(d.resp)
-		_, err = client.CreateExtractor(ctx, d.inputID, d.extractor)
+		cl.SetHTTPClient(&http.Client{
+			Transport: &flute.Transport{
+				T: t,
+				Services: []flute.Service{
+					{
+						Endpoint: "http://example.com",
+						Routes: []flute.Route{
+							{
+								Tester: &flute.Tester{
+									Method:         "POST",
+									Path:           fmt.Sprintf("/api/system/inputs/%s/extractors", d.inputID),
+									PartOfHeader:   getTestHeader(),
+									BodyJSONString: d.req,
+								},
+								Response: &flute.Response{
+									Base: http.Response{
+										StatusCode: d.statusCode,
+									},
+									BodyString: d.resp,
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+
+		_, err = cl.CreateExtractor(ctx, d.inputID, d.extractor)
 		if d.isErr {
 			require.NotNil(t, err)
 			return
@@ -473,9 +529,7 @@ func TestClient_CreateExtractor(t *testing.T) {
 
 func TestClient_UpdateExtractor(t *testing.T) {
 	ctx := context.Background()
-	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
 
 	data := []struct {
@@ -636,14 +690,34 @@ func TestClient_UpdateExtractor(t *testing.T) {
     }`,
 	}}
 	for _, d := range data {
-		req, err := jsoneq.Convert([]byte(d.req))
-		if err != nil {
-			t.Fatal(err)
-		}
-		gock.New("http://example.com").
-			Put(fmt.Sprintf("/api/system/inputs/%s/extractors/%s", d.inputID, d.extractorID)).
-			MatchType("json").JSON(req).Reply(d.statusCode).BodyString(d.resp)
-		_, err = client.UpdateExtractor(ctx, d.inputID, d.extractor)
+		cl.SetHTTPClient(&http.Client{
+			Transport: &flute.Transport{
+				T: t,
+				Services: []flute.Service{
+					{
+						Endpoint: "http://example.com",
+						Routes: []flute.Route{
+							{
+								Tester: &flute.Tester{
+									Method:         "PUT",
+									Path:           fmt.Sprintf("/api/system/inputs/%s/extractors/%s", d.inputID, d.extractorID),
+									PartOfHeader:   getTestHeader(),
+									BodyJSONString: d.req,
+								},
+								Response: &flute.Response{
+									Base: http.Response{
+										StatusCode: d.statusCode,
+									},
+									BodyString: d.resp,
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+
+		_, err = cl.UpdateExtractor(ctx, d.inputID, d.extractor)
 		if d.isErr {
 			require.NotNil(t, err)
 			return
@@ -655,10 +729,9 @@ func TestClient_UpdateExtractor(t *testing.T) {
 
 func TestClient_DeleteExtractor(t *testing.T) {
 	ctx := context.Background()
-	defer gock.Off()
-	client, err := client.NewClient(
-		"http://example.com/api", "admin", "password")
+	cl, err := client.NewClient("http://example.com/api", "admin", "admin")
 	require.Nil(t, err)
+
 	data := []struct {
 		statusCode  int
 		inputID     string
@@ -670,10 +743,32 @@ func TestClient_DeleteExtractor(t *testing.T) {
 		extractorID: "e9f5e010-4315-11e9-964f-020000000000",
 	}}
 	for _, d := range data {
-		gock.New("http://example.com").
-			Delete(fmt.Sprintf("/api/system/inputs/%s/extractors/%s", d.inputID, d.extractorID)).
-			MatchType("json").Reply(d.statusCode)
-		_, err := client.DeleteExtractor(ctx, d.inputID, d.extractorID)
+		cl.SetHTTPClient(&http.Client{
+			Transport: &flute.Transport{
+				T: t,
+				Services: []flute.Service{
+					{
+						Endpoint: "http://example.com",
+						Routes: []flute.Route{
+							{
+								Tester: &flute.Tester{
+									Method:       "DELETE",
+									Path:         fmt.Sprintf("/api/system/inputs/%s/extractors/%s", d.inputID, d.extractorID),
+									PartOfHeader: getTestHeader(),
+								},
+								Response: &flute.Response{
+									Base: http.Response{
+										StatusCode: d.statusCode,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+
+		_, err := cl.DeleteExtractor(ctx, d.inputID, d.extractorID)
 		if d.isErr {
 			require.NotNil(t, err)
 			return
