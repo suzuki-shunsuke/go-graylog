@@ -3,5 +3,8 @@ resource "graylog_user" "test" {
   email     = "test@example.com"
   full_name = "test test"
   password  = "password"
-  roles     = ["Reader"]
+  roles = [
+    "Reader",
+    graylog_role.read-stream-test.name,
+  ]
 }

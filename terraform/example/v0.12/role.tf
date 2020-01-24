@@ -31,3 +31,12 @@ resource "graylog_role" "terraform-read" {
   ]
 }
 
+resource "graylog_role" "read-stream-test" {
+  name        = "read-stream-test"
+  description = "read the stream 'test'"
+
+  permissions = [
+    "streams:read:${graylog_stream.test.id}",
+  ]
+}
+
