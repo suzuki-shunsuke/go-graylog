@@ -49,8 +49,8 @@ steps:
 - name: terraform fmt (v0.12)
   image: hashicorp/terraform:0.12.19
   commands:
-  - terraform fmt -check terraform/example/v0.12
-  - terraform fmt -check -recursive testdata
+  - terraform fmt -check examples/v0.12
+  - terraform fmt -check -recursive graylog/testdata
 ---
 kind: pipeline
 name: terraform fmt (v0.11)
@@ -58,8 +58,7 @@ steps:
 - name: terraform fmt (v0.11)
   image: hashicorp/terraform:0.11.14
   commands:
-  - cd terraform/example/v0.11
-  - terraform fmt -check
+  - terraform fmt -check examples/v0.11
 ---
 kind: pipeline
 name: build
@@ -68,7 +67,7 @@ volumes:
   temp: {}
 steps:
 - name: download go modules
-  image: &image_go golang:1.13.6
+  image: &image_go golang:1.13.7
   commands:
   - go mod download
   volumes: &volumes
@@ -79,6 +78,7 @@ steps:
 - name: golangci-lint
   image: golangci/golangci-lint:v1.22.2-alpine
   commands:
+  - cd graylog
   - golangci-lint run
   volumes: *volumes
   environment:

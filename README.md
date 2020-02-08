@@ -10,28 +10,21 @@
 
 [Graylog](https://www.graylog.org/) API client for Golang and terraform provider for Graylog.
 
-## Example of API client
+## API client
 
-* https://godoc.org/github.com/suzuki-shunsuke/go-graylog/client/#example-Client
+https://pkg.go.dev/github.com/suzuki-shunsuke/go-graylog/client?tab=doc#pkg-examples
+
+If you use Graylog v3, use `client.NewClientV3` instead of `client.NewClient`.
 
 ## Terraform provider
 
-* [terraform-provider-graylog](https://github.com/suzuki-shunsuke/go-graylog/tree/master/terraform)
+Please see [docs/README.md](docs/README.md).
 
-## Supported Graylog version
+### Docker Image
 
-We support the following versions.
+https://quay.io/repository/suzuki_shunsuke/terraform-graylog
 
-* v2.5
-* v3
-
-We use [the graylog's official Docker Image](https://hub.docker.com/r/graylog/graylog/) for development.
-
-### Support of Graylog v3
-
-Use `client.NewClientV3` instead of `client.NewClient` .
-
-In the terraform provider, please set the variable `api_version` to `v3`.
+Docker image which is installed terraform and terraform-provider-graylog on Alpine.
 
 ## Note: Graylog API mock server has been migrated to the other repository
 
