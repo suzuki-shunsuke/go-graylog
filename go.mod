@@ -1,4 +1,4 @@
-module github.com/suzuki-shunsuke/go-graylog/v9
+module github.com/suzuki-shunsuke/go-graylog/v10
 
 go 1.13
 

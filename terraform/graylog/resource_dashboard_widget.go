@@ -10,7 +10,7 @@ import (
 	"github.com/suzuki-shunsuke/go-jsoneq/jsoneq"
 	"github.com/suzuki-shunsuke/go-ptr"
 
-	"github.com/suzuki-shunsuke/go-graylog/v9"
+	"github.com/suzuki-shunsuke/go-graylog/v10"
 )
 
 func resourceDashboardWidget() *schema.Resource {

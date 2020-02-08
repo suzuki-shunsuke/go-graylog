@@ -3,7 +3,7 @@ package client
 import (
 	"net/http"
 
-	"github.com/suzuki-shunsuke/go-graylog/v9/client/endpoint"
+	"github.com/suzuki-shunsuke/go-graylog/v10/client/endpoint"
 )
 
 // Client represents a Graylog API client.

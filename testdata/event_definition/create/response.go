@@ -1,7 +1,7 @@
 package create
 
 import (
-	"github.com/suzuki-shunsuke/go-graylog/v9"
+	"github.com/suzuki-shunsuke/go-graylog/v10"
 )
 
 func Response() *graylog.EventDefinition {

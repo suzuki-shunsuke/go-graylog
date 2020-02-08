@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/suzuki-shunsuke/go-graylog/v9/client/endpoint"
+	"github.com/suzuki-shunsuke/go-graylog/v10/client/endpoint"
 )
 
 func TestEndpoints_AlertConditions(t *testing.T) {

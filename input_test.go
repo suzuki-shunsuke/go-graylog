@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
+	"github.com/suzuki-shunsuke/go-graylog/v10/testdata"
 )
 
 func TestInputUnmarshalJSON(t *testing.T) {

@@ -3,7 +3,7 @@ package endpoint_test
 import (
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/v9/client/endpoint"
+	"github.com/suzuki-shunsuke/go-graylog/v10/client/endpoint"
 )
 
 const (

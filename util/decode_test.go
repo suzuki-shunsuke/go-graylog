@@ -3,8 +3,8 @@ package util_test
 import (
 	"testing"
 
-	"github.com/suzuki-shunsuke/go-graylog/v9"
-	"github.com/suzuki-shunsuke/go-graylog/v9/util"
+	"github.com/suzuki-shunsuke/go-graylog/v10"
+	"github.com/suzuki-shunsuke/go-graylog/v10/util"
 )
 
 func TestMSDecode(t *testing.T) {

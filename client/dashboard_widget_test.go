@@ -11,9 +11,9 @@ import (
 	"github.com/suzuki-shunsuke/flute/flute"
 	"github.com/suzuki-shunsuke/go-ptr"
 
-	"github.com/suzuki-shunsuke/go-graylog/v9"
-	"github.com/suzuki-shunsuke/go-graylog/v9/client"
-	"github.com/suzuki-shunsuke/go-graylog/v9/testdata"
+	"github.com/suzuki-shunsuke/go-graylog/v10"
+	"github.com/suzuki-shunsuke/go-graylog/v10/client"
+	"github.com/suzuki-shunsuke/go-graylog/v10/testdata"
 )
 
 func TestClient_CreateDashboardWidget(t *testing.T) {
