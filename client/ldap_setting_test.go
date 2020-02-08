@@ -9,8 +9,8 @@ import (
 	"github.com/suzuki-shunsuke/flute/flute"
 	"github.com/suzuki-shunsuke/go-set/v6"
 
-	"github.com/suzuki-shunsuke/go-graylog/v9"
-	"github.com/suzuki-shunsuke/go-graylog/v9/client"
+	"github.com/suzuki-shunsuke/go-graylog/v10"
+	"github.com/suzuki-shunsuke/go-graylog/v10/client"
 )
 
 func TestClient_GetLDAPSetting(t *testing.T) {

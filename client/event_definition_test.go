@@ -9,10 +9,10 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/flute/flute"
 
-	"github.com/suzuki-shunsuke/go-graylog/v9/client"
-	"github.com/suzuki-shunsuke/go-graylog/v9/testdata/event_definition/create"
-	"github.com/suzuki-shunsuke/go-graylog/v9/testdata/event_definition/get"
-	"github.com/suzuki-shunsuke/go-graylog/v9/testdata/event_definition/update"
+	"github.com/suzuki-shunsuke/go-graylog/v10/client"
+	"github.com/suzuki-shunsuke/go-graylog/v10/testdata/event_definition/create"
+	"github.com/suzuki-shunsuke/go-graylog/v10/testdata/event_definition/get"
+	"github.com/suzuki-shunsuke/go-graylog/v10/testdata/event_definition/update"
 )
 
 func TestClient_CreateEventDefinition(t *testing.T) {
