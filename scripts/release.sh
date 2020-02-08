@@ -32,7 +32,7 @@ fi
 
 ee cd "$(dirname "$0")/.."
 
-VERSION_FILE=version.go
+VERSION_FILE=graylog/graylog/version.go
 echo "create $VERSION_FILE"
 cat << EOS > "$VERSION_FILE"
 package graylog
