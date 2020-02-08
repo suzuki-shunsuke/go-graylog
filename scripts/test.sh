@@ -3,11 +3,6 @@
 set -eu
 set -o pipefail
 
-ee() {
-  echo "+ $*"
-  eval "$@"
-}
-
 cd "$(dirname "$0")/.."
 
 if [ -f env.sh ]; then
@@ -15,5 +10,7 @@ if [ -f env.sh ]; then
   source env.sh
 fi
 
-ee go test ./... . -covermode=atomic
-ee go test -v ./graylog/terraform/... -covermode=atomic
+for d in $(go list ./... | grep -v terraform); do
+  go test -race -covermode=atomic "$d"
+done
+go test -v ./graylog/terraform/... -covermode=atomic
