@@ -17,7 +17,7 @@ notification_settings | {} |
 
 `config` is a JSON string.
 The format of `config` depends on the Event Notification type.
-Please see the [example](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/example/v0.12/event_definition.tf).
+Please see the [example](../../examples/v0.12/event_definition.tf).
 Using the [Graylog's API browser](https://docs.graylog.org/en/3.1/pages/configuration/rest_api.html) you can check the format of `config`.
 
 ### Optional Argument

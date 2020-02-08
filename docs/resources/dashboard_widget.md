@@ -17,7 +17,7 @@
 From v10.0.0, the attribute `json_configuration` is added to support any type of dashboard widget.
 `json_configuration` should be JSON string.
 
-Please see the [Example](https://github.com/suzuki-shunsuke/go-graylog/blob/master/terraform/example/v0.12/dashboard.tf).
+Please see the [Example](../../examples/v0.12/dashboard.tf).
 
 ## Common required arguments
 
