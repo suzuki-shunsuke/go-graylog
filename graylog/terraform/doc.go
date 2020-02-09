@@ -1,4 +1,4 @@
 /*
-Package graylog provides the terraform provider for Graylog.
+Package terraform provides the terraform provider for Graylog.
 */
 package terraform
