@@ -7,6 +7,7 @@ resource "graylog_event_definition" "test" {
 {
   "type": "aggregation-v1",
   "query": "test",
+  "query_parameters": [],
   "streams": [
     "${graylog_stream.test.id}"
   ],
@@ -53,6 +54,7 @@ resource "graylog_event_definition" "test2" {
 {
   "type": "aggregation-v1",
   "query": "test",
+  "query_parameters": [],
   "streams": [
     "${graylog_stream.test.id}"
   ],

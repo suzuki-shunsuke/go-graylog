@@ -3,12 +3,12 @@ version: '3'
 services:
   # MongoDB: https://hub.docker.com/_/mongo/
   mongo:
-    image: mongo:3.6.15-xenial
+    image: mongo:3.6.17-xenial
     networks:
     - graylog
   # Elasticsearch: https://www.elastic.co/guide/en/elasticsearch/reference/6.x/docker.html
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.8.2
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.8.5
     environment:
     - http.host=0.0.0.0
     - transport.host=localhost
@@ -22,7 +22,7 @@ services:
     - graylog
   # Graylog: https://hub.docker.com/r/graylog/graylog/
   graylog:
-    image: graylog/graylog:3.1.2
+    image: graylog/graylog:3.2.1
     environment:
     # CHANGE ME (must be at least 16 characters)!
     - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
