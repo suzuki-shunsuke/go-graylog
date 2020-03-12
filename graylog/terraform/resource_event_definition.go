@@ -10,6 +10,7 @@ import (
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/suzuki-shunsuke/go-jsoneq/jsoneq"
+	"github.com/suzuki-shunsuke/go-set/v6"
 
 	"github.com/suzuki-shunsuke/go-graylog/v11/graylog/graylog"
 )
@@ -93,10 +94,11 @@ func resourceEventDefinition() *schema.Resource {
 					},
 				},
 			},
-			// "key_spec": {
-			// 	Type:     schema.TypeString,
-			// 	Required: true,
-			// },
+			"key_spec": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
 			// optional
 			//	"storage": {
 			//		Type:     schema.TypeString,
@@ -296,6 +298,7 @@ func newEventDefinition(d *schema.ResourceData) (*graylog.EventDefinition, error
 		Description:          d.Get("description").(string),
 		Priority:             d.Get("priority").(int),
 		Alert:                d.Get("alert").(bool),
+		KeySpec:              set.NewStrSet(getStringArray(d.Get("key_spec").(*schema.Set).List())...),
 		NotificationSettings: getDefinitionSettings(d),
 		Config:               cfg,
 		FieldSpec:            fieldSpec,
@@ -359,6 +362,9 @@ func resourceEventDefinitionRead(d *schema.ResourceData, m interface{}) error {
 	}
 	b, err = json.Marshal(notif.Config)
 	if err != nil {
+		return err
+	}
+	if err := setStrListToRD(d, "key_spec", notif.KeySpec.ToList()); err != nil {
 		return err
 	}
 	return setStrToRD(d, "config", string(b))
