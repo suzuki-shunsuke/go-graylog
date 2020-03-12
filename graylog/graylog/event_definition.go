@@ -1,15 +1,17 @@
 package graylog
 
+import "github.com/suzuki-shunsuke/go-set/v6"
+
 type (
 	// EventDefinition represents an event definition.
 	EventDefinition struct {
-		ID          string                              `json:"id"`
-		Title       string                              `json:"title"`
-		Description string                              `json:"description"`
-		Priority    int                                 `json:"priority"`
-		Alert       bool                                `json:"alert"`
-		FieldSpec   map[string]EventDefinitionFieldSpec `json:"field_spec"`
-		// KeySpec     []interface{}                       `json:"key_spec"`
+		ID                   string                              `json:"id"`
+		Title                string                              `json:"title"`
+		Description          string                              `json:"description"`
+		Priority             int                                 `json:"priority"`
+		Alert                bool                                `json:"alert"`
+		FieldSpec            map[string]EventDefinitionFieldSpec `json:"field_spec"`
+		KeySpec              set.StrSet                          `json:"key_spec"`
 		NotificationSettings EventDefinitionNotificationSettings `json:"notification_settings"`
 		Notifications        []EventDefinitionNotification       `json:"notifications"`
 		Storage              []interface{}                       `json:"storage"`

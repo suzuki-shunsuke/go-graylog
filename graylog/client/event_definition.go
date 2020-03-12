@@ -21,7 +21,7 @@ func (client *Client) CreateEventDefinition(
 		"description":           definition.Description,
 		"priority":              definition.Priority,
 		"alert":                 definition.Alert,
-		"key_spec":              []struct{}{},
+		"key_spec":              definition.KeySpec,
 		"notification_settings": definition.NotificationSettings,
 		"config":                definition.Config,
 	}
@@ -77,7 +77,7 @@ func (client *Client) UpdateEventDefinition(
 		"description":           definition.Description,
 		"priority":              definition.Priority,
 		"alert":                 definition.Alert,
-		"key_spec":              []struct{}{},
+		"key_spec":              definition.KeySpec,
 		"notification_settings": definition.NotificationSettings,
 		"config":                definition.Config,
 	}
