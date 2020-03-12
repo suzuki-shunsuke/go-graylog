@@ -30,7 +30,7 @@
       ]
     }
   },
-  "key_spec": [],
+  "key_spec": ["test"],
   "notification_settings": {
     "grace_period_ms": 0,
     "backlog_size": 0

@@ -2,6 +2,7 @@ package create
 
 import (
 	"github.com/suzuki-shunsuke/go-graylog/v11/graylog/graylog"
+	"github.com/suzuki-shunsuke/go-set/v6"
 )
 
 func Response() *graylog.EventDefinition {
@@ -23,6 +24,7 @@ func Response() *graylog.EventDefinition {
 				},
 			},
 		},
+		KeySpec: set.NewStrSet("test"),
 		NotificationSettings: graylog.EventDefinitionNotificationSettings{
 			GracePeriodMS: 0,
 			BacklogSize:   0,
