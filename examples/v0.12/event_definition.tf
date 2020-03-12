@@ -7,7 +7,6 @@ resource "graylog_event_definition" "test" {
 {
   "type": "aggregation-v1",
   "query": "test",
-  "query_parameters": [],
   "streams": [
     "${graylog_stream.test.id}"
   ],
@@ -33,6 +32,8 @@ EOF
 }
 EOF
 
+  key_spec = ["test"]
+
   notification_settings {
     grace_period_ms = 0
     backlog_size    = 0
@@ -54,7 +55,6 @@ resource "graylog_event_definition" "test2" {
 {
   "type": "aggregation-v1",
   "query": "test",
-  "query_parameters": [],
   "streams": [
     "${graylog_stream.test.id}"
   ],
