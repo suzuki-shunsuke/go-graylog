@@ -61,6 +61,23 @@ resource "graylog_extractor" "test_regex" {
   }
 }
 
+resource "graylog_extractor" "test_split_and_index" {
+  input_id        = graylog_input.gelf_udp.id
+  title           = "test_split_and_index"
+  type            = "split_and_index"
+  cursor_strategy = "copy"
+
+  source_field    = "message"
+  condition_type  = "none"
+  condition_value = ""
+  order           = 0
+
+  split_and_index_type_extractor_config {
+    split_by = "."
+    index    = 1
+  }
+}
+
 resource "graylog_extractor" "http_response_code" {
   input_id        = graylog_input.gelf_udp.id
   title           = "Apache http_response_code"

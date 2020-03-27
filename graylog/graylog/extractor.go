@@ -51,6 +51,11 @@ type (
 		RegexValue string `json:"regex_value"`
 	}
 
+	ExtractorTypeSplitAndIndexConfig struct {
+		SplitBy string `json:"split_by"`
+		Index   int    `json:"index"`
+	}
+
 	ExtractorMetrics struct {
 		Total           *ExtractorMetric `json:"total,omitempty"`
 		Condition       *ExtractorMetric `json:"condition,omitempty"`
@@ -109,9 +114,10 @@ func (extractor *Extractor) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	cfgs := map[string]interface{}{
-		"json":  &ExtractorTypeJSONConfig{},
-		"grok":  &ExtractorTypeGrokConfig{},
-		"regex": &ExtractorTypeRegexConfig{},
+		"json":            &ExtractorTypeJSONConfig{},
+		"grok":            &ExtractorTypeGrokConfig{},
+		"regex":           &ExtractorTypeRegexConfig{},
+		"split_and_index": &ExtractorTypeSplitAndIndexConfig{},
 	}
 	if cfg, ok := cfgs[a.Type]; ok {
 		if err := json.Unmarshal(a.ExtractorConfig, cfg); err != nil {

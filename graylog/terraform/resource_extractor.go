@@ -155,6 +155,25 @@ func resourceExtractor() *schema.Resource {
 				},
 			},
 
+			"split_and_index_type_extractor_config": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				MinItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"split_by": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"index": {
+							Type:     schema.TypeInt,
+							Required: true,
+						},
+					},
+				},
+			},
+
 			"converters": {
 				Type:     schema.TypeList,
 				Optional: true,
@@ -215,6 +234,12 @@ func newExtractorConfig(d *schema.ResourceData, t string) interface{} {
 		a := d.Get("regex_type_extractor_config").([]interface{})[0].(map[string]interface{})
 		return &graylog.ExtractorTypeRegexConfig{
 			RegexValue: a["regex_value"].(string),
+		}
+	case "split_and_index":
+		a := d.Get("split_and_index_type_extractor_config").([]interface{})[0].(map[string]interface{})
+		return &graylog.ExtractorTypeSplitAndIndexConfig{
+			SplitBy: a["split_by"].(string),
+			Index:   a["index"].(int),
 		}
 	default:
 		cfg := map[string]interface{}{}
@@ -333,6 +358,10 @@ func resourceExtractorRead(d *schema.ResourceData, m interface{}) error {
 		}
 	case "regex":
 		if err := d.Set("regex_type_extractor_config", []map[string]interface{}{b}); err != nil {
+			return err
+		}
+	case "split_and_index":
+		if err := d.Set("split_and_index_type_extractor_config", []map[string]interface{}{b}); err != nil {
 			return err
 		}
 	default:
