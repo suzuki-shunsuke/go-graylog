@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/suzuki-shunsuke/flute/flute"
 
-	"github.com/suzuki-shunsuke/go-graylog/testdata"
+	"github.com/suzuki-shunsuke/go-graylog/v11/graylog/testdata"
 )
 
 func TestClient_GetViews(t *testing.T) {

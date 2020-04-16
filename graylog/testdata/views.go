@@ -1,7 +1,7 @@
 package testdata
 
 import (
-	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/v11/graylog/graylog"
 )
 
 var (

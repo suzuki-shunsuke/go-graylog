@@ -1,10 +1,10 @@
-package graylog
+package terraform
 
 import (
 	"context"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/suzuki-shunsuke/go-graylog"
+	"github.com/suzuki-shunsuke/go-graylog/v11/graylog/graylog"
 )
 
 func resourceView() *schema.Resource {

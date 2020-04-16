@@ -2,9 +2,8 @@ package graylog
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
-
-	"github.com/pkg/errors"
 )
 
 type (
@@ -121,7 +120,7 @@ func (widget MessagesViewWidgetConfig) Type() string {
 func (widget *ViewWidget) UnmarshalJSON(b []byte) error {
 	errMsg := "failed to unmarshal JSON to view widget"
 	if widget == nil {
-		return fmt.Errorf("%s: view widget is nil", errMsg)
+		return errors.New(errMsg + ": view widget is nil")
 	}
 	type alias ViewWidget
 	a := struct {
@@ -132,20 +131,20 @@ func (widget *ViewWidget) UnmarshalJSON(b []byte) error {
 		alias: (*alias)(widget),
 	}
 	if err := json.Unmarshal(b, &a); err != nil {
-		return errors.Wrap(err, errMsg)
+		return fmt.Errorf(errMsg+": %w", err)
 	}
 	switch a.Type {
 	case "aggregation":
 		p := AggregationViewWidgetConfig{}
 		if err := json.Unmarshal(a.Config, &p); err != nil {
-			return errors.Wrap(err, errMsg)
+			return fmt.Errorf(errMsg+": %w", err)
 		}
 		widget.Config = p
 		return nil
 	case "messages":
 		p := MessagesViewWidgetConfig{}
 		if err := json.Unmarshal(a.Config, &p); err != nil {
-			return errors.Wrap(err, errMsg)
+			return fmt.Errorf(errMsg+": %w", err)
 		}
 		widget.Config = p
 		return nil
@@ -158,7 +157,7 @@ func (widget *ViewWidget) UnmarshalJSON(b []byte) error {
 func (position *ViewWidgetPosition) UnmarshalJSON(b []byte) error {
 	errMsg := "failed to unmarshal JSON to view widget position"
 	if position == nil {
-		return fmt.Errorf("%s: view widget position is nil", errMsg)
+		return errors.New(errMsg + ": view widget position is nil")
 	}
 	type alias ViewWidgetPosition
 
@@ -180,7 +179,7 @@ func (position *ViewWidgetPosition) UnmarshalJSON(b []byte) error {
 		alias: (*alias)(position),
 	}
 	if err := json.Unmarshal(b, &c); err != nil {
-		return errors.Wrap(err, errMsg)
+		return fmt.Errorf(errMsg+": %w", err)
 	}
 	if i, err := c.Width.Int64(); err == nil {
 		position.Width = int(i)
