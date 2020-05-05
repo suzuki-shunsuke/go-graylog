@@ -3,7 +3,7 @@ module github.com/suzuki-shunsuke/go-graylog/v11
 go 1.13
 
 require (
-	github.com/AlecAivazis/survey/v2 v2.0.5
+	github.com/AlecAivazis/survey/v2 v2.0.7
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/hashicorp/terraform v0.12.19
 	github.com/leodido/go-urn v1.2.0 // indirect
