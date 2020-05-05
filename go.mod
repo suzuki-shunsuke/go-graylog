@@ -7,7 +7,7 @@ require (
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/hashicorp/terraform v0.12.19
 	github.com/leodido/go-urn v1.2.0 // indirect
-	github.com/mitchellh/mapstructure v1.1.2
+	github.com/mitchellh/mapstructure v1.3.0
 	github.com/sanity-io/litter v1.2.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.4.0
