@@ -61,6 +61,7 @@ func Provider() *schema.Provider {
 			"graylog_stream":                     resourceStream(),
 			"graylog_stream_rule":                resourceStreamRule(),
 			"graylog_user":                       resourceUser(),
+			"graylog_view":                       resourceView(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"graylog_index_set": dataSourceIndexSet(),

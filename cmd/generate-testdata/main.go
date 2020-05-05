@@ -104,6 +104,8 @@ var (
 		"stream_alert_conditions":            StreamAlertConditions{},
 		"outputs":                            Outputs{},
 		"stdout_output":                      Output{},
+		"views":                              Views{},
+		"view":                               View{},
 	}
 )
 
@@ -199,6 +201,14 @@ type (
 	EventDefinition struct {
 		data graylog.EventDefinition
 	}
+
+	Views struct {
+		data graylog.Views
+	}
+
+	View struct {
+		data graylog.View
+	}
 )
 
 func (users Users) dump(input string) error {
@@ -291,4 +301,12 @@ func (definitions EventDefinitions) dump(input string) error {
 
 func (definition EventDefinition) dump(input string) error {
 	return dump(input, &definition.data)
+}
+
+func (v Views) dump(input string) error {
+	return dump(input, &v.data)
+}
+
+func (v View) dump(input string) error {
+	return dump(input, &v.data)
 }

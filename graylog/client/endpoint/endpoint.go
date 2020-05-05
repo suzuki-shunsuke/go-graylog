@@ -33,6 +33,7 @@ type Endpoints struct {
 	ldapGroupRoleMapping     string
 	connectStreamsToPipeline string
 	connectPipelinesToStream string
+	views                    string
 	apiVersion               string
 }
 
@@ -96,6 +97,7 @@ func newEndpoints(endpoint, version string) (*Endpoints, error) {
 		users:                    endpoint + "/users",
 		grokPatterns:             endpoint + "/system/grok",
 		grokPatternsTest:         endpoint + "/system/grok/test",
+		views:                    endpoint + "/views",
 		apiVersion:               version,
 	}, nil
 }
