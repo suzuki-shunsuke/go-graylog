@@ -22,7 +22,7 @@ steps:
   - apk add git
   - sh scripts/shellcheck.sh
 - name: shfmt
-  image: mvdan/shfmt:v3.0.0
+  image: mvdan/shfmt:v3.1.1-alpine
   commands:
   - 'shfmt -d . env.sh.tmpl'
 ---
@@ -67,24 +67,20 @@ volumes:
   temp: {}
 steps:
 - name: download go modules
-  image: &image_go golang:1.14.2
+  image: golang:1.14.2
   commands:
   - go mod download
   volumes: &volumes
   - name: gopath
     path: /go
-  environment:
-    GOPATH: /go
 - name: golangci-lint
   image: golangci/golangci-lint:v1.26.0-alpine
   commands:
   - cd graylog
   - golangci-lint run
   volumes: *volumes
-  environment:
-    GOPATH: /go
 - name: codecov
-  image: *image_go
+  image: golang:1.14.2
   commands:
   # bash and cgo seem to be required
   - bash scripts/codecov_test.sh
@@ -92,7 +88,6 @@ steps:
   - test "$LOCAL" = "true" -o "$DRONE_BUILD_EVENT" = "pull_request" || bash /tmp/codecov.sh
   volumes: *volumes
   environment:
-    GOPATH: /go
     CODECOV_TOKEN:
       from_secret: codecov_token
 - name: remove changes
@@ -109,11 +104,10 @@ steps:
     event:
     - tag
 - name: release
-  image: &goreleaser goreleaser/goreleaser:v0.130.0
+  image: goreleaser/goreleaser:v0.130.0
   commands:
   - goreleaser release
   environment:
-    GOPATH: /go
     GITHUB_TOKEN:
       from_secret: github_token
   volumes: *volumes
@@ -130,11 +124,9 @@ steps:
     - pull_request
     - push
 - name: release (skip-publish)
-  image: *goreleaser
+  image: goreleaser/goreleaser:v0.130.0
   commands:
   - goreleaser release --skip-publish
-  environment:
-    GOPATH: /go
   volumes: *volumes
   when:
     event:
