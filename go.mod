@@ -9,7 +9,7 @@ require (
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/mitchellh/mapstructure v1.3.0
 	github.com/sanity-io/litter v1.2.0
-	github.com/sirupsen/logrus v1.4.2
+	github.com/sirupsen/logrus v1.6.0
 	github.com/stretchr/testify v1.4.0
 	github.com/suzuki-shunsuke/flute v0.7.0
 	github.com/suzuki-shunsuke/go-jsoneq v0.1.2
