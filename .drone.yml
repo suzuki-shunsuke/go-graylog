@@ -22,7 +22,7 @@ steps:
   - apk add git
   - sh scripts/shellcheck.sh
 - name: shfmt
-  image: mvdan/shfmt:v3.0.0
+  image: mvdan/shfmt:v3.1.1
   commands:
   - 'shfmt -d . env.sh.tmpl'
 ---
