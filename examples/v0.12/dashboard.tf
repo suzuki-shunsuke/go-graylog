@@ -66,26 +66,25 @@ resource "graylog_dashboard_widget_positions" "test" {
 }
 
 resource "graylog_dashboard_widget" "stacked_chart" {
-  description        = "stacked chart"
-  dashboard_id       = graylog_dashboard.test.id
-  type               = "STACKED_CHART"
-  cache_time         = 10
-  json_configuration = <<EOF
-{
-  "interval": "hour",
-  "timerange": {
-    "type": "relative",
-    "range": 86400
-  },
-  "renderer": "bar",
-  "interpolation": "linear",
-  "series": [
-    {
-      "query": "",
-      "field": "AccessMask",
-      "statistical_function": "count"
-    }
-  ]
-}
-EOF
+  description  = "stacked chart"
+  dashboard_id = graylog_dashboard.test.id
+  type         = "STACKED_CHART"
+  cache_time   = 10
+
+  json_configuration = jsonencode({
+    interval = "hour"
+    timerange = {
+      type  = "relative"
+      range = 86400
+    },
+    renderer      = "bar"
+    interpolation = "linear"
+    series = [
+      {
+        query                = ""
+        field                = "AccessMask"
+        statistical_function = "count"
+      }
+    ]
+  })
 }
