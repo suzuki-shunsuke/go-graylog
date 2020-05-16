@@ -10,6 +10,14 @@
 
 [Graylog](https://www.graylog.org/) API client for Golang and terraform provider for Graylog.
 
+## Note: Please use terraform-provider-graylog/terraform-provider-graylog
+
+Now we released and developed [terraform-provider-graylog/terraform-provider-graylog](https://github.com/terraform-provider-graylog/terraform-provider-graylog) as the successor of `go-graylog`.
+Please see the following document and announcement issue.
+
+* https://terraform-provider-graylog.github.io/
+* https://github.com/suzuki-shunsuke/go-graylog/issues/253
+
 ## API client
 
 https://pkg.go.dev/github.com/suzuki-shunsuke/go-graylog/client?tab=doc#pkg-examples
