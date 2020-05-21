@@ -5,7 +5,7 @@ go 1.14
 require (
 	github.com/AlecAivazis/survey/v2 v2.0.7
 	github.com/hashicorp/terraform v0.12.24
-	github.com/mitchellh/mapstructure v1.3.0
+	github.com/mitchellh/mapstructure v1.3.1
 	github.com/sanity-io/litter v1.2.0
 	github.com/stretchr/testify v1.5.1
 	github.com/suzuki-shunsuke/flute v0.7.0
