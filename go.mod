@@ -8,7 +8,7 @@ require (
 	github.com/mitchellh/mapstructure v1.3.2
 	github.com/sanity-io/litter v1.2.0
 	github.com/stretchr/testify v1.6.1
-	github.com/suzuki-shunsuke/flute v0.7.0
+	github.com/suzuki-shunsuke/flute v1.0.1
 	github.com/suzuki-shunsuke/go-jsoneq v0.1.2
 	github.com/suzuki-shunsuke/go-ptr v1.0.0
 	github.com/suzuki-shunsuke/go-set/v6 v6.0.1

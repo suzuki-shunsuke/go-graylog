@@ -319,6 +319,7 @@ github.com/stretchr/testify v1.6.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/suzuki-shunsuke/flute v0.7.0 h1:DvDSCMIMiLlRj4AQPMeJ1NfHE3lG5yfs2LU0Dnf1+oc=
 github.com/suzuki-shunsuke/flute v0.7.0/go.mod h1:UZOMr3GyEuYSr7/zf0nHgaLP9ZhKDB+2pBeV1WFkohE=
+github.com/suzuki-shunsuke/flute v1.0.1/go.mod h1:lQKcCgbjiIzH4lar2V2UX1IdEwAB5KTfTckgWN1rtFg=
 github.com/suzuki-shunsuke/go-cliutil v0.0.0-20181211154308-176f852d9bca/go.mod h1:Vq3NkhgmA9DT/2UZ08x/3A34xxvzQ/vTMABnTWKoMbY=
 github.com/suzuki-shunsuke/go-jsoneq v0.1.1/go.mod h1:vbOEb6bPf8nD+QASKzxtQ/vfVGgAyfWHyItUaUTwJWk=
 github.com/suzuki-shunsuke/go-jsoneq v0.1.2 h1:A4czEbmFqSELTbrEtXVo4dSgfz2e2Z0y6G3OpExUML8=
@@ -330,6 +331,7 @@ github.com/suzuki-shunsuke/go-set v6.0.0+incompatible h1:APxAhd/XeHGrrp3vR6a9Yiw
 github.com/suzuki-shunsuke/go-set/v6 v6.0.1 h1:JxqxB+UYnkMqskPZhLrOFLas6SY/Z6yMNOm9kOvwSDY=
 github.com/suzuki-shunsuke/go-set/v6 v6.0.1/go.mod h1:3dlTSl52oLMev8ZwgkNkGl3euc+Gm0ehBpfR4g+MdXY=
 github.com/suzuki-shunsuke/gomic v0.5.6/go.mod h1:GEDQnxOB07p3mTZG/MiuclfyfcqnNqp0rt9AHgIzs7Q=
+github.com/suzuki-shunsuke/gomic v0.6.0/go.mod h1:/+uhQJ1H5f9ythus/MbXOotAZDmkN1QOjKlsSiH2v+I=
 github.com/svanharmelen/jsonapi v0.0.0-20180618144545-0c0828c3f16d/go.mod h1:BSTlc8jOjh0niykqEGVXOLXdi9o0r0kR8tCYiMvjFgw=
 github.com/tencentcloud/tencentcloud-sdk-go v3.0.82+incompatible/go.mod h1:0PfYow01SHPMhKY31xa+EFz2RStxIqj6JFAJS+IkCi4=
 github.com/tencentyun/cos-go-sdk-v5 v0.0.0-20190808065407-f07404cefc8c/go.mod h1:wk2XFUg6egk4tSDNZtXeKfe2G6690UVyt163PuUxBZk=
@@ -436,6 +438,7 @@ golang.org/x/tools v0.0.0-20190425150028-36563e24a262/go.mod h1:RgjU9mgBXZiqYHBn
 golang.org/x/tools v0.0.0-20190506145303-2d16b83fe98c/go.mod h1:RgjU9mgBXZiqYHBnxXauZ1Gv1EHHAz9KjViQ78xBX0Q=
 golang.org/x/tools v0.0.0-20190606124116-d0a3d012864b/go.mod h1:/rFqwRUd4F7ZHNgwSSTFct+R/Kf4OFW1sUzUTQQTgfc=
 golang.org/x/tools v0.0.0-20190628153133-6cdbf07be9d0/go.mod h1:/rFqwRUd4F7ZHNgwSSTFct+R/Kf4OFW1sUzUTQQTgfc=
+golang.org/x/tools v0.0.0-20190802220118-1d1727260058/go.mod h1:jcCCGcm9btYwXyDqrUWc6MKQKKGJCWEQ3AfLSRIbEuI=
 google.golang.org/api v0.4.0/go.mod h1:8k5glujaEP+g9n7WNsDg8QP6cUVNI86fCNMcbazEtwE=
 google.golang.org/api v0.7.0/go.mod h1:WtwebWUNSVBH/HAw79HIFXZNqEvBhG+Ra+ax0hx3E3M=
 google.golang.org/api v0.8.0/go.mod h1:o4eAsZoiT+ibD93RtjEohWalFOjRDx6CVaqeizhEnKg=
