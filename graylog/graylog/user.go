@@ -91,7 +91,7 @@ func (user *User) NewUpdateParams() *UserUpdateParams {
 // SetDefaultValues sets default values.
 func (user *User) SetDefaultValues() {
 	if user.SessionTimeoutMs == 0 {
-		user.SessionTimeoutMs = 28800000
+		user.SessionTimeoutMs = 3600000
 	}
 	if user.Timezone == "" {
 		user.Timezone = "UTC"

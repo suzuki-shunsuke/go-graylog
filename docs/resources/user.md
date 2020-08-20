@@ -21,7 +21,7 @@ password | string | sensitive
 permissions | string set | computed
 roles | [] | string set |
 timezone | "" | string | computed
-session_timeout_ms | | int | computed
+session_timeout_ms | 3600000 | int |
 
 ## Attrs Reference
 
