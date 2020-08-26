@@ -47,7 +47,7 @@ kind: pipeline
 name: terraform fmt (v0.12)
 steps:
 - name: terraform fmt (v0.12)
-  image: hashicorp/terraform:0.12.24
+  image: hashicorp/terraform:0.13.1
   commands:
   - terraform fmt -check examples/v0.12
   - terraform fmt -check -recursive graylog/testdata
@@ -56,7 +56,7 @@ kind: pipeline
 name: terraform fmt (v0.11)
 steps:
 - name: terraform fmt (v0.11)
-  image: hashicorp/terraform:0.11.14
+  image: hashicorp/terraform:0.13.1
   commands:
   - terraform fmt -check examples/v0.11
 ---
