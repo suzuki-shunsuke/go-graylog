@@ -7,7 +7,7 @@ require (
 	github.com/hashicorp/terraform v0.12.24
 	github.com/mitchellh/mapstructure v1.3.3
 	github.com/sanity-io/litter v1.3.0
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.0
 	github.com/suzuki-shunsuke/flute v0.7.0
 	github.com/suzuki-shunsuke/go-jsoneq v0.1.2
 	github.com/suzuki-shunsuke/go-ptr v1.0.0
