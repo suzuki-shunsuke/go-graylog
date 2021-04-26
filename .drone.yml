@@ -104,7 +104,7 @@ steps:
     event:
     - tag
 - name: release
-  image: goreleaser/goreleaser:v0.145.0
+  image: goreleaser/goreleaser:v0.164.0
   commands:
   - goreleaser release
   environment:
@@ -124,7 +124,7 @@ steps:
     - pull_request
     - push
 - name: release (skip-publish)
-  image: goreleaser/goreleaser:v0.145.0
+  image: goreleaser/goreleaser:v0.164.0
   commands:
   - goreleaser release --skip-publish
   volumes: *volumes
