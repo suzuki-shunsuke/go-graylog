@@ -11,25 +11,25 @@ import (
 
 func (client *Client) callGet(
 	ctx context.Context, endpoint string, input, output interface{}) (*ErrorInfo, error) {
-	return client.callAPI(ctx, http.MethodGet, endpoint, input, output)
+	return client.CallAPI(ctx, http.MethodGet, endpoint, input, output)
 }
 
 func (client *Client) callPost(
 	ctx context.Context, endpoint string, input, output interface{}) (*ErrorInfo, error) {
-	return client.callAPI(ctx, http.MethodPost, endpoint, input, output)
+	return client.CallAPI(ctx, http.MethodPost, endpoint, input, output)
 }
 
 func (client *Client) callPut(
 	ctx context.Context, endpoint string, input, output interface{}) (*ErrorInfo, error) {
-	return client.callAPI(ctx, http.MethodPut, endpoint, input, output)
+	return client.CallAPI(ctx, http.MethodPut, endpoint, input, output)
 }
 
 func (client *Client) callDelete(
 	ctx context.Context, endpoint string, input, output interface{}) (*ErrorInfo, error) {
-	return client.callAPI(ctx, http.MethodDelete, endpoint, input, output)
+	return client.CallAPI(ctx, http.MethodDelete, endpoint, input, output)
 }
 
-func (client *Client) callAPI(
+func (client *Client) CallAPI(
 	ctx context.Context, method, endpoint string, input, output interface{},
 ) (*ErrorInfo, error) {
 	// prepare request
