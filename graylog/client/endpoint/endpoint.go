@@ -34,6 +34,7 @@ type Endpoints struct {
 	connectStreamsToPipeline string
 	connectPipelinesToStream string
 	apiVersion               string
+	root                     string
 }
 
 // NewEndpoints returns a new Endpoints.
@@ -97,5 +98,6 @@ func newEndpoints(endpoint, version string) (*Endpoints, error) {
 		grokPatterns:             endpoint + "/system/grok",
 		grokPatternsTest:         endpoint + "/system/grok/test",
 		apiVersion:               version,
+		root:                     endpoint,
 	}, nil
 }
