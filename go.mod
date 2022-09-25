@@ -3,7 +3,7 @@ module github.com/suzuki-shunsuke/go-graylog/v11
 go 1.14
 
 require (
-	github.com/AlecAivazis/survey/v2 v2.1.1
+	github.com/AlecAivazis/survey/v2 v2.3.6
 	github.com/hashicorp/terraform v0.12.24
 	github.com/mitchellh/mapstructure v1.3.3
 	github.com/sanity-io/litter v1.3.0
